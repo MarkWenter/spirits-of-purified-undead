@@ -127,7 +127,10 @@ public final class PurifiedUndead {
     }
 
     private void createAttributes(final EntityAttributeCreationEvent event) {
-        event.put(ModEntities.BLIGHTED_GOLEM.get(), IronGolem.createAttributes().build());
+        event.put(ModEntities.BLIGHTED_GOLEM.get(), IronGolem.createAttributes()
+                .add(net.minecraft.world.entity.ai.attributes.Attributes.MAX_HEALTH, 200).build());
+        event.put(ModEntities.BLIGHTED_KING.get(), net.minecraft.world.entity.monster.Evoker.createAttributes()
+                .add(net.minecraft.world.entity.ai.attributes.Attributes.MAX_HEALTH, 100).build());
     }
 
     private void serverStarted(final ServerStartedEvent event) {

@@ -33,7 +33,8 @@ public final class GrothAcquisitionEvents {
             return;
         }
         converted.moveTo(original.getX(), original.getY(), original.getZ(), original.getYRot(), original.getXRot());
-        converted.setHealth(Math.min(converted.getMaxHealth(), original.getHealth()));
+        converted.setHealth(dev.purifiedundead.entity.BlightedHealth.rescale(
+                original.getHealth(), original.getMaxHealth(), converted.getMaxHealth()));
         converted.setPlayerCreated(original.isPlayerCreated());
         converted.setNoAi(original.isNoAi());
         converted.setInvulnerable(original.isInvulnerable());

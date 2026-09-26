@@ -23,7 +23,7 @@ art/
 logs/
 test-recordings/
 prompt-Report/
-测试文档/
+娴嬭瘯鏂囨。/
 .agents/
 .codex/
 .vscode/
@@ -42,3 +42,8 @@ docs/*
 scripts/*
 !scripts/setup-java.ps1
 !scripts/gradle.ps1
+
+# Local version snapshots and port analysis
+1.20.1forge版本/
+1.21.1neoforge版本/
+!docs/RELEASE_V032.md

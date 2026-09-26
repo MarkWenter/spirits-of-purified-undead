@@ -19,7 +19,8 @@ public final class ClientModEvents {
     @SubscribeEvent
     public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(ModEntities.FERIN.get(), FerinRenderer::new);
-        event.registerEntityRenderer(ModEntities.BLIGHTED_GOLEM.get(), IronGolemRenderer::new);
+        event.registerEntityRenderer(ModEntities.BLIGHTED_GOLEM.get(), BlightedGolemRenderer::new);
+        event.registerEntityRenderer(ModEntities.BLIGHTED_KING.get(), BlightedKingRenderer::new);
         event.registerEntityRenderer(ModEntities.ELEINE_MAGIC_ORB.get(), EleineMagicOrbRenderer::new);
     }
 

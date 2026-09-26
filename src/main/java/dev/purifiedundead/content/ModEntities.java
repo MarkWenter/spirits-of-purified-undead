@@ -34,6 +34,12 @@ public final class ModEntities {
                     .updateInterval(1)
                     .build(PurifiedUndead.MOD_ID + ":eleine_magic_orb"));
 
+    public static final RegistryObject<EntityType<dev.purifiedundead.entity.BlightedKingEntity>> BLIGHTED_KING =
+            ENTITIES.register("blighted_king", () -> EntityType.Builder.<dev.purifiedundead.entity.BlightedKingEntity>of(
+                    dev.purifiedundead.entity.BlightedKingEntity::new, MobCategory.MONSTER)
+                    .sized(0.6F, 1.95F).clientTrackingRange(8)
+                    .build(PurifiedUndead.MOD_ID + ":blighted_king"));
+
     private ModEntities() {
     }
 
