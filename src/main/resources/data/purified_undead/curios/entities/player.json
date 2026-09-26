@@ -1,0 +1,4 @@
+{
+  "entities": ["minecraft:player"],
+  "slots": ["ancient_contract", "undead_warrior", "white_witch_relic"]
+}

@@ -1,0 +1,66 @@
+{
+  "ancient_contract": {
+    "sounds": [
+      {
+        "name": "purified_undead:rewards/ancient_contract",
+        "stream": false
+      }
+    ]
+  },
+  "groth": {
+    "sounds": [
+      {
+        "name": "purified_undead:rewards/groth",
+        "stream": false
+      }
+    ]
+  },
+  "julius": {
+    "sounds": [
+      {
+        "name": "purified_undead:rewards/julius",
+        "stream": false
+      }
+    ]
+  },
+  "guardians": {
+    "sounds": [
+      {
+        "name": "purified_undead:rewards/guardians",
+        "stream": false
+      }
+    ]
+  },
+  "ulv": {
+    "sounds": [
+      {
+        "name": "purified_undead:rewards/ulv",
+        "stream": false
+      }
+    ]
+  },
+  "eleine": {
+    "sounds": [
+      {
+        "name": "purified_undead:rewards/eleine",
+        "stream": false
+      }
+    ]
+  },
+  "faden": {
+    "sounds": [
+      {
+        "name": "purified_undead:rewards/faden",
+        "stream": false
+      }
+    ]
+  },
+  "talisman_max": {
+    "sounds": [
+      {
+        "name": "purified_undead:rewards/talisman_max",
+        "stream": false
+      }
+    ]
+  }
+}

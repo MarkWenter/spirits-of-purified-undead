@@ -1,0 +1,133 @@
+plugins {
+    id 'eclipse'
+    id 'idea'
+    id 'net.minecraftforge.gradle' version '6.0.54'
+}
+
+version = mod_version
+group = mod_group_id
+base { archivesName = mod_id }
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+
+minecraft {
+    mappings channel: 'official', version: minecraft_version
+    copyIdeResources = true
+    runs {
+        configureEach {
+            workingDirectory project.file("run/${name}")
+            property 'forge.logging.console.level', 'info'
+            // Curios' mixins use SRG names; development runs need the mapping file.
+            property 'mixin.env.remapRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
+            mods {
+                "${mod_id}" { source sourceSets.main }
+            }
+        }
+        client { }
+        server { args '--nogui' }
+        data {
+            args '--mod', mod_id, '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+        }
+    }
+}
+sourceSets.main.resources { srcDir 'src/generated/resources' }
+
+repositories {
+    maven {
+        url = 'https://maven.theillusivec4.top/'
+        content { includeGroup 'top.theillusivec4.curios' }
+    }
+    maven {
+        url = 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/'
+        content {
+            includeGroup 'software.bernie.geckolib'
+            includeGroup 'com.eliotlash.mclib'
+        }
+    }
+    maven {
+        url = 'https://maven.shadowsoffire.dev/releases/'
+        content { includeGroup 'dev.shadowsoffire' }
+    }
+}
+
+// Original, non-remapped artifacts for installing into a standalone Forge instance.
+configurations { installedMods { transitive = false } }
+def curiosMod = "top.theillusivec4.curios:curios-forge:${curios_version}"
+def geckoLibMod = "software.bernie.geckolib:geckolib-forge-${minecraft_version}:${geckolib_version}"
+def attributeMods = [
+    "dev.shadowsoffire:ApothicAttributes:${attributes_version}",
+    "dev.shadowsoffire:Placebo:${placebo_version}"
+]
+dependencies {
+    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+    compileOnly fg.deobf("${curiosMod}:api")
+    runtimeOnly fg.deobf(curiosMod)
+    installedMods curiosMod
+    implementation fg.deobf(geckoLibMod)
+    installedMods geckoLibMod
+    implementation 'com.eliotlash.mclib:mclib:20'
+    if (with_attributes.toBoolean()) {
+        attributeMods.each {
+            runtimeOnly fg.deobf(it)
+            installedMods it
+        }
+    }
+    testImplementation platform('org.junit:junit-bom:5.10.2')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+}
+
+tasks.named('processResources', ProcessResources).configure {
+    filteringCharset = 'UTF-8'
+    inputs.property 'mod_version', mod_version
+    filesMatching('META-INF/mods.toml') { expand mod_version: mod_version }
+}
+tasks.withType(JavaCompile).configureEach { options.encoding = 'UTF-8' }
+tasks.named('test', Test).configure { useJUnitPlatform() }
+tasks.withType(AbstractArchiveTask).configureEach {
+    preserveFileTimestamps = false
+    reproducibleFileOrder = true
+}
+tasks.named('jar', Jar).configure {
+    manifest { attributes 'Implementation-Version': mod_version }
+    finalizedBy 'reobfJar'
+}
+tasks.register('stageMods', Sync) {
+    description = 'Collect original dependency JARs and this mod for a standalone Forge test instance.'
+    group = 'distribution'
+    dependsOn 'reobfJar'
+    from configurations.installedMods
+    from tasks.jar
+    // The original staging directory developed an unreadable Windows ACL after
+    // a concurrent IDE clean. Keep generated install files in a fresh path.
+    into layout.buildDirectory.dir('pcl2-test-mods')
+}
+
+// ForgeGradle replaces tasks.json on generation. Reapply the project-local
+// launcher to both F5 preparation tasks and the everyday build/run commands.
+tasks.matching { it.name == 'genVSCodeRuns' }.configureEach {
+    doLast {
+        def taskFile = file('.vscode/tasks.json')
+        def taskConfig = new groovy.json.JsonSlurper().parse(taskFile, 'UTF-8')
+        def launchArgs = ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File',
+                          '${workspaceFolder}/scripts/gradle.ps1']
+        taskConfig.tasks.each { entry ->
+            entry.type = 'process'
+            entry.command = 'powershell.exe'
+            entry.args = launchArgs + [entry.label]
+            entry.problemMatcher = []
+        }
+        [
+            [label: 'Build mod', targets: ['build', 'stageMods']],
+            [label: 'Run Minecraft client', targets: ['runClient']],
+            [label: 'Run dedicated server', targets: ['runServer']]
+        ].each { spec ->
+            def entry = [label: spec.label, type: 'process', command: 'powershell.exe',
+                         args: launchArgs + spec.targets, problemMatcher: []]
+            if (spec.label == 'Build mod') {
+                entry.group = [kind: 'build', isDefault: true]
+            }
+            taskConfig.tasks.add(entry)
+        }
+        taskFile.setText(groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(taskConfig)), 'UTF-8')
+    }
+}

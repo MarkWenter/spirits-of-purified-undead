@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    { "item": "purified_undead:blight_fragment" },
+    { "item": "purified_undead:blight_fragment" },
+    { "item": "purified_undead:blight_fragment" },
+    { "item": "purified_undead:blight_fragment" }
+  ],
+  "result": {
+    "item": "purified_undead:blighted_spirit",
+    "count": 1
+  }
+}

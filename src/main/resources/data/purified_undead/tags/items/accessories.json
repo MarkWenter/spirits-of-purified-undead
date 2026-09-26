@@ -1,0 +1,14 @@
+{
+  "replace": false,
+  "values": [
+    "purified_undead:ancient_contract",
+    "purified_undead:ferin_warrior",
+    "purified_undead:groth_warrior",
+    "purified_undead:julius_warrior",
+    "purified_undead:guardian_warriors",
+    "purified_undead:ulv_warrior",
+    "purified_undead:eleine_warrior",
+    "purified_undead:hoenir_warrior",
+    "purified_undead:faden_warrior"
+  ]
+}

@@ -1,0 +1,38 @@
+modLoader="javafml"
+loaderVersion="[47,)"
+license="All Rights Reserved (temporary; release license pending source and asset review)"
+
+[[mods]]
+modId="purified_undead"
+version="${mod_version}"
+displayName="spirits of purified undead / 涤净亡魂"
+description='''ENDER LILIES fan mod featuring the Ancient Contract, undead warriors, and contract progression.
+以古老民族之契、不死战士与契约成长为核心的 ENDER LILIES 同人模组。'''
+
+[[dependencies.purified_undead]]
+modId="forge"
+mandatory=true
+versionRange="[47.4.23,48)"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.purified_undead]]
+modId="minecraft"
+mandatory=true
+versionRange="[1.20.1]"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.purified_undead]]
+modId="curios"
+mandatory=true
+versionRange="[5.14.1,6)"
+ordering="AFTER"
+side="BOTH"
+
+[[dependencies.purified_undead]]
+modId="geckolib"
+mandatory=true
+versionRange="[4.8.4,5)"
+ordering="AFTER"
+side="BOTH"
