@@ -12,17 +12,23 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 /** Initial, data-tag-driven source for the talisman's upgrade material. */
 public final class BlightMaterialDropEvents {
-    public static final float FRAGMENT_DROP_CHANCE = 0.125F;
+    public static final float FRAGMENT_DROP_CHANCE = 0.25F;
 
     @SubscribeEvent
     public void onLivingDrops(LivingDropsEvent event) {
-        if (!(event.getSource().getEntity() instanceof ServerPlayer)
+        if (!(event.getSource().getEntity() instanceof ServerPlayer player)
                 || !event.getEntity().getType().is(ModEntityTypeTags.BLIGHT_FRAGMENT_SOURCES)
                 || event.getEntity().getRandom().nextFloat()
                 >= PurifiedUndeadConfig.get(PurifiedUndeadConfig.VALUES.fragmentDropChance)) {
             return;
         }
+        int looting = Math.max(0, Math.min(255, event.getLootingLevel()));
+        int count = 1 + event.getEntity().getRandom().nextInt(8) + event.getEntity().getRandom().nextInt(looting + 1);
+        while (count > 0) {
+        int stackSize = Math.min(count, ModItems.BLIGHT_FRAGMENT.get().getDefaultInstance().getMaxStackSize());
         event.getDrops().add(new ItemEntity(event.getEntity().level(), event.getEntity().getX(),
-                event.getEntity().getY(), event.getEntity().getZ(), new ItemStack(ModItems.BLIGHT_FRAGMENT.get())));
+                event.getEntity().getY(), event.getEntity().getZ(), new ItemStack(ModItems.BLIGHT_FRAGMENT.get(), stackSize)));
+        count -= stackSize;
+        }
     }
 }

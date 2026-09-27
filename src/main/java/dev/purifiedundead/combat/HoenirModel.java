@@ -4,7 +4,7 @@ import dev.purifiedundead.config.PurifiedUndeadConfig;
 
 /** Pure values for the Abyss Guardian's blight and Hoenir's reversal. */
 public final class HoenirModel {
-    public static final int REQUIRED_NEGATIVE_EFFECTS = 5;
+    public static final int REQUIRED_NEGATIVE_EFFECTS = 3;
     public static final int MARK_DURATION_TICKS = 200;
     public static final float MAX_HEALTH_REGEN_RATIO = 0.05F;
     public static final float FERIN_MARK_MULTIPLIER = 1.50F;

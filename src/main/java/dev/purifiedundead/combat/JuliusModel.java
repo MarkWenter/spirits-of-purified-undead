@@ -9,7 +9,7 @@ public final class JuliusModel {
 
     public static double attackReachDelta(boolean contract, boolean juliusEquipped) {
         return contract ? (juliusEquipped ? PurifiedUndeadConfig.get(PurifiedUndeadConfig.VALUES.juliusReachBonus)
-                : -PurifiedUndeadConfig.get(PurifiedUndeadConfig.VALUES.juliusReachPenalty)) : 0.0D;
+                : 0.0D) : 0.0D;
     }
 
     public static double sprintSpeedMultiplier(boolean contract, boolean juliusEquipped) {

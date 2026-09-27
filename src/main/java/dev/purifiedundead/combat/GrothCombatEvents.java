@@ -18,7 +18,7 @@ import top.theillusivec4.curios.api.CuriosApi;
 public final class GrothCombatEvents {
     private static final String STUN_COOLDOWN_KEY = "purified_undead:groth_stun_cooldown_until";
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
+    @SubscribeEvent(priority = EventPriority.HIGH)
     public void onIncomingDamage(LivingDamageEvent event) {
         if (event.getEntity() instanceof ServerPlayer player
                 && !event.getSource().is(ModDamageTypes.ULV_BLIGHT)) {

@@ -25,7 +25,19 @@ public final class PurifiedUndeadConfig {
         }
     }
 
+    /** One-time migration of previous defaults; retain explicit non-default balance values. */
+    public static void migrateBalanceDefaults() {
+        if (VALUES.balanceRevision.get() >= 1) return;
+        if (VALUES.fragmentDropChance.get() == 0.125D) VALUES.fragmentDropChance.set(0.25D);
+        if (VALUES.hoenirNegativeEffectsRequired.get() == 5) VALUES.hoenirNegativeEffectsRequired.set(3);
+        VALUES.balanceRevision.set(1);
+        SPEC.save();
+    }
+
+
     public static final class Values {
+        public final ForgeConfigSpec.IntValue balanceRevision;
+        public final ForgeConfigSpec.DoubleValue juliusMeleeDamagePenalty;
         public final ForgeConfigSpec.IntValue warriorSlots;
         public final ForgeConfigSpec.IntValue whiteWitchRelicSlots;
         public final ForgeConfigSpec.DoubleValue fragmentDropChance;
@@ -109,12 +121,13 @@ public final class PurifiedUndeadConfig {
         public final ForgeConfigSpec.DoubleValue whiteWitchRelicCooldownScale;
 
         private Values(ForgeConfigSpec.Builder builder) {
+            balanceRevision = builder.defineInRange("balanceRevision", 0, 0, 100);
             builder.push("contract");
             warriorSlots = builder.comment("Undead Warrior slots granted by an equipped contract. Restart required.")
                     .defineInRange("warriorSlots", 8, 0, 64);
             whiteWitchRelicSlots = builder.comment("Reserved White Witch Relic slots. Restart required.")
                     .defineInRange("whiteWitchRelicSlots", 3, 0, 16);
-            fragmentDropChance = builder.defineInRange("blightFragmentDropChance", 0.125D, 0.0D, 1.0D);
+            fragmentDropChance = builder.defineInRange("blightFragmentDropChance", 0.25D, 0.0D, 1.0D);
             transformationDurationTicks = builder.comment("Blighted Transformation duration. 20 ticks = one second.")
                     .defineInRange("transformationDurationTicks", 12000, 20, 720000);
             builder.pop();
@@ -166,6 +179,7 @@ public final class PurifiedUndeadConfig {
             builder.pop();
 
             builder.push("julius");
+            juliusMeleeDamagePenalty = builder.defineInRange("unreversedFinalMeleeDamagePenalty", 1.0D, 0.0D, 100.0D);
             juliusReachPenalty = builder.defineInRange("unreversedReachPenalty", 1.0D, 0.0D, 16.0D);
             juliusReachBonus = builder.defineInRange("reversedReachBonus", 1.0D, 0.0D, 16.0D);
             juliusSprintPenaltyMultiplier = builder.defineInRange("unreversedSprintMultiplier", 0.80D, 0.0D, 10.0D);
@@ -199,7 +213,7 @@ public final class PurifiedUndeadConfig {
             builder.pop();
 
             builder.push("hoenir");
-            hoenirNegativeEffectsRequired = builder.defineInRange("negativeEffectsRequired", 5, 1, 255);
+            hoenirNegativeEffectsRequired = builder.defineInRange("negativeEffectsRequired", 3, 1, 255);
             hoenirMarkDurationTicks = builder.defineInRange("markDurationTicks", 200, 1, 72000);
             hoenirRegenerationRatio = builder.defineInRange("regenerationMaxHealthRatioPerSecond", 0.05D, 0.0D, 10.0D);
             hoenirFerinMarkMultiplier = builder.defineInRange("ferinMarkedDamageMultiplier", 1.50D, 0.0D, 20.0D);

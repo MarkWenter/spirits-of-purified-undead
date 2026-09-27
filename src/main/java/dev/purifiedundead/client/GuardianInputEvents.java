@@ -14,6 +14,13 @@ import top.theillusivec4.curios.api.CuriosApi;
 
 @Mod.EventBusSubscriber(modid = PurifiedUndead.MOD_ID, value = Dist.CLIENT)
 public final class GuardianInputEvents {
+    private static LocalPlayer previousPlayer;
+    private static double jumpVelocity = 0.52D;
+    private static double dashSpeed = 1.15D;
+    public static void setServerMotion(double jump, double dash) {
+        jumpVelocity = jump;
+        dashSpeed = dash;
+    }
     private static boolean jumpWasDown;
     private static boolean sprintWasDown;
     private static boolean jumpedThisAir;
@@ -34,8 +41,18 @@ public final class GuardianInputEvents {
             resetAll();
             return;
         }
+        if (player != previousPlayer) {
+            resetAll();
+            previousPlayer = player;
+        }
         boolean jumpDown = minecraft.options.keyJump.isDown();
         boolean sprintDown = minecraft.options.keySprint.isDown();
+        if (minecraft.screen != null || !player.isAlive() || player.isSpectator()
+                || player.isPassenger() || player.getAbilities().flying || player.isFallFlying()) {
+            jumpWasDown = jumpDown;
+            sprintWasDown = sprintDown;
+            return;
+        }
         if (player.onGround()) {
             jumpedThisAir = false;
             dashedThisAir = false;
@@ -47,10 +64,13 @@ public final class GuardianInputEvents {
             if (GuardianInputModel.shouldDoubleJump(
                     jumpDown, jumpWasDown, jumpReleasedThisAir, jumpedThisAir)) {
                 ModNetwork.CHANNEL.sendToServer(new GuardianActionPacket(GuardianActionPacket.Action.DOUBLE_JUMP));
+                player.setDeltaMovement(dev.purifiedundead.combat.GuardianMotion.jump(player.getDeltaMovement(), jumpVelocity));
+                player.fallDistance = 0.0F;
                 jumpedThisAir = true;
             }
             if (sprintDown && !sprintWasDown && !dashedThisAir) {
                 ModNetwork.CHANNEL.sendToServer(new GuardianActionPacket(GuardianActionPacket.Action.AIR_DASH));
+                player.setDeltaMovement(dev.purifiedundead.combat.GuardianMotion.dash(player.getDeltaMovement(), player.getYRot(), dashSpeed));
                 dashedThisAir = true;
             }
         }
@@ -65,6 +85,7 @@ public final class GuardianInputEvents {
     }
 
     private static void resetAll() {
+        previousPlayer = null;
         jumpWasDown = false;
         sprintWasDown = false;
         jumpedThisAir = false;

@@ -8,7 +8,7 @@ import net.minecraft.world.entity.monster.Zombie;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-/** Grants Hoenir when a player suffering five distinct harmful effects kills a zombie. */
+/** Grants Hoenir when a player suffering three distinct harmful effects kills a zombie. */
 public final class HoenirAcquisitionEvents {
     @SubscribeEvent
     public void onLivingDeath(LivingDeathEvent event) {

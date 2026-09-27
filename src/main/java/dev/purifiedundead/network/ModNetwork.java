@@ -7,7 +7,7 @@ import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
 
 public final class ModNetwork {
-    private static final String PROTOCOL = "2";
+    private static final String PROTOCOL = "3";
     public static final SimpleChannel CHANNEL = NetworkRegistry.ChannelBuilder
             .named(ResourceLocation.fromNamespaceAndPath(PurifiedUndead.MOD_ID, "main"))
             .networkProtocolVersion(() -> PROTOCOL)
@@ -19,6 +19,9 @@ public final class ModNetwork {
     }
 
     public static void register() {
+        CHANNEL.messageBuilder(GuardianMotionSettingsPacket.class, 2, NetworkDirection.PLAY_TO_CLIENT)
+                .encoder(GuardianMotionSettingsPacket::encode).decoder(GuardianMotionSettingsPacket::decode)
+                .consumerMainThread(GuardianMotionSettingsPacket::handle).add();
         CHANNEL.messageBuilder(FerinContinuePacket.class, 1, NetworkDirection.PLAY_TO_SERVER)
                 .encoder(FerinContinuePacket::encode).decoder(FerinContinuePacket::decode)
                 .consumerMainThread(FerinContinuePacket::handle).add();

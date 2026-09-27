@@ -58,7 +58,7 @@ public final class UlvCombatEvents {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onHealthDamage(LivingDamageEvent event) {
-        applyIncomingBlight(event);
+
 
         DamageSource source = event.getSource();
         if (!(source.getEntity() instanceof ServerPlayer player)) {
@@ -119,13 +119,7 @@ public final class UlvCombatEvents {
             if (!(deferred.level.getEntity(deferred.targetId) instanceof LivingEntity target) || !target.isAlive()) {
                 continue;
             }
-            if (deferred.kind == DeferredKind.BLIGHT && target instanceof ServerPlayer player) {
-                float preservedAbsorption = player.getAbsorptionAmount();
-                player.setAbsorptionAmount(0.0F);
-                player.hurt(ModDamageTypes.ulvBlight(deferred.level), deferred.amount);
-                player.setAbsorptionAmount(player.getAbsorptionAmount() + preservedAbsorption);
-            } else if (deferred.kind == DeferredKind.FOLLOW_UP
-                    && deferred.level.getPlayerByUUID(deferred.ownerId) instanceof ServerPlayer owner) {
+            if (deferred.level.getPlayerByUUID(deferred.ownerId) instanceof ServerPlayer owner) {
                 target.hurt(ModDamageTypes.ulvFollowUp(deferred.level, owner), deferred.amount);
             }
         }
@@ -147,23 +141,13 @@ public final class UlvCombatEvents {
         deferredDamage.clear();
     }
 
-    private void applyIncomingBlight(LivingDamageEvent event) {
-        if (!(event.getEntity() instanceof ServerPlayer player) || event.getAmount() <= 0.0F
-                || event.getSource().is(ModDamageTypes.ULV_BLIGHT)
-                || event.getSource().is(ModDamageTypes.ULV_FOLLOW_UP)) {
-            return;
-        }
+    public static float incomingBlight(ServerPlayer player, DamageSource source, float healthDamage) {
+        if (healthDamage <= 0.0F || source.is(ModDamageTypes.ULV_BLIGHT)
+                || source.is(ModDamageTypes.ULV_FOLLOW_UP)) return 0.0F;
         Equipment equipment = readEquipment(player);
-        DamageSource source = event.getSource();
         boolean causedByHit = source.getEntity() != null || source.getDirectEntity() != null;
-        if (!equipment.contract || equipment.ulv || !causedByHit) {
-            return;
-        }
-        float amount = UlvModel.backlashDamage(player.getMaxHealth());
-        if (amount > 0.0F) {
-            long dueTick = player.serverLevel().getGameTime() + 1L;
-            deferredDamage.add(DeferredDamage.blight(player.serverLevel(), player.getUUID(), dueTick, amount));
-        }
+        return equipment.contract && !equipment.ulv && causedByHit
+                ? UlvModel.backlashDamage(player.getMaxHealth()) : 0.0F;
     }
 
     private static Equipment readEquipment(LivingEntity entity) {
@@ -212,17 +196,10 @@ public final class UlvCombatEvents {
 
     private record PendingMelee(UUID playerId, long gameTick, float preDefenseDamage) { }
 
-    private enum DeferredKind { BLIGHT, FOLLOW_UP }
 
-    private record DeferredDamage(ServerLevel level, UUID targetId, UUID ownerId, long dueTick,
-                                  float amount, DeferredKind kind) {
-        static DeferredDamage blight(ServerLevel level, UUID targetId, long dueTick, float amount) {
-            return new DeferredDamage(level, targetId, null, dueTick, amount, DeferredKind.BLIGHT);
-        }
-
-        static DeferredDamage followUp(ServerLevel level, UUID targetId, UUID ownerId,
-                                       long dueTick, float amount) {
-            return new DeferredDamage(level, targetId, ownerId, dueTick, amount, DeferredKind.FOLLOW_UP);
+    private record DeferredDamage(ServerLevel level, UUID targetId, UUID ownerId, long dueTick, float amount) {
+        static DeferredDamage followUp(ServerLevel level, UUID targetId, UUID ownerId, long dueTick, float amount) {
+            return new DeferredDamage(level, targetId, ownerId, dueTick, amount);
         }
     }
 }

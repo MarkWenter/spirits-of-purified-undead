@@ -18,7 +18,7 @@ class PurifiedUndeadConfigTest {
                 PurifiedUndeadConfig.get(PurifiedUndeadConfig.VALUES.ferinStageDamageMultipliers));
         assertEquals(5, PurifiedUndeadConfig.get(PurifiedUndeadConfig.VALUES.ulvMaxLayers));
         assertEquals(3, PurifiedUndeadConfig.get(PurifiedUndeadConfig.VALUES.eleineDrownedKillsRequired));
-        assertEquals(5, PurifiedUndeadConfig.get(PurifiedUndeadConfig.VALUES.hoenirNegativeEffectsRequired));
+        assertEquals(3, PurifiedUndeadConfig.get(PurifiedUndeadConfig.VALUES.hoenirNegativeEffectsRequired));
     }
 
     @Test

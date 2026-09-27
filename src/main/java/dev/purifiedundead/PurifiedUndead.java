@@ -62,6 +62,9 @@ public final class PurifiedUndead {
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, PurifiedUndeadConfig.SPEC,
                 "purified_undead-common.toml");
         var modBus = context.getModEventBus();
+        modBus.addListener((net.minecraftforge.fml.event.config.ModConfigEvent.Loading event) -> {
+            if (event.getConfig().getSpec() == PurifiedUndeadConfig.SPEC) PurifiedUndeadConfig.migrateBalanceDefaults();
+        });
         ModItems.register(modBus);
         ModEntities.register(modBus);
         ModParticles.register(modBus);
