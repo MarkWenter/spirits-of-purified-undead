@@ -126,5 +126,22 @@
   "item.purified_undead.ancient_contract.resolved.8": "异端者的污秽：您已将其化解。",
   "curios.modifiers.ancient_contract": "佩戴于古老民族之契栏位时：",
   "curios.modifiers.undead_warrior": "佩戴于不死战士栏位时：",
-  "curios.modifiers.white_witch_relic": "佩戴于白巫女遗物栏位时："
+  "curios.modifiers.white_witch_relic": "佩戴于白巫女遗物栏位时：",
+  "item.purified_undead.bloodstained_ribbon": "血染的丝带",
+  "item.purified_undead.bloodstained_ribbon.summary": "经验值获取量增加 25%。",
+  "item.purified_undead.ancient_dragon_claw": "古龙爪吊坠",
+  "item.purified_undead.ancient_dragon_claw.summary": "远程伤害增加 135%。",
+  "item.purified_undead.weathered_warrior_necklace": "风化的战士项链",
+  "item.purified_undead.weathered_warrior_necklace.summary": "击杀怪物时，恢复 35% 已损失的生命值。",
+  "item.purified_undead.soiled_silver_rosary": "脏污的银念珠",
+  "item.purified_undead.soiled_silver_rosary.summary": "最大生命值增加 5%。",
+  "item.purified_undead.white_priestess_statue": "白巫女的雕像",
+  "item.purified_undead.white_priestess_statue.summary": "受到致命伤害时触发不死图腾效果，冷却 120 秒；饰品不消耗。",
+  "item.purified_undead.blighted_finger": "秽鬼之指",
+  "item.purified_undead.blighted_finger.summary": "造成的伤害增加 25%。",
+  "item.purified_undead.kings_shield_badge": "王之盾的徽章",
+  "item.purified_undead.kings_shield_badge.summary": "最大生命值增加 25%。",
+  "item.purified_undead.white_priestess_earrings": "白巫女的耳环",
+  "item.purified_undead.white_priestess_earrings.summary": "受到致命伤害时触发不死图腾效果，冷却 600 秒；饰品不消耗。",
+  "message.purified_undead.relic_saved": "%s 护佑了你，冷却 %s 秒。"
 }

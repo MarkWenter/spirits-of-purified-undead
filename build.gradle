@@ -131,3 +131,15 @@ tasks.matching { it.name == 'genVSCodeRuns' }.configureEach {
         taskFile.setText(groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(taskConfig)), 'UTF-8')
     }
 }
+
+// Development integration checks run on a real server but are not packaged in the mod.
+sourceSets { smoke { compileClasspath += sourceSets.main.output + sourceSets.main.compileClasspath; runtimeClasspath += sourceSets.main.output + sourceSets.main.runtimeClasspath } }
+minecraft.runs.server { mods { "${mod_id}" { source sourceSets.smoke } } }
+
+minecraft.runs {
+    clientSmoke {
+        parent minecraft.runs.client
+        property 'purified_undead.smoke', 'true'
+        mods { "${mod_id}" { source sourceSets.smoke } }
+    }
+}

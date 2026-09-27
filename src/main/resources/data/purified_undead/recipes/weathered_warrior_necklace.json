@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    {
+      "item": "minecraft:iron_sword"
+    },
+    {
+      "item": "minecraft:iron_pickaxe"
+    },
+    {
+      "item": "minecraft:iron_axe"
+    },
+    {
+      "type": "forge:partial_nbt",
+      "item": "minecraft:potion",
+      "nbt": "{Potion:\"minecraft:strong_healing\"}"
+    },
+    {
+      "item": "purified_undead:blighted_spirit"
+    }
+  ],
+  "result": {
+    "item": "purified_undead:weathered_warrior_necklace",
+    "count": 1
+  }
+}

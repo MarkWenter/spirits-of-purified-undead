@@ -97,6 +97,7 @@ public final class PurifiedUndead {
         MinecraftForge.EVENT_BUS.register(new HoenirCombatEvents());
         MinecraftForge.EVENT_BUS.register(new FadenAcquisitionEvents());
         MinecraftForge.EVENT_BUS.register(new FadenCombatEvents());
+        MinecraftForge.EVENT_BUS.register(new dev.purifiedundead.content.relic.RelicEvents());
         MinecraftForge.EVENT_BUS.addListener(this::serverStarted);
     }
 
@@ -126,6 +127,14 @@ public final class PurifiedUndead {
             event.accept(ModItems.ELEINE_WARRIOR);
             event.accept(ModItems.HOENIR_WARRIOR);
             event.accept(ModItems.FADEN_WARRIOR);
+            event.accept(ModItems.BLOODSTAINED_RIBBON);
+            event.accept(ModItems.ANCIENT_DRAGON_CLAW);
+            event.accept(ModItems.WEATHERED_WARRIOR_NECKLACE);
+            event.accept(ModItems.SOILED_SILVER_ROSARY);
+            event.accept(ModItems.WHITE_PRIESTESS_STATUE);
+            event.accept(ModItems.BLIGHTED_FINGER);
+            event.accept(ModItems.KINGS_SHIELD_BADGE);
+            event.accept(ModItems.WHITE_PRIESTESS_EARRINGS);
         }
     }
 

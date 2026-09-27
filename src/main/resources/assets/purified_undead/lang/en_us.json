@@ -126,5 +126,22 @@
   "item.purified_undead.ancient_contract.resolved.8": "Heretic's Blight: You have cleansed it.",
   "curios.modifiers.ancient_contract": "When worn in Ancient Contract slot:",
   "curios.modifiers.undead_warrior": "When worn in Undead Warriors slot:",
-  "curios.modifiers.white_witch_relic": "When worn in White Witch Relics slot:"
+  "curios.modifiers.white_witch_relic": "When worn in White Witch Relics slot:",
+  "item.purified_undead.bloodstained_ribbon": "Bloodstained Ribbon",
+  "item.purified_undead.bloodstained_ribbon.summary": "Gain 25% more experience points.",
+  "item.purified_undead.ancient_dragon_claw": "Ancient Dragon Claw",
+  "item.purified_undead.ancient_dragon_claw.summary": "Deal 135% more ranged damage.",
+  "item.purified_undead.weathered_warrior_necklace": "Weathered Warrior Necklace",
+  "item.purified_undead.weathered_warrior_necklace.summary": "Killing a monster restores 35% of missing health.",
+  "item.purified_undead.soiled_silver_rosary": "Soiled Silver Rosary",
+  "item.purified_undead.soiled_silver_rosary.summary": "Increases maximum health by 5%.",
+  "item.purified_undead.white_priestess_statue": "White Priestess Statue",
+  "item.purified_undead.white_priestess_statue.summary": "Survive lethal damage with the Totem of Undying effect. 120-second cooldown; not consumed.",
+  "item.purified_undead.blighted_finger": "Blighted Finger",
+  "item.purified_undead.blighted_finger.summary": "Deal 25% more damage.",
+  "item.purified_undead.kings_shield_badge": "Kings Shield Badge",
+  "item.purified_undead.kings_shield_badge.summary": "Increases maximum health by 25%.",
+  "item.purified_undead.white_priestess_earrings": "White Priestess Earrings",
+  "item.purified_undead.white_priestess_earrings.summary": "Survive lethal damage with the Totem of Undying effect. 600-second cooldown; not consumed.",
+  "message.purified_undead.relic_saved": "%s saved you. Cooldown: %s seconds."
 }

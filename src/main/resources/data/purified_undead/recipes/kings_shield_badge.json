@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "B B",
+    "BSB",
+    " B "
+  ],
+  "key": {
+    "B": {
+      "item": "minecraft:iron_block"
+    },
+    "S": {
+      "item": "purified_undead:blighted_spirit"
+    }
+  },
+  "result": {
+    "item": "purified_undead:kings_shield_badge",
+    "count": 1
+  }
+}

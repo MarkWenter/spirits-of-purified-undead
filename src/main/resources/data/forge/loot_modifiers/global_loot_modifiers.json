@@ -1,6 +1,12 @@
 {
   "replace": false,
   "entries": [
-    "purified_undead:faden_fortune"
+    "purified_undead:faden_fortune",
+    "purified_undead:white_witch_abandoned_mineshaft",
+    "purified_undead:white_witch_stronghold_corridor",
+    "purified_undead:white_witch_stronghold_crossing",
+    "purified_undead:white_witch_stronghold_library",
+    "purified_undead:white_witch_ancient_city",
+    "purified_undead:white_witch_ancient_city_ice_box"
   ]
 }

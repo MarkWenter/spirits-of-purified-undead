@@ -125,7 +125,7 @@ public final class PurifiedUndeadConfig {
             builder.push("contract");
             warriorSlots = builder.comment("Undead Warrior slots granted by an equipped contract. Restart required.")
                     .defineInRange("warriorSlots", 8, 0, 64);
-            whiteWitchRelicSlots = builder.comment("Reserved White Witch Relic slots. Restart required.")
+            whiteWitchRelicSlots = builder.comment("White Witch Relic slots. Restart required.")
                     .defineInRange("whiteWitchRelicSlots", 3, 0, 16);
             fragmentDropChance = builder.defineInRange("blightFragmentDropChance", 0.25D, 0.0D, 1.0D);
             transformationDurationTicks = builder.comment("Blighted Transformation duration. 20 ticks = one second.")
@@ -230,7 +230,7 @@ public final class PurifiedUndeadConfig {
             builder.pop();
 
             builder.push("whiteWitchRelics");
-            whiteWitchRelicsEnabled = builder.comment("Master switch reserved for the future White Witch Relic module.")
+            whiteWitchRelicsEnabled = builder.comment("Master switch for White Witch Relic equipment effects.")
                     .define("enabled", true);
             allowDuplicateWhiteWitchRelics = builder.define("allowDuplicates", false);
             whiteWitchRelicEffectScale = builder.defineInRange("globalEffectScale", 1.0D, 0.0D, 100.0D);

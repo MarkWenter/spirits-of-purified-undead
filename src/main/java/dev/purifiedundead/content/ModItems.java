@@ -53,6 +53,23 @@ public final class ModItems {
     public static final RegistryObject<Item> FADEN_WARRIOR = ITEMS.register(
             "faden_warrior", FadenWarriorItem::new);
 
+    public static final RegistryObject<Item> BLOODSTAINED_RIBBON = ITEMS.register("bloodstained_ribbon",
+            () -> new dev.purifiedundead.content.relic.DesignedRelicItem(dev.purifiedundead.content.relic.RelicKind.BLOODSTAINED_RIBBON));
+    public static final RegistryObject<Item> ANCIENT_DRAGON_CLAW = ITEMS.register("ancient_dragon_claw",
+            () -> new dev.purifiedundead.content.relic.DesignedRelicItem(dev.purifiedundead.content.relic.RelicKind.ANCIENT_DRAGON_CLAW));
+    public static final RegistryObject<Item> WEATHERED_WARRIOR_NECKLACE = ITEMS.register("weathered_warrior_necklace",
+            () -> new dev.purifiedundead.content.relic.DesignedRelicItem(dev.purifiedundead.content.relic.RelicKind.WEATHERED_WARRIOR_NECKLACE));
+    public static final RegistryObject<Item> SOILED_SILVER_ROSARY = ITEMS.register("soiled_silver_rosary",
+            () -> new dev.purifiedundead.content.relic.DesignedRelicItem(dev.purifiedundead.content.relic.RelicKind.SOILED_SILVER_ROSARY));
+    public static final RegistryObject<Item> WHITE_PRIESTESS_STATUE = ITEMS.register("white_priestess_statue",
+            () -> new dev.purifiedundead.content.relic.DesignedRelicItem(dev.purifiedundead.content.relic.RelicKind.WHITE_PRIESTESS_STATUE));
+    public static final RegistryObject<Item> BLIGHTED_FINGER = ITEMS.register("blighted_finger",
+            () -> new dev.purifiedundead.content.relic.DesignedRelicItem(dev.purifiedundead.content.relic.RelicKind.BLIGHTED_FINGER));
+    public static final RegistryObject<Item> KINGS_SHIELD_BADGE = ITEMS.register("kings_shield_badge",
+            () -> new dev.purifiedundead.content.relic.DesignedRelicItem(dev.purifiedundead.content.relic.RelicKind.KINGS_SHIELD_BADGE));
+    public static final RegistryObject<Item> WHITE_PRIESTESS_EARRINGS = ITEMS.register("white_priestess_earrings",
+            () -> new dev.purifiedundead.content.relic.DesignedRelicItem(dev.purifiedundead.content.relic.RelicKind.WHITE_PRIESTESS_EARRINGS));
+
     private ModItems() {
     }
 

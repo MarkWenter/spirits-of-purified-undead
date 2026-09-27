@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    {
+      "item": "minecraft:ancient_debris"
+    },
+    {
+      "item": "purified_undead:blighted_spirit"
+    },
+    {
+      "item": "purified_undead:blighted_spirit"
+    },
+    {
+      "item": "purified_undead:blighted_spirit"
+    },
+    {
+      "item": "purified_undead:blighted_spirit"
+    }
+  ],
+  "result": {
+    "item": "purified_undead:ancient_dragon_claw",
+    "count": 1
+  }
+}

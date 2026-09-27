@@ -9,7 +9,7 @@ import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurio;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
-/** Shared Curios behavior for future relic items. Subclasses provide only their approved effect. */
+/** Shared slot restrictions and death retention for White Witch Relics. */
 public abstract class WhiteWitchRelicItem extends Item implements ICurioItem, WhiteWitchRelicEffect {
     protected WhiteWitchRelicItem(Properties properties) {
         super(properties.stacksTo(1).fireResistant());

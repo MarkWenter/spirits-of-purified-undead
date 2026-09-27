@@ -17,6 +17,9 @@ public final class ModLootModifiers {
     public static final RegistryObject<Codec<FadenFortuneLootModifier>> FADEN_FORTUNE =
             SERIALIZERS.register("faden_fortune", () -> FadenFortuneLootModifier.CODEC);
 
+    public static final RegistryObject<Codec<dev.purifiedundead.loot.WhiteWitchRelicLootModifier>> WHITE_WITCH_RELIC =
+            SERIALIZERS.register("white_witch_relic", () -> dev.purifiedundead.loot.WhiteWitchRelicLootModifier.CODEC);
+
     private ModLootModifiers() {
     }
 

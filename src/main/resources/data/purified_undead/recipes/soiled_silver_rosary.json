@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "N N",
+    "FNF"
+  ],
+  "key": {
+    "N": {
+      "item": "minecraft:iron_nugget"
+    },
+    "F": {
+      "item": "purified_undead:blight_fragment"
+    }
+  },
+  "result": {
+    "item": "purified_undead:soiled_silver_rosary",
+    "count": 1
+  }
+}

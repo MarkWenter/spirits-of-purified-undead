@@ -1,4 +1,13 @@
 {
   "replace": false,
-  "values": []
+  "values": [
+    "purified_undead:bloodstained_ribbon",
+    "purified_undead:ancient_dragon_claw",
+    "purified_undead:weathered_warrior_necklace",
+    "purified_undead:soiled_silver_rosary",
+    "purified_undead:white_priestess_statue",
+    "purified_undead:blighted_finger",
+    "purified_undead:kings_shield_badge",
+    "purified_undead:white_priestess_earrings"
+  ]
 }

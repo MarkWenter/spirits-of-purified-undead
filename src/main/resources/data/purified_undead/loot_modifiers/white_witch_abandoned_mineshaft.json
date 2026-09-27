@@ -1,0 +1,10 @@
+{
+  "type": "purified_undead:white_witch_relic",
+  "conditions": [
+    {
+      "condition": "forge:loot_table_id",
+      "loot_table_id": "minecraft:chests/abandoned_mineshaft"
+    }
+  ],
+  "statue_chance": 0.02
+}

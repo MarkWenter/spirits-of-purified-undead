@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "purified_undead:item/white_priestess_statue"
+  }
+}

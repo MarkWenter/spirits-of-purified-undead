@@ -1,0 +1,10 @@
+{
+  "type": "purified_undead:white_witch_relic",
+  "conditions": [
+    {
+      "condition": "forge:loot_table_id",
+      "loot_table_id": "minecraft:chests/stronghold_library"
+    }
+  ],
+  "statue_chance": 0.03
+}
