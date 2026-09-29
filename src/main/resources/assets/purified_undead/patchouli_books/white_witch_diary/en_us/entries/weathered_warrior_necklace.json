@@ -1,0 +1,19 @@
+{
+  "name": "风化的战士项链",
+  "icon": "purified_undead:weathered_warrior_necklace",
+  "category": "purified_undead:relics",
+  "sortnum": 18,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "text": "装备者击杀怪物时，恢复35%已损失血量。使用铁剑，铁镐，铁斧，治疗药水（二级），一个怨念污秽合成。",
+      "item": "purified_undead:weathered_warrior_necklace",
+      "title": "风化的战士项链",
+      "link_recipe": true
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "purified_undead:weathered_warrior_necklace"
+    }
+  ]
+}

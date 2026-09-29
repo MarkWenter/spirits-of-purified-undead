@@ -1,0 +1,15 @@
+{
+  "name": "伊莱恩",
+  "icon": "purified_undead:eleine_warrior",
+  "category": "purified_undead:ancient_contract",
+  "sortnum": 12,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "text": "净化疲惫的心后获得。可反转黑色魔女的污秽的效果。",
+      "item": "purified_undead:eleine_warrior",
+      "title": "伊莱恩",
+      "link_recipe": true
+    }
+  ]
+}

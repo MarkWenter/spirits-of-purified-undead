@@ -1,0 +1,12 @@
+{
+  "name": "其他内容",
+  "icon": "purified_undead:textures/gui/diary_question.png",
+  "category": "purified_undead:future",
+  "sortnum": 24,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "以下内容仍在开发中……敬请期待……"
+    }
+  ]
+}

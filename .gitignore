@@ -53,3 +53,10 @@ scripts/*
 !docs/RELEASE_V034.md
 
 !docs/RELEASE_V0341.md
+!docs/RELEASE_V035.md
+!docs/DIARY_VALIDATION.md
+!docs/DIARY_ART.md
+!scripts/validate-diary.py
+
+!docs/RELEASE_V036.md
+!docs/WISP_COMPATIBILITY.md

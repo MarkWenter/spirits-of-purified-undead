@@ -1,0 +1,6 @@
+{
+  "name": "接受契约",
+  "description": "从污秽碎片开始，触碰死亡，缔结契约。",
+  "icon": "minecraft:potion{Potion:\"purified_undead:blight_elixir\"}",
+  "sortnum": 0
+}

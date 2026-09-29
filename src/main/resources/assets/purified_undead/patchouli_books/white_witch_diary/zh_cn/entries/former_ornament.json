@@ -1,0 +1,23 @@
+{
+  "name": "曾经的羽饰",
+  "icon": "purified_undead:former_ornament",
+  "category": "purified_undead:contract_path",
+  "sortnum": 5,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "text": "将怨念污秽与羽毛合成而得，蕴藏着某对姐妹至死也没能解明的怨愤。$(br2)想要抚平这份污秽，你需要持有此物后，喝下一瓶缓降药水。",
+      "item": "purified_undead:former_ornament",
+      "title": "曾经的羽饰",
+      "link_recipe": true
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(#777777)这个请求魔术师制作的魔术工具，能够呼唤风。$()$(br)$(#777777)收到它的妹妹从未携带过。$()"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "purified_undead:former_ornament"
+    }
+  ]
+}

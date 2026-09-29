@@ -1,0 +1,19 @@
+{
+  "name": "血染的丝带",
+  "icon": "purified_undead:bloodstained_ribbon",
+  "category": "purified_undead:relics",
+  "sortnum": 16,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "text": "增加装备者25%经验值获取量。使用四个红色羊毛和一个怨念污秽合成。",
+      "item": "purified_undead:bloodstained_ribbon",
+      "title": "血染的丝带",
+      "link_recipe": true
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "purified_undead:bloodstained_ribbon"
+    }
+  ]
+}

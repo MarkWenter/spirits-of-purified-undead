@@ -1,0 +1,15 @@
+{
+  "name": "净化污秽",
+  "icon": "purified_undead:blighted_spirit",
+  "category": "purified_undead:ancient_contract",
+  "sortnum": 15,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "text": "手持四个怨念污秽长按使用，可将其净化。净化后的污秽可使你受到的伤害减少。累计净化到一定次数后，费林的协同攻击也将产生变化……",
+      "item": "purified_undead:blighted_spirit",
+      "title": "净化污秽",
+      "link_recipe": true
+    }
+  ]
+}

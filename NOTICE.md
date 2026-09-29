@@ -8,4 +8,6 @@
 
 当前沿用模组元数据的保留权利声明（All Rights Reserved），尚未授予统一的开源许可。第三方组件的许可不受此声明影响。
 
+白巫女手记的书页界面改自 Patchouli 原版书页纹理，保留原有按钮布局并加入页角血迹。该衍生纹理遵循 CC BY-NC-SA 3.0，作者归属与许可链接见 `docs/licenses/PATCHOULI_TEXTURE.md`。日记物品图标由内置 imagegen 制作并整理为 64×64 透明贴图。
+
 Forge 开发模板的 LICENSE 和 CREDITS 保留于 `docs/licenses/`；Gradle Wrapper 保留原许可声明。Curios、GeckoLib、Apothic Attributes、Placebo 等依赖通过构建工具获取，不打包进本模组。

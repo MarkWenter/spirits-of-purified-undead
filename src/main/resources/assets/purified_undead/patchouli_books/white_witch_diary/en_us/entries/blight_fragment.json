@@ -1,0 +1,19 @@
+{
+  "name": "污秽碎片",
+  "icon": "purified_undead:blight_fragment",
+  "category": "purified_undead:contract_path",
+  "sortnum": 0,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "text": "击败亡灵后掉落的碎片，隐隐能感觉到其似乎还在散发着热量。",
+      "item": "purified_undead:blight_fragment",
+      "title": "污秽碎片",
+      "link_recipe": true
+    },
+    {
+      "type": "patchouli:text",
+      "text": "本模组最基本的资源，几乎所有本模组的物品都需要污秽碎片。譬如说，你可以尝试用四个污秽碎片合成某种更加浓烈的污秽……"
+    }
+  ]
+}

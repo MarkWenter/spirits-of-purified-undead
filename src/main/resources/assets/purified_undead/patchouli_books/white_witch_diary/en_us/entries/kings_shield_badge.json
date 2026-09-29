@@ -1,0 +1,19 @@
+{
+  "name": "王之盾的徽章",
+  "icon": "purified_undead:kings_shield_badge",
+  "category": "purified_undead:relics",
+  "sortnum": 22,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "text": "装备者的最大生命值增加25%。使用五个铁块和一个怨念污秽合成。",
+      "item": "purified_undead:kings_shield_badge",
+      "title": "王之盾的徽章",
+      "link_recipe": true
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "purified_undead:kings_shield_badge"
+    }
+  ]
+}

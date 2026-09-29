@@ -143,5 +143,8 @@
   "item.purified_undead.kings_shield_badge.summary": "最大生命值增加 25%。",
   "item.purified_undead.white_priestess_earrings": "白巫女的耳环",
   "item.purified_undead.white_priestess_earrings.summary": "受到致命伤害时触发不死图腾效果，冷却 600 秒；饰品不消耗。",
-  "message.purified_undead.relic_saved": "%s 护佑了你，冷却 %s 秒。"
+  "message.purified_undead.relic_saved": "%s 护佑了你，冷却 %s 秒。",
+  "book.purified_undead.white_witch_diary.name": "白巫女手记",
+  "book.purified_undead.white_witch_diary.subtitle": "污秽与净化的记录",
+  "book.purified_undead.white_witch_diary.landing": "旧纸页间，留下了关于污秽、契约与不死战士的记录。$(br2)愿这些文字，能陪你走过净化的道路。"
 }

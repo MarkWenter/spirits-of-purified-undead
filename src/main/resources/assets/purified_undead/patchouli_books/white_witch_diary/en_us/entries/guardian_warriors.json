@@ -1,0 +1,15 @@
+{
+  "name": "西丽亚与西丽德",
+  "icon": "purified_undead:guardian_warriors",
+  "category": "purified_undead:ancient_contract",
+  "sortnum": 9,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "text": "净化曾经的羽饰后获得。可反转守护者的污秽的效果。",
+      "item": "purified_undead:guardian_warriors",
+      "title": "西丽亚与西丽德",
+      "link_recipe": true
+    }
+  ]
+}

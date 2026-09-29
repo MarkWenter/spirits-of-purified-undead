@@ -1,0 +1,15 @@
+{
+  "name": "狼",
+  "icon": "purified_undead:ulv_warrior",
+  "category": "purified_undead:ancient_contract",
+  "sortnum": 11,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "text": "净化雪之花后获得。可反转狂骑士的污秽的效果。",
+      "item": "purified_undead:ulv_warrior",
+      "title": "狼",
+      "link_recipe": true
+    }
+  ]
+}

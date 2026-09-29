@@ -15,6 +15,12 @@ public final class ModEntities {
     private static final DeferredRegister<EntityType<?>> ENTITIES =
             DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, PurifiedUndead.MOD_ID);
 
+    public static final RegistryObject<EntityType<dev.purifiedundead.entity.ContractWispEntity>> CONTRACT_WISP =
+            ENTITIES.register("contract_wisp", () -> EntityType.Builder.<dev.purifiedundead.entity.ContractWispEntity>of(
+                    dev.purifiedundead.entity.ContractWispEntity::new, MobCategory.MISC)
+                    .sized(.2F,.2F).noSave().noSummon().fireImmune().clientTrackingRange(1).updateInterval(Integer.MAX_VALUE)
+                    .build(PurifiedUndead.MOD_ID+":contract_wisp"));
+
     public static final RegistryObject<EntityType<FerinEntity>> FERIN = ENTITIES.register("ferin",
             () -> EntityType.Builder.<FerinEntity>of(FerinEntity::new, MobCategory.MISC)
                     .sized(0.75F, 1.8F)

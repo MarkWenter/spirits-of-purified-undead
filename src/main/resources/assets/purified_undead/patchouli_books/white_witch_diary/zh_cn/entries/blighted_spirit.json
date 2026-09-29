@@ -1,0 +1,19 @@
+{
+  "name": "怨念污秽",
+  "icon": "purified_undead:blighted_spirit",
+  "category": "purified_undead:contract_path",
+  "sortnum": 1,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "text": "由污秽碎片合成而得，似乎能感觉到其中隐含的不甘欲念。$(br2)怨念污秽可用于合成大量物品，也可用于净化，同时也可用于炼制秽鬼灵药——这是你与已死的古老民族缔结契约的第一步。",
+      "item": "purified_undead:blighted_spirit",
+      "title": "怨念污秽",
+      "link_recipe": true
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "purified_undead:blighted_spirit"
+    }
+  ]
+}

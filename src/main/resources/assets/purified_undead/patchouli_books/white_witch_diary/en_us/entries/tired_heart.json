@@ -1,0 +1,23 @@
+{
+  "name": "疲惫的心",
+  "icon": "purified_undead:tired_heart",
+  "category": "purified_undead:contract_path",
+  "sortnum": 4,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "text": "将怨念污秽与海洋之心合成而得，蕴藏着某位魔女想要为白巫女分担重担的决心。$(br2)想要抚平这份污秽，你需要副手持有此物，杀死至少三只溺尸。",
+      "item": "purified_undead:tired_heart",
+      "title": "疲惫的心",
+      "link_recipe": true
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(#777777)当她快被孤独与他人的期望逼到边缘时，$()$(br)$(#777777)她遇见了一名叫泉之白巫女的少女。$()"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "purified_undead:tired_heart"
+    }
+  ]
+}

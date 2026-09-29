@@ -1,0 +1,15 @@
+{
+  "name": "白巫女的雕像",
+  "icon": "purified_undead:white_priestess_statue",
+  "category": "purified_undead:relics",
+  "sortnum": 20,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "text": "装备者死亡时触发不死图腾效果，此效果有120秒冷却时间。可在主世界的地下矿道内的箱子矿车、要塞中的箱子、以及远古城市中的箱子中有概率找到。",
+      "item": "purified_undead:white_priestess_statue",
+      "title": "白巫女的雕像",
+      "link_recipe": true
+    }
+  ]
+}

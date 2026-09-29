@@ -1,0 +1,24 @@
+{
+  "name": "秽鬼灵药",
+  "icon": "minecraft:potion{Potion:\"purified_undead:blight_elixir\"}",
+  "category": "purified_undead:contract_path",
+  "sortnum": 2,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "text": "炼制怨念污秽而得，蕴含着使人死而复生的神秘力量。$(br2)饮下它，然后尝试触碰死亡的掌心吧。",
+      "item": "minecraft:potion{Potion:\"purified_undead:blight_elixir\"}",
+      "title": "秽鬼灵药",
+      "link_recipe": true
+    },
+    {
+      "type": "patchouli:text",
+      "text": "但是……代价是什么呢？"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "酿造",
+      "text": "以怨念污秽作为酿造材料，将粗制的药水酿造成秽鬼灵药。"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "name": "book.purified_undead.white_witch_diary.name",
+  "landing_text": "book.purified_undead.white_witch_diary.landing",
+  "subtitle": "book.purified_undead.white_witch_diary.subtitle",
+  "version": "0",
+  "use_resource_pack": true,
+  "model": "purified_undead:white_witch_diary",
+  "book_texture": "purified_undead:textures/gui/white_witch_diary.png",
+  "creative_tab": "minecraft:tools_and_utilities",
+  "show_progress": false,
+  "show_toasts": false,
+  "use_blocky_font": true,
+  "text_color": "332820",
+  "header_color": "5D252A",
+  "nameplate_color": "E9D9B5",
+  "link_color": "8A3038",
+  "link_hover_color": "B54B51",
+  "text_overflow_mode": "overflow"
+}

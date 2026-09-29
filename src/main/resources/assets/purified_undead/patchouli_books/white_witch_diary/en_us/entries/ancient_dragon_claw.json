@@ -1,0 +1,19 @@
+{
+  "name": "古龙爪吊坠",
+  "icon": "purified_undead:ancient_dragon_claw",
+  "category": "purified_undead:relics",
+  "sortnum": 17,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "text": "装备者的远程伤害增加135%。使用一块远古残骸和四个怨念污秽合成。",
+      "item": "purified_undead:ancient_dragon_claw",
+      "title": "古龙爪吊坠",
+      "link_recipe": true
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "purified_undead:ancient_dragon_claw"
+    }
+  ]
+}

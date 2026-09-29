@@ -1,0 +1,19 @@
+{
+  "name": "秽鬼之指",
+  "icon": "purified_undead:blighted_finger",
+  "category": "purified_undead:relics",
+  "sortnum": 21,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "text": "装备者造成的伤害增加25%。使用八个怨念污秽和一个腐肉合成。",
+      "item": "purified_undead:blighted_finger",
+      "title": "秽鬼之指",
+      "link_recipe": true
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "purified_undead:blighted_finger"
+    }
+  ]
+}

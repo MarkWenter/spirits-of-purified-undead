@@ -1,0 +1,39 @@
+{
+  "name": "古老民族之契",
+  "icon": "purified_undead:ancient_contract",
+  "category": "purified_undead:ancient_contract",
+  "sortnum": 6,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "text": "在死亡中苏醒，你感觉到神秘而古老的力量烙印在你的额头。$(br2)承受这份契约需要莫大的决心，而命运也会给予敢于面对它的人以嘉奖。",
+      "item": "purified_undead:ancient_contract",
+      "title": "古老民族之契",
+      "link_recipe": true
+    },
+    {
+      "type": "patchouli:text",
+      "text": "佩戴此物，你会增加八个不死战士和三个白巫女遗物的饰品栏位，并受到八重污秽的影响：$(br2)古老的污秽：近战伤害减少30%。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "老战士的污秽：受到伤害增加20%；挖掘速度减少10%。$(br2)守护者的污秽：护甲减少5点并减低10%；护甲韧性降低10%。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "骑士长的污秽：造成的最终伤害减少1点；冲刺时的速度减慢20%。$(br2)狂骑士的污秽：近战攻击速度降低20%；受到伤害后额外扣除5%生命值上限的血量。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "黑色魔女的污秽：受到的魔法伤害增加30%；游泳速度减慢50%；氧气消耗速度翻倍。$(br2)深渊守卫的污秽：受到的负面状态效果增强一级。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "异端者的污秽：击退抗性属性减少0.15；受击时有 20% 概率获得一级、持续二十秒的中毒效果。$(br2)你的身体也会因为承受污秽变得更加羸弱，受到的伤害为原本的120%。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "但，不死战士费林也会现身协助你净化污秽，在你近战攻击后，费林会再次发动一次协同攻击。"
+    }
+  ]
+}

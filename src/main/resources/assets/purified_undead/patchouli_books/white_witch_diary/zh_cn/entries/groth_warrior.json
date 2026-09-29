@@ -1,0 +1,15 @@
+{
+  "name": "格洛特",
+  "icon": "purified_undead:groth_warrior",
+  "category": "purified_undead:ancient_contract",
+  "sortnum": 8,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "text": "击杀秽鬼傀儡后获得，秽鬼傀儡可用怨念污秽点击铁傀儡转化而成。可反转老战士的污秽的效果。",
+      "item": "purified_undead:groth_warrior",
+      "title": "格洛特",
+      "link_recipe": true
+    }
+  ]
+}

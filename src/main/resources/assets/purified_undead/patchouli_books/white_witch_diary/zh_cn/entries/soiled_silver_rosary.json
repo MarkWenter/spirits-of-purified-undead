@@ -1,0 +1,19 @@
+{
+  "name": "脏污的银念珠",
+  "icon": "purified_undead:soiled_silver_rosary",
+  "category": "purified_undead:relics",
+  "sortnum": 19,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "text": "装备者的最大生命值增加5%。使用三个铁粒和两个污秽碎片合成。",
+      "item": "purified_undead:soiled_silver_rosary",
+      "title": "脏污的银念珠",
+      "link_recipe": true
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "purified_undead:soiled_silver_rosary"
+    }
+  ]
+}

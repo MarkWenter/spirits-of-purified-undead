@@ -1,0 +1,23 @@
+{
+  "name": "雪之花",
+  "icon": "purified_undead:snow_flower",
+  "category": "purified_undead:contract_path",
+  "sortnum": 3,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "text": "将怨念污秽与兰花合成而得，蕴藏着某位骑士对白巫女的思念。$(br2)想要抚平这份污秽，你需要双手同时持有此物和恶魂之泪，睡上一觉。",
+      "item": "purified_undead:snow_flower",
+      "title": "雪之花",
+      "link_recipe": true
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(#777777)像是忘记了战斗一般，$()$(br)$(#777777)平静地照顾并保护着雪之花园。$()"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "purified_undead:snow_flower"
+    }
+  ]
+}
