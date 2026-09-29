@@ -51,7 +51,9 @@ public final class RelicServerSmoke {
         var strong = net.minecraft.world.item.alchemy.PotionUtils.setPotion(new ItemStack(Items.POTION), net.minecraft.world.item.alchemy.Potions.STRONG_HEALING);
         var weak = net.minecraft.world.item.alchemy.PotionUtils.setPotion(new ItemStack(Items.POTION), net.minecraft.world.item.alchemy.Potions.HEALING);
         check(potion.test(strong) && !potion.test(weak) && !potion.test(new ItemStack(Items.POTION)), "Healing II ingredient");
-        var player = FakePlayerFactory.get(level, new com.mojang.authlib.GameProfile(UUID.fromString("2474d251-e742-4be6-94ea-025f398db314"), "RelicSmoke"));
+        var player = new net.minecraftforge.common.util.FakePlayer(level, new com.mojang.authlib.GameProfile(UUID.fromString("2474d251-e742-4be6-94ea-025f398db314"), "RelicSmoke")) {
+            @Override public boolean isInvulnerableTo(net.minecraft.world.damagesource.DamageSource source) { return false; }
+        };
         var inventory = CuriosApi.getCuriosInventory(player).orElseThrow(() -> new IllegalStateException("Curios missing"));
         var slots = inventory.getCurios().get("white_witch_relic").getStacks();
         if (slots.getSlots() < 3) slots.grow(3 - slots.getSlots());
@@ -95,6 +97,29 @@ public final class RelicServerSmoke {
         var bypass = new LivingDeathEvent(player, level.damageSources().fellOutOfWorld()); effects.onDeathProtection(bypass);
         check(!bypass.isCanceled(), "void bypass preserved");
         for (int i = 0; i < slots.getSlots(); i++) slots.setStackInSlot(i, ItemStack.EMPTY);
+        // Exercise the real fall-damage pipeline, including installed attribute mods.
+        player.removeAllEffects();
+        var warriors = inventory.getCurios().get("undead_warrior").getStacks();
+        if (warriors.getSlots() < 1) warriors.grow(1);
+        warriors.setStackInSlot(0, ItemStack.EMPTY);
+        fall(player, 4, 1);
+        warriors.setStackInSlot(0, new ItemStack(ModItems.GUARDIAN_WARRIORS.get()));
+        fall(player, 4, 0);
+        fall(player, 5, 0);
+        fall(player, 6, .5F);
+        fall(player, 8, 1.5F);
+        warriors.setStackInSlot(0, ItemStack.EMPTY);
+        fall(player, 4, 1);
+        check(dev.purifiedundead.config.PurifiedUndeadConfig.VALUES.balanceRevision.get() == 2, "config revision 2");
+        check(dev.purifiedundead.config.PurifiedUndeadConfig.VALUES.fragmentDropChance.get() == .35D, "fragment chance 35 percent");
+        System.out.println("PURIFIED_UNDEAD_BALANCE_SMOKE_OK: actual falls 4/5/6/8 blocks, unequip, migrated drop chance 35 percent");
         System.out.println("PURIFIED_UNDEAD_RELIC_SMOKE_OK: six recipes, strict potion, XP, health, damage, healing, independent resurrection and bypass");
     }
+    private static void fall(net.minecraft.server.level.ServerPlayer player, float distance, float expectedDamage) {
+        player.setHealth(20); player.invulnerableTime = 0; player.setAbsorptionAmount(0);
+        player.causeFallDamage(distance, 1.0F, player.damageSources().fall());
+        check(Math.abs(player.getHealth() - (20 - expectedDamage)) < .001,
+                "fall " + distance + ": expected " + expectedDamage + ", got " + (20 - player.getHealth()));
+    }
+
 }

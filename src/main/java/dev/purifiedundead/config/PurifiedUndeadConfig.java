@@ -27,10 +27,14 @@ public final class PurifiedUndeadConfig {
 
     /** One-time migration of previous defaults; retain explicit non-default balance values. */
     public static void migrateBalanceDefaults() {
-        if (VALUES.balanceRevision.get() >= 1) return;
-        if (VALUES.fragmentDropChance.get() == 0.125D) VALUES.fragmentDropChance.set(0.25D);
-        if (VALUES.hoenirNegativeEffectsRequired.get() == 5) VALUES.hoenirNegativeEffectsRequired.set(3);
-        VALUES.balanceRevision.set(1);
+        int revision = VALUES.balanceRevision.get();
+        if (revision >= 2) return;
+        if (revision < 1) {
+            if (VALUES.fragmentDropChance.get() == 0.125D) VALUES.fragmentDropChance.set(0.25D);
+            if (VALUES.hoenirNegativeEffectsRequired.get() == 5) VALUES.hoenirNegativeEffectsRequired.set(3);
+        }
+        if (VALUES.fragmentDropChance.get() == 0.25D) VALUES.fragmentDropChance.set(0.35D);
+        VALUES.balanceRevision.set(2);
         SPEC.save();
     }
 
@@ -127,7 +131,7 @@ public final class PurifiedUndeadConfig {
                     .defineInRange("warriorSlots", 8, 0, 64);
             whiteWitchRelicSlots = builder.comment("White Witch Relic slots. Restart required.")
                     .defineInRange("whiteWitchRelicSlots", 3, 0, 16);
-            fragmentDropChance = builder.defineInRange("blightFragmentDropChance", 0.25D, 0.0D, 1.0D);
+            fragmentDropChance = builder.defineInRange("blightFragmentDropChance", 0.35D, 0.0D, 1.0D);
             transformationDurationTicks = builder.comment("Blighted Transformation duration. 20 ticks = one second.")
                     .defineInRange("transformationDurationTicks", 12000, 20, 720000);
             builder.pop();

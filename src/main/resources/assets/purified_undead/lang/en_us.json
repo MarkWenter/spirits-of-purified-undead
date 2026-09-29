@@ -36,7 +36,7 @@
   "item.purified_undead.former_ornament.summary": "A feather entwined with a Blighted Spirit; hold it under Slow Falling and the Guardians will answer the contract.",
   "item.purified_undead.guardian_warriors": "Silva & Siegrid",
   "item.purified_undead.guardian_warriors.summary": "The purified blight left by the two Undead who guarded the White Priestess.",
-  "item.purified_undead.guardian_warriors.effects": "The sisters grant 5 armor and 10% armor, 10% armor toughness, 50% less fall damage, a double jump, and one dash per airtime.",
+  "item.purified_undead.guardian_warriors.effects": "The sisters grant 5 armor and 10% armor, 10% armor toughness, 2 blocks of additional safe fall distance, 50% less fall damage, a double jump, and one dash per airtime.",
   "item.purified_undead.snow_flower": "Snow Flower",
   "item.purified_undead.snow_flower.summary": "Hold the Snow Flower in the main hand and a Ghast Tear in the offhand, then complete a night's sleep for the Mad Knight to answer.",
   "item.purified_undead.ulv_warrior": "Ulv",

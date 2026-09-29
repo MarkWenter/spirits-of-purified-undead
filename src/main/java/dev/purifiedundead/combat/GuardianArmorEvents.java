@@ -14,6 +14,16 @@ import java.util.UUID;
 
 /** Expresses the Guardians' exact add-then-multiply armor formulas as transient attributes. */
 public final class GuardianArmorEvents {
+    /** Shift the fall-distance calculation, preserving other safe-fall bonuses and jump effects. */
+    @SubscribeEvent
+    public void onFallDistance(net.minecraftforge.event.entity.living.LivingFallEvent event) {
+        if (event.getEntity() instanceof ServerPlayer player
+                && CuriosApi.getCuriosInventory(player)
+                .map(handler -> handler.isEquipped(ModItems.GUARDIAN_WARRIORS.get())).orElse(false)) {
+            event.setDistance(Math.max(0.0F, event.getDistance() - 2.0F));
+        }
+    }
+
     @SubscribeEvent
     public void onFallDamage(net.minecraftforge.event.entity.living.LivingHurtEvent event) {
         if (event.getEntity() instanceof ServerPlayer player
