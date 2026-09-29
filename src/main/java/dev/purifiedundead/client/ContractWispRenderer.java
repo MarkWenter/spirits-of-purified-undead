@@ -19,9 +19,9 @@ public final class ContractWispRenderer extends EntityRenderer<ContractWispEntit
     static { for(int i=0;i<=SEGMENTS;i++){ COS[i]=(float)Math.cos(i*Math.PI*2/SEGMENTS); SIN[i]=(float)Math.sin(i*Math.PI*2/SEGMENTS); } }
     public ContractWispRenderer(EntityRendererProvider.Context context) { super(context); shadowRadius=0; }
     @Override public void render(ContractWispEntity entity, float yaw, float partial, PoseStack poses, MultiBufferSource buffers, int light) {
-        if(entity.owner()==null || entity.owner().isInvisible()) return;
+        if(entity.owner()==null) return;
         float strength = entity.visualLight()/15F;
-        float breath = 1F + .06F*(float)Math.sin((entity.tickCount+partial)*.08);
+        float breath = 1F + .06F*(float)Math.sin((entity.visualAge()+partial)*.08);
         poses.pushPose(); poses.mulPose(entityRenderDispatcher.cameraOrientation());
         VertexConsumer out=buffers.getBuffer(RenderType.entityTranslucentEmissive(WHITE));
         Matrix4f matrix=poses.last().pose();

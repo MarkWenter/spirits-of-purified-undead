@@ -22,7 +22,7 @@
   "item.purified_undead.blight_fragment": "污秽碎片",
   "item.purified_undead.blighted_spirit": "怨念污秽",
   "item.purified_undead.blighted_spirit.summary": "由四枚污秽碎片凝聚而成。",
-  "item.purified_undead.blighted_spirit.use": "装备契约后持续使用，消耗 %s 个提升一级白巫女护身符。",
+  "item.purified_undead.blighted_spirit.use": "佩戴古老民族之契时，长按消耗 %s 个，提升护身符等级并获得 4 个纯净结晶；满级后仍可净化。",
   "item.purified_undead.ferin_warrior": "费林",
   "item.purified_undead.ferin_warrior.summary": "净化古老战士后留下的污秽之魂。",
   "item.purified_undead.ferin_warrior.effects": "费林将替你荡开古老的污秽：近战伤害提高 30%，你与费林造成的近战伤害可汲取 20% 生命。",
@@ -146,5 +146,13 @@
   "message.purified_undead.relic_saved": "%s 护佑了你，冷却 %s 秒。",
   "book.purified_undead.white_witch_diary.name": "白巫女手记",
   "book.purified_undead.white_witch_diary.subtitle": "污秽与净化的记录",
-  "book.purified_undead.white_witch_diary.landing": "旧纸页间，留下了关于污秽、契约与不死战士的记录。$(br2)愿这些文字，能陪你走过净化的道路。"
+  "book.purified_undead.white_witch_diary.landing": "旧纸页间，留下了关于污秽、契约与不死战士的记录。$(br2)愿这些文字，能陪你走过净化的道路。",
+  "item.purified_undead.pure_crystal": "纯净结晶",
+  "item.purified_undead.purified_arcsteel": "净化弧钢",
+  "item.purified_undead.purified_arcsteel_upgrade_smithing_template": "净化弧钢锻造模板",
+  "item.minecraft.potion.effect.pure_elixir": "纯净灵药",
+  "item.minecraft.splash_potion.effect.pure_elixir": "喷溅型纯净灵药",
+  "item.minecraft.lingering_potion.effect.pure_elixir": "滞留型纯净灵药",
+  "item.minecraft.tipped_arrow.effect.pure_elixir": "纯净之箭",
+  "message.purified_undead.purified": "已净化怨念污秽，获得 4 个纯净结晶。"
 }

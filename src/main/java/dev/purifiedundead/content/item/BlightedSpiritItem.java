@@ -19,12 +19,25 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-/** Four spirits are consumed after a completed use to raise the built-in talisman by one level. */
+/** A completed purification grants four crystals, upgrading the talisman while below its cap. */
 public final class BlightedSpiritItem extends Item {
     public static final int USE_TICKS = 40;
 
     public BlightedSpiritItem() {
         super(new Item.Properties().stacksTo(64));
+    }
+
+    // Curios lookup caches may remain valid until the next tick after an inventory mutation.
+    // A consuming transaction must inspect the actual equipped stacks at completion.
+    private static boolean equippedNow(ServerPlayer player) {
+        return top.theillusivec4.curios.api.CuriosApi.getCuriosInventory(player).map(h -> {
+            for (var handler : h.getCurios().values()) {
+                var stacks = handler.getStacks();
+                for (int i = 0; i < stacks.getSlots(); i++)
+                    if (stacks.getStackInSlot(i).is(dev.purifiedundead.content.ModItems.ANCIENT_CONTRACT.get())) return true;
+            }
+            return false;
+        }).orElse(false);
     }
 
     @Override
@@ -33,12 +46,8 @@ public final class BlightedSpiritItem extends Item {
         if (!(player instanceof ServerPlayer serverPlayer)) {
             return ItemUtils.startUsingInstantly(level, player, hand);
         }
-        if (!ContractProgressService.hasContract(serverPlayer)) {
+        if (!equippedNow(serverPlayer)) {
             player.displayClientMessage(Component.translatable("message.purified_undead.talisman.no_contract"), true);
-            return InteractionResultHolder.fail(stack);
-        }
-        if (ContractProgressService.talismanLevel(serverPlayer) >= WhiteWitchTalisman.maxLevel()) {
-            player.displayClientMessage(Component.translatable("message.purified_undead.talisman.max"), true);
             return InteractionResultHolder.fail(stack);
         }
         if (!player.getAbilities().instabuild && stack.getCount() < WhiteWitchTalisman.spiritsPerLevel()) {
@@ -52,16 +61,22 @@ public final class BlightedSpiritItem extends Item {
     @Override
     public ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity entity) {
         if (!level.isClientSide() && entity instanceof ServerPlayer player
-                && (player.getAbilities().instabuild || stack.getCount() >= WhiteWitchTalisman.spiritsPerLevel())
-                && ContractProgressService.upgradeTalisman(player)) {
-            if (!player.getAbilities().instabuild) {
-                stack.shrink(WhiteWitchTalisman.spiritsPerLevel());
-            }
+                && equippedNow(player)
+                && (player.getAbilities().instabuild || stack.getCount() >= WhiteWitchTalisman.spiritsPerLevel())) {
+            boolean upgraded = ContractProgressService.upgradeTalisman(player);
+            if (!player.getAbilities().instabuild) stack.shrink(WhiteWitchTalisman.spiritsPerLevel());
+            ItemStack crystals = new ItemStack(dev.purifiedundead.content.ModItems.PURE_CRYSTAL.get(), 4);
+            if (!player.getInventory().add(crystals)) player.drop(crystals, false);
             int currentLevel = ContractProgressService.talismanLevel(player);
-            player.displayClientMessage(Component.translatable("message.purified_undead.talisman.upgraded",
-                    currentLevel, WhiteWitchTalisman.maxLevel(),
-                    String.format(java.util.Locale.ROOT, "%.0f%%",
-                            WhiteWitchTalisman.incomingDamageMultiplier(currentLevel) * 100.0F)), false);
+            if (upgraded) {
+                player.displayClientMessage(Component.translatable("message.purified_undead.talisman.upgraded",
+                        currentLevel, WhiteWitchTalisman.maxLevel(),
+                        String.format(java.util.Locale.ROOT, "%.0f%%",
+                                WhiteWitchTalisman.incomingDamageMultiplier(currentLevel) * 100.0F)), false);
+            } else {
+                dev.purifiedundead.progress.RewardSounds.onPurification(player);
+                player.displayClientMessage(Component.translatable("message.purified_undead.purified"), true);
+            }
         }
         return stack;
     }

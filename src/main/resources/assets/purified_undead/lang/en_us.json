@@ -22,7 +22,7 @@
   "item.purified_undead.blight_fragment": "Blight Fragment",
   "item.purified_undead.blighted_spirit": "Blighted Spirit",
   "item.purified_undead.blighted_spirit.summary": "Condensed from four blight fragments.",
-  "item.purified_undead.blighted_spirit.use": "While the contract is equipped, hold use to consume %s and upgrade the White Witch talisman.",
+  "item.purified_undead.blighted_spirit.use": "While wearing the Ancient Contract, hold to consume %s, upgrade the talisman and receive 4 Pure Crystals. Purification remains available at maximum level.",
   "item.purified_undead.ferin_warrior": "Ferin",
   "item.purified_undead.ferin_warrior.summary": "The purified blight left by the ancient warrior.",
   "item.purified_undead.ferin_warrior.effects": "Ferin turns aside the Ancient Blight for you: melee damage rises by 30%, and melee damage dealt by you or Ferin restores 20% as health.",
@@ -146,5 +146,13 @@
   "message.purified_undead.relic_saved": "%s saved you. Cooldown: %s seconds.",
   "book.purified_undead.white_witch_diary.name": "白巫女手记",
   "book.purified_undead.white_witch_diary.subtitle": "污秽与净化的记录",
-  "book.purified_undead.white_witch_diary.landing": "旧纸页间，留下了关于污秽、契约与不死战士的记录。$(br2)愿这些文字，能陪你走过净化的道路。"
+  "book.purified_undead.white_witch_diary.landing": "旧纸页间，留下了关于污秽、契约与不死战士的记录。$(br2)愿这些文字，能陪你走过净化的道路。",
+  "item.purified_undead.pure_crystal": "Pure Crystal",
+  "item.purified_undead.purified_arcsteel": "Purified Arcsteel",
+  "item.purified_undead.purified_arcsteel_upgrade_smithing_template": "Purified Arcsteel Smithing Template",
+  "item.minecraft.potion.effect.pure_elixir": "Pure Elixir",
+  "item.minecraft.splash_potion.effect.pure_elixir": "Splash Pure Elixir",
+  "item.minecraft.lingering_potion.effect.pure_elixir": "Lingering Pure Elixir",
+  "item.minecraft.tipped_arrow.effect.pure_elixir": "Arrow of Purity",
+  "message.purified_undead.purified": "Purified the blighted spirits and received 4 Pure Crystals."
 }

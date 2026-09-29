@@ -105,6 +105,7 @@ public final class PurifiedUndead {
         event.enqueueWork(() -> {
             ModNetwork.register();
             BrewingRecipeRegistry.addRecipe(new BlightElixirBrewingRecipe());
+            dev.purifiedundead.progress.PureElixirBrewing.register(BrewingRecipeRegistry::addRecipe);
         });
         LOGGER.info("Purified Undead environment ready: Curios={}, GeckoLib={}, Attributes={}, Placebo={}",
                 ModList.get().isLoaded("curios"), ModList.get().isLoaded("geckolib"),
@@ -117,6 +118,12 @@ public final class PurifiedUndead {
             event.accept(ModItems.FERIN_WARRIOR);
             event.accept(ModItems.BLIGHT_FRAGMENT);
             event.accept(ModItems.BLIGHTED_SPIRIT);
+            event.accept(ModItems.PURE_CRYSTAL.get());
+            event.accept(ModItems.PURIFIED_ARCSTEEL.get());
+            event.accept(ModItems.PURIFIED_ARCSTEEL_UPGRADE_SMITHING_TEMPLATE.get());
+            for(var potion:java.util.List.of(ModPotions.PURE_ELIXIR.get(),ModPotions.LONG_PURE_ELIXIR.get(),ModPotions.STRONG_PURE_ELIXIR.get()))
+                for(var bottle:java.util.List.of(net.minecraft.world.item.Items.POTION,net.minecraft.world.item.Items.SPLASH_POTION,net.minecraft.world.item.Items.LINGERING_POTION))
+                    event.accept(dev.purifiedundead.progress.PureElixirBrewing.stack(bottle,potion));
             event.accept(ModItems.GROTH_WARRIOR);
             event.accept(ModItems.JULIUS_WARRIOR);
             event.accept(ModItems.FORMER_ORNAMENT);

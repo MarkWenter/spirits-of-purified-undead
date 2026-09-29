@@ -2,11 +2,11 @@
 
 基于 **Minecraft 1.20.1 / Forge** 的《ENDER LILIES》非官方同人模组。与古老民族缔结契约，净化八组不死战士的污秽，获得加护并成长。
 
-**当前版本：v0.36.0（Minecraft 1.20.1 Forge）**。游戏内版本及发布文件为 `0.36.0-dev`。更新内容见 [v0.36.0 说明](docs/RELEASE_V036.md)。客户端与服务端必须同时更新。
+**当前版本：v0.37.0（Minecraft 1.20.1 Forge）**。游戏内版本及发布文件为 `0.37.0-dev`。更新内容见 [v0.37.0 说明](docs/RELEASE_V037.md)。客户端与服务端必须同时更新。
 
 ## 安装
 
-安装构建成品 `purified_undead-0.36.0-dev.jar`，放入游戏实例的 `mods` 文件夹。客户端和服务器均需安装。
+安装构建成品 `purified_undead-0.37.0-dev.jar`，放入游戏实例的 `mods` 文件夹。客户端和服务器均需安装。
 
 | 组件 | 已验证版本 | 说明 |
 | --- | --- | --- |
@@ -72,3 +72,5 @@ Linux/macOS 使用 `./gradlew build`。初次构建需要联网下载依赖。�
 已验证：Forge 使用 Patchouli 1.20.1-85-FORGE；NeoForge 使用 Patchouli 1.21.1-93-NEOFORGE。Patchouli 不包含在安装包内，使用联动时请为客户端和服务端自行安装对应版本。
 
 可选动态光源与光影兼容、性能边界见 [兼容说明](docs/WISP_COMPATIBILITY.md)。这些客户端扩展不属于强制前置。
+
+净化更新第一阶段详见 [独立记录](docs/purification-update/README.md)，白巫女手记暂不更新。

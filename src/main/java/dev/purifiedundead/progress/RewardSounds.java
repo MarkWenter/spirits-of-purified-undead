@@ -36,6 +36,8 @@ public final class RewardSounds {
         enqueue(player, level >= WhiteWitchTalisman.maxLevel() ? "talisman_max" : "ancient_contract");
     }
 
+    public static void onPurification(ServerPlayer player) { enqueue(player, "ancient_contract"); }
+
     private static void enqueue(ServerPlayer player, String sound) {
         ListTag queue = player.getPersistentData().getList(QUEUE, Tag.TAG_STRING);
         queue.add(StringTag.valueOf(sound));

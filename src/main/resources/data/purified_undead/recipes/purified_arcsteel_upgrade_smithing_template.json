@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "CTC",
+    "CDC",
+    "CCC"
+  ],
+  "key": {
+    "T": {
+      "item": "minecraft:netherite_upgrade_smithing_template"
+    },
+    "D": {
+      "item": "minecraft:diamond"
+    },
+    "C": {
+      "item": "purified_undead:pure_crystal"
+    }
+  },
+  "result": {
+    "item": "purified_undead:purified_arcsteel_upgrade_smithing_template",
+    "count": 1
+  }
+}

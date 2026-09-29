@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " D ",
+    "ICI",
+    " D "
+  ],
+  "key": {
+    "D": {
+      "item": "minecraft:diamond"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "C": {
+      "item": "purified_undead:pure_crystal"
+    }
+  },
+  "result": {
+    "item": "purified_undead:purified_arcsteel",
+    "count": 2
+  }
+}

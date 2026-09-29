@@ -28,6 +28,9 @@ public final class ModItems {
             "ancient_contract", AncientContractItem::new);
     public static final RegistryObject<Item> FERIN_WARRIOR = ITEMS.register(
             "ferin_warrior", FerinWarriorItem::new);
+    public static final RegistryObject<Item> PURE_CRYSTAL = ITEMS.register("pure_crystal", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> PURIFIED_ARCSTEEL = ITEMS.register("purified_arcsteel", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> PURIFIED_ARCSTEEL_UPGRADE_SMITHING_TEMPLATE = ITEMS.register("purified_arcsteel_upgrade_smithing_template", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> BLIGHT_FRAGMENT = ITEMS.register(
             "blight_fragment", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> BLIGHTED_SPIRIT = ITEMS.register(

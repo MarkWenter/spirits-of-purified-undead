@@ -37,7 +37,9 @@ public final class ContractWispClient {
             WISPS.values().forEach(ContractWispEntity::discard); WISPS.clear(); previousLevel=mc.level;ticks=0;
         }
         if(mc.level==null || mc.player==null || mc.isPaused())return;
-        if(ticks++%10==0) refresh(mc);
+        boolean lost = WISPS.values().stream().anyMatch(w -> w.isRemoved() || mc.level.getEntity(w.getId()) != w);
+        if(ticks++%10==0 || lost) refresh(mc);
+        for(ContractWispEntity w:WISPS.values()) if(!w.isRemoved()) w.advanceVisual();
         // Tiny bounded dust trail; particle settings and distance are respected.
         if(ticks%8==0 && mc.options.particles().get()!=ParticleStatus.MINIMAL) {
             for(ContractWispEntity w:WISPS.values()) if(!w.isRemoved() && w.distanceToSqr(mc.player)<256) {
@@ -50,7 +52,7 @@ public final class ContractWispClient {
         PriorityQueue<Candidate> nearest=new PriorityQueue<>(Comparator.comparingDouble(Candidate::distance).reversed());
         for(Player p:mc.level.players()) {
             double distance=p==mc.player ? -1 : p.distanceToSqr(mc.player);
-            if(distance>RANGE_SQR || !p.isAlive() || p.isSpectator() || p.isInvisible())continue;
+            if(distance>RANGE_SQR || !p.isAlive() || p.isSpectator())continue;
             int warriors=equipment(p);
             if(warriors<0)continue;
             nearest.add(new Candidate(p,warriors,distance));
@@ -61,10 +63,11 @@ public final class ContractWispClient {
         for(Candidate c:selected) {
             Player p=c.player();retained.add(p.getUUID());
             ContractWispEntity w=WISPS.get(p.getUUID());
-            if(w==null || w.isRemoved() || w.owner()!=p) {
+            if(w==null || w.isRemoved() || w.owner()!=p || mc.level.getEntity(w.getId())!=w) {
+                ContractWispEntity previous = w;
                 if(w!=null)w.discard();
                 w=new ContractWispEntity(ModEntities.CONTRACT_WISP.get(),mc.level);
-                w.setId(nextId++);w.attach(p);mc.level.putNonPlayerEntity(w.getId(),w);WISPS.put(p.getUUID(),w);
+                w.setId(nextId++);w.attach(p);if(previous!=null)w.restoreVisualFrom(previous);mc.level.putNonPlayerEntity(w.getId(),w);WISPS.put(p.getUUID(),w);
             }
             w.setWarriors(c.warriors());
             w.setTerrainLight(c.distance()<LIGHT_RANGE_SQR && sources++<MAX_LIGHTS);

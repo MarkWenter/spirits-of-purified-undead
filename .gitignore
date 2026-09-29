@@ -60,3 +60,6 @@ scripts/*
 
 !docs/RELEASE_V036.md
 !docs/WISP_COMPATIBILITY.md
+
+!docs/RELEASE_V037.md
+!docs/purification-update/

@@ -18,7 +18,7 @@ public final class ModEntities {
     public static final RegistryObject<EntityType<dev.purifiedundead.entity.ContractWispEntity>> CONTRACT_WISP =
             ENTITIES.register("contract_wisp", () -> EntityType.Builder.<dev.purifiedundead.entity.ContractWispEntity>of(
                     dev.purifiedundead.entity.ContractWispEntity::new, MobCategory.MISC)
-                    .sized(.2F,.2F).noSave().noSummon().fireImmune().clientTrackingRange(1).updateInterval(Integer.MAX_VALUE)
+                    .sized(0F,0F).noSave().noSummon().fireImmune().clientTrackingRange(1).updateInterval(Integer.MAX_VALUE)
                     .build(PurifiedUndead.MOD_ID+":contract_wisp"));
 
     public static final RegistryObject<EntityType<FerinEntity>> FERIN = ENTITIES.register("ferin",
