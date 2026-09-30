@@ -46,6 +46,46 @@ public final class FerinCombatEvents {
     private final Map<UUID, FerinPlayerState> playerStates = new HashMap<>();
     private final Map<UUID, UUID> ferinEntities = new HashMap<>();
 
+    // One short-lived observation per actual server melee attempt; no client packet can start a combo.
+    private final Map<UUID, MeleeObservation> meleeObservations = new HashMap<>();
+    private record MeleeObservation(ServerPlayer player, LivingEntity victim, Vec3 aim,
+                                    long tick, float health, float damage, net.minecraftforge.event.entity.player.AttackEntityEvent event) { }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void onMeleeAttempt(net.minecraftforge.event.entity.player.AttackEntityEvent event) {
+        if (!(event.getEntity() instanceof ServerPlayer player) || !FerinEquipment.read(player).contract()) return;
+        net.minecraft.world.entity.Entity attacked = event.getTarget();
+        net.minecraft.world.entity.Entity parent = attacked instanceof net.minecraftforge.entity.PartEntity<?> part
+                ? part.getParent() : attacked;
+        if (!(parent instanceof LivingEntity victim) || !isLegalTarget(player, victim)) return;
+        float strength = player.getAttackStrengthScale(0.5F);
+        float damage = (float)player.getAttributeValue(net.minecraft.world.entity.ai.attributes.Attributes.ATTACK_DAMAGE)
+                * (0.2F + strength * strength * 0.8F);
+        Vec3 eye = player.getEyePosition();
+        var box = attacked.getBoundingBox();
+        // Aim at the contacted body/part, not the remote centre of a giant boss.
+        Vec3 aim = box.clip(eye, eye.add(player.getLookAngle().scale(64))).orElseGet(() -> new Vec3(
+                net.minecraft.util.Mth.clamp(eye.x,box.minX,box.maxX),
+                net.minecraft.util.Mth.clamp(eye.y,box.minY,box.maxY),
+                net.minecraft.util.Mth.clamp(eye.z,box.minZ,box.maxZ)));
+        meleeObservations.put(player.getUUID(), new MeleeObservation(player,victim,aim,
+                player.serverLevel().getGameTime(),victim.getHealth(),damage,event));
+    }
+
+    private void finishMeleeObservations() {
+        for (MeleeObservation hit : meleeObservations.values()) {
+            // Bosses may implement hurt themselves and omit LivingHurt/LivingDamage.
+            // Require an observed health loss; blocked/immune/missed attacks cannot summon Ferin.
+            if (!hit.event.isCanceled() && hit.player.level()==hit.victim.level() && hit.player.isAlive()
+                    && hit.victim.getHealth()<hit.health && FerinEquipment.read(hit.player).contract()) {
+                var pending=pendingHits.get(new CombatHitKey(hit.victim.getUUID(),hit.player.getUUID()));
+                float damage=pending!=null && pending.gameTick==hit.tick ? pending.preDefenseDamage : hit.damage;
+                if(Float.isFinite(damage) && damage>0) triggerCombo(hit.player,hit.aim,new PendingHit(hit.player.getUUID(),hit.tick,damage));
+            }
+        }
+        meleeObservations.clear();
+    }
+
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onFerinBlightMeleeDamage(LivingHurtEvent event) {
         DamageSource source = event.getSource();
@@ -88,6 +128,12 @@ public final class FerinCombatEvents {
             return;
         }
 
+        MeleeObservation observed=meleeObservations.remove(player.getUUID());
+        Vec3 aim=observed!=null && observed.victim==event.getEntity() ? observed.aim : event.getEntity().position();
+        triggerCombo(player,aim,pending);
+    }
+
+    private void triggerCombo(ServerPlayer player, Vec3 aim, PendingHit pending) {
         FerinPlayerState runtime = stateFor(player);
         if (!runtime.attackTickGate.accept(pending.gameTick)) {
             FerinPlayerStateStorage.save(player, runtime);
@@ -98,7 +144,7 @@ public final class FerinCombatEvents {
                 ContractProgressService.ferinMaxStages(player), timings());
         if (result == FerinComboState.Result.STARTED || result == FerinComboState.Result.ADVANCED) {
             float criticalMultiplier = rollStageCritical(player).multiplier();
-            runtime.captureStageTowards(player.position(), event.getEntity().position(), player.getYRot(),
+            runtime.captureStageTowards(player.position(), aim, player.getYRot(),
                     pending.preDefenseDamage, criticalMultiplier);
             player.displayClientMessage(Component.translatable("message.purified_undead.ferin.stage",
                     runtime.combo.stage(), String.format(Locale.ROOT, "%.2f", pending.preDefenseDamage),
@@ -109,7 +155,7 @@ public final class FerinCombatEvents {
         if (result == FerinComboState.Result.LOCKED) {
             runtime.continuation.request(runtime.combo.stage(), runtime.combo.stageStartedAt());
             runtime.continuationDamage = pending.preDefenseDamage;
-            runtime.continuationTarget = event.getEntity().position();
+            runtime.continuationTarget = aim;
         }
         FerinPlayerStateStorage.save(player, runtime);
     }
@@ -142,6 +188,7 @@ public final class FerinCombatEvents {
             return;
         }
         long gameTick = event.getServer().overworld().getGameTime();
+        finishMeleeObservations();
         pendingHits.values().removeIf(pending -> pending.gameTick < gameTick);
         for (ServerPlayer player : event.getServer().getPlayerList().getPlayers()) {
             FerinPlayerState runtime = playerStates.get(player.getUUID());
@@ -203,6 +250,7 @@ public final class FerinCombatEvents {
             removeFerinEntity(player);
         }
         UUID playerId = event.getEntity().getUUID();
+        meleeObservations.remove(playerId);
         pendingHits.entrySet().removeIf(entry -> entry.getKey().attackerId().equals(playerId)
                 || entry.getKey().targetId().equals(playerId));
         FerinPlayerState runtime = playerStates.remove(event.getEntity().getUUID());
@@ -213,6 +261,7 @@ public final class FerinCombatEvents {
 
     @SubscribeEvent
     public void onServerStopped(ServerStoppedEvent event) {
+        meleeObservations.clear();
         pendingHits.clear();
         playerStates.clear();
         ferinEntities.clear();

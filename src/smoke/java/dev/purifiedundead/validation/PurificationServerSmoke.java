@@ -25,14 +25,14 @@ public final class PurificationServerSmoke {
     for(var potion:new ItemStack[]{base,extended,strong}) {
      var effects=PotionUtils.getMobEffects(potion);check(effects.size()==3,"3 effects");
      for(var effect:effects)check(effect.getDuration()==new int[]{1800,4800,900}[index]&&effect.getAmplifier()==(index==2?2:1),"duration/amplifier");
-     check(PotionUtils.getColor(potion)==ModPotions.PURE_ELIXIR_COLOR,"sky blue");
+     check(!potion.getOrCreateTag().contains("CustomPotionColor"),"canonical potion NBT");
      if(bottle==Items.POTION) {
       var splash=mix(server,potion,Items.GUNPOWDER);check(splash.is(Items.SPLASH_POTION),"splash conversion");
       var lingering=mix(server,splash,Items.DRAGON_BREATH);check(lingering.is(Items.LINGERING_POTION),"lingering conversion");
       check(PotionUtils.getMobEffects(lingering).get(0).getDuration()==effects.get(0).getDuration(),"conversion preserves base duration; vanilla impact/cloud applies scaling");
       var stacks=net.minecraft.core.NonNullList.withSize(5,ItemStack.EMPTY);stacks.set(0,splash);stacks.set(1,lingering);
       PureElixirColorEvents.brewed(new net.minecraftforge.event.brewing.PotionBrewEvent.Post(stacks));
-      check(PotionUtils.getColor(stacks.get(0))==ModPotions.PURE_ELIXIR_COLOR&&PotionUtils.getColor(stacks.get(1))==ModPotions.PURE_ELIXIR_COLOR,"converted bottle color");
+      check(PureElixirBrewing.isPure(stacks.get(0))&&PureElixirBrewing.isPure(stacks.get(1)),"converted potion identity");
      }
      index++;
     }
@@ -64,6 +64,7 @@ public final class PurificationServerSmoke {
    spirit.finishUsingItem(four,level,player);check(four.isEmpty()&&ContractProgressService.talismanLevel(player)==WhiteWitchTalisman.maxLevel()&&crystals(player)==8,"max consumes without overlevel");
    spirit.finishUsingItem(four,level,player);check(crystals(player)==8,"empty stack cannot duplicate");
    slot.setStackInSlot(0,ItemStack.EMPTY);four=new ItemStack(spirit,4);spirit.finishUsingItem(four,level,player);check(four.getCount()==4&&crystals(player)==8,"unequipped at finish rejected");
+   FerinLargeMobSmoke.run(server);
    System.out.println("PURIFICATION_SERVER_OK: 9 brewing recipes, 6 bottle conversions, colors, effects, 2 shaped recipes, upgrade/max/insufficient/no-contract/duplicate guards");
   } finally {server.execute(()->server.halt(false));}
  }

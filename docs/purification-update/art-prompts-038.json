@@ -1,0 +1,18 @@
+{
+  "mode": "built-in imagegen",
+  "normalization": "64x64 nearest-neighbor, alpha threshold (previously authorized)",
+  "prompts": [
+    [
+      "pure_crystal",
+      "Preserve flame-and-central-crystal silhouette and large pixel clusters. Recolor harsh white to light warm grey, greatly reduce saturated cyan/blue to restrained muted blue accents, add warm gold along some flame ribbons and crystal facets. Grey dominant with charcoal blue shadows and gold balancing temperature. No white glare."
+    ],
+    [
+      "purified_arcsteel",
+      "Preserve Minecraft iron ingot silhouette. Redesign surface into convincing grey iron facets, warm light grey top, darker bevel and lower side. Sparse muted blue mineral seams and warm gold inlay follow the angled metal faces and change shading at bevels. Avoid neon cyan grid and random disconnected lines."
+    ],
+    [
+      "purified_arcsteel_upgrade_smithing_template",
+      "Redesign as coarse vanilla Minecraft smithing template: chipped rough grey stone tablet, irregular asymmetric pixel wear, simple chunky recessed upgrade symbol with muted blue and warm gold fragments. Light grey not white, restrained blue. Avoid refined silver ornament, symmetry, filigree. Clearly low-resolution 16x16-style pixel material."
+    ]
+  ]
+}

@@ -17,6 +17,14 @@ public final class ClientModEvents {
     public static void clientSetup(net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent event) {
         event.enqueueWork(WispDynamicLights::install);
     }
+    @SubscribeEvent
+    public static void potionColors(net.minecraftforge.client.event.RegisterColorHandlersEvent.Item event) {
+        event.register((stack, layer) -> layer == 0
+                ? (dev.purifiedundead.progress.PureElixirBrewing.isPure(stack)
+                    ? (0xFF000000 | dev.purifiedundead.content.ModPotions.PURE_ELIXIR_COLOR) : net.minecraft.world.item.alchemy.PotionUtils.getColor(stack))
+                : -1, net.minecraft.world.item.Items.POTION, net.minecraft.world.item.Items.SPLASH_POTION,
+                net.minecraft.world.item.Items.LINGERING_POTION);
+    }
     private ClientModEvents() {
     }
 

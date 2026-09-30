@@ -61,6 +61,8 @@ def attributeMods = [
     "dev.shadowsoffire:Placebo:${placebo_version}"
 ]
 dependencies {
+    if (providers.gradleProperty('with_jei').orElse('false').get().toBoolean()) { runtimeOnly fg.deobf('maven.modrinth:jei:HcUiurg6') }
+
     if (providers.gradleProperty('with_wisp_shaders').orElse('false').get().toBoolean()) {
         runtimeOnly fg.deobf('maven.modrinth:oculus:iQ1SwGc3')
         runtimeOnly fg.deobf('maven.modrinth:embeddium:UTbfe5d1')

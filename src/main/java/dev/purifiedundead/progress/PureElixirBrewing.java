@@ -28,7 +28,8 @@ public final class PureElixirBrewing extends BrewingRecipe {
         return p==ModPotions.PURE_ELIXIR.get() || p==ModPotions.LONG_PURE_ELIXIR.get() || p==ModPotions.STRONG_PURE_ELIXIR.get();
     }
     public static void color(ItemStack stack) {
-        if(isPure(stack))stack.getOrCreateTag().putInt("CustomPotionColor",ModPotions.PURE_ELIXIR_COLOR);
+        // Canonical stacks have no cosmetic NBT; rendering derives the tint from potion identity.
+        if(isPure(stack) && stack.hasTag()) stack.getTag().remove("CustomPotionColor");
     }
     public static ItemStack stack(Item bottle, Potion potion) {
         ItemStack stack=PotionUtils.setPotion(new ItemStack(bottle),potion);color(stack);return stack;
