@@ -1,0 +1,5 @@
+{
+  "mode": "built-in imagegen",
+  "prompt": "Edit this Minecraft sword sprite, preserve its chunky 32x32-pixel style, grey iron blade, dark red cutting edge, three attached pale crystal teeth, dark grey crossguard, brown wrapped grip. Change PROPORTIONS: noticeably longer handle/grip (roughly 1.7 times original grip length), slightly longer blade (1.1 times). Make grip clearly separated from crossguard and pommel. Entire sword diagonal bottom-left grip to top-right blade tip. Clean solid connected silhouette, NO isolated pixels or hairlines, no small holes. Simple low resolution pixel art, limited palette. Full sword fills square transparent canvas with thin margin. No text, no background, no glow. Retain recognizable prior sword design; do not make new decorations.",
+  "normalization": "User-authorized crop, nearest-neighbor 32x32 sizing and binary alpha cleanup."
+}

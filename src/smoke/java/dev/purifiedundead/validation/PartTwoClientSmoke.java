@@ -38,11 +38,11 @@ public final class PartTwoClientSmoke {
  if(ticks==500){mc.setScreen(null);mc.options.setCameraType(net.minecraft.client.CameraType.THIRD_PERSON_FRONT);}
  if(ticks==540)net.minecraft.client.Screenshot.grab(mc.gameDirectory,"part2-armor.png",mc.getMainRenderTarget(),m->{});
  if(ticks==560){mc.options.setCameraType(net.minecraft.client.CameraType.FIRST_PERSON);mc.options.fov().set(70);}
- if(ticks==600)net.minecraft.client.Screenshot.grab(mc.gameDirectory,"sword040-fov70.png",mc.getMainRenderTarget(),m->{});
+ if(ticks==600)net.minecraft.client.Screenshot.grab(mc.gameDirectory,"sword041-fov70.png",mc.getMainRenderTarget(),m->{});
  if(ticks==620)mc.options.fov().set(90);
- if(ticks==660)net.minecraft.client.Screenshot.grab(mc.gameDirectory,"sword040-fov90.png",mc.getMainRenderTarget(),m->{});
+ if(ticks==660)net.minecraft.client.Screenshot.grab(mc.gameDirectory,"sword041-fov90.png",mc.getMainRenderTarget(),m->{});
  if(ticks==680){mc.options.fov().set(70);mc.options.mainHand().set(net.minecraft.world.entity.HumanoidArm.LEFT);}
- if(ticks==720)net.minecraft.client.Screenshot.grab(mc.gameDirectory,"sword040-left.png",mc.getMainRenderTarget(),m->{});
+ if(ticks==720)net.minecraft.client.Screenshot.grab(mc.gameDirectory,"sword041-left.png",mc.getMainRenderTarget(),m->{});
  if(ticks==740){mc.options.mainHand().set(net.minecraft.world.entity.HumanoidArm.RIGHT);System.out.println("PART2_CLIENT_OK");mc.stop();}
  }catch(Throwable ex){ex.printStackTrace();System.out.println("PART2_CLIENT_FAILED "+ex);mc.stop();}
  }
