@@ -18,7 +18,7 @@ public final class PartTwoClientSmoke {
  ticks++;
  if(ticks==30){mc.options.pauseOnLostFocus=false;mc.setScreen(null);mc.getSingleplayerServer().execute(()->{
  var p=mc.getSingleplayerServer().getPlayerList().getPlayer(mc.player.getUUID());
- p.setHealth(p.getMaxHealth());p.setAirSupply(300);p.setGameMode(net.minecraft.world.level.GameType.SURVIVAL);p.serverLevel().setDayTime(6000);p.serverLevel().setWeatherParameters(6000,0,false,false);p.teleportTo(p.serverLevel(),64.5,80,64.5,180,0);p.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.NIGHT_VISION,600,0));
+ p.setInvisible(false);p.removeAllEffects();p.setHealth(p.getMaxHealth());p.setAirSupply(300);p.setGameMode(net.minecraft.world.level.GameType.SURVIVAL);p.serverLevel().setDayTime(6000);p.serverLevel().setWeatherParameters(6000,0,false,false);p.teleportTo(p.serverLevel(),64.5,80,64.5,180,0);p.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.NIGHT_VISION,1200,0,false,false));
  p.getAbilities().mayfly=true;p.getAbilities().flying=true;p.onUpdateAbilities();
  p.setItemSlot(EquipmentSlot.HEAD,new ItemStack(ModItems.IMMACULATE_HELMET.get()));
  p.setItemSlot(EquipmentSlot.CHEST,new ItemStack(ModItems.IMMACULATE_CHESTPLATE.get()));
@@ -27,17 +27,23 @@ public final class PartTwoClientSmoke {
  Item[] items={ModItems.BLIGHTED_GUARDIAN.get(),ModItems.WHITE_LOTUS.get(),ModItems.SCARLET_LOTUS.get(),ModItems.PURE_FORBIDDEN_FRUIT.get(),ModItems.PURE_TOUCH.get(),ModItems.PURIFIED_ARCSTEEL.get(),ModItems.IMMACULATE_HELMET.get(),ModItems.IMMACULATE_CHESTPLATE.get(),ModItems.IMMACULATE_LEGGINGS.get(),ModItems.IMMACULATE_BOOTS.get()};
  for(int i=0;i<items.length;i++)p.getInventory().setItem(i,new ItemStack(items[i]));p.containerMenu.broadcastChanges();equipped=true;
  });}
- if(ticks==120){
+ if(ticks==400){
  for(int i=0;i<10;i++){var stack=mc.player.getInventory().getItem(i);if(stack.isEmpty()||mc.getItemRenderer().getModel(stack,mc.level,mc.player,0)==mc.getModelManager().getMissingModel())throw new IllegalStateException("missing item "+i+" stack="+stack);}
  var model=mc.getItemRenderer().getModel(mc.player.getInventory().getItem(0),mc.level,mc.player,0);float min=99,max=-99;
  for(var q:model.getQuads(null,null,net.minecraft.util.RandomSource.create(1))){int[] v=q.getVertices();for(int k=2;k<v.length;k+=v.length/4){float z=Float.intBitsToFloat(v[k]);min=Math.min(min,z);max=Math.max(max,z);}}
  if(max-min<.01)throw new IllegalStateException("sword lacks thickness");
- System.out.println("PART2_MODELS_OK sword depth="+(max-min));mc.setScreen(new InventoryScreen(mc.player));
+ System.out.println("PART2_MODELS_OK sword depth="+(max-min)+" quads="+model.getQuads(null,null,net.minecraft.util.RandomSource.create(1)).size());mc.setScreen(new InventoryScreen(mc.player));
  }
- if(ticks==150)net.minecraft.client.Screenshot.grab(mc.gameDirectory,"part2-inventory.png",mc.getMainRenderTarget(),m->{});
- if(ticks==170){mc.setScreen(null);mc.options.setCameraType(net.minecraft.client.CameraType.THIRD_PERSON_FRONT);}
- if(ticks==200)net.minecraft.client.Screenshot.grab(mc.gameDirectory,"part2-armor.png",mc.getMainRenderTarget(),m->{});
- if(ticks==220){System.out.println("PART2_CLIENT_OK");mc.stop();}
+ if(ticks==460)net.minecraft.client.Screenshot.grab(mc.gameDirectory,"part2-inventory.png",mc.getMainRenderTarget(),m->{});
+ if(ticks==500){mc.setScreen(null);mc.options.setCameraType(net.minecraft.client.CameraType.THIRD_PERSON_FRONT);}
+ if(ticks==540)net.minecraft.client.Screenshot.grab(mc.gameDirectory,"part2-armor.png",mc.getMainRenderTarget(),m->{});
+ if(ticks==560){mc.options.setCameraType(net.minecraft.client.CameraType.FIRST_PERSON);mc.options.fov().set(70);}
+ if(ticks==600)net.minecraft.client.Screenshot.grab(mc.gameDirectory,"sword040-fov70.png",mc.getMainRenderTarget(),m->{});
+ if(ticks==620)mc.options.fov().set(90);
+ if(ticks==660)net.minecraft.client.Screenshot.grab(mc.gameDirectory,"sword040-fov90.png",mc.getMainRenderTarget(),m->{});
+ if(ticks==680){mc.options.fov().set(70);mc.options.mainHand().set(net.minecraft.world.entity.HumanoidArm.LEFT);}
+ if(ticks==720)net.minecraft.client.Screenshot.grab(mc.gameDirectory,"sword040-left.png",mc.getMainRenderTarget(),m->{});
+ if(ticks==740){mc.options.mainHand().set(net.minecraft.world.entity.HumanoidArm.RIGHT);System.out.println("PART2_CLIENT_OK");mc.stop();}
  }catch(Throwable ex){ex.printStackTrace();System.out.println("PART2_CLIENT_FAILED "+ex);mc.stop();}
  }
 }

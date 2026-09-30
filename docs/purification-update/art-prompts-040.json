@@ -1,0 +1,26 @@
+{
+  "mode": "built-in imagegen",
+  "normalization": "Authorized crop/nearest-neighbor resize to 32x32 with binary alpha; original outputs retained locally.",
+  "items": [
+    {
+      "id": "immaculate_helmet",
+      "prompt": "Minecraft inventory item sprite redesign. True transparent background. Flat orthographic FRONT VIEW, perfectly straight-on, bilateral overall silhouette. NO isometric, no perspective, no visible top faces, no 3D rendering. Chunky crisp pixel art designed on a 32x32 pixel grid, enlarged with hard nearest-neighbor pixels, no antialias or tiny detail. Fill 85% of square canvas, centered. Charcoal netherite grey with a few connected warm gold and muted blue curved inlays, large clean areas. No text, no border, no shadow. A vanilla helmet front silhouette: rounded square cap with two cheek guards and clear dark eye opening; subtle knight visor. Like standard Minecraft helmet inventory sprite."
+    },
+    {
+      "id": "immaculate_chestplate",
+      "prompt": "Minecraft inventory item sprite redesign. True transparent background. Flat orthographic FRONT VIEW, perfectly straight-on, bilateral overall silhouette. NO isometric, no perspective, no visible top faces, no 3D rendering. Chunky crisp pixel art designed on a 32x32 pixel grid, enlarged with hard nearest-neighbor pixels, no antialias or tiny detail. Fill 85% of square canvas, centered. Charcoal netherite grey with a few connected warm gold and muted blue curved inlays, large clean areas. No text, no border, no shadow. A vanilla chestplate front silhouette: broad shoulders, symmetrical short sleeves, open collar at top center, tapered torso, flat bottom. Standard Minecraft chestplate item silhouette."
+    },
+    {
+      "id": "immaculate_leggings",
+      "prompt": "Minecraft inventory item sprite redesign. True transparent background. Flat orthographic FRONT VIEW, perfectly straight-on, bilateral overall silhouette. NO isometric, no perspective, no visible top faces, no 3D rendering. Chunky crisp pixel art designed on a 32x32 pixel grid, enlarged with hard nearest-neighbor pixels, no antialias or tiny detail. Fill 85% of square canvas, centered. Charcoal netherite grey with a few connected warm gold and muted blue curved inlays, large clean areas. No text, no border, no shadow. A vanilla leggings front silhouette: flat waistband and TWO separate long legs with clear central transparent gap, simple front view."
+    },
+    {
+      "id": "immaculate_boots",
+      "prompt": "Minecraft inventory item sprite redesign. True transparent background. Flat orthographic FRONT VIEW, perfectly straight-on, bilateral overall silhouette. NO isometric, no perspective, no visible top faces, no 3D rendering. Chunky crisp pixel art designed on a 32x32 pixel grid, enlarged with hard nearest-neighbor pixels, no antialias or tiny detail. Fill 85% of square canvas, centered. Charcoal netherite grey with a few connected warm gold and muted blue curved inlays, large clean areas. No text, no border, no shadow. A PAIR of vanilla boots, both viewed straight front, arranged side by side, short shafts and slightly wider toes, NO visible side or top faces. Standard flat Minecraft boots item icon."
+    },
+    {
+      "id": "blighted_guardian",
+      "prompt": "Redesign this sword into a VERY SIMPLE CHUNKY MINECRAFT 32x32 ITEM SPRITE, not detailed illustration. Transparent background. Entire sword diagonal from grip bottom-left to tip top-right, filling 92% of square. Broad solid iron-grey blade, dark muted iron-red single cutting edge, THREE large attached light-grey crystal teeth on middle spine, one thick attached charcoal ribbon across blade. Substantial easily readable angular black-grey crossguard with small grey-white center, distinct brown-grey grip 6 pixels long, large pommel. Blade about 4-5 pixels wide on 32x32 grid, proportions broad and sturdy, NOT rapier/needle. Minimal 10-14 color palette. Continuous solid connected silhouette; absolutely NO detached pixels, wisps, hairlines, little holes or delicate spikes. Large square pixel clusters, consistent 32x32 pixel grid enlarged without smoothing. Simplify reference drastically, keep only grey/red blade + crystal spine + dark angular guard concept. No text/shadow/glow. Must look like a game sprite, not a shrunken detailed drawing."
+    }
+  ]
+}

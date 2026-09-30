@@ -77,3 +77,5 @@ Forge 1.20.1 与 NeoForge 1.21.1 同步实现。白巫女手记暂不更新。
 净化弧钢采用更宽、连续扭转的金蓝纹路。所有新增图案由内置 imagegen 基于用户参考图制作。物品图为透明像素贴图，通常 64×64，长剑为 128×128 保留细长刃与水晶细节。剑使用 `minecraft:item/handheld`，由原版生成带侧面厚度的模型，客户端验证厚度为 1/16 方块。
 
 穿戴护甲有独立的 64×32 两层 UV 贴图，按用户此前许可用像素脚本精确对齐原版模型。原始生成图、规范化预览保存在本机 `art/purification-update/part2/`；两版最终资源保存在各自 `src/main/resources/assets/purified_undead/textures/`。提示词见 [art-prompts-039.json](art-prompts-039.json)。
+
+补充：0.40.0 已重制四件护甲物品图与剑，当前统一为 32×32；以上 64/128 尺寸描述保留为 0.39.0 历史记录。最新规格见 [ART_040.md](ART_040.md)。
