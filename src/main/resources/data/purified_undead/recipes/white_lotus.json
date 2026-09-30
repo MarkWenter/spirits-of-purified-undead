@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " C ",
+    "BLB",
+    " B "
+  ],
+  "key": {
+    "C": {
+      "item": "purified_undead:pure_crystal"
+    },
+    "B": {
+      "item": "minecraft:bone_meal"
+    },
+    "L": {
+      "item": "minecraft:lily_pad"
+    }
+  },
+  "result": {
+    "item": "purified_undead:white_lotus",
+    "count": 1
+  }
+}

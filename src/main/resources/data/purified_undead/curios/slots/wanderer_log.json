@@ -1,0 +1,8 @@
+{
+  "size": 0,
+  "order": 40,
+  "drop_rule": "ALWAYS_KEEP",
+  "validators": [
+    "curios:tag"
+  ]
+}

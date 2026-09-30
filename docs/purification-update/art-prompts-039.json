@@ -1,0 +1,80 @@
+{
+  "mode": "built-in imagegen",
+  "items": [
+    [
+      "purified_arcsteel",
+      [
+        0
+      ],
+      "Edit the ingot: preserve silhouette and metal planes. Replace fragmented colored bits with TWO LARGE CONTINUOUS TWISTING interwoven blue and warm gold veins, sweeping in S-curves across the ingot and wrapping its bevels. Wider flowing bands, no isolated flecks. Grey metal still dominant."
+    ],
+    [
+      "white_lotus",
+      [
+        1
+      ],
+      "Extract and pixel-art reinterpret ONLY the open WHITE LOTUS flower, layered pointed pale grey ivory petals with dark grey-green base. No bubble, scene, terrain or tree."
+    ],
+    [
+      "scarlet_lotus",
+      [
+        2
+      ],
+      "Extract and pixel-art reinterpret ONLY the open SCARLET LOTUS flower, layered pointed crimson red petals with coral tips and maroon base. No bubble, scene, terrain or tree."
+    ],
+    [
+      "pure_forbidden_fruit",
+      [
+        3
+      ],
+      "Keep vanilla Minecraft enchanted golden apple silhouette and chunky pixels. Wrap the apple in a clearly visible intertwined warm gold and muted blue ribbon, looping diagonally around fruit. Single inventory icon."
+    ],
+    [
+      "immaculate_helmet",
+      [
+        4,
+        8
+      ],
+      "Netherite helmet inventory icon, vanilla blocky shape with subtle knight faceplate slit inspired by second reference. Charcoal grey armor with flowing wide gold and muted blue interwoven veins, NOT white armor. No cape/person."
+    ],
+    [
+      "immaculate_chestplate",
+      [
+        5,
+        8
+      ],
+      "Netherite chestplate inventory icon, vanilla blocky shape with subtle knight breastplate facets inspired by second reference. Charcoal grey armor with flowing wide gold and muted blue interwoven veins. No cape/person."
+    ],
+    [
+      "immaculate_leggings",
+      [
+        6,
+        8
+      ],
+      "Netherite leggings inventory icon, vanilla blocky shape with subtle knight plate tassets inspired by second reference. Charcoal grey armor with flowing wide gold and muted blue interwoven veins. No cape/person."
+    ],
+    [
+      "immaculate_boots",
+      [
+        7,
+        8
+      ],
+      "Netherite boots inventory icon, vanilla blocky shape with subtle knight greaves inspired by second reference. Charcoal grey armor with flowing wide gold and muted blue interwoven veins. No cape/person."
+    ],
+    [
+      "pure_touch",
+      [
+        9
+      ],
+      "Pixel art inventory material icon showing Lily's left-facing profile bust, pale long hair, closed eye, gentle face exactly inspired by reference. Remove ALL text including Ender Lilies. Pale grey ivory cameo silhouette, faint dark backing circle optional, no letters."
+    ],
+    [
+      "blighted_guardian",
+      [
+        10
+      ],
+      "Interpret hand-drawn sword accurately in colored pixel art. Extremely long narrow iron-grey blade, dark iron-red cutting edge, grey-white crystal spikes on middle spine, black-grey smoky ribbons winding around blade, elaborate dark angular horned guard with pale center, wrapped grip muted brown iron pommel. Entire sword prominently fills square canvas diagonally blade top right grip bottom left, no white paper, no text. Clearly sword not spear."
+    ]
+  ],
+  "postprocessing": "User-authorized nearest-neighbor sizing, binary transparency, exact vanilla armor UV panel mapping. Item icons 64x64, sword 128x128, armor layers 64x32."
+}

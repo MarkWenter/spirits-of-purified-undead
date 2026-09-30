@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " C ",
+    "RLR",
+    " R "
+  ],
+  "key": {
+    "C": {
+      "item": "purified_undead:blighted_spirit"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    },
+    "L": {
+      "item": "minecraft:lily_pad"
+    }
+  },
+  "result": {
+    "item": "purified_undead:scarlet_lotus",
+    "count": 1
+  }
+}

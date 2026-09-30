@@ -11,7 +11,7 @@ public final class ClientSmoke {
  private static int titleTicks;
  @SubscribeEvent public static void tick(TickEvent.ClientTickEvent event) {
   if(event.phase != TickEvent.Phase.END || !Boolean.getBoolean("purified_undead.smoke"))return;
-  if(Boolean.getBoolean("purified_undead.jeiSmoke") || Boolean.getBoolean("purified_undead.diaryClientSmoke") || Boolean.getBoolean("purified_undead.wispSmoke"))return;
+  if(Boolean.getBoolean("purified_undead.partTwoSmoke") || Boolean.getBoolean("purified_undead.jeiSmoke") || Boolean.getBoolean("purified_undead.diaryClientSmoke") || Boolean.getBoolean("purified_undead.wispSmoke"))return;
   var mc=Minecraft.getInstance();
   if(mc.screen instanceof TitleScreen && mc.getOverlay() == null && ++titleTicks==40) {
    System.out.println("PURIFIED_UNDEAD_CLIENT_SMOKE_OK: title screen and resources ready");

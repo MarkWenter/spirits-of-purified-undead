@@ -1,0 +1,22 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:magic",
+    "minecraft:indirect_magic",
+    "minecraft:wither",
+    "minecraft:dragon_breath",
+    {
+      "id": "#forge:is_magic",
+      "required": false
+    },
+    {
+      "id": "#c:is_magic",
+      "required": false
+    },
+    {
+      "id": "#neoforge:is_magic",
+      "required": false
+    },
+    "purified_undead:eleine_magic_orb"
+  ]
+}

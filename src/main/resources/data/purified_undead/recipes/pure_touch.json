@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SCS",
+    "BNB",
+    "SCS"
+  ],
+  "key": {
+    "S": {
+      "item": "purified_undead:purified_arcsteel"
+    },
+    "C": {
+      "item": "purified_undead:pure_crystal"
+    },
+    "B": {
+      "item": "purified_undead:blighted_spirit"
+    },
+    "N": {
+      "item": "minecraft:nether_star"
+    }
+  },
+  "result": {
+    "item": "purified_undead:pure_touch",
+    "count": 1
+  }
+}

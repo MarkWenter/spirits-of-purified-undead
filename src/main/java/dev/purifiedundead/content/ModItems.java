@@ -73,6 +73,16 @@ public final class ModItems {
     public static final RegistryObject<Item> WHITE_PRIESTESS_EARRINGS = ITEMS.register("white_priestess_earrings",
             () -> new dev.purifiedundead.content.relic.DesignedRelicItem(dev.purifiedundead.content.relic.RelicKind.WHITE_PRIESTESS_EARRINGS));
 
+    public static final RegistryObject<Item> WHITE_LOTUS = ITEMS.register("white_lotus", () -> new dev.purifiedundead.purification.PurificationConsumable(dev.purifiedundead.purification.PurificationConsumable.Kind.WHITE));
+    public static final RegistryObject<Item> SCARLET_LOTUS = ITEMS.register("scarlet_lotus", () -> new dev.purifiedundead.purification.PurificationConsumable(dev.purifiedundead.purification.PurificationConsumable.Kind.SCARLET));
+    public static final RegistryObject<Item> PURE_FORBIDDEN_FRUIT = ITEMS.register("pure_forbidden_fruit", () -> new dev.purifiedundead.purification.PurificationConsumable(dev.purifiedundead.purification.PurificationConsumable.Kind.FRUIT));
+    public static final RegistryObject<Item> IMMACULATE_HELMET = ITEMS.register("immaculate_helmet", () -> new dev.purifiedundead.purification.ImmaculateArmor(net.minecraft.world.item.ArmorItem.Type.HELMET));
+    public static final RegistryObject<Item> IMMACULATE_CHESTPLATE = ITEMS.register("immaculate_chestplate", () -> new dev.purifiedundead.purification.ImmaculateArmor(net.minecraft.world.item.ArmorItem.Type.CHESTPLATE));
+    public static final RegistryObject<Item> IMMACULATE_LEGGINGS = ITEMS.register("immaculate_leggings", () -> new dev.purifiedundead.purification.ImmaculateArmor(net.minecraft.world.item.ArmorItem.Type.LEGGINGS));
+    public static final RegistryObject<Item> IMMACULATE_BOOTS = ITEMS.register("immaculate_boots", () -> new dev.purifiedundead.purification.ImmaculateArmor(net.minecraft.world.item.ArmorItem.Type.BOOTS));
+    public static final RegistryObject<Item> PURE_TOUCH = ITEMS.register("pure_touch", dev.purifiedundead.purification.PureTouchItem::new);
+    public static final RegistryObject<Item> BLIGHTED_GUARDIAN = ITEMS.register("blighted_guardian", dev.purifiedundead.purification.BlightedGuardianItem::new);
+
     private ModItems() {
     }
 

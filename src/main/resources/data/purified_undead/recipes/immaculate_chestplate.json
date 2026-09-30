@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:smithing_transform",
+  "template": {
+    "item": "purified_undead:purified_arcsteel_upgrade_smithing_template"
+  },
+  "base": {
+    "item": "minecraft:netherite_chestplate"
+  },
+  "addition": {
+    "item": "purified_undead:purified_arcsteel"
+  },
+  "result": {
+    "item": "purified_undead:immaculate_chestplate"
+  }
+}

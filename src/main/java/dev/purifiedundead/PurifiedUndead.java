@@ -119,6 +119,16 @@ public final class PurifiedUndead {
             event.accept(ModItems.BLIGHT_FRAGMENT);
             event.accept(ModItems.BLIGHTED_SPIRIT);
             event.accept(ModItems.PURE_CRYSTAL.get());
+            event.accept(ModItems.WHITE_LOTUS.get());
+            event.accept(ModItems.SCARLET_LOTUS.get());
+            event.accept(ModItems.PURE_FORBIDDEN_FRUIT.get());
+            event.accept(ModItems.IMMACULATE_HELMET.get());
+            event.accept(ModItems.IMMACULATE_CHESTPLATE.get());
+            event.accept(ModItems.IMMACULATE_LEGGINGS.get());
+            event.accept(ModItems.IMMACULATE_BOOTS.get());
+            event.accept(ModItems.PURE_TOUCH.get());
+            event.accept(ModItems.BLIGHTED_GUARDIAN.get());
+
             event.accept(ModItems.PURIFIED_ARCSTEEL.get());
             event.accept(ModItems.PURIFIED_ARCSTEEL_UPGRADE_SMITHING_TEMPLATE.get());
             for(var potion:java.util.List.of(ModPotions.PURE_ELIXIR.get(),ModPotions.LONG_PURE_ELIXIR.get(),ModPotions.STRONG_PURE_ELIXIR.get()))
