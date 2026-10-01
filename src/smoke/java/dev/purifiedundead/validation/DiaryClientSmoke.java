@@ -28,7 +28,7 @@ public final class DiaryClientSmoke {
     Object contents=book.getClass().getMethod("getContents").invoke(book);
     if((boolean)contents.getClass().getMethod("isErrored").invoke(contents))throw new IllegalStateException("book content error: "+contents.getClass().getMethod("getException").invoke(contents));
     Map<?,?> entries=(Map<?,?>)contents.getClass().getField("entries").get(contents);
-    if(entries.size()!=25)throw new IllegalStateException("entry count="+entries.size());
+    if(entries.size()!=39)throw new IllegalStateException("entry count="+entries.size());
     var stack=(net.minecraft.world.item.ItemStack)book.getClass().getMethod("getBookItem").invoke(book);
     if(!stack.getHoverName().getString().equals("白巫女手记"))throw new IllegalStateException("book name");
     if(mc.getItemRenderer().getModel(stack,mc.level,mc.player,0)==mc.getModelManager().getMissingModel())throw new IllegalStateException("missing item model");
@@ -47,7 +47,7 @@ public final class DiaryClientSmoke {
    int first=(int)pair[1]*2;
    for(int i=first;i<Math.min(first+2,pages.size());i++)checkPage(pages.get(i));
    String name=entry.getClass().getMethod("getId").invoke(entry).toString().replace(':','-').replace('/','-');
-   net.minecraft.client.Screenshot.grab(mc.gameDirectory,"diary-v035-"+name+"-"+pair[1]+".png",mc.getMainRenderTarget(),m->{});
+   net.minecraft.client.Screenshot.grab(mc.gameDirectory,"diary-v042-"+name+"-"+pair[1]+".png",mc.getMainRenderTarget(),m->{});
    if(++step==spreads.size()){System.out.println("PURIFIED_UNDEAD_DIARY_CLIENT_OK: all spreads rendered, text bounds checked");mc.stop();return;}
    show(mc);
   }catch(Exception e){e.printStackTrace();System.out.println("DIARY_CLIENT_FAILED: "+e);mc.stop();}

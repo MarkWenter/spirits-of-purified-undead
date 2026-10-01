@@ -1,0 +1,31 @@
+{
+  "name": "纯净禁果",
+  "icon": "purified_undead:pure_forbidden_fruit",
+  "category": "purified_undead:purified_items",
+  "sortnum": 36,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "text": "将净化弧钢融合进附魔金苹果后获得的禁果，你隐隐能感觉到，这份美味一生中只能品尝一次。",
+      "item": "purified_undead:pure_forbidden_fruit",
+      "title": "纯净禁果",
+      "link_recipe": false
+    },
+    {
+      "type": "patchouli:text",
+      "text": "吃下后，你将获得额外的白巫女饰品槽位，以及放置你旅行记录的专属槽位。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(7)许久之后，少女会对另一位女孩叮嘱：“你或许能够抵抗污秽……但不要变成我这样……”"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "食用时必须佩戴古老民族之契。获得的两个槽位独立保留，移除契约或死亡不会失去。"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "purified_undead:pure_forbidden_fruit"
+    }
+  ]
+}

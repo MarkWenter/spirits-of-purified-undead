@@ -1,0 +1,31 @@
+{
+  "name": "秽鬼之守护",
+  "icon": "purified_undead:blighted_guardian",
+  "category": "purified_undead:purified_items",
+  "sortnum": 42,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "text": "将纯净触碰中蕴藏的意志灌注到下界合金中铸成的利剑，持有时能感觉到温暖的搏动。",
+      "item": "purified_undead:blighted_guardian",
+      "title": "秽鬼之守护",
+      "link_recipe": false
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(7)其实所谓净化，只是污秽的转移。即使曾经洁白的少女也会因此被污秽染黑。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(7)但在崩坏的世界中，少女说道："
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(7)“谢谢你一直陪着我。”"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "purified_undead:blighted_guardian"
+    }
+  ]
+}

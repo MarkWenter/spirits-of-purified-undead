@@ -1,0 +1,27 @@
+{
+  "name": "无垢头甲",
+  "icon": "purified_undead:immaculate_helmet",
+  "category": "purified_undead:purified_items",
+  "sortnum": 37,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "text": "将下界合金头盔、净化弧钢锻造模板、净化弧钢锻造获得。",
+      "item": "purified_undead:immaculate_helmet",
+      "title": "无垢头甲",
+      "link_recipe": false
+    },
+    {
+      "type": "patchouli:text",
+      "text": "装备时，你对弹射物的抵抗力增强。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "灌注了净化的力量后，原本的甲胄产生了变化……"
+    },
+    {
+      "type": "patchouli:smithing",
+      "recipe": "purified_undead:immaculate_helmet"
+    }
+  ]
+}

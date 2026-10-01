@@ -175,5 +175,8 @@
   "item.purified_undead.immaculate_helmet.desc": "受到的弹射物伤害减少 35%。",
   "item.purified_undead.immaculate_chestplate.desc": "受到的魔法伤害减少 70%。",
   "item.purified_undead.immaculate_leggings.desc": "受到的燃烧伤害减少 35%。",
-  "item.purified_undead.immaculate_boots.desc": "受到的冻结伤害减少 35%。"
+  "item.purified_undead.immaculate_boots.desc": "受到的冻结伤害减少 35%。",
+  "item.purified_undead.lily_diary": "莉莉手记",
+  "item.purified_undead.lily_diary.lore": "在众人熟知的未来中，她是来自异国的旅行巫女",
+  "item.purified_undead.lily_diary.desc": "佩戴时记录击杀的亡灵种类，每种增加3%暴击率与0.5幸运值。"
 }

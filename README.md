@@ -2,11 +2,11 @@
 
 基于 **Minecraft 1.20.1 / Forge** 的《ENDER LILIES》非官方同人模组。与古老民族缔结契约，净化八组不死战士的污秽，获得加护并成长。
 
-**当前版本：v0.41.0（Minecraft 1.20.1 Forge）**。游戏内版本及发布文件为 `0.41.0-dev`。更新内容见 [v0.41.0 说明](docs/RELEASE_V041.md)。客户端与服务端必须同时更新。
+**当前版本：v0.42.0（Minecraft 1.20.1 Forge）**。游戏内版本及发布文件为 `0.42.0-dev`。更新内容见 [v0.42.0 说明](docs/RELEASE_V042.md)。客户端与服务端必须同时更新。
 
 ## 安装
 
-安装构建成品 `purified_undead-0.41.0-dev.jar`，放入游戏实例的 `mods` 文件夹。客户端和服务器均需安装。
+安装构建成品 `purified_undead-0.42.0-dev.jar`，放入游戏实例的 `mods` 文件夹。客户端和服务器均需安装。
 
 | 组件 | 已验证版本 | 说明 |
 | --- | --- | --- |
@@ -14,6 +14,7 @@
 | Forge | 47.4.23 | 模组加载器 |
 | Java | 17 | 构建与测试环境 |
 | Curios API | 5.14.1+1.20.1 | 必需，提供饰品栏 |
+| Patchouli | 1.20.1-85-FORGE | 必需，提供白巫女手记 |
 | GeckoLib | 4.8.4 | 必需 |
 | Apothic Attributes | 1.20.1-1.3.7 | 建议安装，支持完整暴击属性效果 |
 | Placebo | 1.20.1-8.6.3 | Apothic Attributes 前置 |
@@ -65,12 +66,14 @@ Linux/macOS 使用 `./gradlew build`。初次构建需要联网下载依赖。�
 
 详见 [本次更新说明](docs/RELEASE_V032.md)、[初版发布说明](docs/RELEASE_V031.md) 与 [素材及许可说明](NOTICE.md)。
 
-## 白巫女手记（可选联动）
+## 白巫女手记与莉莉手记
 
-安装对应游戏版本的 Patchouli 后，可用 **一个污秽碎片 + 一本书** 无序合成「白巫女手记」。不安装 Patchouli 不影响原有玩法。手记包含四章、25 个条目、47 页，使用旧日记外观与页角血迹装饰。
+Patchouli 现为必要前置。玩家首次登录获赠一本白巫女手记，也可用 **一个污秽碎片 + 一本书** 无序合成。手记包含 5 个目录、39 个条目、93 页，使用旧日记外观与页角血迹装饰。
 
-已验证：Forge 使用 Patchouli 1.20.1-85-FORGE；NeoForge 使用 Patchouli 1.21.1-93-NEOFORGE。Patchouli 不包含在安装包内，使用联动时请为客户端和服务端自行安装对应版本。
+白巫女手记与任意纯净灵药可在锻造台制成莉莉手记，模板栏留空。莉莉手记是流浪日志槽饰品，佩戴时累计击杀的不同亡灵类型，每种增加 3% 暴击率与 0.5 幸运；不可翻阅。
+
+Forge 使用 Patchouli 1.20.1-85-FORGE；NeoForge 使用 Patchouli 1.21.1-93-NEOFORGE。本地安装依赖包包含对应 JAR；只下载 GitHub 模组成品时请另行安装。
 
 可选动态光源与光影兼容、性能边界见 [兼容说明](docs/WISP_COMPATIBILITY.md)。这些客户端扩展不属于强制前置。
 
-净化更新第一阶段详见 [独立记录](docs/purification-update/README.md)，白巫女手记暂不更新。
+净化更新详见 [独立记录](docs/purification-update/README.md) 与 [第三部分](docs/purification-update/PART_3.md)。

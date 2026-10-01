@@ -1,0 +1,23 @@
+{
+  "name": "洁白莲花",
+  "icon": "purified_undead:white_lotus",
+  "category": "purified_undead:purified_items",
+  "sortnum": 34,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "text": "将纯净结晶中的力量灌注进睡莲中的产物，长按使用时，可恢复50%的生命值。",
+      "item": "purified_undead:white_lotus",
+      "title": "洁白莲花",
+      "link_recipe": false
+    },
+    {
+      "type": "patchouli:text",
+      "text": "在遥远的边陲之国，莲花会绽放在死亡之雨中。"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "purified_undead:white_lotus"
+    }
+  ]
+}

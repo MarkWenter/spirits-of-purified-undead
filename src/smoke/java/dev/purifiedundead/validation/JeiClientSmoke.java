@@ -38,11 +38,23 @@ public final class JeiClientSmoke {
      ours.add(recipe);
     }
     if(ours.size()!=15)throw new IllegalStateException("expected 15 unique recipes, got "+ours.size());
+    if(Boolean.getBoolean("purified_undead.lilyJei")) {
+     type=Class.forName("mezz.jei.api.constants.RecipeTypes").getField("SMITHING").get(null);
+     ours.clear();
+     for(Object candidate:((java.util.stream.Stream<?>)call(call(manager,"createRecipeLookup",type),"get")).toList()) {
+      Object value=candidate;
+      if(value instanceof dev.purifiedundead.purification.LilySmithingRecipe)ours.add(candidate);
+     }
+     if(ours.size()!=1)throw new IllegalStateException("Lily JEI smithing recipe count="+ours.size());
+     var lily=new ItemStack(dev.purifiedundead.content.ModItems.LILY_DIARY.get());
+     if(mc.getItemRenderer().getModel(lily,mc.level,mc.player,0)==mc.getModelManager().getMissingModel())throw new IllegalStateException("Lily model missing");
+     System.out.println("LILY_JEI_OK: one smithing recipe; Lily model loaded");
+    }
     checked=true;mc.setScreen(null);
     call(call(runtime,"getRecipesGui"),"showRecipes",call(manager,"getRecipeCategory",type),ours,java.util.List.of());
     System.out.println("JEI_PURE_ELIXIR_OK: 15 unique recipes, all inputs match actual brewing, all outputs sky-blue");
    } else if(++after==60) {
-    net.minecraft.client.Screenshot.grab(mc.gameDirectory,"jei-pure-elixir-038.png",mc.getMainRenderTarget(),m->{});mc.stop();
+    net.minecraft.client.Screenshot.grab(mc.gameDirectory,Boolean.getBoolean("purified_undead.lilyJei")?"jei-lily-042.png":"jei-pure-elixir-038.png",mc.getMainRenderTarget(),m->{});mc.stop();
    }
   } catch(Throwable e){e.printStackTrace();System.out.println("JEI_SMOKE_FAILED");mc.stop();}
  }

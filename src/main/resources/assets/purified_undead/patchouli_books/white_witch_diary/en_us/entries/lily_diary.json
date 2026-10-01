@@ -1,0 +1,23 @@
+{
+  "name": "莉莉手记",
+  "icon": "purified_undead:lily_diary",
+  "category": "purified_undead:purified_items",
+  "sortnum": 43,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "text": "将白巫女手记与纯净灵药锻造后获得的专属手记，佩戴后，每击杀一种亡灵生物，装备者的暴击率+3%，幸运值+0.5点。",
+      "item": "purified_undead:lily_diary",
+      "title": "莉莉手记",
+      "link_recipe": false
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(7)旅行后，少女开始帮助活人。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "锻造模板栏留空；中间放白巫女手记，右侧放任意瓶型、任意强化等级的纯净灵药。"
+    }
+  ]
+}

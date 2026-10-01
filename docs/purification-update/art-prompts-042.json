@@ -1,0 +1,8 @@
+{
+  "version": "0.42.0",
+  "tool": "imagegen",
+  "asset": "lily_diary",
+  "prompt": "Edit this Minecraft old diary inventory sprite. Preserve exact book silhouette, clasp, fleur-de-lis central emblem and aged paper design. Recolor burgundy leather to muted slate blue with warm grey edges; replace blood markings with a few flowing pale grey, soft blue and warm gold crystalline veins like purified crystal. Clearly an old diary, not a jewel. Crisp chunky pixel art, transparent background, no text. 64x64 sprite look enlarged, no tiny details.",
+  "reference": "white_witch_diary.png",
+  "normalization": "64x64 nearest neighbor; alpha threshold 128; same sprite in both versions"
+}

@@ -1,0 +1,19 @@
+{
+  "name": "纯净触碰",
+  "icon": "purified_undead:pure_touch",
+  "category": "purified_undead:purified_items",
+  "sortnum": 41,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "text": "以污秽与净化交织而成，少女的意志陪伴她和他们走过了边陲之国的旅途。",
+      "item": "purified_undead:pure_touch",
+      "title": "纯净触碰",
+      "link_recipe": false
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "purified_undead:pure_touch"
+    }
+  ]
+}

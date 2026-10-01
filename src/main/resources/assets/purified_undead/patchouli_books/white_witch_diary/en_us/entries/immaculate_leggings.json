@@ -1,0 +1,27 @@
+{
+  "name": "无垢腿甲",
+  "icon": "purified_undead:immaculate_leggings",
+  "category": "purified_undead:purified_items",
+  "sortnum": 39,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "text": "将下界合金护腿、净化弧钢锻造模板、净化弧钢锻造获得。",
+      "item": "purified_undead:immaculate_leggings",
+      "title": "无垢腿甲",
+      "link_recipe": false
+    },
+    {
+      "type": "patchouli:text",
+      "text": "装备时，你对火焰的抵抗力增强。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "灌注了净化的力量后，原本的甲胄产生了变化……"
+    },
+    {
+      "type": "patchouli:smithing",
+      "recipe": "purified_undead:immaculate_leggings"
+    }
+  ]
+}

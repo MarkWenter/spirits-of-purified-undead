@@ -1,0 +1,23 @@
+{
+  "name": "猩红莲花",
+  "icon": "purified_undead:scarlet_lotus",
+  "category": "purified_undead:purified_items",
+  "sortnum": 35,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "text": "将怨念污秽中的残渣灌注进睡莲中的产物，长按使用时，可使玩家获得50s力量4效果。",
+      "item": "purified_undead:scarlet_lotus",
+      "title": "猩红莲花",
+      "link_recipe": false
+    },
+    {
+      "type": "patchouli:text",
+      "text": "在遥远的边陲之国，红色的莲花来自于白巫女体内淤积的污秽。"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "purified_undead:scarlet_lotus"
+    }
+  ]
+}

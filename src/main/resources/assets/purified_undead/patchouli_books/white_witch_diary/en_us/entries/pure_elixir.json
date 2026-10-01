@@ -1,0 +1,19 @@
+{
+  "name": "纯净灵药",
+  "icon": "minecraft:potion{Potion:\"purified_undead:pure_elixir\"}",
+  "category": "purified_undead:purified_items",
+  "sortnum": 32,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "text": "使用纯净结晶炼制的药水，饮下后会提供1:30的抗性提升2、力量2和伤害吸收2的效果。可以通过各类物品强化效果。",
+      "item": "minecraft:potion{Potion:\"purified_undead:pure_elixir\"}",
+      "title": "纯净灵药",
+      "link_recipe": false
+    },
+    {
+      "type": "patchouli:text",
+      "text": "粗制的药水加入纯净结晶酿造。红石将时间延长至4分钟；萤石粉将三个效果提升至III级、持续45秒。火药与龙息可转换瓶型。"
+    }
+  ]
+}

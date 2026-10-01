@@ -175,5 +175,8 @@
   "item.purified_undead.immaculate_helmet.desc": "Reduces projectile damage by 35%.",
   "item.purified_undead.immaculate_chestplate.desc": "Reduces magic damage by 70%.",
   "item.purified_undead.immaculate_leggings.desc": "Reduces fire damage by 35%.",
-  "item.purified_undead.immaculate_boots.desc": "Reduces freezing damage by 35%."
+  "item.purified_undead.immaculate_boots.desc": "Reduces freezing damage by 35%.",
+  "item.purified_undead.lily_diary": "Lily's Diary",
+  "item.purified_undead.lily_diary.lore": "In the future known to all, she is a traveling witch from a foreign land.",
+  "item.purified_undead.lily_diary.desc": "While worn, each distinct undead type slain grants +3% critical chance and +0.5 luck."
 }

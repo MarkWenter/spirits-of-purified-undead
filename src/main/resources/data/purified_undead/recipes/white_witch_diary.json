@@ -8,11 +8,5 @@
       "item": "minecraft:book"
     }
   ],
-  "conditions": [
-    {
-      "type": "forge:mod_loaded",
-      "modid": "patchouli"
-    }
-  ],
   "book": "purified_undead:white_witch_diary"
 }

@@ -66,6 +66,7 @@ public final class PurificationServerSmoke {
    slot.setStackInSlot(0,ItemStack.EMPTY);four=new ItemStack(spirit,4);spirit.finishUsingItem(four,level,player);check(four.getCount()==4&&crystals(player)==8,"unequipped at finish rejected");
    FerinLargeMobSmoke.run(server);
    PurificationPartTwoSmoke.run(server);
+   LilyDiarySmoke.run(server);
    System.out.println("PURIFICATION_SERVER_OK: 9 brewing recipes, 6 bottle conversions, colors, effects, 2 shaped recipes, upgrade/max/insufficient/no-contract/duplicate guards");
   } finally {server.execute(()->server.halt(false));}
  }

@@ -128,6 +128,7 @@ public final class PurifiedUndead {
             event.accept(ModItems.IMMACULATE_BOOTS.get());
             event.accept(ModItems.PURE_TOUCH.get());
             event.accept(ModItems.BLIGHTED_GUARDIAN.get());
+            event.accept(ModItems.LILY_DIARY.get());
 
             event.accept(ModItems.PURIFIED_ARCSTEEL.get());
             event.accept(ModItems.PURIFIED_ARCSTEEL_UPGRADE_SMITHING_TEMPLATE.get());

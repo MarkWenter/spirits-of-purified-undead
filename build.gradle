@@ -76,10 +76,8 @@ dependencies {
         runtimeOnly fg.deobf('maven.modrinth:ryoamiclights:c2Th4NIB')
         runtimeOnly fg.deobf('maven.modrinth:obsidianui:3UXTHiK6')
     }
-    // Development-only optional integration; never bundled or a mandatory dependency.
-    if (providers.gradleProperty('with_patchouli').orElse('false').get().toBoolean()) {
-        runtimeOnly fg.deobf('vazkii.patchouli:Patchouli:1.20.1-85-FORGE')
-    }
+    runtimeOnly fg.deobf('vazkii.patchouli:Patchouli:1.20.1-85-FORGE')
+    installedMods 'vazkii.patchouli:Patchouli:1.20.1-85-FORGE'
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
     compileOnly fg.deobf("${curiosMod}:api")
     runtimeOnly fg.deobf(curiosMod)

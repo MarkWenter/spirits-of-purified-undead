@@ -1,0 +1,19 @@
+{
+  "name": "净化弧钢锻造模板",
+  "icon": "purified_undead:purified_arcsteel_upgrade_smithing_template",
+  "category": "purified_undead:purified_items",
+  "sortnum": 33,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "text": "专用于净化弧钢的锻造模板，比起一般的锻造模板显得更加破败。",
+      "item": "purified_undead:purified_arcsteel_upgrade_smithing_template",
+      "title": "净化弧钢锻造模板",
+      "link_recipe": false
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "purified_undead:purified_arcsteel_upgrade_smithing_template"
+    }
+  ]
+}

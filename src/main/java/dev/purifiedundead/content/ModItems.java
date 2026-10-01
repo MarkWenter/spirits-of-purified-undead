@@ -83,10 +83,13 @@ public final class ModItems {
     public static final RegistryObject<Item> PURE_TOUCH = ITEMS.register("pure_touch", dev.purifiedundead.purification.PureTouchItem::new);
     public static final RegistryObject<Item> BLIGHTED_GUARDIAN = ITEMS.register("blighted_guardian", dev.purifiedundead.purification.BlightedGuardianItem::new);
 
+    public static final RegistryObject<Item> LILY_DIARY = ITEMS.register("lily_diary", dev.purifiedundead.purification.LilyDiaryItem::new);
+
     private ModItems() {
     }
 
     public static void register(IEventBus modBus) {
+        dev.purifiedundead.purification.LilySmithingRecipe.register(modBus);
         ITEMS.register(modBus);
     }
 }

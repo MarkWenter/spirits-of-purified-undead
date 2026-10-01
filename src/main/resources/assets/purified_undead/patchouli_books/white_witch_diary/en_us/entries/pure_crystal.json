@@ -1,0 +1,23 @@
+{
+  "name": "纯净结晶",
+  "icon": "purified_undead:pure_crystal",
+  "category": "purified_undead:contract_path",
+  "sortnum": 30,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "text": "净化怨念污秽后剩余的纯净物质，散发出如静谧坟墓般的安心感。",
+      "item": "purified_undead:pure_crystal",
+      "title": "纯净结晶",
+      "link_recipe": false
+    },
+    {
+      "type": "patchouli:text",
+      "text": "使用纯净结晶，可以合成一些强力的物品。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "佩戴古老民族之契，手持四个怨念污秽完成净化，可获得四个纯净结晶；护身符满级后仍可继续净化。"
+    }
+  ]
+}
