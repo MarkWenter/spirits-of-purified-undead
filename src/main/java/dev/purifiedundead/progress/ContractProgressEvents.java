@@ -49,7 +49,16 @@ public final class ContractProgressEvents {
         if (PurifiedUndeadConfig.get(PurifiedUndeadConfig.VALUES.contractAcquisitionEnabled)
                 && event.getEntity() instanceof ServerPlayer player
                 && player.hasEffect(dev.purifiedundead.content.ModEffects.BLIGHTED_TRANSFORMATION.get())) {
+            if (HardcoreBlightRescue.rescue(player)) {
+                event.setCanceled(true);
+                return;
+            }
             player.getPersistentData().putBoolean(BLIGHTED_DEATH_KEY, true);
         }
     }
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void onTotemRescue(net.minecraftforge.event.entity.living.LivingUseTotemEvent event) {
+        if (event.getEntity() instanceof ServerPlayer player) HardcoreBlightRescue.onSaved(player);
+    }
+
 }

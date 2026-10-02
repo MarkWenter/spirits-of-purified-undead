@@ -68,6 +68,7 @@ public final class PurificationServerSmoke {
    PurificationPartTwoSmoke.run(server);
    LilyDiarySmoke.run(server);
    AdvancementSmoke.run(server);
+   try { HardcoreSmoke.run(server); } catch (Exception failure) { throw new RuntimeException(failure); }
    System.out.println("PURIFICATION_SERVER_OK: 9 brewing recipes, 6 bottle conversions, colors, effects, 2 shaped recipes, upgrade/max/insufficient/no-contract/duplicate guards");
   } finally {server.execute(()->server.halt(false));}
  }

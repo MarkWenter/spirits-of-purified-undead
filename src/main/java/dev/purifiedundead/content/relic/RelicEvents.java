@@ -109,6 +109,7 @@ public final class RelicEvents {
         state.putLong(selected.id, now + cooldown);
         event.setCanceled(true);
         player.setHealth(1.0F);
+        dev.purifiedundead.progress.HardcoreBlightRescue.onSaved(player);
         player.removeAllEffects();
         player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 900, 1));
         player.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 100, 1));
