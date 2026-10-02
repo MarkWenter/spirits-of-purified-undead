@@ -1,0 +1,41 @@
+{
+  "display": {
+    "icon": {
+      "item": "purified_undead:advancement_rebirth"
+    },
+    "title": {
+      "translate": "advancement.purified_undead.rebirth"
+    },
+    "description": {
+      "translate": "advancement.purified_undead.rebirth.desc"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "history": {
+      "trigger": "minecraft:impossible"
+    },
+    "obtained": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "purified_undead:lily_diary"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "history",
+      "obtained"
+    ]
+  ],
+  "parent": "purified_undead:journey/hidden_power"
+}

@@ -19,10 +19,12 @@ final class WarriorProgressStorage {
 
     static void save(ServerPlayer player, WarriorProgress progress) {
         player.getPersistentData().put(DATA_KEY, progress.save());
+        ModAdvancements.progression(player, progress);
     }
 
     static void copy(ServerPlayer original, ServerPlayer replacement) {
         CompoundTag root = original.getPersistentData();
+        replacement.getPersistentData().putBoolean(ModAdvancements.MIGRATION, root.getBoolean(ModAdvancements.MIGRATION));
         if (root.contains(DATA_KEY, Tag.TAG_COMPOUND)) {
             replacement.getPersistentData().put(DATA_KEY, root.getCompound(DATA_KEY).copy());
         }

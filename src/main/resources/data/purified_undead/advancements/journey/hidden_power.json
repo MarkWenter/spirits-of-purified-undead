@@ -1,0 +1,28 @@
+{
+  "display": {
+    "icon": {
+      "item": "purified_undead:advancement_hidden_power"
+    },
+    "title": {
+      "translate": "advancement.purified_undead.hidden_power"
+    },
+    "description": {
+      "translate": "advancement.purified_undead.hidden_power.desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false,
+    "background": "minecraft:textures/block/deepslate_tiles.png"
+  },
+  "criteria": {
+    "history": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "history"
+    ]
+  ]
+}

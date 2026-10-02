@@ -1,0 +1,58 @@
+{
+  "tool": "built-in imagegen",
+  "normalization": "Nearest-neighbor 18x18 effect / 32x32 advancement; binary alpha",
+  "assets": [
+    {
+      "id": "blighted_transformation",
+      "prompt": "Use attached image only as subject reference, ignore all words and UI. Create ONE Minecraft potion status icon: Side profile of a cursed undead knight head, iron helmet, dark grey green face and a single glowing red eye. Tiny Minecraft status effect icon, 18x18 pixel design.. Authentic chunky low resolution pixel art designed on 18x18 grid, enlarged with nearest-neighbor blocks. Simple connected shapes, limited palette, charcoal outlines and silver grey highlights, dark muted green skin. No fine details, no gradients, no glow blur, no text, no framing tile. Centered silhouette fills most of square with 2 pixel margin. Truly transparent background."
+    },
+    {
+      "id": "hidden_power",
+      "prompt": "Use attached image only as subject reference, ignore all words and UI. Create ONE Minecraft advancement icon: four-point silver magical star with smaller diamond sparkles. Authentic chunky low resolution pixel art designed on 32x32 grid, enlarged with nearest-neighbor blocks. Simple connected shapes, limited palette, charcoal outlines and silver grey highlights. No fine details, no gradients, no glow blur, no text, no framing tile. Centered silhouette fills most of square with 2 pixel margin. Truly transparent background."
+    },
+    {
+      "id": "anger",
+      "prompt": "Use attached image only as subject reference, ignore all words and UI. Create ONE Minecraft advancement icon: compact silver white curling flame. Authentic chunky low resolution pixel art designed on 32x32 grid, enlarged with nearest-neighbor blocks. Simple connected shapes, limited palette, charcoal outlines and silver grey highlights. No fine details, no gradients, no glow blur, no text, no framing tile. Centered silhouette fills most of square with 2 pixel margin. Truly transparent background."
+    },
+    {
+      "id": "lament",
+      "prompt": "Use attached image only as subject reference, ignore all words and UI. Create ONE Minecraft advancement icon: silver outlined eye with concentric pupil and one teardrop beneath. Authentic chunky low resolution pixel art designed on 32x32 grid, enlarged with nearest-neighbor blocks. Simple connected shapes, limited palette, charcoal outlines and silver grey highlights. No fine details, no gradients, no glow blur, no text, no framing tile. Centered silhouette fills most of square with 2 pixel margin. Truly transparent background."
+    },
+    {
+      "id": "determination",
+      "prompt": "Use attached image only as subject reference, ignore all words and UI. Create ONE Minecraft advancement icon: two broken silver chains angled inward with falling fragments. Authentic chunky low resolution pixel art designed on 32x32 grid, enlarged with nearest-neighbor blocks. Simple connected shapes, limited palette, charcoal outlines and silver grey highlights. No fine details, no gradients, no glow blur, no text, no framing tile. Centered silhouette fills most of square with 2 pixel margin. Truly transparent background."
+    },
+    {
+      "id": "falling_petals",
+      "prompt": "Use attached image only as subject reference, ignore all words and UI. Create ONE Minecraft advancement icon: white rose with three falling petals. Authentic chunky low resolution pixel art designed on 32x32 grid, enlarged with nearest-neighbor blocks. Simple connected shapes, limited palette, charcoal outlines and silver grey highlights. No fine details, no gradients, no glow blur, no text, no framing tile. Centered silhouette fills most of square with 2 pixel margin. Truly transparent background."
+    },
+    {
+      "id": "blighted_throne",
+      "prompt": "Use attached image only as subject reference, ignore all words and UI. Create ONE Minecraft advancement icon: silver royal crown with dark interior and small flame-shaped top. Authentic chunky low resolution pixel art designed on 32x32 grid, enlarged with nearest-neighbor blocks. Simple connected shapes, limited palette, charcoal outlines and silver grey highlights. No fine details, no gradients, no glow blur, no text, no framing tile. Centered silhouette fills most of square with 2 pixel margin. Truly transparent background."
+    },
+    {
+      "id": "separation",
+      "prompt": "Use attached image only as subject reference, ignore all words and UI. Create ONE Minecraft advancement icon: two pale hands reaching toward each other diagonally, with gap between them. Authentic chunky low resolution pixel art designed on 32x32 grid, enlarged with nearest-neighbor blocks. Simple connected shapes, limited palette, charcoal outlines and silver grey highlights. No fine details, no gradients, no glow blur, no text, no framing tile. Centered silhouette fills most of square with 2 pixel margin. Truly transparent background."
+    },
+    {
+      "id": "purification",
+      "prompt": "Use attached image only as subject reference, ignore all words and UI. Create ONE Minecraft advancement icon: silver radial wavy rays forming a circular cleansing sigil. Authentic chunky low resolution pixel art designed on 32x32 grid, enlarged with nearest-neighbor blocks. Simple connected shapes, limited palette, charcoal outlines and silver grey highlights. No fine details, no gradients, no glow blur, no text, no framing tile. Centered silhouette fills most of square with 2 pixel margin. Truly transparent background."
+    },
+    {
+      "id": "witch_relic",
+      "prompt": "Use attached image only as subject reference, ignore all words and UI. Create ONE Minecraft advancement icon: four-point silver compass star inside a thin circle. Authentic chunky low resolution pixel art designed on 32x32 grid, enlarged with nearest-neighbor blocks. Simple connected shapes, limited palette, charcoal outlines and silver grey highlights. No fine details, no gradients, no glow blur, no text, no framing tile. Centered silhouette fills most of square with 2 pixel margin. Truly transparent background."
+    },
+    {
+      "id": "dawn_prayer",
+      "prompt": "Use attached image only as subject reference, ignore all words and UI. Create ONE Minecraft advancement icon: tiny white robed girl silhouette centered between six pale inward-reaching tendrils. Authentic chunky low resolution pixel art designed on 32x32 grid, enlarged with nearest-neighbor blocks. Simple connected shapes, limited palette, charcoal outlines and silver grey highlights. No fine details, no gradients, no glow blur, no text, no framing tile. Centered silhouette fills most of square with 2 pixel margin. Truly transparent background."
+    },
+    {
+      "id": "frontier_witch",
+      "prompt": "Use attached image only as subject reference, ignore all words and UI. Create ONE Minecraft advancement icon: six pale segmented tendrils radiating outward around an empty dark star-shaped center. Authentic chunky low resolution pixel art designed on 32x32 grid, enlarged with nearest-neighbor blocks. Simple connected shapes, limited palette, charcoal outlines and silver grey highlights. No fine details, no gradients, no glow blur, no text, no framing tile. Centered silhouette fills most of square with 2 pixel margin. Truly transparent background."
+    },
+    {
+      "id": "rebirth",
+      "prompt": "Use attached image only as subject reference, ignore all words and UI. Create ONE Minecraft advancement icon: silver pendant necklace with pale blue diamond shaped center and two hanging side drops. Authentic chunky low resolution pixel art designed on 32x32 grid, enlarged with nearest-neighbor blocks. Simple connected shapes, limited palette, charcoal outlines and silver grey highlights. No fine details, no gradients, no glow blur, no text, no framing tile. Centered silhouette fills most of square with 2 pixel margin. Truly transparent background."
+    }
+  ]
+}

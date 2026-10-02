@@ -85,6 +85,11 @@ public final class ModItems {
 
     public static final RegistryObject<Item> LILY_DIARY = ITEMS.register("lily_diary", dev.purifiedundead.purification.LilyDiaryItem::new);
 
+    static {
+        for (String id : dev.purifiedundead.progress.ModAdvancements.IDS)
+            ITEMS.register("advancement_" + id, () -> new Item(new Item.Properties()));
+    }
+
     private ModItems() {
     }
 

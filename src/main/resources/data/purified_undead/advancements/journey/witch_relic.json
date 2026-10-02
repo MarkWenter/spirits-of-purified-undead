@@ -1,0 +1,48 @@
+{
+  "display": {
+    "icon": {
+      "item": "purified_undead:advancement_witch_relic"
+    },
+    "title": {
+      "translate": "advancement.purified_undead.witch_relic"
+    },
+    "description": {
+      "translate": "advancement.purified_undead.witch_relic.desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "history": {
+      "trigger": "minecraft:impossible"
+    },
+    "obtained": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "purified_undead:bloodstained_ribbon",
+              "purified_undead:ancient_dragon_claw",
+              "purified_undead:weathered_warrior_necklace",
+              "purified_undead:soiled_silver_rosary",
+              "purified_undead:white_priestess_statue",
+              "purified_undead:blighted_finger",
+              "purified_undead:kings_shield_badge",
+              "purified_undead:white_priestess_earrings"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "history",
+      "obtained"
+    ]
+  ],
+  "parent": "purified_undead:journey/hidden_power"
+}

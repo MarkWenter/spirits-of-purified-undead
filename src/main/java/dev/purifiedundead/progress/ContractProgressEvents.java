@@ -22,6 +22,7 @@ public final class ContractProgressEvents {
         }
         RewardSounds.tick(player);
         if (player.tickCount % 20 != 0) return;
+        ModAdvancements.migrate(player);
         WarriorRewardService.retryPending(player);
         boolean contractEquipped = CuriosApi.getCuriosInventory(player)
                 .map(handler -> handler.isEquipped(ModItems.ANCIENT_CONTRACT.get())).orElse(false);
