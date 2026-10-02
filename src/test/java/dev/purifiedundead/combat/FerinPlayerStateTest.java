@@ -97,4 +97,18 @@ class FerinPlayerStateTest {
         assertEquals(-1.0D, state.forward.x, 0.0001D);
         assertEquals(0.0D, state.forward.z, 0.0001D);
     }
+    @Test
+    void cancellationClearsQueuedContinuationAndTargets() {
+        var state = new FerinPlayerState();
+        state.combo.onQualifyingHit(100,3,TIMINGS);
+        state.continuation.request(1,100);
+        state.continuationTarget = new Vec3(10,64,10);
+        state.hitTargets.add(UUID.randomUUID());
+        state.cancelActive();
+        assertFalse(state.continuation.pending(1,100));
+        assertNull(state.continuationTarget);
+        assertTrue(state.hitTargets.isEmpty());
+        assertEquals(140,state.combo.cooldownUntil());
+        assertEquals(0,FerinPlayerState.load(state.save()).combo.stage());
+    }
 }

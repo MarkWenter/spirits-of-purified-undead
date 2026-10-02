@@ -79,3 +79,7 @@ scripts/*
 !docs/advancement-art-043.json
 
 !docs/RELEASE_V0431.md
+
+!docs/PROJECT_AUDIT_0432.md
+!docs/RELEASE_V0432.md
+!scripts/audit-server.gradle

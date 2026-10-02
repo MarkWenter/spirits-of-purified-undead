@@ -62,4 +62,15 @@ class FerinComboStateTest {
         assertEquals(100, restored.stageStartedAt());
         assertEquals(140, restored.cooldownUntil());
     }
+    @Test
+    void lifecycleCancellationRetainsCooldownAcrossSaveAndReload() {
+        var state = new FerinComboState();
+        state.onQualifyingHit(100, 3, TIMINGS);
+        state.cancelActive();
+        state = FerinComboState.restore(state.snapshot());
+        assertEquals(0, state.stage());
+        assertFalse(state.exiting());
+        assertEquals(FerinComboState.Result.COOLDOWN, state.onQualifyingHit(101, 3, TIMINGS));
+        assertEquals(FerinComboState.Result.STARTED, state.onQualifyingHit(140, 3, TIMINGS));
+    }
 }

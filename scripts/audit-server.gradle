@@ -1,0 +1,6 @@
+// Opt-in development regression suite. Smoke classes are excluded from the production JAR.
+allprojects { tasks.withType(JavaExec).configureEach {
+    systemProperty "purified_undead.purificationSmoke", "true"
+    systemProperty "purified_undead.relicSmoke", "true"
+    systemProperty "purified_undead.diarySmoke", "true"
+} }

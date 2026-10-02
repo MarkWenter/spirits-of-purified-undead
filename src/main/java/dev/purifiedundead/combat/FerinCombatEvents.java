@@ -204,6 +204,12 @@ public final class FerinCombatEvents {
                 if (ferinEntities.containsKey(player.getUUID())) removeFerinEntity(player);
                 continue;
             }
+            if (!player.isAlive() || player.isSpectator() || !FerinEquipment.read(player).contract()) {
+                runtime.cancelActive();
+                removeFerinEntity(player);
+                FerinPlayerStateStorage.save(player, runtime);
+                continue;
+            }
             final FerinPlayerState activeState = runtime;
             activeState.combo.tick(gameTick, ContractProgressService.ferinMaxStages(player), timings());
             boolean canContinue = player.isAlive() && !player.isSpectator() && FerinEquipment.read(player).contract()
@@ -238,10 +244,26 @@ public final class FerinCombatEvents {
     @SubscribeEvent
     public void onPlayerClone(PlayerEvent.Clone event) {
         FerinPlayerState runtime = playerStates.get(event.getOriginal().getUUID());
+        if (runtime == null && FerinPlayerStateStorage.has(event.getOriginal())) {
+            runtime = FerinPlayerStateStorage.load(event.getOriginal());
+        }
         if (runtime != null) {
+            runtime.cancelActive();
             FerinPlayerStateStorage.save(event.getOriginal(), runtime);
         }
+        if (event.getOriginal() instanceof ServerPlayer original) removeFerinEntity(original);
         FerinPlayerStateStorage.copy(event.getOriginal(), event.getEntity());
+    }
+
+    @SubscribeEvent
+    public void onDimensionChanged(PlayerEvent.PlayerChangedDimensionEvent event) {
+        if (!(event.getEntity() instanceof ServerPlayer player)) return;
+        FerinPlayerState runtime = stateFor(player);
+        runtime.cancelActive();
+        removeFerinEntity(player);
+        meleeObservations.remove(player.getUUID());
+        pendingHits.entrySet().removeIf(entry -> entry.getKey().attackerId().equals(player.getUUID()));
+        FerinPlayerStateStorage.save(player, runtime);
     }
 
     @SubscribeEvent

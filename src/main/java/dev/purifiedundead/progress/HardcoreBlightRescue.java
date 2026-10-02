@@ -14,6 +14,8 @@ public final class HardcoreBlightRescue {
                 || !player.hasEffect(ModEffects.BLIGHTED_TRANSFORMATION.get())) return false;
         player.removeEffect(ModEffects.BLIGHTED_TRANSFORMATION.get());
         player.getPersistentData().remove("purified_undead:blighted_death");
+        // A committed rescue must restore life before handing items to the live-player delivery path.
+        if (player.getHealth() <= 0) player.setHealth(1.0F);
         WarriorRewardService.grantContract(player);
         return true;
     }

@@ -43,6 +43,8 @@ final class AccessoryDeathRetentionService {
     }
 
     static void restore(ServerPlayer player) {
+        // The old player continues ticking on the death screen; its inventory is not copied on respawn.
+        if (!player.isAlive()) return;
         RetainedAccessoryBuffer source = load(player);
         if (source.isEmpty()) {
             return;

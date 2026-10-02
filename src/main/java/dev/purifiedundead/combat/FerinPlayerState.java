@@ -78,6 +78,15 @@ public final class FerinPlayerState {
         return capturedYawDegrees() + 180.0F;
     }
 
+    void cancelActive() {
+        combo.cancelActive();
+        continuation.clear();
+        continuationTarget = null;
+        continuationDamage = 0;
+        hitTargets.clear();
+        previousBlade = null;
+    }
+
     void clearPreviousBlade() {
         previousBlade = null;
     }

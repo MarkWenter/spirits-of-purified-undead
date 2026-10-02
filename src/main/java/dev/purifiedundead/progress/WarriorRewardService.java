@@ -213,6 +213,8 @@ public final class WarriorRewardService {
     }
 
     private static boolean insert(ServerPlayer player, net.minecraft.world.item.Item item) {
+        // Preserve the pending flag until a live replacement player can receive the item.
+        if (!player.isAlive()) return false;
         ItemStack reward = new ItemStack(item);
         boolean inserted = player.getInventory().add(reward);
         if (inserted) {

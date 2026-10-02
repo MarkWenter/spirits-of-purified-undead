@@ -61,6 +61,13 @@ public final class FerinComboState {
         }
     }
 
+    /** Stop a spatial attack when its owner changes lifecycle; retain the summon cooldown. */
+    public void cancelActive() {
+        stage = 0;
+        exiting = false;
+        exitUntil = 0;
+    }
+
     private void startStage(int newStage, long gameTick, FerinComboTimings timings) {
         stage = newStage;
         stageStartedAt = gameTick;
