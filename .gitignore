@@ -85,3 +85,4 @@ scripts/*
 !scripts/audit-server.gradle
 !docs/RELEASE_V044.md
 !docs/slate-update/
+!docs/RELEASE_V0441.md

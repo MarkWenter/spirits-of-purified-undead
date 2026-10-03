@@ -17,6 +17,7 @@ public final class FoundryClientSmoke {
             if(!loading&&mc.screen instanceof TitleScreen&&mc.getOverlay()==null){loading=true;mc.createWorldOpenFlows().loadLevel(mc.screen,"diary-validation");return;}
             if(mc.level==null||mc.player==null||mc.getOverlay()!=null)return;
             ticks++;
+            mc.getToasts().clear();
             if(ticks==40) {
                 for(boolean lit:new boolean[]{false,true}) {
                     var model=mc.getBlockRenderer().getBlockModel(FoundryContent.BLOCK.get().defaultBlockState().setValue(PurificationFoundryBlock.LIT,lit));
@@ -24,9 +25,10 @@ public final class FoundryClientSmoke {
                 }
                 mc.getSingleplayerServer().execute(()->{
                     var server=mc.getSingleplayerServer();var level=server.overworld();var p=server.getPlayerList().getPlayer(mc.player.getUUID());
-                    p.setGameMode(net.minecraft.world.level.GameType.CREATIVE);p.getAbilities().flying=true;p.onUpdateAbilities();p.teleportTo(level,4.5,100,1.0,0,10);
+                    p.setGameMode(net.minecraft.world.level.GameType.CREATIVE);p.getAbilities().flying=true;p.onUpdateAbilities();p.teleportTo(level,5.0,100,1.0,0,10);
                     level.setBlockAndUpdate(POS,FoundryContent.BLOCK.get().defaultBlockState().setValue(PurificationFoundryBlock.FACING,Direction.NORTH));
                     level.setBlockAndUpdate(POS.below(),net.minecraft.world.level.block.Blocks.STONE.defaultBlockState());
+                    level.setBlockAndUpdate(POS.east(),net.minecraft.world.level.block.Blocks.FURNACE.defaultBlockState());
                     level.setDayTime(1000);p.openMenu((PurificationFoundryEntity)level.getBlockEntity(POS));
                 });
             }
