@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "CSC",
+    "CRC",
+    "CCC"
+  ],
+  "key": {
+    "C": [
+      {
+        "item": "minecraft:cobblestone"
+      },
+      {
+        "item": "minecraft:cobbled_deepslate"
+      }
+    ],
+    "S": {
+      "item": "minecraft:iron_sword"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    }
+  },
+  "result": {
+    "item": "purified_undead:purification_foundry",
+    "count": 1
+  }
+}

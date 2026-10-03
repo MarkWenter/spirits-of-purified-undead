@@ -214,5 +214,6 @@
   "item.purified_undead.advancement_frontier_witch": "边陲之国的巫女",
   "advancement.purified_undead.rebirth": "新生",
   "advancement.purified_undead.rebirth.desc": "获得莉莉手记",
-  "item.purified_undead.advancement_rebirth": "新生"
+  "item.purified_undead.advancement_rebirth": "新生",
+  "block.purified_undead.purification_foundry": "纯化铸造器"
 }

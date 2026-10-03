@@ -65,6 +65,7 @@ public final class PurifiedUndead {
         modBus.addListener((net.minecraftforge.fml.event.config.ModConfigEvent.Loading event) -> {
             if (event.getConfig().getSpec() == PurifiedUndeadConfig.SPEC) PurifiedUndeadConfig.migrateBalanceDefaults();
         });
+        dev.purifiedundead.foundry.FoundryContent.register(modBus);
         ModItems.register(modBus);
         ModEntities.register(modBus);
         ModParticles.register(modBus);
@@ -114,6 +115,7 @@ public final class PurifiedUndead {
 
     private void addCreativeTabItems(final BuildCreativeModeTabContentsEvent event) {
         if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
+            event.accept(dev.purifiedundead.foundry.FoundryContent.ITEM.get());
             event.accept(ModItems.ANCIENT_CONTRACT);
             event.accept(ModItems.FERIN_WARRIOR);
             event.accept(ModItems.BLIGHT_FRAGMENT);

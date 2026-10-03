@@ -214,5 +214,6 @@
   "item.purified_undead.advancement_frontier_witch": "Witch of the Frontier",
   "advancement.purified_undead.rebirth": "Rebirth",
   "advancement.purified_undead.rebirth.desc": "Obtain Lily's Diary",
-  "item.purified_undead.advancement_rebirth": "Rebirth"
+  "item.purified_undead.advancement_rebirth": "Rebirth",
+  "block.purified_undead.purification_foundry": "Purification Foundry"
 }

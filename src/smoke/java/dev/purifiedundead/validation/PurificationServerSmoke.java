@@ -64,6 +64,7 @@ public final class PurificationServerSmoke {
    spirit.finishUsingItem(four,level,player);check(four.isEmpty()&&ContractProgressService.talismanLevel(player)==WhiteWitchTalisman.maxLevel()&&crystals(player)==8,"max consumes without overlevel");
    spirit.finishUsingItem(four,level,player);check(crystals(player)==8,"empty stack cannot duplicate");
    slot.setStackInSlot(0,ItemStack.EMPTY);four=new ItemStack(spirit,4);spirit.finishUsingItem(four,level,player);check(four.getCount()==4&&crystals(player)==8,"unequipped at finish rejected");
+   FoundryServerSmoke.run(server);
    FerinLargeMobSmoke.run(server);
    PurificationPartTwoSmoke.run(server);
    LilyDiarySmoke.run(server);

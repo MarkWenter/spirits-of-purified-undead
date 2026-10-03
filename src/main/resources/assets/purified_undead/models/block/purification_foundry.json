@@ -1,0 +1,84 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "particle": "purified_undead:block/purification_foundry_front",
+    "stone": "purified_undead:block/purification_foundry_front",
+    "front": "purified_undead:block/purification_foundry_front"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ],
+      "faces": {
+        "south": {
+          "texture": "#stone",
+          "uv": [
+            0,
+            0,
+            5,
+            16
+          ],
+          "cullface": "south"
+        },
+        "west": {
+          "texture": "#stone",
+          "uv": [
+            11,
+            0,
+            16,
+            16
+          ],
+          "cullface": "west"
+        },
+        "east": {
+          "texture": "#stone",
+          "uv": [
+            0,
+            0,
+            5,
+            16
+          ],
+          "cullface": "east"
+        },
+        "up": {
+          "texture": "#stone",
+          "uv": [
+            0,
+            0,
+            5,
+            5
+          ],
+          "cullface": "up"
+        },
+        "down": {
+          "texture": "#stone",
+          "uv": [
+            11,
+            11,
+            16,
+            16
+          ],
+          "cullface": "down"
+        },
+        "north": {
+          "texture": "#front",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "cullface": "north"
+        }
+      }
+    }
+  ]
+}
