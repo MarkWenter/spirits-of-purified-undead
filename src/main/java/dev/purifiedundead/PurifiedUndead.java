@@ -61,10 +61,12 @@ public final class PurifiedUndead {
     public PurifiedUndead(FMLJavaModLoadingContext context) {
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, PurifiedUndeadConfig.SPEC,
                 "purified_undead-common.toml");
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, dev.purifiedundead.slate.SlateConfig.SPEC, "purified_undead-slate.toml");
         var modBus = context.getModEventBus();
         modBus.addListener((net.minecraftforge.fml.event.config.ModConfigEvent.Loading event) -> {
             if (event.getConfig().getSpec() == PurifiedUndeadConfig.SPEC) PurifiedUndeadConfig.migrateBalanceDefaults();
         });
+        dev.purifiedundead.slate.SlateContent.register(modBus);
         dev.purifiedundead.foundry.FoundryContent.register(modBus);
         ModItems.register(modBus);
         ModEntities.register(modBus);
@@ -115,6 +117,7 @@ public final class PurifiedUndead {
 
     private void addCreativeTabItems(final BuildCreativeModeTabContentsEvent event) {
         if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
+            dev.purifiedundead.slate.SlateContent.creative(event::accept);
             event.accept(dev.purifiedundead.foundry.FoundryContent.ITEM.get());
             event.accept(ModItems.ANCIENT_CONTRACT);
             event.accept(ModItems.FERIN_WARRIOR);

@@ -47,6 +47,10 @@ public final class GuardianInputEvents {
         }
         boolean jumpDown = minecraft.options.keyJump.isDown();
         boolean sprintDown = minecraft.options.keySprint.isDown();
+        if(player.tickCount%5==0 && dev.purifiedundead.slate.MemoryStorage.active(player,"ulv")) {
+            boolean grip=jumpDown&&minecraft.screen==null&&player.isAlive()&&!player.onGround()&&!player.isSpectator();
+            ModNetwork.CHANNEL.sendToServer(new GuardianActionPacket(grip?GuardianActionPacket.Action.GRIP_HELD:GuardianActionPacket.Action.GRIP_RELEASED));
+        }
         if (minecraft.screen != null || !player.isAlive() || player.isSpectator()
                 || player.isPassenger() || player.getAbilities().flying || player.isFallFlying()) {
             jumpWasDown = jumpDown;

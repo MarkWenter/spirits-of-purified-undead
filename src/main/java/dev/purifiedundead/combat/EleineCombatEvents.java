@@ -82,10 +82,10 @@ public final class EleineCombatEvents {
         }
         FerinMeleeTrigger.AttackTickGate gate = orbAttackGates.computeIfAbsent(
                 player.getUUID(), ignored -> new FerinMeleeTrigger.AttackTickGate());
-        if (!gate.accept(pending.gameTick) || !EleineModel.rollOrb(player.getRandom().nextFloat())) {
+        if (!gate.accept(pending.gameTick) || !(dev.purifiedundead.slate.MemoryEffects.active(player,"eleine") ? player.getRandom().nextDouble()<dev.purifiedundead.slate.SlateConfig.get(dev.purifiedundead.slate.SlateConfig.orbChance) : EleineModel.rollOrb(player.getRandom().nextFloat()))) {
             return;
         }
-        float damage = EleineModel.orbDamage(pending.preDefenseDamage);
+        float damage = dev.purifiedundead.slate.MemoryEffects.active(player,"eleine") ? (float)(pending.preDefenseDamage*dev.purifiedundead.slate.SlateConfig.get(dev.purifiedundead.slate.SlateConfig.orbDamage)) : EleineModel.orbDamage(pending.preDefenseDamage);
         EleineMagicOrbEntity orb = ModEntities.ELEINE_MAGIC_ORB.get().create(player.serverLevel());
         if (orb != null && damage > 0.0F) {
             orb.configure(player, event.getEntity(), damage);

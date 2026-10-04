@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "CCC",
+    "CCC",
+    "CCC"
+  ],
+  "key": {
+    "C": {
+      "item": "purified_undead:cipher_fragment"
+    }
+  },
+  "result": {
+    "item": "purified_undead:cipher_text",
+    "count": 1
+  }
+}

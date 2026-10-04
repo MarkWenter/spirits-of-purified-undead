@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "purified_undead:forged_slate_groth"
+    },
+    {
+      "item": "purified_undead:forged_slate_guardians"
+    },
+    {
+      "item": "purified_undead:forged_slate_julius"
+    },
+    {
+      "item": "purified_undead:forged_slate_ulv"
+    },
+    {
+      "item": "purified_undead:forged_slate_eleine"
+    },
+    {
+      "item": "purified_undead:forged_slate_hoenir"
+    },
+    {
+      "item": "purified_undead:forged_slate_faden"
+    }
+  ],
+  "result": {
+    "item": "purified_undead:shining_guardian_treasure",
+    "count": 1
+  }
+}

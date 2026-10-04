@@ -412,6 +412,7 @@ public final class FerinCombatEvents {
             runtime.hitTargets.add(target.getUUID());
             float amount = FerinDamageModel.baseDamage(runtime.combo.stage(), runtime.triggerPreDefenseDamage);
             amount *= runtime.stageCriticalMultiplier;
+            if(dev.purifiedundead.slate.MemoryEffects.active(owner,"ferin")) amount *= 1+dev.purifiedundead.slate.SlateConfig.get(dev.purifiedundead.slate.SlateConfig.ferinBonus);
             boolean hoenirMarked = HoenirCombatEvents.hasMark(owner, target);
             amount = HoenirModel.ferinDamage(amount, hoenirMarked);
             int previousInvulnerableTime = target.invulnerableTime;

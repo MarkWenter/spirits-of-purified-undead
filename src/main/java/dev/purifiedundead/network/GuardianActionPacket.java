@@ -8,7 +8,7 @@ import net.minecraftforge.network.NetworkEvent;
 import java.util.function.Supplier;
 
 public record GuardianActionPacket(Action action) {
-    public enum Action { DOUBLE_JUMP, AIR_DASH }
+    public enum Action { DOUBLE_JUMP, AIR_DASH, GRIP_HELD, GRIP_RELEASED }
 
     static void encode(GuardianActionPacket packet, FriendlyByteBuf buffer) {
         buffer.writeEnum(packet.action);

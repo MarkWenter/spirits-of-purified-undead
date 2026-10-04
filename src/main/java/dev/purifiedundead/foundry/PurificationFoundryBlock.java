@@ -30,6 +30,7 @@ public final class PurificationFoundryBlock extends BaseEntityBlock {
     @Override public BlockState rotate(BlockState s, Rotation r) { return s.setValue(FACING, r.rotate(s.getValue(FACING))); }
     @Override public BlockState mirror(BlockState s, Mirror m) { return s.rotate(m.getRotation(s.getValue(FACING))); }
     @Override public RenderShape getRenderShape(BlockState s) { return RenderShape.MODEL; }
+    @Override public <T extends BlockEntity> net.minecraft.world.level.block.entity.BlockEntityTicker<T> getTicker(Level level,BlockState state,net.minecraft.world.level.block.entity.BlockEntityType<T> type){return level.isClientSide?null:createTickerHelper(type,FoundryContent.ENTITY.get(),PurificationFoundryEntity::tick);}
     @Override public BlockEntity newBlockEntity(BlockPos p, BlockState s) { return new PurificationFoundryEntity(p, s); }
     @Override public InteractionResult use(BlockState s, Level level, BlockPos p, Player player, InteractionHand hand, BlockHitResult hit) {
         if (!level.isClientSide && level.getBlockEntity(p) instanceof PurificationFoundryEntity entity) player.openMenu(entity);

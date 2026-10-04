@@ -52,6 +52,7 @@ public final class GrothCombatEvents {
         }
         if (event.getEntity().addEffect(new MobEffectInstance(ModEffects.STUNNED.get(),
                 PurifiedUndeadConfig.get(PurifiedUndeadConfig.VALUES.grothStunDurationTicks), 0, false, true, true))) {
+            dev.purifiedundead.slate.MemoryEffects.groupStun(player,event.getEntity(),PurifiedUndeadConfig.get(PurifiedUndeadConfig.VALUES.grothStunDurationTicks));
             player.getPersistentData().putLong(STUN_COOLDOWN_KEY,
                     now + PurifiedUndeadConfig.get(PurifiedUndeadConfig.VALUES.grothStunCooldownTicks));
         }

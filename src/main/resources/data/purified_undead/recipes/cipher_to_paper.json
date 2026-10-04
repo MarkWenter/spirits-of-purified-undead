@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "purified_undead:cipher_fragment"
+    }
+  ],
+  "result": {
+    "item": "minecraft:paper",
+    "count": 1
+  }
+}

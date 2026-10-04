@@ -212,7 +212,7 @@ public final class WarriorRewardService {
         return insert(player, ModItems.FERIN_WARRIOR.get());
     }
 
-    private static boolean insert(ServerPlayer player, net.minecraft.world.item.Item item) {
+    public static boolean insert(ServerPlayer player, net.minecraft.world.item.Item item) {
         // Preserve the pending flag until a live replacement player can receive the item.
         if (!player.isAlive()) return false;
         ItemStack reward = new ItemStack(item);

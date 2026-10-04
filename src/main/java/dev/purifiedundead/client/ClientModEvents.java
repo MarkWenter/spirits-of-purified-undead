@@ -17,6 +17,7 @@ public final class ClientModEvents {
     public static void clientSetup(net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent event) {
         event.enqueueWork(WispDynamicLights::install);
         event.enqueueWork(() -> net.minecraft.client.gui.screens.MenuScreens.register(dev.purifiedundead.foundry.FoundryContent.MENU.get(), PurificationFoundryScreen::new));
+        event.enqueueWork(() -> net.minecraft.client.gui.screens.MenuScreens.register(dev.purifiedundead.slate.SlateContent.MENU.get(), LilyMemoryScreen::new));
     }
     @SubscribeEvent
     public static void potionColors(net.minecraftforge.client.event.RegisterColorHandlersEvent.Item event) {

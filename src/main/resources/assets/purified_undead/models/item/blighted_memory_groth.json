@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "purified_undead:item/blighted_memory_groth"
+  }
+}

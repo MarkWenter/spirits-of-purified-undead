@@ -19,30 +19,30 @@ public final class FoundryServerSmoke {
                 level.setBlockAndUpdate(pos,FoundryContent.BLOCK.get().defaultBlockState().setValue(PurificationFoundryBlock.FACING,front));
                 var be=(PurificationFoundryEntity)level.getBlockEntity(pos);
                 Direction[] faces={Direction.UP,front.getClockWise(),front.getCounterClockWise()};
-                Item[] inputs={Items.COBBLESTONE,Items.REDSTONE,Items.DIAMOND};
+                Item[] inputs={Items.COAL,dev.purifiedundead.content.ModItems.BLIGHTED_SPIRIT.get(),dev.purifiedundead.content.ModItems.PURE_CRYSTAL.get()};
                 for(int i=0;i<3;i++) {
                     var remain=HopperBlockEntity.addItem(null,be,new ItemStack(inputs[i],3),faces[i]);
                     check(remain.isEmpty()&&be.getItem(i).is(inputs[i])&&be.getItem(i).getCount()==3,"hopper routing "+front+" slot "+i);
                 }
                 for(Direction blocked:new Direction[]{front,front.getOpposite(),Direction.DOWN})check(HopperBlockEntity.addItem(null,be,new ItemStack(Items.DIRT),blocked).getCount()==1,"blocked insertion "+blocked);
-                be.setItem(3,new ItemStack(Items.EMERALD,2));
+                be.setItem(3,new ItemStack(Items.COAL,3)); for(int step=0;step<400;step++)be.process();
                 level.setBlockAndUpdate(pos.below(),Blocks.HOPPER.defaultBlockState());
                 var hopper=(HopperBlockEntity)level.getBlockEntity(pos.below());
                 check(HopperBlockEntity.suckInItems(level,hopper),"bottom hopper transfer");
-                check(hopper.getItem(0).is(Items.EMERALD)&&be.getItem(3).getCount()==1,"only output extracted");
+                check(hopper.getItem(0).is(Items.DIAMOND)&&be.getItem(3).getCount()==5,"only output extracted");
                 check(!be.canTakeItemThroughFace(0,be.getItem(0),Direction.DOWN),"input cannot be extracted");
                 var saved=be.saveWithFullMetadata();var restored=new PurificationFoundryEntity(pos,be.getBlockState());restored.load(saved);
-                for(int i=0;i<4;i++)check(ItemStack.matches(be.getItem(i),restored.getItem(i)),"persistent slot "+i);
+                for(int i=0;i<5;i++)check(ItemStack.matches(be.getItem(i),restored.getItem(i)),"persistent slot "+i);
                 var menu=(PurificationFoundryMenu)be.createMenu(1,fake.getInventory(),fake);
                 check(!menu.getSlot(3).mayPlace(new ItemStack(Items.DIRT)),"output read only");
                 be.setWorkProgress(50,100);check(menu.progressPixels(60)==30&&be.getBlockState().getValue(PurificationFoundryBlock.LIT),"half progress + lit");
                 be.setWorkProgress(0,0);check(menu.progressPixels(60)==0&&!be.getBlockState().getValue(PurificationFoundryBlock.LIT),"idle presentation");
                 menu.quickMoveStack(fake,0);check(be.getItem(0).isEmpty(),"shift machine to inventory");
                 var box=new net.minecraft.world.phys.AABB(pos).inflate(2);level.getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class,box).forEach(net.minecraft.world.entity.Entity::discard);
-                int expected=0;for(int i=0;i<4;i++)expected+=be.getItem(i).getCount();
+                int expected=0;for(int i=0;i<5;i++)expected+=be.getItem(i).getCount();
                 level.setBlockAndUpdate(pos,Blocks.AIR.defaultBlockState());
                 int actual=level.getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class,box).stream().mapToInt(e->e.getItem().getCount()).sum();
-                check(expected==actual,"break inventory exactly once");
+                check(expected==actual,"break inventory exactly once expected="+expected+" actual="+actual);
                 level.getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class,box).forEach(net.minecraft.world.entity.Entity::discard);
                 hopper.clearContent();level.setBlockAndUpdate(pos.below(),Blocks.AIR.defaultBlockState());
             }
@@ -54,6 +54,7 @@ public final class FoundryServerSmoke {
                 stacks.set(1,new ItemStack(Items.STONE_SWORD));check(!recipe.matches(craft(stacks),level),"wrong sword rejected");
             }
             check(recipe.getResultItem(server.registryAccess()).is(FoundryContent.ITEM.get()),"recipe output");
+            SlateServerSmoke.run(server);
             System.out.println("FOUNDRY_SERVER_OK: four orientations, vanilla hopper insertion/extraction, blocked faces, persistence, menu, progress/lit, removal, 3 crafting layouts");
         } catch(Throwable t) {System.out.println("FOUNDRY_SERVER_FAILED");throw t;}
         finally {level.setBlockAndUpdate(pos,Blocks.AIR.defaultBlockState());level.setBlockAndUpdate(pos.below(),Blocks.AIR.defaultBlockState());}

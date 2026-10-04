@@ -20,6 +20,8 @@ public final class ModLootModifiers {
     public static final RegistryObject<Codec<dev.purifiedundead.loot.WhiteWitchRelicLootModifier>> WHITE_WITCH_RELIC =
             SERIALIZERS.register("white_witch_relic", () -> dev.purifiedundead.loot.WhiteWitchRelicLootModifier.CODEC);
 
+    public static final RegistryObject<Codec<dev.purifiedundead.loot.CipherLootModifier>> CIPHER = SERIALIZERS.register("cipher", () -> dev.purifiedundead.loot.CipherLootModifier.CODEC);
+
     private ModLootModifiers() {
     }
 

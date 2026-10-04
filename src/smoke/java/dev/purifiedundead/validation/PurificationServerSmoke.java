@@ -11,7 +11,10 @@ import top.theillusivec4.curios.api.CuriosApi;
 @Mod.EventBusSubscriber(modid="purified_undead")
 public final class PurificationServerSmoke {
  private static void check(boolean v,String why) { if(!v)throw new IllegalStateException("PURIFICATION_FAILED: "+why); }
- @SubscribeEvent public static void started(ServerStartedEvent e) {
+ private static ServerStartedEvent pending;private static int warmup;
+ @SubscribeEvent public static void queue(ServerStartedEvent e){if(!Boolean.getBoolean("purified_undead.purificationSmoke"))return;pending=e;warmup=0;for(int x=2;x<=3;x++)for(int z=2;z<=3;z++)e.getServer().overworld().setChunkForced(x,z,true);}
+ @SubscribeEvent public static void afterWorldReady(net.minecraftforge.event.TickEvent.ServerTickEvent t){if(t.phase!=net.minecraftforge.event.TickEvent.Phase.END)return;if(pending==null||++warmup<30)return;var e=pending;pending=null;try{started(e);}finally{for(int x=2;x<=3;x++)for(int z=2;z<=3;z++)e.getServer().overworld().setChunkForced(x,z,false);}}
+ public static void started(ServerStartedEvent e) {
   if(!Boolean.getBoolean("purified_undead.purificationSmoke"))return;
   var server=e.getServer();var level=server.overworld();
   try {
