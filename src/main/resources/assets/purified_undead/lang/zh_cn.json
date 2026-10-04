@@ -245,5 +245,19 @@
   "item.purified_undead.blighted_memory_ferin.desc": "佩戴装有此追忆的莉莉手记：费林每段协同攻击伤害+50%。需要费林原有协同攻击条件。",
   "container.purified_undead.lily_memories": "莉莉手记 · 秽鬼追忆",
   "item.purified_undead.lily_diary.memories": "主手使用：打开八槽追忆环。每种追忆限放一个；佩戴后生效。",
-  "item.purified_undead.shining_guardian_treasure.desc": "白巫女遗物：最大生命值增加100%。"
+  "item.purified_undead.shining_guardian_treasure.desc": "白巫女遗物：最大生命值增加100%。",
+  "jei.purified_undead.left_fuel": "左燃料",
+  "jei.purified_undead.right_fuel": "右燃料",
+  "jei.purified_undead.bottom": "下槽原料",
+  "jei.purified_undead.output": "成品",
+  "jei.purified_undead.top_consumed": "上槽：消耗",
+  "jei.purified_undead.top_retained": "上槽：保留",
+  "jei.purified_undead.consumed": "每份加工消耗标示数量。",
+  "jei.purified_undead.retained": "加工／合成后保留此材料。",
+  "jei.purified_undead.seconds": "%s 秒／批",
+  "jei.purified_undead.memory_crafting": "工作台：秽鬼追忆",
+  "jei.purified_undead.crafting_retains": "无序合成 · 铸造石板保留",
+  "jei.purified_undead.cipher_source": "主世界、下界宝藏箱：默认25%概率获得1—5个。",
+  "jei.purified_undead.ferin_source": "收集其余七种秽鬼追忆后，每位玩家仅获得一次；背包满时等待空位补发。",
+  "jei.purified_undead.crystal_source": "装备古老民族之契后，主手持怨念污秽长按使用，按消耗量获得纯净结晶。护身符满级仍可使用。纯化铸造器右侧燃料。"
 }

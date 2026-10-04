@@ -7,7 +7,7 @@ import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
 
 public final class ModNetwork {
-    private static final String PROTOCOL = "5";
+    private static final String PROTOCOL = "6";
     public static final SimpleChannel CHANNEL = NetworkRegistry.ChannelBuilder
             .named(ResourceLocation.fromNamespaceAndPath(PurifiedUndead.MOD_ID, "main"))
             .networkProtocolVersion(() -> PROTOCOL)
@@ -19,6 +19,7 @@ public final class ModNetwork {
     }
 
     public static void register() {
+        CHANNEL.messageBuilder(FoundryRecipesPacket.class, 3, NetworkDirection.PLAY_TO_CLIENT).encoder(FoundryRecipesPacket::encode).decoder(FoundryRecipesPacket::decode).consumerMainThread(FoundryRecipesPacket::handle).add();
         CHANNEL.messageBuilder(GuardianMotionSettingsPacket.class, 2, NetworkDirection.PLAY_TO_CLIENT)
                 .encoder(GuardianMotionSettingsPacket::encode).decoder(GuardianMotionSettingsPacket::decode)
                 .consumerMainThread(GuardianMotionSettingsPacket::handle).add();

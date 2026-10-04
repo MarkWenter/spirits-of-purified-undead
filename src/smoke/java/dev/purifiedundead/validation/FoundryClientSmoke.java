@@ -17,6 +17,7 @@ public final class FoundryClientSmoke {
     private static void check(boolean ok,String why){if(!ok)throw new IllegalStateException(why);}
     @net.minecraftforge.eventbus.api.SubscribeEvent public static void tick(net.minecraftforge.event.TickEvent.ClientTickEvent e) {
         if(e.phase!=net.minecraftforge.event.TickEvent.Phase.END||!Boolean.getBoolean("purified_undead.foundryClient"))return;
+        if(Boolean.getBoolean("purified_undead.slateJei")){SlateJeiSmoke.tick();return;}
         var mc=Minecraft.getInstance();
         try {
             if(!loading&&mc.screen instanceof TitleScreen&&mc.getOverlay()==null){loading=true;mc.createWorldOpenFlows().loadLevel(mc.screen,"diary-validation");return;}

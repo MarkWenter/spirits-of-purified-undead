@@ -61,6 +61,7 @@ def attributeMods = [
     "dev.shadowsoffire:Placebo:${placebo_version}"
 ]
 dependencies {
+    compileOnly fg.deobf('maven.modrinth:jei:HcUiurg6')
     if (providers.gradleProperty('with_enigmatic').orElse('false').get().toBoolean()) {
         runtimeOnly fg.deobf('maven.modrinth:enigmatic-legacy:yUuDfmnk')
         runtimeOnly fg.deobf('maven.modrinth:caelus:mRry0DgY')

@@ -70,6 +70,7 @@ public final class MemoryEffects {
     }
     @SubscribeEvent public static void freeze(LivingEvent.LivingTickEvent e){var t=e.getEntity();if(t.level().isClientSide)return;long until=t.getPersistentData().getLong(FREEZE);if(until==0)return;if(until>t.level().getGameTime()&&t.canFreeze())t.setTicksFrozen(t.getTicksRequiredToFreeze()+20);else {t.getPersistentData().remove(FREEZE);t.setTicksFrozen(0);}}
     @SubscribeEvent public static void looting(LootingLevelEvent e){if(e.getDamageSource()!=null&&e.getDamageSource().getEntity() instanceof ServerPlayer p&&active(p,"faden"))e.setLootingLevel(e.getLootingLevel()+SlateConfig.get(SlateConfig.lootingBonus));}
+    @SubscribeEvent public static void login(PlayerEvent.PlayerLoggedInEvent e){if(e.getEntity() instanceof ServerPlayer p){var packet=new dev.purifiedundead.network.FoundryRecipesPacket(dev.purifiedundead.foundry.FoundryRecipes.all());dev.purifiedundead.network.ModNetwork.CHANNEL.send(net.minecraftforge.network.PacketDistributor.PLAYER.with(()->p),packet);}}
     @SubscribeEvent public static void crafted(PlayerEvent.ItemCraftedEvent e){if(e.getEntity() instanceof ServerPlayer p)MemoryRewards.record(p,e.getCrafting());}
     @SubscribeEvent public static void picked(PlayerEvent.ItemPickupEvent e){if(e.getEntity() instanceof ServerPlayer p)MemoryRewards.record(p,e.getStack());}
     @SubscribeEvent public static void clone(PlayerEvent.Clone e){var a=e.getOriginal().getPersistentData();var b=e.getEntity().getPersistentData();b.putLong(COOLDOWN,a.getLong(COOLDOWN));MemoryRewards.copy(a,b);}

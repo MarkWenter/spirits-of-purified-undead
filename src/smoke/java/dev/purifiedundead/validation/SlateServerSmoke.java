@@ -23,10 +23,13 @@ public final class SlateServerSmoke {
             be.setItem(0,new ItemStack(Items.COAL,64));be.setItem(1,new ItemStack(ModItems.BLIGHTED_SPIRIT.get(),64));be.setItem(2,new ItemStack(ModItems.PURE_CRYSTAL.get(),64));be.setItem(3,new ItemStack(Items.COAL,64));
             check(!be.canTakeItemThroughFace(3,be.getItem(3),Direction.DOWN),"unprocessed bottom ingredient cannot leak to hopper");
             for(int n=0;n<399;n++)be.process();check(be.getItem(3).is(Items.COAL),"no early output");be.process();
-            check(be.getItem(3).is(Items.DIAMOND)&&be.getItem(3).getCount()==64&&be.getItem(0).getCount()==32&&be.getItem(1).getCount()==32&&be.getItem(2).getCount()==32&&be.getItem(4).getCount()==32,"capacity capped batch and exact remaining inputs");
+            check(be.getItem(3).is(Items.DIAMOND)&&be.getItem(3).getCount()==64&&be.getItem(0).getCount()==64&&be.getItem(1).getCount()==32&&be.getItem(2).getCount()==32&&be.getItem(4).isEmpty(),"capacity capped batch and exact remaining inputs");
             var saved=be.saveWithFullMetadata();var restored=new PurificationFoundryEntity(pos,be.getBlockState());restored.load(saved);
-            check(restored.getItem(4).getCount()==32&&restored.canTakeItemThroughFace(3,restored.getItem(3),Direction.DOWN),"pending input and product state persist");
-            be.removeItem(3,64);for(int n=0;n<400;n++)be.process();check(be.getItem(3).getCount()==64&&be.getItem(4).isEmpty()&&be.getItem(0).isEmpty()&&be.getItem(1).isEmpty(),"second batch resumes remainder without loss");
+            check(restored.getItem(4).isEmpty()&&restored.getItem(0).getCount()==64&&restored.canTakeItemThroughFace(3,restored.getItem(3),Direction.DOWN),"pending input and product state persist");
+            be.removeItem(3,64);for(int n=0;n<400;n++)be.process();check(be.getItem(3).isEmpty()&&be.getItem(0).getCount()==64,"combined remainder stays visible above after output removed");
+            be.setItem(0,new ItemStack(Items.COAL,32));be.setItem(3,new ItemStack(Items.COAL,32));for(int n=0;n<400;n++)be.process();check(be.getItem(3).getCount()==64&&be.getItem(0).isEmpty()&&be.getItem(1).isEmpty(),"split remainder can be processed again");
+            FoundryRemainderSmoke.run(be);
+
             be.clearContent();be.process();be.setItem(0,new ItemStack(ModItems.GROTH_WARRIOR.get()));be.setItem(1,new ItemStack(ModItems.BLIGHTED_SPIRIT.get(),64));be.setItem(2,new ItemStack(ModItems.PURE_CRYSTAL.get(),64));be.setItem(3,new ItemStack(SlateContent.TABLET.get(),64));for(int n=0;n<400;n++)be.process();
             check(be.getItem(0).is(ModItems.GROTH_WARRIOR.get())&&be.getItem(0).getCount()==1&&be.getItem(3).is(SlateContent.FORGED.get("groth").get())&&be.getItem(3).getCount()==64,"one retained warrior templates 64 products");
             for(var configured:FoundryRecipes.defaults()){

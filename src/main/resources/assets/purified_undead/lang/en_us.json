@@ -245,5 +245,19 @@
   "item.purified_undead.blighted_memory_ferin.desc": "Insert into Lily's Diary; only active while the diary is worn. See Slate Part II for effects.",
   "container.purified_undead.lily_memories": "Lily's Memories",
   "item.purified_undead.lily_diary.memories": "Use in main hand: open the eight-memory ring. One of each kind; active while worn.",
-  "item.purified_undead.shining_guardian_treasure.desc": "White Witch Relic: +100% maximum health."
+  "item.purified_undead.shining_guardian_treasure.desc": "White Witch Relic: +100% maximum health.",
+  "jei.purified_undead.left_fuel": "Fuel L",
+  "jei.purified_undead.right_fuel": "Fuel R",
+  "jei.purified_undead.bottom": "Lower",
+  "jei.purified_undead.output": "Output",
+  "jei.purified_undead.top_consumed": "Upper: consumed",
+  "jei.purified_undead.top_retained": "Upper: retained",
+  "jei.purified_undead.consumed": "Consumes the shown quantity per operation.",
+  "jei.purified_undead.retained": "This ingredient is retained after crafting.",
+  "jei.purified_undead.seconds": "%s s / batch",
+  "jei.purified_undead.memory_crafting": "Crafting: Blighted Memories",
+  "jei.purified_undead.crafting_retains": "Shapeless; keeps tablet",
+  "jei.purified_undead.cipher_source": "Overworld and Nether treasure chests: default 25% chance of 1–5 fragments.",
+  "jei.purified_undead.ferin_source": "Awarded once per player after collecting the other seven memories. Delivery waits for inventory space.",
+  "jei.purified_undead.crystal_source": "Wear the Ancient Contract and hold use with Blighted Spirit in your main hand to obtain Pure Crystals, including at maximum talisman level. Used as the foundry right fuel."
 }

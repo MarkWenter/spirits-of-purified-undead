@@ -14,7 +14,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
-/** Four visible slots and one hidden, persistent bottom-ingredient remainder slot. */
+/** Four visible slots; legacy/template remainder storage is retained for save compatibility. */
 public final class PurificationFoundryEntity extends BaseContainerBlockEntity implements WorldlyContainer {
     public static final int INPUT = 0, LEFT_FUEL = 1, RIGHT_FUEL = 2, OUTPUT = 3;
     private NonNullList<ItemStack> items = NonNullList.withSize(5, ItemStack.EMPTY);
@@ -91,7 +91,12 @@ public final class PurificationFoundryEntity extends BaseContainerBlockEntity im
         if(progress<duration)return;
         if(recipe.consumeTop())items.get(INPUT).shrink(recipe.topCount()*batch);
         items.get(LEFT_FUEL).shrink(recipe.leftFuel()*batch);items.get(RIGHT_FUEL).shrink(recipe.rightFuel()*batch);
-        var rest=items.get(OUTPUT).copy();rest.shrink(recipe.bottomCount()*batch);items.set(4,rest);
+        var rest=items.get(OUTPUT).copy();rest.shrink(recipe.bottomCount()*batch);
+        if(recipe.consumeTop()) {
+            // fitsRemainder was checked against this exact batch before any consumption.
+            if(items.get(INPUT).isEmpty())items.set(INPUT,rest);
+            else if(!rest.isEmpty())items.get(INPUT).grow(rest.getCount());
+        } else items.set(4,rest);
         var product=recipe.result();product.setCount(recipe.outputCount()*batch);items.set(OUTPUT,product);hasResult=true;
         resetWork();setChanged();
     }

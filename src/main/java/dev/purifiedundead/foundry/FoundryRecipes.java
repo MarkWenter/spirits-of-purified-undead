@@ -17,7 +17,15 @@ public final class FoundryRecipes {
             if(!matches(a,b))return 0;
             int n=Math.min(b.getCount()/bottomCount,Math.min(left.getCount()/leftFuel,right.getCount()/rightFuel));
             if(consumeTop)n=Math.min(n,a.getCount()/topCount);
-            return Math.min(n,result().getMaxStackSize()/outputCount);
+            n=Math.min(n,result().getMaxStackSize()/outputCount);
+            if(consumeTop && n>0 && !fitsRemainder(a,b,n))return 0;
+            return n;
+        }
+        /** The completed batch must leave at most one stack of input in the upper slot. */
+        public boolean fitsRemainder(ItemStack a,ItemStack b,int n){
+            int upper=a.getCount()-topCount*n,lower=b.getCount()-bottomCount*n;
+            if(upper==0||lower==0)return true;
+            return ItemStack.isSameItemSameTags(a,b)&&upper+lower<=a.getMaxStackSize();
         }
     }
     private static List<Recipe> recipes=List.of();
@@ -43,12 +51,20 @@ public final class FoundryRecipes {
             if(!Files.exists(path)){var root=new JsonObject();root.addProperty("_help","A=top / 上槽; B=bottom / 下槽. consumeTop=false preserves A. Counts and fuels are per result batch unit; ticks=400 is 20 seconds. Restart server after changes. IDs may come from any mod; invalid entries are skipped with a warning.");root.add("recipes",gson.toJsonTree(defaults()));Files.writeString(path,gson.toJson(root),StandardCharsets.UTF_8);}
             var root=JsonParser.parseString(Files.readString(path,StandardCharsets.UTF_8)).getAsJsonObject();var loaded=new ArrayList<Recipe>();
             for(var element:root.getAsJsonArray("recipes"))try{var object=element.getAsJsonObject();if(!object.has("consumeTop")||!object.get("consumeTop").isJsonPrimitive()||!object.get("consumeTop").getAsJsonPrimitive().isBoolean())throw new IllegalArgumentException("consumeTop must be an explicit boolean");var recipe=gson.fromJson(element,Recipe.class);validate(recipe);loaded.add(recipe);}catch(RuntimeException bad){com.mojang.logging.LogUtils.getLogger().warn("Invalid foundry recipe skipped: {}",bad.getMessage());}
+            if(loaded.size()>4096)throw new IllegalArgumentException("At most 4096 foundry recipes are supported");
             recipes=List.copyOf(loaded);
         }catch(Exception e){recipes=List.of();com.mojang.logging.LogUtils.getLogger().error("Foundry configuration could not load; processing disabled, inventory untouched: {}",path,e);}
     }
     public static void validate(Recipe r){
         for(String s:new String[]{r.top,r.bottom,r.output}){var id=ResourceLocation.tryParse(s==null?"":s);if(id==null||!BuiltInRegistries.ITEM.containsKey(id)||BuiltInRegistries.ITEM.get(id)==Items.AIR)throw new IllegalArgumentException("Unknown item: "+s);}
         if(r.topCount<1||r.bottomCount<1||r.outputCount<1||r.topCount>64||r.bottomCount>64||r.outputCount>r.result().getMaxStackSize()||r.leftFuel<1||r.leftFuel>64||r.rightFuel<1||r.rightFuel>64||r.ticks<1||r.ticks>32767)throw new IllegalArgumentException("Invalid count/fuel/ticks: "+r);
+    }
+    public static void write(net.minecraft.network.FriendlyByteBuf b,List<Recipe> values){
+        b.writeVarInt(values.size());for(var r:values){b.writeUtf(r.top,256);b.writeVarInt(r.topCount);b.writeUtf(r.bottom,256);b.writeVarInt(r.bottomCount);b.writeUtf(r.output,256);b.writeVarInt(r.outputCount);b.writeBoolean(r.consumeTop);b.writeVarInt(r.leftFuel);b.writeVarInt(r.rightFuel);b.writeVarInt(r.ticks);}
+    }
+    public static List<Recipe> read(net.minecraft.network.FriendlyByteBuf b){
+        int count=b.readVarInt();if(count<0||count>4096)throw new IllegalArgumentException("Invalid recipe count");var list=new ArrayList<Recipe>();
+        for(int i=0;i<count;i++)list.add(new Recipe(b.readUtf(256),b.readVarInt(),b.readUtf(256),b.readVarInt(),b.readUtf(256),b.readVarInt(),b.readBoolean(),b.readVarInt(),b.readVarInt(),b.readVarInt()));return List.copyOf(list);
     }
     private FoundryRecipes(){}
 }
