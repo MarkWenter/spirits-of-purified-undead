@@ -43,6 +43,6 @@ public final class BlightedGolemEntity extends IronGolem {
 
     @Override
     protected ResourceLocation getDefaultLootTable() {
-        return ResourceLocation.withDefaultNamespace("entities/iron_golem");
+        return ResourceLocation.fromNamespaceAndPath("minecraft", "entities/iron_golem");
     }
 }

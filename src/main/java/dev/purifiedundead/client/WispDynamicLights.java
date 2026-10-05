@@ -29,7 +29,7 @@ public final class WispDynamicLights {
                 backend=namespace; LOG.info("Contract visual light adapter ready: {}",namespace); return;
             } catch(ClassNotFoundException ignored) {
                 // The light mod is optional; dedicated servers never load this class.
-            } catch(ReflectiveOperationException | LinkageError error) {
+            } catch(ReflectiveOperationException | LinkageError | RuntimeException error) {
                 LOG.warn("Optional dynamic-light API unavailable; keeping cosmetic wisp",error); return;
             }
         }

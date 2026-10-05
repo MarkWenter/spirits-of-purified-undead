@@ -8,6 +8,6 @@ public final class GolemArmorCompatibility {
   try {
    var list=(java.util.List<Object>)Class.forName("com.aizistral.enigmaticlegacy.items.GolemHeart").getField("EXCLUDED_ARMOR").get(null);
    for(var item:java.util.List.of(dev.purifiedundead.content.ModItems.IMMACULATE_HELMET.get(),dev.purifiedundead.content.ModItems.IMMACULATE_CHESTPLATE.get(),dev.purifiedundead.content.ModItems.IMMACULATE_LEGGINGS.get(),dev.purifiedundead.content.ModItems.IMMACULATE_BOOTS.get()))if(!list.contains(item))list.add(item);
-  }catch(ReflectiveOperationException|LinkageError e){com.mojang.logging.LogUtils.getLogger().warn("Enigmatic Legacy armor exclusion API unavailable",e);}
+  }catch(ReflectiveOperationException|LinkageError|RuntimeException e){com.mojang.logging.LogUtils.getLogger().warn("Enigmatic Legacy armor exclusion API unavailable",e);}
  }
 }

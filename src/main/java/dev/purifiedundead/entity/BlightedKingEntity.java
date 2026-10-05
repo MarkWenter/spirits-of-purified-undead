@@ -32,7 +32,7 @@ public final class BlightedKingEntity extends Evoker {
 
     @Override
     protected ResourceLocation getDefaultLootTable() {
-        return ResourceLocation.withDefaultNamespace("entities/evoker");
+        return ResourceLocation.fromNamespaceAndPath("minecraft", "entities/evoker");
     }
 
     private final class FasterFangsGoal extends SpellcasterUseSpellGoal {

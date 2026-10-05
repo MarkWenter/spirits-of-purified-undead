@@ -20,7 +20,8 @@ public final class PurificationFoundryEntity extends BaseContainerBlockEntity im
     private NonNullList<ItemStack> items = NonNullList.withSize(5, ItemStack.EMPTY);
     private int progress, duration;
     private boolean hasResult;
-    private String workKey="";
+    private FoundryRecipes.Recipe workRecipe;
+    private int workTop,workBottom,workBatch;
     private java.util.EnumMap<Direction, net.minecraftforge.common.util.LazyOptional<net.minecraftforge.items.IItemHandler>> handlers = createHandlers();
     private java.util.EnumMap<Direction, net.minecraftforge.common.util.LazyOptional<net.minecraftforge.items.IItemHandler>> createHandlers() {
         var result = new java.util.EnumMap<Direction, net.minecraftforge.common.util.LazyOptional<net.minecraftforge.items.IItemHandler>>(Direction.class);
@@ -81,12 +82,13 @@ public final class PurificationFoundryEntity extends BaseContainerBlockEntity im
             if(!items.get(OUTPUT).isEmpty()){resetWork();return;}
             hasResult=false;items.set(OUTPUT,items.get(4));items.set(4,ItemStack.EMPTY);setChanged();
         }
+        if(items.get(INPUT).isEmpty()||items.get(OUTPUT).isEmpty()||items.get(LEFT_FUEL).isEmpty()||items.get(RIGHT_FUEL).isEmpty()){resetWork();return;}
         var recipe=FoundryRecipes.find(items.get(INPUT),items.get(OUTPUT));
         if(recipe==null||!canPlaceItem(LEFT_FUEL,items.get(LEFT_FUEL))||!canPlaceItem(RIGHT_FUEL,items.get(RIGHT_FUEL))){resetWork();return;}
         int batch=recipe.batch(items.get(INPUT),items.get(OUTPUT),items.get(LEFT_FUEL),items.get(RIGHT_FUEL));
         if(batch<=0){resetWork();return;}
-        String key=recipe.toString()+":"+items.get(INPUT).getCount()+":"+items.get(OUTPUT).getCount()+":"+batch;
-        if(!key.equals(workKey)){progress=0;workKey=key;}
+        int topCount=items.get(INPUT).getCount(),bottomCount=items.get(OUTPUT).getCount();
+        if(!recipe.equals(workRecipe)||topCount!=workTop||bottomCount!=workBottom||batch!=workBatch){progress=0;workRecipe=recipe;workTop=topCount;workBottom=bottomCount;workBatch=batch;}
         setWorkProgress(progress+1,recipe.ticks());
         if(progress<duration)return;
         if(recipe.consumeTop())items.get(INPUT).shrink(recipe.topCount()*batch);
@@ -100,7 +102,7 @@ public final class PurificationFoundryEntity extends BaseContainerBlockEntity im
         var product=recipe.result();product.setCount(recipe.outputCount()*batch);items.set(OUTPUT,product);hasResult=true;
         resetWork();setChanged();
     }
-    private void resetWork(){workKey="";if(progress!=0||duration!=0)setWorkProgress(0,0);}
+    private void resetWork(){workRecipe=null;if(progress!=0||duration!=0)setWorkProgress(0,0);}
     /** Server-owned progress and active-state synchronization. */
     public void setWorkProgress(int completed, int total) {
         if (level == null || level.isClientSide) return;
@@ -109,6 +111,6 @@ public final class PurificationFoundryEntity extends BaseContainerBlockEntity im
         boolean lit = duration > 0;
         if (getBlockState().getValue(PurificationFoundryBlock.LIT) != lit)
             level.setBlock(worldPosition, getBlockState().setValue(PurificationFoundryBlock.LIT, lit), 3);
-        setChanged();
+        // Progress is menu-synchronized and intentionally not persisted; inventory changes mark dirty.
     }
 }

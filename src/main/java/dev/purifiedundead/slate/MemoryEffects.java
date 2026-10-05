@@ -34,7 +34,7 @@ public final class MemoryEffects {
         attribute(p.getAttribute(net.minecraftforge.common.ForgeMod.SWIM_SPEED.get()),SWIM,active(p,"eleine")?SlateConfig.get(SlateConfig.swimBonus):0);
         WallGrip.tick(p);
         if(!living)return;
-        if(active(p,"faden")&&p.tickCount%100==0)p.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION,400,0,true,false,true));
+        if(p.tickCount%100==0&&active(p,"faden"))p.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION,400,0,true,false,true));
         boolean low=p.getHealth()<p.getMaxHealth()*.3;
         if(active(p,"guardians")&&low&&!p.getPersistentData().getBoolean(LOW)&&p.server.overworld().getGameTime()>=p.getPersistentData().getLong(COOLDOWN)){
             p.getPersistentData().putLong(COOLDOWN,p.server.overworld().getGameTime()+SlateConfig.get(SlateConfig.sistersCooldown));
@@ -53,6 +53,7 @@ public final class MemoryEffects {
     public static float sprintMultiplier(Player p){var speed=p.getAttribute(Attributes.MOVEMENT_SPEED);double ratio=speed==null||speed.getBaseValue()<=0?1:speed.getValue()/speed.getBaseValue();
         // Vanilla sprint's +30% is the condition, not an extra external speed bonus.
         if(p.isSprinting())ratio/=1.3;
+        if(!Double.isFinite(ratio))ratio=1;
         double steps=Math.floor(Math.max(0,ratio-1)*10+1e-6);return (float)(1+SlateConfig.get(SlateConfig.sprintDamage)+steps*SlateConfig.get(SlateConfig.speedStepDamage));}
     @SubscribeEvent(priority=EventPriority.LOWEST) public static void melee(LivingDamageEvent e){
         if(splashing||!(e.getSource().getEntity() instanceof ServerPlayer p)||e.getSource().getDirectEntity()!=p||!e.getSource().is(DamageTypes.PLAYER_ATTACK)||e.getAmount()<=0)return;

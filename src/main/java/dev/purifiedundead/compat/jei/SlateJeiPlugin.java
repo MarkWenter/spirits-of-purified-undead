@@ -30,6 +30,7 @@ public final class SlateJeiPlugin implements IModPlugin {
     public record MemoryCraft(String key){}
     private static IJeiRuntime runtime;
     private static List<FoundryRecipes.Recipe> displayed=List.of();
+    private static final java.util.Map<FoundryRecipes.Recipe,FoundryRecipes.Recipe> registered=new java.util.HashMap<>();
     @Override public ResourceLocation getPluginUid(){return id("slate");}
     private static ResourceLocation id(String path){return ResourceLocation.fromNamespaceAndPath("purified_undead",path);}
     @Override public void registerCategories(IRecipeCategoryRegistration r){r.addRecipeCategories(new FoundryCategory(r.getJeiHelpers().getGuiHelper()),new MemoryCategory(r.getJeiHelpers().getGuiHelper()));}
@@ -37,7 +38,7 @@ public final class SlateJeiPlugin implements IModPlugin {
         r.getSmithingCategory().addExtension(dev.purifiedundead.purification.LilySmithingRecipe.class,new LilySmithingExtension());
     }
     @Override public void registerRecipes(IRecipeRegistration r){
-        displayed=FoundryClientRecipes.all();r.addRecipes(FOUNDRY,displayed);
+        registered.clear();displayed=FoundryClientRecipes.all().stream().distinct().toList();for(var recipe:displayed)registered.put(recipe,recipe);r.addRecipes(FOUNDRY,displayed);
         r.addRecipes(MEMORIES,SlateContent.FORGED.keySet().stream().map(MemoryCraft::new).toList());
         r.addItemStackInfo(new ItemStack(SlateContent.CIPHER_FRAGMENT.get()),Component.translatable("jei.purified_undead.cipher_source"));
         r.addItemStackInfo(new ItemStack(SlateContent.MEMORIES.get("ferin").get()),Component.translatable("jei.purified_undead.ferin_source"));
@@ -46,12 +47,12 @@ public final class SlateJeiPlugin implements IModPlugin {
     @Override public void registerRecipeCatalysts(IRecipeCatalystRegistration r){r.addRecipeCatalyst(new ItemStack(FoundryContent.ITEM.get()),FOUNDRY);r.addRecipeCatalyst(new ItemStack(Items.CRAFTING_TABLE),MEMORIES);}
     @Override public void registerGuiHandlers(IGuiHandlerRegistration r){r.addRecipeClickArea(PurificationFoundryScreen.class,88,43,25,66,FOUNDRY);}
     @Override public void onRuntimeAvailable(IJeiRuntime value){runtime=value;refresh();}
-    @Override public void onRuntimeUnavailable(){runtime=null;displayed=List.of();}
+    @Override public void onRuntimeUnavailable(){runtime=null;displayed=List.of();registered.clear();}
     /** Login sync can arrive before or after JEI registers recipes. Both orders use server values. */
     public static void refresh(){
-        if(runtime==null)return;var incoming=FoundryClientRecipes.all();if(displayed.equals(incoming))return;
+        if(runtime==null)return;var incoming=FoundryClientRecipes.all().stream().distinct().map(r->registered.getOrDefault(r,r)).toList();if(displayed.equals(incoming))return;
         var manager=runtime.getRecipeManager();manager.hideRecipes(FOUNDRY,displayed);
-        manager.addRecipes(FOUNDRY,incoming);manager.unhideRecipes(FOUNDRY,incoming);manager.unhideRecipeCategory(FOUNDRY);displayed=incoming;
+        var fresh=incoming.stream().filter(r->!registered.containsKey(r)).toList();manager.addRecipes(FOUNDRY,fresh);for(var recipe:fresh)registered.put(recipe,recipe);manager.unhideRecipes(FOUNDRY,incoming);manager.unhideRecipeCategory(FOUNDRY);displayed=incoming;
     }
     private static ItemStack item(String id,int count){return new ItemStack(BuiltInRegistries.ITEM.get(ResourceLocation.parse(id)),count);}
     private static void label(GuiGraphics g,String key,int x,int y){g.drawString(Minecraft.getInstance().font,Component.translatable("jei.purified_undead."+key),x,y,0xff404040,false);}

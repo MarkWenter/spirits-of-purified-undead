@@ -61,6 +61,10 @@ public final class SlateJeiSmoke {
    System.out.println("LILY_JEI_OK: output lookup, visible result, correct book identity, empty template, all nine potion usages and ordinary crafting output audit");
    var category=manager.getRecipeCategory(SlateJeiPlugin.FOUNDRY);for(var r:recipes){var layout=manager.createRecipeLayoutDrawable(category,r,focus.getEmptyFocusGroup()).orElseThrow();check(layout.getRecipeSlotsView().getSlotViews(RecipeIngredientRole.INPUT).size()==4,"four inputs including fuels");check(layout.getRecipeSlotsView().findSlotByName("output").isPresent(),"output visible");}
    FoundryClientRecipes.accept(List.of(recipes.get(12)));check(manager.createRecipeLookup(SlateJeiPlugin.FOUNDRY).get().count()==1,"late sync hides stale recipes");FoundryClientRecipes.accept(recipes);check(manager.createRecipeLookup(SlateJeiPlugin.FOUNDRY).get().count()==13,"refresh restores exact set");
+   for(int repeat=0;repeat<40;repeat++){FoundryClientRecipes.accept(List.of(recipes.get(12)));FoundryClientRecipes.accept(recipes);}
+   var registered=SlateJeiPlugin.class.getDeclaredField("registered");registered.setAccessible(true);check(((java.util.Map<?,?>)registered.get(null)).size()==13,"repeated sync retains only 13 distinct JEI recipe identities");
+   check(manager.createRecipeLookup(SlateJeiPlugin.FOUNDRY).get().count()==13,"repeated sync does not multiply visible recipes");
+   System.out.println("JEI_COMPATIBILITY_OK: 80 refreshes, 13 registered identities and 13 visible recipes");
    checked=true;mc.setScreen(null);runtime.getRecipesGui().showRecipes(category,List.of(recipes.get(0),recipes.get(5),recipes.get(12)),List.of());
   }else{
    after++;if(after==40)net.minecraft.client.Screenshot.grab(mc.gameDirectory,"slate-jei-foundry.png",mc.getMainRenderTarget(),m->{});
