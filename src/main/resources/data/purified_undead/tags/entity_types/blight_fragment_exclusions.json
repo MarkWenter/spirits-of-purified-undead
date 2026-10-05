@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "alexsmobs:murmur_head",
+      "required": false
+    },
+    {
+      "id": "alexsmobs:bone_serpent_part",
+      "required": false
+    }
+  ]
+}

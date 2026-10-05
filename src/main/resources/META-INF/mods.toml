@@ -12,7 +12,7 @@ description='''ENDER LILIES fan mod featuring the Ancient Contract, undead warri
 [[dependencies.purified_undead]]
 modId="forge"
 mandatory=true
-versionRange="[47.4.23,48)"
+versionRange="[47.4.12,48)"
 ordering="NONE"
 side="BOTH"
 

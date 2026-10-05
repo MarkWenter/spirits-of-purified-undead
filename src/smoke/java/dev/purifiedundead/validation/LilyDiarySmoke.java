@@ -30,6 +30,7 @@ public final class LilyDiarySmoke {
   menu.getSlot(2).set(new ItemStack(Items.POTION));menu.createResult();check(menu.getSlot(3).getItem().isEmpty(),"ordinary potion rejected");
   menu.getSlot(2).set(PureElixirBrewing.stack(Items.POTION,ModPotions.PURE_ELIXIR.get()));menu.getSlot(1).set(new ItemStack(Items.BOOK));menu.createResult();check(menu.getSlot(3).getItem().isEmpty(),"ordinary book rejected");
   menu.getSlot(1).set(DiaryBridge.create());menu.getSlot(0).set(new ItemStack(Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE));menu.createResult();check(menu.getSlot(3).getItem().isEmpty(),"template rejected");
+  UndeadCompatSmoke.run(server);
   System.out.println("LILY_DIARY_OK: first gift once, distinct undead only while worn, bonuses/remove/re-equip, clone persistence, real smithing menu all 9 elixirs and invalid inputs");
  }
 }

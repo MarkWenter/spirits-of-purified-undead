@@ -61,13 +61,13 @@ def attributeMods = [
     "dev.shadowsoffire:Placebo:${placebo_version}"
 ]
 dependencies {
-    compileOnly fg.deobf('maven.modrinth:jei:HcUiurg6')
+    compileOnly fg.deobf("maven.modrinth:jei:${providers.gradleProperty('jei_version').orElse('HcUiurg6').get()}")
     if (providers.gradleProperty('with_enigmatic').orElse('false').get().toBoolean()) {
         runtimeOnly fg.deobf('maven.modrinth:enigmatic-legacy:yUuDfmnk')
         runtimeOnly fg.deobf('maven.modrinth:caelus:mRry0DgY')
     }
 
-    if (providers.gradleProperty('with_jei').orElse('false').get().toBoolean()) { runtimeOnly fg.deobf('maven.modrinth:jei:HcUiurg6') }
+    if (providers.gradleProperty('with_jei').orElse('false').get().toBoolean()) { runtimeOnly fg.deobf("maven.modrinth:jei:${providers.gradleProperty('jei_version').orElse('HcUiurg6').get()}") }
 
     if (providers.gradleProperty('with_wisp_shaders').orElse('false').get().toBoolean()) {
         runtimeOnly fg.deobf('maven.modrinth:oculus:iQ1SwGc3')

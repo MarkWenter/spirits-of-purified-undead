@@ -1,0 +1,409 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "alexscaves:brainiac",
+      "required": false
+    },
+    {
+      "id": "alexscaves:luxtructosaurus",
+      "required": false
+    },
+    {
+      "id": "alexsmobs:bone_serpent",
+      "required": false
+    },
+    {
+      "id": "alexsmobs:murmur",
+      "required": false
+    },
+    {
+      "id": "alexsmobs:skelewag",
+      "required": false
+    },
+    {
+      "id": "alexsmobs:soul_vulture",
+      "required": false
+    },
+    {
+      "id": "aquamirae:captain_cornelia",
+      "required": false
+    },
+    {
+      "id": "born_in_chaos_v1:barrel_zombie",
+      "required": false
+    },
+    {
+      "id": "born_in_chaos_v1:bonescaller",
+      "required": false
+    },
+    {
+      "id": "born_in_chaos_v1:bonescaller_not_despawn",
+      "required": false
+    },
+    {
+      "id": "born_in_chaos_v1:decaying_zombie",
+      "required": false
+    },
+    {
+      "id": "born_in_chaos_v1:decaying_zombie_not_despawn",
+      "required": false
+    },
+    {
+      "id": "born_in_chaos_v1:decrepit_skeleton",
+      "required": false
+    },
+    {
+      "id": "born_in_chaos_v1:door_knight",
+      "required": false
+    },
+    {
+      "id": "born_in_chaos_v1:door_knight_not_despawn",
+      "required": false
+    },
+    {
+      "id": "born_in_chaos_v1:fallen_chaos_knight",
+      "required": false
+    },
+    {
+      "id": "born_in_chaos_v1:skeleton_demoman",
+      "required": false
+    },
+    {
+      "id": "born_in_chaos_v1:skeleton_thrasher",
+      "required": false
+    },
+    {
+      "id": "born_in_chaos_v1:skeleton_thrasher_not_despawn",
+      "required": false
+    },
+    {
+      "id": "born_in_chaos_v1:zombie_bruiser",
+      "required": false
+    },
+    {
+      "id": "born_in_chaos_v1:zombie_clown",
+      "required": false
+    },
+    {
+      "id": "born_in_chaos_v1:zombie_clown_not_despawn",
+      "required": false
+    },
+    {
+      "id": "born_in_chaos_v1:zombie_fisherman",
+      "required": false
+    },
+    {
+      "id": "born_in_chaos_v1:zombie_lumberjack",
+      "required": false
+    },
+    {
+      "id": "bosses_of_mass_destruction:lich",
+      "required": false
+    },
+    {
+      "id": "bygonenether:corpor",
+      "required": false
+    },
+    {
+      "id": "bygonenether:wither_skeleton_knight",
+      "required": false
+    },
+    {
+      "id": "bygonenether:wraither",
+      "required": false
+    },
+    {
+      "id": "cataclysm:ancient_remnant",
+      "required": false
+    },
+    {
+      "id": "cataclysm:aptrgangr",
+      "required": false
+    },
+    {
+      "id": "cataclysm:draugr",
+      "required": false
+    },
+    {
+      "id": "cataclysm:drowned_host",
+      "required": false
+    },
+    {
+      "id": "cataclysm:elite_draugr",
+      "required": false
+    },
+    {
+      "id": "cataclysm:ignited_berserker",
+      "required": false
+    },
+    {
+      "id": "cataclysm:ignited_revenant",
+      "required": false
+    },
+    {
+      "id": "cataclysm:kobolediator",
+      "required": false
+    },
+    {
+      "id": "cataclysm:koboleton",
+      "required": false
+    },
+    {
+      "id": "cataclysm:maledictus",
+      "required": false
+    },
+    {
+      "id": "cataclysm:royal_draugr",
+      "required": false
+    },
+    {
+      "id": "cataclysm:wadjet",
+      "required": false
+    },
+    {
+      "id": "eeeabsmobs:corpse",
+      "required": false
+    },
+    {
+      "id": "eeeabsmobs:corpse_villager",
+      "required": false
+    },
+    {
+      "id": "eeeabsmobs:corpse_warlock",
+      "required": false
+    },
+    {
+      "id": "eeeabsmobs:immortal_archer",
+      "required": false
+    },
+    {
+      "id": "eeeabsmobs:immortal_knight",
+      "required": false
+    },
+    {
+      "id": "eeeabsmobs:immortal_mage",
+      "required": false
+    },
+    {
+      "id": "eeeabsmobs:immortal_skeleton",
+      "required": false
+    },
+    {
+      "id": "eeeabsmobs:immortal_warrior",
+      "required": false
+    },
+    {
+      "id": "eternalnether:corpor",
+      "required": false
+    },
+    {
+      "id": "eternalnether:wither_skeleton_knight",
+      "required": false
+    },
+    {
+      "id": "eternalnether:wraither",
+      "required": false
+    },
+    {
+      "id": "goety:apostle",
+      "required": false
+    },
+    {
+      "id": "goety:bone_lord",
+      "required": false
+    },
+    {
+      "id": "goety:border_wraith",
+      "required": false
+    },
+    {
+      "id": "goety:cairn_necromancer",
+      "required": false
+    },
+    {
+      "id": "goety:crypt_slime",
+      "required": false
+    },
+    {
+      "id": "goety:frayed",
+      "required": false
+    },
+    {
+      "id": "goety:haunted_armor",
+      "required": false
+    },
+    {
+      "id": "goety:hostile_skeleton_pillager",
+      "required": false
+    },
+    {
+      "id": "goety:hostile_zombie_vindicator",
+      "required": false
+    },
+    {
+      "id": "goety:mossy_necromancer",
+      "required": false
+    },
+    {
+      "id": "goety:muck_wraith",
+      "required": false
+    },
+    {
+      "id": "goety:necromancer",
+      "required": false
+    },
+    {
+      "id": "goety:rattled",
+      "required": false
+    },
+    {
+      "id": "goety:reaper",
+      "required": false
+    },
+    {
+      "id": "goety:skull_lord",
+      "required": false
+    },
+    {
+      "id": "goety:wight",
+      "required": false
+    },
+    {
+      "id": "goety:wither_necromancer",
+      "required": false
+    },
+    {
+      "id": "goety:wraith",
+      "required": false
+    },
+    {
+      "id": "graveyard:corrupted_pillager",
+      "required": false
+    },
+    {
+      "id": "graveyard:corrupted_vindicator",
+      "required": false
+    },
+    {
+      "id": "graveyard:ghoul",
+      "required": false
+    },
+    {
+      "id": "graveyard:lich",
+      "required": false
+    },
+    {
+      "id": "graveyard:revenant",
+      "required": false
+    },
+    {
+      "id": "graveyard:skeleton_creeper",
+      "required": false
+    },
+    {
+      "id": "graveyard:wraith",
+      "required": false
+    },
+    {
+      "id": "iceandfire:dread_beast",
+      "required": false
+    },
+    {
+      "id": "iceandfire:dread_ghoul",
+      "required": false
+    },
+    {
+      "id": "iceandfire:dread_knight",
+      "required": false
+    },
+    {
+      "id": "iceandfire:dread_lich",
+      "required": false
+    },
+    {
+      "id": "iceandfire:dread_scuttler",
+      "required": false
+    },
+    {
+      "id": "iceandfire:dread_thrall",
+      "required": false
+    },
+    {
+      "id": "iceandfire:ghost",
+      "required": false
+    },
+    {
+      "id": "irons_spellbooks:necromancer",
+      "required": false
+    },
+    {
+      "id": "meetyourfight:bellringer",
+      "required": false
+    },
+    {
+      "id": "meetyourfight:swampjaw",
+      "required": false
+    },
+    {
+      "id": "twilightforest:knight_phantom",
+      "required": false
+    },
+    {
+      "id": "twilightforest:lich",
+      "required": false
+    },
+    {
+      "id": "twilightforest:lich_minion",
+      "required": false
+    },
+    {
+      "id": "twilightforest:rising_zombie",
+      "required": false
+    },
+    {
+      "id": "twilightforest:skeleton_druid",
+      "required": false
+    },
+    {
+      "id": "twilightforest:wraith",
+      "required": false
+    },
+    {
+      "id": "block_factorys_bosses:frozen_skeleton",
+      "required": false
+    },
+    {
+      "id": "block_factorys_bosses:dragon_guard_sword",
+      "required": false
+    },
+    {
+      "id": "block_factorys_bosses:flaming_skeleton_guard_sword",
+      "required": false
+    },
+    {
+      "id": "block_factorys_bosses:flaming_skeleton_guard_fireball",
+      "required": false
+    },
+    {
+      "id": "block_factorys_bosses:soul_skeleton",
+      "required": false
+    },
+    {
+      "id": "block_factorys_bosses:soul_knight_wither_skeleton",
+      "required": false
+    },
+    {
+      "id": "block_factorys_bosses:pirate_captain",
+      "required": false
+    },
+    {
+      "id": "block_factorys_bosses:pirate_rook",
+      "required": false
+    },
+    {
+      "id": "block_factorys_bosses:crossbow_pirate",
+      "required": false
+    }
+  ]
+}

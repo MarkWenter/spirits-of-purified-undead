@@ -33,6 +33,9 @@ public final class SlateJeiPlugin implements IModPlugin {
     @Override public ResourceLocation getPluginUid(){return id("slate");}
     private static ResourceLocation id(String path){return ResourceLocation.fromNamespaceAndPath("purified_undead",path);}
     @Override public void registerCategories(IRecipeCategoryRegistration r){r.addRecipeCategories(new FoundryCategory(r.getJeiHelpers().getGuiHelper()),new MemoryCategory(r.getJeiHelpers().getGuiHelper()));}
+    @Override public void registerVanillaCategoryExtensions(IVanillaCategoryExtensionRegistration r){
+        r.getSmithingCategory().addExtension(dev.purifiedundead.purification.LilySmithingRecipe.class,new LilySmithingExtension());
+    }
     @Override public void registerRecipes(IRecipeRegistration r){
         displayed=FoundryClientRecipes.all();r.addRecipes(FOUNDRY,displayed);
         r.addRecipes(MEMORIES,SlateContent.FORGED.keySet().stream().map(MemoryCraft::new).toList());

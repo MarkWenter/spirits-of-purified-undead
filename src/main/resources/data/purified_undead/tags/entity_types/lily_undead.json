@@ -129,6 +129,7 @@
     {
       "id": "irons_spellbooks:necromancer",
       "required": false
-    }
+    },
+    "#purified_undead:compatible_undead"
   ]
 }

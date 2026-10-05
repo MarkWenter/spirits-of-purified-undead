@@ -17,7 +17,7 @@ public final class BlightMaterialDropEvents {
     @SubscribeEvent
     public void onLivingDrops(LivingDropsEvent event) {
         if (!(event.getSource().getEntity() instanceof ServerPlayer player)
-                || !event.getEntity().getType().is(ModEntityTypeTags.BLIGHT_FRAGMENT_SOURCES)
+                || !dev.purifiedundead.compat.UndeadCompatibility.fragmentSource(event.getEntity())
                 || event.getEntity().getRandom().nextFloat()
                 >= PurifiedUndeadConfig.get(PurifiedUndeadConfig.VALUES.fragmentDropChance)) {
             return;

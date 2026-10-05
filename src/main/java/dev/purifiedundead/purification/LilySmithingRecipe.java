@@ -9,7 +9,7 @@ public final class LilySmithingRecipe extends SmithingTransformRecipe {
  public static final java.util.function.Supplier<RecipeSerializer<LilySmithingRecipe>> SERIALIZER=REG.register("lily_diary",Serializer::new);
  public static void register(net.minecraftforge.eventbus.api.IEventBus bus){REG.register(bus);}
  public LilySmithingRecipe(ResourceLocation id){super(id, Ingredient.EMPTY,Ingredient.of(DiaryBridge.create()),potions(),new ItemStack(ModItems.LILY_DIARY.get()));}
- private static Ingredient potions(){var list=new java.util.ArrayList<ItemStack>();for(Item bottle:new Item[]{Items.POTION,Items.SPLASH_POTION,Items.LINGERING_POTION})for(var p:java.util.List.of(ModPotions.PURE_ELIXIR.get(),ModPotions.LONG_PURE_ELIXIR.get(),ModPotions.STRONG_PURE_ELIXIR.get()))list.add(PureElixirBrewing.stack(bottle,p));return Ingredient.of(list.stream());}
+ public static Ingredient potions(){var list=new java.util.ArrayList<ItemStack>();for(Item bottle:new Item[]{Items.POTION,Items.SPLASH_POTION,Items.LINGERING_POTION})for(var p:java.util.List.of(ModPotions.PURE_ELIXIR.get(),ModPotions.LONG_PURE_ELIXIR.get(),ModPotions.STRONG_PURE_ELIXIR.get()))list.add(PureElixirBrewing.stack(bottle,p));return Ingredient.of(list.stream());}
  @Override public boolean isTemplateIngredient(ItemStack s){return s.isEmpty();}
  @Override public boolean isBaseIngredient(ItemStack s){return DiaryBridge.isDiary(s);}
  @Override public boolean isAdditionIngredient(ItemStack s){return (s.is(Items.POTION)||s.is(Items.SPLASH_POTION)||s.is(Items.LINGERING_POTION))&&PureElixirBrewing.isPure(s);}

@@ -45,6 +45,7 @@ public final class PurifiedUndeadConfig {
         public final ForgeConfigSpec.IntValue warriorSlots;
         public final ForgeConfigSpec.IntValue whiteWitchRelicSlots;
         public final ForgeConfigSpec.DoubleValue fragmentDropChance;
+        public final ForgeConfigSpec.BooleanValue autoDetectModdedUndeadDrops;
         public final ForgeConfigSpec.IntValue transformationDurationTicks;
         public final ForgeConfigSpec.BooleanValue contractAcquisitionEnabled;
         public final ForgeConfigSpec.BooleanValue ferinAcquisitionEnabled;
@@ -132,6 +133,7 @@ public final class PurifiedUndeadConfig {
             whiteWitchRelicSlots = builder.comment("White Witch Relic slots. Restart required.")
                     .defineInRange("whiteWitchRelicSlots", 3, 0, 16);
             fragmentDropChance = builder.defineInRange("blightFragmentDropChance", 0.35D, 0.0D, 1.0D);
+            autoDetectModdedUndeadDrops = builder.comment("Allow modded hostile mobs declared undead by their mod to drop fragments. Explicit source/exclusion entity tags remain available.").define("autoDetectModdedUndeadDrops", true);
             transformationDurationTicks = builder.comment("Blighted Transformation duration. 20 ticks = one second.")
                     .defineInRange("transformationDurationTicks", 12000, 20, 720000);
             builder.pop();
