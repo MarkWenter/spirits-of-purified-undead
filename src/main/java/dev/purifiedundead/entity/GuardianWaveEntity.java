@@ -11,8 +11,8 @@ import java.util.*;
 
 /** A short-lived, bounded melee wave. Not saved, not a projectile, and never loads chunks. */
 public final class GuardianWaveEntity extends Entity {
-    public static final double RANGE = 7D, SPEED = 1.75D;
-    public static final int LIFETIME = 4;
+    public static final double RANGE = 7D, SPEED = 1D;
+    public static final int LIFETIME = 7;
     private static final EntityDataAccessor<Integer> OWNER = SynchedEntityData.defineId(GuardianWaveEntity.class,EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> SHOT = SynchedEntityData.defineId(GuardianWaveEntity.class,EntityDataSerializers.INT);
     private boolean predicted;
@@ -68,13 +68,13 @@ public final class GuardianWaveEntity extends Entity {
         if(!loaded(from,to)){discard();return;}
         var wall=level().clip(new ClipContext(from,to,ClipContext.Block.COLLIDER,ClipContext.Fluid.NONE,this));
         boolean blocked=wall.getType()!=HitResult.Type.MISS;if(blocked)to=wall.getLocation();
-        var query=new AABB(from,to).inflate(1.1);
+        var query=new AABB(from,to).inflate(1.3);
         for(var target:level().getEntitiesOfClass(LivingEntity.class,query,t->t.isAlive()&&t.isAttackable()&&dev.purifiedundead.slate.MemoryEffects.legal(attack.owner(),t))){
             if(hit.contains(target.getUUID()))continue;
 
             Vec3 nearest=new Vec3(net.minecraft.util.Mth.clamp(to.x,target.getBoundingBox().minX,target.getBoundingBox().maxX),net.minecraft.util.Mth.clamp(to.y,target.getBoundingBox().minY,target.getBoundingBox().maxY),net.minecraft.util.Mth.clamp(to.z,target.getBoundingBox().minZ,target.getBoundingBox().maxZ));
             if(nearest.distanceToSqr(origin)>RANGE*RANGE+0.0001||nearest.subtract(origin).dot(direction)<0)continue;
-            if(target.getBoundingBox().inflate(0.8).clip(from,to).isEmpty()&&!target.getBoundingBox().inflate(0.8).contains(from))continue;
+            if(target.getBoundingBox().inflate(1.0).clip(from,to).isEmpty()&&!target.getBoundingBox().inflate(1.0).contains(from))continue;
             if(level().clip(new ClipContext(origin,nearest,ClipContext.Block.COLLIDER,ClipContext.Fluid.NONE,this)).getType()!=HitResult.Type.MISS)continue;
             hit.add(target.getUUID());damage(target);
         }
@@ -82,7 +82,7 @@ public final class GuardianWaveEntity extends Entity {
     }
     private boolean loaded(Vec3 from,Vec3 to){
         if(!Double.isFinite(to.x)||!Double.isFinite(to.y)||!Double.isFinite(to.z))return false;
-        return level().hasChunksAt(net.minecraft.core.BlockPos.containing(Math.min(from.x,to.x)-1.1,Math.min(from.y,to.y),Math.min(from.z,to.z)-1.1),net.minecraft.core.BlockPos.containing(Math.max(from.x,to.x)+1.1,Math.max(from.y,to.y),Math.max(from.z,to.z)+1.1));
+        return level().hasChunksAt(net.minecraft.core.BlockPos.containing(Math.min(from.x,to.x)-1.3,Math.min(from.y,to.y),Math.min(from.z,to.z)-1.3),net.minecraft.core.BlockPos.containing(Math.max(from.x,to.x)+1.3,Math.max(from.y,to.y),Math.max(from.z,to.z)+1.3));
     }
     private void damage(LivingEntity target){
         var p=attack.owner();float enchant=net.minecraft.world.item.enchantment.EnchantmentHelper.getDamageBonus(weapon,target.getMobType())*attack.strength();

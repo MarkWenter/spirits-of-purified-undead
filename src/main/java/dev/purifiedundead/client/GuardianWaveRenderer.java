@@ -11,7 +11,7 @@ public final class GuardianWaveRenderer extends EntityRenderer<GuardianWaveEntit
  public GuardianWaveRenderer(EntityRendererProvider.Context c){super(c);shadowRadius=0;}
  @Override public void render(GuardianWaveEntity e,float yaw,float partial,PoseStack poses,MultiBufferSource buffers,int light){
   if(GuardianWavePrediction.suppress(e))return;
-  poses.pushPose();poses.mulPose(com.mojang.math.Axis.YP.rotationDegrees(-e.getYRot()));poses.mulPose(com.mojang.math.Axis.XP.rotationDegrees(e.getXRot()));poses.mulPose(com.mojang.math.Axis.ZP.rotationDegrees(e.roll()));
+  poses.pushPose();poses.scale(1.25F,1.25F,1.25F);poses.mulPose(com.mojang.math.Axis.YP.rotationDegrees(-e.getYRot()));poses.mulPose(com.mojang.math.Axis.XP.rotationDegrees(e.getXRot()));poses.mulPose(com.mojang.math.Axis.ZP.rotationDegrees(e.roll()));
   var out=buffers.getBuffer(RenderType.entityTranslucentEmissive(TEXTURE));var m=poses.last().pose();
   for(var q:MESH){v(out,m,q.a());v(out,m,q.b());v(out,m,q.c());v(out,m,q.d());}poses.popPose();
  }

@@ -40,19 +40,34 @@ public final class GuardianWaveSmoke {
    }
    var c=cow(l,50,52);targets.add(c);var outside=cow(l,50,58);targets.add(outside);
    c.hurt(p.damageSources().playerAttack(p),10);float before=c.getHealth();check(c.invulnerableTime>0,"direct hit grants hurt cooldown");
-   var w=wave(p,false,10,1);for(int i=0;i<6;i++){w.tickCount++;w.tick();}check(Math.abs(before-c.getHealth()-12)<.05,"wave adds separate 120 percent hit: "+(before-c.getHealth()));check(outside.getHealth()==1000,"seven block limit");check(w.isRemoved(),"wave expires");
-   before=c.getHealth();w=wave(p,false,10,2);for(int i=0;i<6;i++){w.tickCount++;w.tick();}check(Math.abs(before-c.getHealth()-24)<.05,"independent crit multiplier");
-   var distant=cow(l,50,56.9);targets.add(distant);w=wave(p,false,10,1);for(int i=0;i<4;i++){w.tickCount++;w.tick();}check(distant.getHealth()<1000,"seven block distant target hit");check(w.isRemoved()&&Math.abs(w.position().z-57)<.001,"seven blocks reached in four ticks");distant.discard();
+   var w=wave(p,false,10,1);for(int i=0;i<7;i++){w.tickCount++;w.tick();}check(Math.abs(before-c.getHealth()-12)<.05,"wave adds separate 120 percent hit: "+(before-c.getHealth()));check(outside.getHealth()==1000,"seven block limit");check(w.isRemoved(),"wave expires");
+   before=c.getHealth();w=wave(p,false,10,2);for(int i=0;i<7;i++){w.tickCount++;w.tick();}check(Math.abs(before-c.getHealth()-24)<.05,"independent crit multiplier");
+   var wider=cow(l,51.35,53);targets.add(wider);w=wave(p,false,10,1);for(int i=0;i<7;i++){w.tickCount++;w.tick();}check(wider.getHealth()<1000,"expanded wave width reaches lateral target");wider.discard();
+   var distant=cow(l,50,56.9);targets.add(distant);w=wave(p,false,10,1);for(int i=0;i<7;i++){w.tickCount++;w.tick();}check(distant.getHealth()<1000,"seven block distant target hit");check(w.isRemoved()&&Math.abs(w.position().z-57)<.001,"seven blocks reached in seven ticks");distant.discard();
    var arrowAttribute=net.minecraftforge.registries.ForgeRegistries.ATTRIBUTES.getValue(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("attributeslib","arrow_damage"));
    if(arrowAttribute!=null&&p.getAttribute(arrowAttribute)!=null){
     var attr=p.getAttribute(arrowAttribute);double saved=attr.getBaseValue();
-    try{attr.setBaseValue(2);before=c.getHealth();w=wave(p,false,10,1);attr.setBaseValue(3);for(int i=0;i<4;i++){w.tickCount++;w.tick();}check(Math.abs(before-c.getHealth()-24)<.05,"projectile multiplier snapshotted once, still melee damage");}
+    try{attr.setBaseValue(2);before=c.getHealth();w=wave(p,false,10,1);attr.setBaseValue(3);for(int i=0;i<7;i++){w.tickCount++;w.tick();}check(Math.abs(before-c.getHealth()-24)<.05,"projectile multiplier snapshotted once, still melee damage");}
     finally{attr.setBaseValue(saved);}
    }
    check(!p.damageSources().playerAttack(p).is(net.minecraft.tags.DamageTypeTags.IS_PROJECTILE),"wave source has no projectile tag");
-   for(int y=160;y<=162;y++)l.setBlockAndUpdate(new BlockPos(50,y,51),Blocks.STONE.defaultBlockState());before=c.getHealth();w=wave(p,false,10,1);for(int i=0;i<6&&!w.isRemoved();i++){w.tickCount++;w.tick();}check(before==c.getHealth(),"solid wall blocks wave");
+   for(int y=160;y<=162;y++)l.setBlockAndUpdate(new BlockPos(50,y,51),Blocks.STONE.defaultBlockState());before=c.getHealth();w=wave(p,false,10,1);for(int i=0;i<7&&!w.isRemoved();i++){w.tickCount++;w.tick();}check(before==c.getHealth(),"solid wall blocks wave");
    for(int y=160;y<=162;y++)l.setBlockAndUpdate(new BlockPos(50,y,51),Blocks.AIR.defaultBlockState());
-   var ally=cow(l,50,51.5);targets.add(ally);var board=server.getScoreboard();var team=board.addPlayerTeam("guardian_wave_test");board.addPlayerToTeam(p.getScoreboardName(),team);board.addPlayerToTeam(ally.getScoreboardName(),team);w=wave(p,false,10,1);for(int i=0;i<6;i++){w.tickCount++;w.tick();}check(ally.getHealth()==1000,"ally ignored");board.removePlayerTeam(team);ally.discard();
+   var ally=cow(l,50,51.5);targets.add(ally);var board=server.getScoreboard();var team=board.addPlayerTeam("guardian_wave_test");board.addPlayerToTeam(p.getScoreboardName(),team);board.addPlayerToTeam(ally.getScoreboardName(),team);w=wave(p,false,10,1);for(int i=0;i<7;i++){w.tickCount++;w.tick();}check(ally.getHealth()==1000,"ally ignored");board.removePlayerTeam(team);ally.discard();
+   if(net.minecraftforge.fml.ModList.get().isLoaded("malum")){
+    var soulTag=net.minecraft.tags.TagKey.create(net.minecraft.core.registries.Registries.ITEM,net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("malum","soul_hunter_weapon"));check(sword.is(soulTag),"guardian has native Malum soul harvesting tag");
+    var reaper=sword.copy();for(String name:new String[]{"spirit_plunder","haunted"}){var id=net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("malum",name);reaper.enchant(net.minecraft.core.registries.BuiltInRegistries.ENCHANTMENT.get(id),1);}p.setItemSlot(EquipmentSlot.MAINHAND,reaper);
+    for(boolean slash:new boolean[]{false,true}){
+     var victim=cow(l,50,52);targets.add(victim);victim.setHealth(1);
+     var ids=new java.util.HashSet<java.util.UUID>();for(var e:l.getAllEntities())ids.add(e.getUUID());
+     if(slash){w=wave(p,false,100,1);for(int i=0;i<7;i++){w.tickCount++;w.tick();}}else victim.hurt(p.damageSources().playerAttack(p),100);
+     check(!victim.isAlive(),"soul test target died");
+     var spawned=new java.util.ArrayList<Entity>();l.getAllEntities().forEach(spawned::add);int souls=0;for(var e:spawned){var id=net.minecraft.core.registries.BuiltInRegistries.ENTITY_TYPE.getKey(e.getType());if(!ids.contains(e.getUUID())&&id.getNamespace().equals("malum")&&id.getPath().contains("spirit")){souls++;e.discard();}}
+     check(souls>0,"real Malum spirit entities spawned for "+(slash?"wave":"blade"));victim.discard();
+    }
+    p.setItemSlot(EquipmentSlot.MAINHAND,sword);
+    System.out.println("GUARDIAN_SOUL_DROPS_OK: actual Malum spirit entities from blade and wave kills, native harvesting tag");
+   }
    dev.purifiedundead.purification.PurificationProgress.unlock(p);var curios=top.theillusivec4.curios.api.CuriosApi.getCuriosInventory(p).orElseThrow(IllegalStateException::new);
    for(var entry:curios.getCurios().entrySet())if(entry.getKey().equals("ancient_contract"))entry.getValue().getStacks().setStackInSlot(0,new ItemStack(ModItems.ANCIENT_CONTRACT.get()));
    var warriors=curios.getCurios().get("undead_warrior").getStacks();if(warriors.getSlots()<3)warriors.grow(3-warriors.getSlots());
@@ -61,13 +76,13 @@ public final class GuardianWaveSmoke {
    int orbs=l.getEntitiesOfClass(dev.purifiedundead.entity.EleineMagicOrbEntity.class,p.getBoundingBox().inflate(10)).size();
    server.getWorldData().overworldData().setGameTime(l.getGameTime()+1);
    check(curios.isEquipped(ModItems.ANCIENT_CONTRACT.get()),"contract equipped for cooperative trigger");
-   w=wave(p,true,10,1);for(int i=0;i<6;i++){w.tickCount++;w.tick();}check(p.getPersistentData().contains("purified_undead:ferin_state"),"wave-only hit triggers Ferin");
+   w=wave(p,true,10,1);for(int i=0;i<7;i++){w.tickCount++;w.tick();}check(p.getPersistentData().contains("purified_undead:ferin_state"),"wave-only hit triggers Ferin");
    check(HoenirCombatEvents.hasMark(p,c),"wave applies Hoenir mark");check(c.hasEffect(ModEffects.STUNNED.get()),"captured falling state triggers Groth after landing");check(l.getEntitiesOfClass(dev.purifiedundead.entity.EleineMagicOrbEntity.class,p.getBoundingBox().inflate(10)).size()>orbs,"wave triggers Eleine orb");
    GuardianWaveCombat.with(new GuardianWaveCombat.State(p,true,false,1,10,1),()->check(GuardianWaveCombat.falling(p),"captured jump survives landing"));check(!GuardianWaveCombat.active(),"context cleared");
    p.getPersistentData().remove("purified_undead:guardian_wave_tick");int count=l.getEntitiesOfClass(GuardianWaveEntity.class,p.getBoundingBox().inflate(5),e->!e.isRemoved()).size();GuardianWaveCombat.swing(p);GuardianWaveCombat.swing(p);check(l.getEntitiesOfClass(GuardianWaveEntity.class,p.getBoundingBox().inflate(5),e->!e.isRemoved()).size()==count+1,"air swing accepted and duplicate packet blocked");
    try{GuardianWaveCombat.with(new GuardianWaveCombat.State(p,true,false,1,10,1),()->{throw new IllegalArgumentException("test context cleanup");});}catch(IllegalArgumentException expected){}check(!GuardianWaveCombat.active(),"context cleared after exception");
    w=wave(p,false,10,1);p.setGameMode(net.minecraft.world.level.GameType.SPECTATOR);w.tickCount++;w.tick();check(w.isRemoved(),"owner invalidated wave removed");p.setGameMode(net.minecraft.world.level.GameType.SURVIVAL);
-   System.out.println("GUARDIAN_WAVE_OPTIMIZATION_OK: four-tick seven-block sweep, projectile attribute snapshot, melee source, scope exception cleanup, owner invalidation");
+   System.out.println("GUARDIAN_WAVE_OPTIMIZATION_OK: seven-tick seven-block sweep, projectile attribute snapshot, melee source, scope exception cleanup, owner invalidation");
    System.out.println("GUARDIAN_WAVE_OK: mainhand armor, separate direct/wave damage, 120 percent, independent crit, range, wall, allies, expiry, captured jump, Groth stun, Eleine orb, Hoenir mark, Ferin trigger and duplicate packet guard");
   }finally{for(var t:targets)t.discard();for(var w:l.getEntitiesOfClass(GuardianWaveEntity.class,p.getBoundingBox().inflate(10)))w.discard();for(int y=160;y<=162;y++)l.setBlockAndUpdate(new BlockPos(50,y,51),Blocks.AIR.defaultBlockState());p.discard();}
  }
