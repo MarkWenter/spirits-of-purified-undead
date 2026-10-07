@@ -56,17 +56,20 @@ public final class GuardianWaveSmoke {
    var ally=cow(l,50,51.5);targets.add(ally);var board=server.getScoreboard();var team=board.addPlayerTeam("guardian_wave_test");board.addPlayerToTeam(p.getScoreboardName(),team);board.addPlayerToTeam(ally.getScoreboardName(),team);w=wave(p,false,10,1);for(int i=0;i<7;i++){w.tickCount++;w.tick();}check(ally.getHealth()==1000,"ally ignored");board.removePlayerTeam(team);ally.discard();
    if(net.minecraftforge.fml.ModList.get().isLoaded("malum")){
     var soulTag=net.minecraft.tags.TagKey.create(net.minecraft.core.registries.Registries.ITEM,net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("malum","soul_hunter_weapon"));check(sword.is(soulTag),"guardian has native Malum soul harvesting tag");
+    var holder=ModItems.BLIGHTED_GUARDIAN.get().builtInRegistryHolder();var originalTags=holder.tags().toList();holder.bindTags(originalTags.stream().filter(t->!t.equals(soulTag)).toList());check(!sword.is(soulTag),"reproduce pack removing guardian from native tag");
     var reaper=sword.copy();for(String name:new String[]{"spirit_plunder","haunted"}){var id=net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("malum",name);reaper.enchant(net.minecraft.core.registries.BuiltInRegistries.ENCHANTMENT.get(id),1);}p.setItemSlot(EquipmentSlot.MAINHAND,reaper);
-    for(boolean slash:new boolean[]{false,true}){
+    for(int mode:new int[]{0,1,2,3,4}){
+     dev.purifiedundead.config.PurifiedUndeadConfig.VALUES.guardianMalumSoulHarvest.set(mode!=3);p.setItemSlot(EquipmentSlot.MAINHAND,mode==4?new ItemStack(Items.IRON_SWORD):reaper);
      var victim=cow(l,50,52);targets.add(victim);victim.setHealth(1);
      var ids=new java.util.HashSet<java.util.UUID>();for(var e:l.getAllEntities())ids.add(e.getUUID());
-     if(slash){w=wave(p,false,100,1);for(int i=0;i<7;i++){w.tickCount++;w.tick();}}else victim.hurt(p.damageSources().playerAttack(p),100);
+     if(mode==1){w=wave(p,false,100,1);for(int i=0;i<7;i++){w.tickCount++;w.tick();}}else if(mode==2)victim.hurt(ModDamageTypes.ferinAssist(l,p),100);else victim.hurt(p.damageSources().playerAttack(p),100);
      check(!victim.isAlive(),"soul test target died");
      var spawned=new java.util.ArrayList<Entity>();l.getAllEntities().forEach(spawned::add);int souls=0;for(var e:spawned){var id=net.minecraft.core.registries.BuiltInRegistries.ENTITY_TYPE.getKey(e.getType());if(!ids.contains(e.getUUID())&&id.getNamespace().equals("malum")&&id.getPath().contains("spirit")){souls++;e.discard();}}
-     check(souls>0,"real Malum spirit entities spawned for "+(slash?"wave":"blade"));victim.discard();
+     check((souls>0)==(mode<3),"native soul drops with cleared tag; blade/wave/Ferin/disabled/ordinary sword mode="+mode);victim.discard();
     }
-    p.setItemSlot(EquipmentSlot.MAINHAND,sword);
-    System.out.println("GUARDIAN_SOUL_DROPS_OK: actual Malum spirit entities from blade and wave kills, native harvesting tag");
+    dev.purifiedundead.config.PurifiedUndeadConfig.VALUES.guardianMalumSoulHarvest.set(true);
+    holder.bindTags(originalTags);p.setItemSlot(EquipmentSlot.MAINHAND,sword);
+    System.out.println("GUARDIAN_SOUL_DROPS_OK: cleared pack tag, actual blade/wave/Ferin drops, disabled bridge and ordinary sword no drops");
    }
    dev.purifiedundead.purification.PurificationProgress.unlock(p);var curios=top.theillusivec4.curios.api.CuriosApi.getCuriosInventory(p).orElseThrow(IllegalStateException::new);
    for(var entry:curios.getCurios().entrySet())if(entry.getKey().equals("ancient_contract"))entry.getValue().getStacks().setStackInSlot(0,new ItemStack(ModItems.ANCIENT_CONTRACT.get()));

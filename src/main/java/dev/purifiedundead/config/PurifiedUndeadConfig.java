@@ -40,6 +40,7 @@ public final class PurifiedUndeadConfig {
 
 
     public static final class Values {
+        public final ForgeConfigSpec.BooleanValue guardianMalumSoulHarvest;
         public final ForgeConfigSpec.IntValue balanceRevision;
         public final ForgeConfigSpec.DoubleValue juliusMeleeDamagePenalty;
         public final ForgeConfigSpec.IntValue warriorSlots;
@@ -233,6 +234,11 @@ public final class PurifiedUndeadConfig {
             fadenPoisonDurationTicks = builder.defineInRange("poisonDurationTicks", 400, 1, 72000);
             fadenPoisonAmplifier = builder.defineInRange("poisonAmplifier", 0, 0, 255);
             fadenFortuneLootingBonus = builder.defineInRange("fortuneAndLootingBonus", 1, 0, 255);
+            builder.pop();
+
+            builder.push("compatibility");
+            guardianMalumSoulHarvest = builder.comment("Let Blighted Guardian qualify for native Malum soul drops even when a modpack clears the harvesting tag. Malum drop restrictions still apply.")
+                    .define("guardianMalumSoulHarvest", true);
             builder.pop();
 
             builder.push("whiteWitchRelics");
