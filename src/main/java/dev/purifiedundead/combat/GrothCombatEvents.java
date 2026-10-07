@@ -46,7 +46,7 @@ public final class GrothCombatEvents {
         Equipment equipment = readEquipment(player);
         long now = player.serverLevel().getGameTime();
         long cooldownUntil = player.getPersistentData().getLong(STUN_COOLDOWN_KEY);
-        boolean jumpAttack = player.fallDistance > 0.0F && !player.onGround();
+        boolean jumpAttack = dev.purifiedundead.combat.GuardianWaveCombat.falling(player);
         if (!GrothModel.canTriggerStun(equipment.reversed(), jumpAttack, now, cooldownUntil)) {
             return;
         }

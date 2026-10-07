@@ -17,6 +17,7 @@ public final class SlateServerSmoke {
         var p=new net.minecraftforge.common.util.FakePlayer(level,new com.mojang.authlib.GameProfile(java.util.UUID.randomUUID(),"SlateSmoke"));p.setPos(42.5,120,43.5);
         try{
             CompatibilitySmoke.run(server);
+            GuardianWaveSmoke.run(server);
             check(FoundryRecipes.all().size()>=12,"configured recipes loaded");
             for(var recipe:FoundryRecipes.defaults())FoundryRecipes.validate(recipe);
             boolean rejected=false;try{FoundryRecipes.validate(new FoundryRecipes.Recipe("bad:missing",1,"minecraft:stone",1,"minecraft:diamond",1,true,1,1,400));}catch(IllegalArgumentException e){rejected=true;}check(rejected,"invalid configured id rejected");

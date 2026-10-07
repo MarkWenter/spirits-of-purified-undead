@@ -64,7 +64,7 @@ public final class ProjectAuditSmoke {
         if(shielded.getAbsorptionAmount()<20)throw new IllegalStateException("Absorption fixture missing");
         shielded.hurt(attacker.damageSources().playerAttack(attacker),5);
         boolean absorption=attacker.getHealth()==10;
-        System.out.println("AUDIT_CASE absorption_no_lifesteal="+absorption);
+        System.out.println("AUDIT_CASE absorption_no_lifesteal="+absorption+" health="+attacker.getHealth()+" target="+shielded.getHealth()+" absorption="+shielded.getAbsorptionAmount());
         if(!absorption)failures++;
         dev.purifiedundead.combat.FerinLifecycleSmoke.run(player(server),player(server));
         if (failures>0) throw new IllegalStateException("AUDIT_FAILED: " + failures + " regression cases");

@@ -259,5 +259,6 @@
   "jei.purified_undead.crafting_retains": "无序合成 · 铸造石板保留",
   "jei.purified_undead.cipher_source": "主世界、下界宝藏箱：默认25%概率获得1—5个。",
   "jei.purified_undead.ferin_source": "收集其余七种秽鬼追忆后，每位玩家仅获得一次；背包满时等待空位补发。",
-  "jei.purified_undead.crystal_source": "装备古老民族之契后，主手持怨念污秽长按使用，按消耗量获得纯净结晶。护身符满级仍可使用。纯化铸造器右侧燃料。"
+  "jei.purified_undead.crystal_source": "装备古老民族之契后，主手持怨念污秽长按使用，按消耗量获得纯净结晶。护身符满级仍可使用。纯化铸造器右侧燃料。",
+  "tooltip.purified_undead.guardian_wave": "挥剑释放最远 3 格的剑气，造成 120% 近战伤害，继承挥剑状态并独立判定协同暴击。可触发近战战士效果。"
 }

@@ -21,6 +21,8 @@ public final class ModEntities {
                     .sized(0F,0F).noSave().noSummon().fireImmune().clientTrackingRange(1).updateInterval(Integer.MAX_VALUE)
                     .build(PurifiedUndead.MOD_ID+":contract_wisp"));
 
+    public static final RegistryObject<EntityType<dev.purifiedundead.entity.GuardianWaveEntity>> GUARDIAN_WAVE=ENTITIES.register("guardian_wave",()->EntityType.Builder.<dev.purifiedundead.entity.GuardianWaveEntity>of(dev.purifiedundead.entity.GuardianWaveEntity::new,MobCategory.MISC).sized(0.1F,0.1F).noSave().noSummon().fireImmune().clientTrackingRange(4).updateInterval(1).build("purified_undead:guardian_wave"));
+
     public static final RegistryObject<EntityType<FerinEntity>> FERIN = ENTITIES.register("ferin",
             () -> EntityType.Builder.<FerinEntity>of(FerinEntity::new, MobCategory.MISC)
                     .sized(0.75F, 1.8F)

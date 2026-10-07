@@ -303,7 +303,10 @@ public final class FerinCombatEvents {
         if (!eligible) {
             return;
         }
-        float healing = FerinBlightModel.lifesteal(event.getAmount(), event.getEntity().getHealth());
+        // Some damage trackers dispatch this event before consuming absorption. In vanilla,
+        // a positive health-damage event already has no absorption left, so this is equivalent.
+        float healthDamage = Math.max(0, event.getAmount() - event.getEntity().getAbsorptionAmount());
+        float healing = FerinBlightModel.lifesteal(healthDamage, event.getEntity().getHealth());
         if (healing > 0.0F) {
             player.heal(healing);
         }
@@ -450,7 +453,7 @@ public final class FerinCombatEvents {
 
     private record PendingHit(UUID playerId, long gameTick, float preDefenseDamage) { }
 
-    private static FerinCriticalModel.Result rollStageCritical(ServerPlayer player) {
+    public static FerinCriticalModel.Result rollStageCritical(ServerPlayer player) {
         Attribute chance = ForgeRegistries.ATTRIBUTES.getValue(CRIT_CHANCE);
         Attribute damage = ForgeRegistries.ATTRIBUTES.getValue(CRIT_DAMAGE);
         if (chance == null || damage == null || player.getAttribute(chance) == null || player.getAttribute(damage) == null) {

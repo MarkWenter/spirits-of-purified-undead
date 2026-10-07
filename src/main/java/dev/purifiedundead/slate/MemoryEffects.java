@@ -46,19 +46,19 @@ public final class MemoryEffects {
     private static void attribute(AttributeInstance a,UUID id,double amount){if(a==null)return;var old=a.getModifier(id);if(old!=null&&old.getAmount()==amount)return;if(old!=null)a.removeModifier(id);if(amount!=0)a.addTransientModifier(new AttributeModifier(id,"Slate memory",amount,AttributeModifier.Operation.MULTIPLY_TOTAL));}
     @SubscribeEvent(priority=EventPriority.HIGHEST) public static void fire(LivingAttackEvent e){if(e.getEntity() instanceof ServerPlayer p&&active(p,"hoenir")&&e.getSource().is(DamageTypeTags.IS_FIRE))e.setCanceled(true);}
     @SubscribeEvent(priority=EventPriority.NORMAL) public static void outgoing(LivingHurtEvent e){
-        if(!(e.getSource().getEntity() instanceof ServerPlayer p)||e.getAmount()<=0||!active(p,"julius")||!p.isSprinting())return;
+        if(!(e.getSource().getEntity() instanceof ServerPlayer p)||e.getAmount()<=0||!active(p,"julius")||!dev.purifiedundead.combat.GuardianWaveCombat.sprinting(p))return;
         // Auxiliary attacks already inherit the boosted triggering hit; do not boost them a second time.
         if(e.getSource().is(DamageTypes.PLAYER_ATTACK)||e.getSource().is(DamageTypeTags.IS_PROJECTILE))e.setAmount(e.getAmount()*sprintMultiplier(p));
     }
     public static float sprintMultiplier(Player p){var speed=p.getAttribute(Attributes.MOVEMENT_SPEED);double ratio=speed==null||speed.getBaseValue()<=0?1:speed.getValue()/speed.getBaseValue();
         // Vanilla sprint's +30% is the condition, not an extra external speed bonus.
-        if(p.isSprinting())ratio/=1.3;
+        if(dev.purifiedundead.combat.GuardianWaveCombat.sprinting(p))ratio/=1.3;
         if(!Double.isFinite(ratio))ratio=1;
         double steps=Math.floor(Math.max(0,ratio-1)*10+1e-6);return (float)(1+SlateConfig.get(SlateConfig.sprintDamage)+steps*SlateConfig.get(SlateConfig.speedStepDamage));}
     @SubscribeEvent(priority=EventPriority.LOWEST) public static void melee(LivingDamageEvent e){
         if(splashing||!(e.getSource().getEntity() instanceof ServerPlayer p)||e.getSource().getDirectEntity()!=p||!e.getSource().is(DamageTypes.PLAYER_ATTACK)||e.getAmount()<=0)return;
         var target=e.getEntity();if(!legal(p,target))return;
-        if(active(p,"groth")&&p.fallDistance>0&&!p.onGround()){
+        if(active(p,"groth")&&dev.purifiedundead.combat.GuardianWaveCombat.falling(p)){
             try{ splashing=true;for(var other:p.serverLevel().getEntitiesOfClass(LivingEntity.class,target.getBoundingBox().inflate(1.5),t->t.isAlive()&&legal(p,t)&&t!=target&&t.distanceToSqr(target)<=2.25))other.hurt(p.damageSources().indirectMagic(null,p),(float)(e.getAmount()*SlateConfig.get(SlateConfig.grothDamage)));}finally{splashing=false;}
         }
         if(active(p,"hoenir")){

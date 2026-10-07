@@ -259,5 +259,6 @@
   "jei.purified_undead.crafting_retains": "Shapeless; keeps tablet",
   "jei.purified_undead.cipher_source": "Overworld and Nether treasure chests: default 25% chance of 1–5 fragments.",
   "jei.purified_undead.ferin_source": "Awarded once per player after collecting the other seven memories. Delivery waits for inventory space.",
-  "jei.purified_undead.crystal_source": "Wear the Ancient Contract and hold use with Blighted Spirit in your main hand to obtain Pure Crystals, including at maximum talisman level. Used as the foundry right fuel."
+  "jei.purified_undead.crystal_source": "Wear the Ancient Contract and hold use with Blighted Spirit in your main hand to obtain Pure Crystals, including at maximum talisman level. Used as the foundry right fuel.",
+  "tooltip.purified_undead.guardian_wave": "Swing to release a melee wave up to 3 blocks away: 120% damage, captured swing state and an independent assist critical roll. Triggers melee warrior effects."
 }

@@ -34,6 +34,7 @@ public final class ClientModEvents {
     public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(ModEntities.CONTRACT_WISP.get(), ContractWispRenderer::new);
         event.registerEntityRenderer(ModEntities.FERIN.get(), FerinRenderer::new);
+        event.registerEntityRenderer(ModEntities.GUARDIAN_WAVE.get(), GuardianWaveRenderer::new);
         event.registerEntityRenderer(ModEntities.BLIGHTED_GOLEM.get(), BlightedGolemRenderer::new);
         event.registerEntityRenderer(ModEntities.BLIGHTED_KING.get(), BlightedKingRenderer::new);
         event.registerEntityRenderer(ModEntities.ELEINE_MAGIC_ORB.get(), EleineMagicOrbRenderer::new);
