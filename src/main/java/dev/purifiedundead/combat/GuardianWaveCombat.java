@@ -13,7 +13,9 @@ public final class GuardianWaveCombat {
     public static boolean falling(Player p){var s=ACTIVE.get();return s!=null&&s.owner()==p?s.falling():p.fallDistance>0&&!p.onGround();}
     public static boolean sprinting(Player p){var s=ACTIVE.get();return s!=null&&s.owner()==p?s.sprinting():p.isSprinting();}
     public static void with(State state,Runnable hit){var previous=ACTIVE.get();ACTIVE.set(state);try{hit.run();}finally{if(previous==null)ACTIVE.remove();else ACTIVE.set(previous);}}
-    public static void swing(ServerPlayer p){
+    public static void swing(ServerPlayer p){swing(p,0);}
+    public static void swing(ServerPlayer p,int shot){
+        if(shot<0)return;
         if(!p.isAlive()||p.isSpectator()||p.isUsingItem()||!p.getMainHandItem().is(ModItems.BLIGHTED_GUARDIAN.get())||p.hasEffect(ModEffects.STUNNED.get()))return;
         long now=p.serverLevel().getGameTime();var data=p.getPersistentData();
         if(data.contains(LAST)&&data.getLong(LAST)==now)return;
@@ -27,7 +29,7 @@ public final class GuardianWaveCombat {
         base*=0.2F+strength*strength*0.8F;
         if(vanillaCrit)base*=1.5F;
         var wave=ModEntities.GUARDIAN_WAVE.get().create(p.serverLevel());
-        if(wave!=null){wave.launch(new State(p,falling,p.isSprinting(),strength,base,FerinCombatEvents.rollStageCritical(p).multiplier()),p.getMainHandItem().copy());p.serverLevel().addFreshEntity(wave);}
+        if(wave!=null){wave.launch(new State(p,falling,p.isSprinting(),strength,base,FerinCombatEvents.rollStageCritical(p).multiplier()),p.getMainHandItem().copy(),shot);p.serverLevel().addFreshEntity(wave);}
     }
     private GuardianWaveCombat(){}
 }

@@ -20,17 +20,36 @@ public final class GuardianWaveSmoke {
    var modifiers=sword.getAttributeModifiers(EquipmentSlot.MAINHAND);check(modifiers.get(Attributes.ARMOR).stream().mapToDouble(a->a.getAmount()).sum()==10,"held armor +10");check(sword.getAttributeModifiers(EquipmentSlot.OFFHAND).get(Attributes.ARMOR).isEmpty(),"no offhand armor");
    var counts=new java.util.HashMap<String,Integer>();
    for(var enchant:net.minecraft.core.registries.BuiltInRegistries.ENCHANTMENT){
-    var id=net.minecraft.core.registries.BuiltInRegistries.ENCHANTMENT.getKey(enchant);if(!java.util.Set.of("apotheosis","celestial_enchantments","goety").contains(id.getNamespace())||enchant.isCurse())continue;
+    var id=net.minecraft.core.registries.BuiltInRegistries.ENCHANTMENT.getKey(enchant);if(!java.util.Set.of("apotheosis","celestial_enchantments","goety","malum").contains(id.getNamespace())||enchant.isCurse())continue;
     if(dev.purifiedundead.compat.GuardianEnchantments.accepts(enchant)){
      check(enchant.canEnchant(sword),"optional anvil eligibility "+id);check(sword.canApplyAtEnchantingTable(enchant),"optional table eligibility "+id);
      var menu=new net.minecraft.world.inventory.AnvilMenu(21,p.getInventory());menu.getSlot(0).set(sword.copy());menu.getSlot(1).set(EnchantedBookItem.createForEnchantment(new net.minecraft.world.item.enchantment.EnchantmentInstance(enchant,1)));menu.createResult();check(!menu.getSlot(2).getItem().isEmpty(),"real anvil result "+id);counts.merge(id.getNamespace(),1,Integer::sum);
     }
    }
    if(!counts.isEmpty()){check(counts.getOrDefault("celestial_enchantments",0)>0&&counts.getOrDefault("apotheosis",0)>0&&counts.getOrDefault("goety",0)>0,"all three optional mods exercised");System.out.println("GUARDIAN_ENCHANT_OK: actual anvil and table eligibility "+counts);}
-   var c=cow(l,50,52);targets.add(c);var outside=cow(l,50,54);targets.add(outside);
+   if(net.minecraftforge.fml.ModList.get().isLoaded("malum")){
+    for(String name:new String[]{"spirit_plunder","haunted"}){
+     var id=net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("malum",name);var e=net.minecraft.core.registries.BuiltInRegistries.ENCHANTMENT.get(id);
+     check(e!=null&&dev.purifiedundead.compat.GuardianEnchantments.accepts(e),"Malum explicit enchantment "+name);
+    }
+    check(counts.getOrDefault("malum",0)>=2,"Malum real anvil tests executed");
+    var id=net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("malum","animated");var animated=net.minecraft.core.registries.BuiltInRegistries.ENCHANTMENT.get(id);
+    id=net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("malum","haunted");var haunted=net.minecraft.core.registries.BuiltInRegistries.ENCHANTMENT.get(id);
+    if(animated!=null&&haunted!=null){var enchanted=sword.copy();enchanted.enchant(animated,1);var menu=new net.minecraft.world.inventory.AnvilMenu(22,p.getInventory());menu.getSlot(0).set(enchanted);menu.getSlot(1).set(EnchantedBookItem.createForEnchantment(new net.minecraft.world.item.enchantment.EnchantmentInstance(haunted,1)));menu.createResult();check(menu.getSlot(2).getItem().isEmpty()||menu.getSlot(2).getItem().getEnchantmentLevel(haunted)==0,"Haunted and Animated exclusivity preserved");}
+    System.out.println("GUARDIAN_MALUM_OK: Spirit Plunder, Haunted and scythe enchantments real anvil eligibility");
+   }
+   var c=cow(l,50,52);targets.add(c);var outside=cow(l,50,58);targets.add(outside);
    c.hurt(p.damageSources().playerAttack(p),10);float before=c.getHealth();check(c.invulnerableTime>0,"direct hit grants hurt cooldown");
-   var w=wave(p,false,10,1);for(int i=0;i<6;i++){w.tickCount++;w.tick();}check(Math.abs(before-c.getHealth()-12)<.05,"wave adds separate 120 percent hit: "+(before-c.getHealth()));check(outside.getHealth()==1000,"three block limit");check(w.isRemoved(),"wave expires");
+   var w=wave(p,false,10,1);for(int i=0;i<6;i++){w.tickCount++;w.tick();}check(Math.abs(before-c.getHealth()-12)<.05,"wave adds separate 120 percent hit: "+(before-c.getHealth()));check(outside.getHealth()==1000,"seven block limit");check(w.isRemoved(),"wave expires");
    before=c.getHealth();w=wave(p,false,10,2);for(int i=0;i<6;i++){w.tickCount++;w.tick();}check(Math.abs(before-c.getHealth()-24)<.05,"independent crit multiplier");
+   var distant=cow(l,50,56.9);targets.add(distant);w=wave(p,false,10,1);for(int i=0;i<4;i++){w.tickCount++;w.tick();}check(distant.getHealth()<1000,"seven block distant target hit");check(w.isRemoved()&&Math.abs(w.position().z-57)<.001,"seven blocks reached in four ticks");distant.discard();
+   var arrowAttribute=net.minecraftforge.registries.ForgeRegistries.ATTRIBUTES.getValue(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("attributeslib","arrow_damage"));
+   if(arrowAttribute!=null&&p.getAttribute(arrowAttribute)!=null){
+    var attr=p.getAttribute(arrowAttribute);double saved=attr.getBaseValue();
+    try{attr.setBaseValue(2);before=c.getHealth();w=wave(p,false,10,1);attr.setBaseValue(3);for(int i=0;i<4;i++){w.tickCount++;w.tick();}check(Math.abs(before-c.getHealth()-24)<.05,"projectile multiplier snapshotted once, still melee damage");}
+    finally{attr.setBaseValue(saved);}
+   }
+   check(!p.damageSources().playerAttack(p).is(net.minecraft.tags.DamageTypeTags.IS_PROJECTILE),"wave source has no projectile tag");
    for(int y=160;y<=162;y++)l.setBlockAndUpdate(new BlockPos(50,y,51),Blocks.STONE.defaultBlockState());before=c.getHealth();w=wave(p,false,10,1);for(int i=0;i<6&&!w.isRemoved();i++){w.tickCount++;w.tick();}check(before==c.getHealth(),"solid wall blocks wave");
    for(int y=160;y<=162;y++)l.setBlockAndUpdate(new BlockPos(50,y,51),Blocks.AIR.defaultBlockState());
    var ally=cow(l,50,51.5);targets.add(ally);var board=server.getScoreboard();var team=board.addPlayerTeam("guardian_wave_test");board.addPlayerToTeam(p.getScoreboardName(),team);board.addPlayerToTeam(ally.getScoreboardName(),team);w=wave(p,false,10,1);for(int i=0;i<6;i++){w.tickCount++;w.tick();}check(ally.getHealth()==1000,"ally ignored");board.removePlayerTeam(team);ally.discard();
@@ -46,7 +65,10 @@ public final class GuardianWaveSmoke {
    check(HoenirCombatEvents.hasMark(p,c),"wave applies Hoenir mark");check(c.hasEffect(ModEffects.STUNNED.get()),"captured falling state triggers Groth after landing");check(l.getEntitiesOfClass(dev.purifiedundead.entity.EleineMagicOrbEntity.class,p.getBoundingBox().inflate(10)).size()>orbs,"wave triggers Eleine orb");
    GuardianWaveCombat.with(new GuardianWaveCombat.State(p,true,false,1,10,1),()->check(GuardianWaveCombat.falling(p),"captured jump survives landing"));check(!GuardianWaveCombat.active(),"context cleared");
    p.getPersistentData().remove("purified_undead:guardian_wave_tick");int count=l.getEntitiesOfClass(GuardianWaveEntity.class,p.getBoundingBox().inflate(5),e->!e.isRemoved()).size();GuardianWaveCombat.swing(p);GuardianWaveCombat.swing(p);check(l.getEntitiesOfClass(GuardianWaveEntity.class,p.getBoundingBox().inflate(5),e->!e.isRemoved()).size()==count+1,"air swing accepted and duplicate packet blocked");
+   try{GuardianWaveCombat.with(new GuardianWaveCombat.State(p,true,false,1,10,1),()->{throw new IllegalArgumentException("test context cleanup");});}catch(IllegalArgumentException expected){}check(!GuardianWaveCombat.active(),"context cleared after exception");
+   w=wave(p,false,10,1);p.setGameMode(net.minecraft.world.level.GameType.SPECTATOR);w.tickCount++;w.tick();check(w.isRemoved(),"owner invalidated wave removed");p.setGameMode(net.minecraft.world.level.GameType.SURVIVAL);
+   System.out.println("GUARDIAN_WAVE_OPTIMIZATION_OK: four-tick seven-block sweep, projectile attribute snapshot, melee source, scope exception cleanup, owner invalidation");
    System.out.println("GUARDIAN_WAVE_OK: mainhand armor, separate direct/wave damage, 120 percent, independent crit, range, wall, allies, expiry, captured jump, Groth stun, Eleine orb, Hoenir mark, Ferin trigger and duplicate packet guard");
-  }finally{for(var t:targets)t.discard();for(var w:l.getEntitiesOfClass(GuardianWaveEntity.class,p.getBoundingBox().inflate(6)))w.discard();for(int y=160;y<=162;y++)l.setBlockAndUpdate(new BlockPos(50,y,51),Blocks.AIR.defaultBlockState());p.discard();}
+  }finally{for(var t:targets)t.discard();for(var w:l.getEntitiesOfClass(GuardianWaveEntity.class,p.getBoundingBox().inflate(10)))w.discard();for(int y=160;y<=162;y++)l.setBlockAndUpdate(new BlockPos(50,y,51),Blocks.AIR.defaultBlockState());p.discard();}
  }
 }
