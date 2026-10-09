@@ -67,6 +67,29 @@ public final class PurificationServerSmoke {
    spirit.finishUsingItem(four,level,player);check(four.isEmpty()&&ContractProgressService.talismanLevel(player)==WhiteWitchTalisman.maxLevel()&&crystals(player)==8,"max consumes without overlevel");
    spirit.finishUsingItem(four,level,player);check(crystals(player)==8,"empty stack cannot duplicate");
    slot.setStackInSlot(0,ItemStack.EMPTY);four=new ItemStack(spirit,4);spirit.finishUsingItem(four,level,player);check(four.getCount()==4&&crystals(player)==8,"unequipped at finish rejected");
+   var costConfig=dev.purifiedundead.config.PurifiedUndeadConfig.VALUES.spiritsPerTalismanLevel;
+   int oldCost=costConfig.get();
+   try {
+    slot.setStackInSlot(0,new ItemStack(ModItems.ANCIENT_CONTRACT.get()));
+    for(int cost:new int[]{1,7,64}) {
+     costConfig.set(cost);int before=crystals(player);
+     var shortStack=new ItemStack(spirit,Math.max(0,cost-1));spirit.finishUsingItem(shortStack,level,player);
+     check(crystals(player)==before,"custom cost rejects shortage "+cost);
+     var batch=new ItemStack(spirit,cost);spirit.finishUsingItem(batch,level,player);
+     check(batch.isEmpty()&&crystals(player)==before+cost,"custom cost yields same crystals "+cost);
+     spirit.finishUsingItem(batch,level,player);check(crystals(player)==before+cost,"spent batch cannot repeat");
+    }
+    costConfig.set(7);player.getPersistentData().put("purified_undead:warrior_progress",new WarriorProgress().save());
+    int before=crystals(player);var seven=new ItemStack(spirit,7);spirit.finishUsingItem(seven,level,player);
+    check(seven.isEmpty()&&crystals(player)==before+7&&ContractProgressService.talismanLevel(player)==1,"custom cost also upgrades");
+    // Inventory full: only the uninserted reward drops, still exactly the configured quantity.
+    for(int i=0;i<player.getInventory().items.size();i++)player.getInventory().items.set(i,new ItemStack(Items.STONE,64));
+    var prior=level.getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class,player.getBoundingBox().inflate(4)).stream().map(net.minecraft.world.entity.Entity::getUUID).collect(java.util.stream.Collectors.toSet());
+    seven=new ItemStack(spirit,7);spirit.finishUsingItem(seven,level,player);
+    int dropped=0;for(var item:level.getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class,player.getBoundingBox().inflate(4)))if(!prior.contains(item.getUUID())&&item.getItem().is(ModItems.PURE_CRYSTAL.get())){dropped+=item.getItem().getCount();item.discard();}
+    check(seven.isEmpty()&&dropped==7,"full inventory preserves exact reward");
+    System.out.println("PURIFICATION_RATIO_OK: 1/7/64 costs, upgrade and max, shortage, no duplicate, full inventory");
+   } finally {costConfig.set(oldCost);player.getInventory().clearContent();}
    FoundryServerSmoke.run(server);
    FerinLargeMobSmoke.run(server);
    PurificationPartTwoSmoke.run(server);

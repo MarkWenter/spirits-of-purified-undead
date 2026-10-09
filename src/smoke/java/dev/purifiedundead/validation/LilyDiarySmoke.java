@@ -18,7 +18,9 @@ public final class LilyDiarySmoke {
   check(LilyDiaryProgress.record(p,EntityType.ZOMBIE.create(level)),"zombie recorded");check(!LilyDiaryProgress.record(p,EntityType.ZOMBIE.create(level)),"duplicate rejected");
   check(LilyDiaryProgress.record(p,EntityType.DROWNED.create(level)),"drowned separate");check(!LilyDiaryProgress.record(p,EntityType.COW.create(level)),"living rejected");
   check(LilyDiaryProgress.count(p)==2&&Math.abs(p.getAttributeValue(crit)-initial-.06)<1e-6&&Math.abs(p.getAttributeValue(Attributes.LUCK)-luck-1)<1e-6,"two types bonuses");
+  check(Math.abs(LilyDiaryProgress.currentCriticalBonus(p)-.06)<1e-6&&LilyDiaryProgress.currentLuckBonus(p)==1,"display reads only diary bonus");
   slot.setStackInSlot(0,ItemStack.EMPTY);LilyDiaryProgress.apply(p,0);check(Math.abs(p.getAttributeValue(crit)-initial)<1e-6&&p.getAttributeValue(Attributes.LUCK)==luck,"unequip removes bonuses");
+  check(LilyDiaryProgress.currentCriticalBonus(p)==0&&LilyDiaryProgress.currentLuckBonus(p)==0,"unequipped current bonus zero");
   slot.setStackInSlot(0,new ItemStack(ModItems.LILY_DIARY.get()));LilyDiaryProgress.apply(p,LilyDiaryProgress.count(p));check(Math.abs(p.getAttributeValue(crit)-initial-.06)<1e-6,"replacement diary retains history");
   var clone=new net.minecraftforge.common.util.FakePlayer(level,new com.mojang.authlib.GameProfile(java.util.UUID.randomUUID(),"LilyClone"));LilyDiaryProgress.clone(new net.minecraftforge.event.entity.player.PlayerEvent.Clone(clone,p,true));check(LilyDiaryProgress.count(clone)==2&&clone.getPersistentData().getBoolean(LilyDiaryProgress.GIFT),"clone retains history and gift flag");
   var id=net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("purified_undead","lily_diary");var recipe=(LilySmithingRecipe)server.getRecipeManager().byKey(id).orElseThrow();

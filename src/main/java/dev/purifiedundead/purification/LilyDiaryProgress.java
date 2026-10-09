@@ -27,6 +27,10 @@ public final class LilyDiaryProgress {
   update(p.getAttribute(Attributes.LUCK),count*.5);
  }
  private static void update(AttributeInstance a,double amount){if(a==null)return;var old=a.getModifier(BONUS);if(old!=null&&Math.abs(old.getAmount()-amount)<1e-9)return;if(old!=null)a.removeModifier(BONUS);if(amount!=0)a.addTransientModifier(new AttributeModifier(BONUS,"Lily diary",amount,AttributeModifier.Operation.ADDITION));}
+ // Read only this diary's already-synchronized modifier, never the player's total attributes.
+ public static double currentCriticalBonus(Player p){if(p==null)return 0;var critical=net.minecraftforge.registries.ForgeRegistries.ATTRIBUTES.getValue(ResourceLocation.fromNamespaceAndPath("attributeslib","crit_chance"));return critical==null?0:currentBonus(p.getAttribute(critical));}
+ public static double currentLuckBonus(Player p){return p==null?0:currentBonus(p.getAttribute(Attributes.LUCK));}
+ private static double currentBonus(AttributeInstance a){if(a==null)return 0;var modifier=a.getModifier(BONUS);return modifier==null?0:modifier.getAmount();}
  public static void grant(Player p){if(p.getPersistentData().getBoolean(GIFT))return;var book=DiaryBridge.create();if(book.isEmpty())return;
   if(!p.getInventory().add(book)&&!book.isEmpty())p.drop(book,false);p.getPersistentData().putBoolean(GIFT,true);
  }

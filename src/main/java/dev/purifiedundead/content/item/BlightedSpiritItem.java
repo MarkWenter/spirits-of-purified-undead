@@ -19,7 +19,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-/** A completed purification grants four crystals, upgrading the talisman while below its cap. */
+/** A completed purification grants one crystal per configured spirit, upgrading the talisman below its cap. */
 public final class BlightedSpiritItem extends Item {
     public static final int USE_TICKS = 40;
 
@@ -60,12 +60,13 @@ public final class BlightedSpiritItem extends Item {
 
     @Override
     public ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity entity) {
-        if (!level.isClientSide() && entity instanceof ServerPlayer player
+        int amount = WhiteWitchTalisman.spiritsPerLevel();
+        if (!stack.isEmpty() && stack.is(this) && !level.isClientSide() && entity instanceof ServerPlayer player
                 && equippedNow(player)
-                && (player.getAbilities().instabuild || stack.getCount() >= WhiteWitchTalisman.spiritsPerLevel())) {
+                && (player.getAbilities().instabuild || stack.getCount() >= amount)) {
             boolean upgraded = ContractProgressService.upgradeTalisman(player);
-            if (!player.getAbilities().instabuild) stack.shrink(WhiteWitchTalisman.spiritsPerLevel());
-            ItemStack crystals = new ItemStack(dev.purifiedundead.content.ModItems.PURE_CRYSTAL.get(), 4);
+            if (!player.getAbilities().instabuild) stack.shrink(amount);
+            ItemStack crystals = new ItemStack(dev.purifiedundead.content.ModItems.PURE_CRYSTAL.get(), amount);
             if (!player.getInventory().add(crystals)) player.drop(crystals, false);
             int currentLevel = ContractProgressService.talismanLevel(player);
             if (upgraded) {
@@ -75,7 +76,7 @@ public final class BlightedSpiritItem extends Item {
                                 WhiteWitchTalisman.incomingDamageMultiplier(currentLevel) * 100.0F)), false);
             } else {
                 dev.purifiedundead.progress.RewardSounds.onPurification(player);
-                player.displayClientMessage(Component.translatable("message.purified_undead.purified"), true);
+                player.displayClientMessage(Component.translatable("message.purified_undead.purified", amount), true);
             }
         }
         return stack;
@@ -96,6 +97,6 @@ public final class BlightedSpiritItem extends Item {
         lines.add(Component.translatable("item.purified_undead.blighted_spirit.summary")
                 .withStyle(ChatFormatting.DARK_PURPLE));
         lines.add(Component.translatable("item.purified_undead.blighted_spirit.use",
-                WhiteWitchTalisman.spiritsPerLevel()).withStyle(ChatFormatting.GRAY));
+                WhiteWitchTalisman.spiritsPerLevel(), WhiteWitchTalisman.spiritsPerLevel()).withStyle(ChatFormatting.GRAY));
     }
 }

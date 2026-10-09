@@ -20,5 +20,5 @@ public final class BlightedGuardianItem extends SwordItem {
  boolean changed=map.keySet().removeIf(net.minecraft.world.item.enchantment.Enchantment::isCurse);
  if(!map.containsKey(net.minecraft.world.item.enchantment.Enchantments.MENDING)){map.put(net.minecraft.world.item.enchantment.Enchantments.MENDING,1);changed=true;}
  if(changed)net.minecraft.world.item.enchantment.EnchantmentHelper.setEnchantments(map,s);}
- @Override public void appendHoverText(ItemStack s,Level level,java.util.List<net.minecraft.network.chat.Component> lines,TooltipFlag flag){lines.add(net.minecraft.network.chat.Component.translatable("tooltip.purified_undead.guardian_wave").withStyle(net.minecraft.ChatFormatting.GRAY));lines.add(net.minecraft.network.chat.Component.literal("Thank you for finding your way to me.").withStyle(net.minecraft.ChatFormatting.GRAY));}
+ @Override public void appendHoverText(ItemStack s,Level level,java.util.List<net.minecraft.network.chat.Component> lines,TooltipFlag flag){lines.add(net.minecraft.network.chat.Component.literal("Thank you for finding your way to me.").withStyle(net.minecraft.ChatFormatting.GRAY));}
 @Override public boolean canApplyAtEnchantingTable(ItemStack s,net.minecraft.world.item.enchantment.Enchantment e){return !e.isCurse()&&(super.canApplyAtEnchantingTable(s,e)||dev.purifiedundead.compat.GuardianEnchantments.accepts(e));}}

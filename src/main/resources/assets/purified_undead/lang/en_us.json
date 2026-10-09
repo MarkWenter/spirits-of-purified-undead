@@ -22,7 +22,7 @@
   "item.purified_undead.blight_fragment": "Blight Fragment",
   "item.purified_undead.blighted_spirit": "Blighted Spirit",
   "item.purified_undead.blighted_spirit.summary": "Condensed from four blight fragments.",
-  "item.purified_undead.blighted_spirit.use": "While wearing the Ancient Contract, hold to consume %s, upgrade the talisman and receive 4 Pure Crystals. Purification remains available at maximum level.",
+  "item.purified_undead.blighted_spirit.use": "While wearing the Ancient Contract, hold to consume %s, upgrade the talisman and receive %s Pure Crystals.",
   "item.purified_undead.ferin_warrior": "Ferin",
   "item.purified_undead.ferin_warrior.summary": "The purified blight left by the ancient warrior.",
   "item.purified_undead.ferin_warrior.effects": "Ferin turns aside the Ancient Blight for you: melee damage rises by 30%, and melee damage dealt by you or Ferin restores 20% as health.",
@@ -154,7 +154,7 @@
   "item.minecraft.splash_potion.effect.pure_elixir": "Splash Pure Elixir",
   "item.minecraft.lingering_potion.effect.pure_elixir": "Lingering Pure Elixir",
   "item.minecraft.tipped_arrow.effect.pure_elixir": "Arrow of Purity",
-  "message.purified_undead.purified": "Purified the blighted spirits and received 4 Pure Crystals.",
+  "message.purified_undead.purified": "Purified the blighted spirits and received %s Pure Crystals.",
   "item.purified_undead.white_lotus": "White Lotus",
   "item.purified_undead.scarlet_lotus": "Scarlet Lotus",
   "item.purified_undead.pure_forbidden_fruit": "Pure Forbidden Fruit",
@@ -260,5 +260,6 @@
   "jei.purified_undead.cipher_source": "Overworld and Nether treasure chests: default 25% chance of 1–5 fragments.",
   "jei.purified_undead.ferin_source": "Awarded once per player after collecting the other seven memories. Delivery waits for inventory space.",
   "jei.purified_undead.crystal_source": "Wear the Ancient Contract and hold use with Blighted Spirit in your main hand to obtain Pure Crystals, including at maximum talisman level. Used as the foundry right fuel.",
-  "tooltip.purified_undead.guardian_wave": "Swing to release a melee wave up to 15 blocks away: 120% damage, captured swing state and an independent assist critical roll. Triggers melee warrior effects."
+  "tooltip.purified_undead.guardian_wave": "Swing to release a melee wave up to 15 blocks away: 120% damage, captured swing state and an independent assist critical roll. Triggers melee warrior effects.",
+  "item.purified_undead.lily_diary.current": "Current bonuses: %s%% critical chance, %s luck."
 }
