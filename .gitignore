@@ -118,3 +118,8 @@ scripts/*
 !docs/RELEASE_V053.md
 
 !docs/RELEASE_V054.md
+
+!docs/RELEASE_V055.md
+!docs/COMMANDS_AND_CONFIG.md
+!docs/CONFIG_REFERENCE.md
+!docs/ADDON_API.md

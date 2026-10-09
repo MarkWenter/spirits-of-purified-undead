@@ -9,7 +9,7 @@ public final class SlateConfig {
     public static final ForgeConfigSpec.IntValue statusTicks, sistersTicks, sistersCooldown, revision;
     static {
         var b = new ForgeConfigSpec.Builder();
-        b.comment("Slate update / 石板更新第二部分。Foundry recipes: purified_undead-foundry.json; restart server after editing.").push("slate");
+        b.comment("Slate update / 石板更新第二部分。Foundry recipes: purified_undead-foundry.json; use /purifiedundead config reload foundry after editing JSON; restart for TOML. 石板数值修改建议两端同步后重启，铸造JSON支持安全重载。").push("slate");
         chestChance=b.comment("Cipher fragments: chance per Overworld/Nether treasure chest, 1-5 fragments.").defineInRange("cipherChestChance",.25,0,1);
         grothDamage=b.comment("Plunging splash damage fraction; radius 1.5 blocks.").defineInRange("grothSplashDamage",.5,0,10);
         sprintDamage=b.defineInRange("juliusSprintDamage",.2,0,10);

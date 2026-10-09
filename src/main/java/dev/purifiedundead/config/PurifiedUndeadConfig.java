@@ -128,7 +128,7 @@ public final class PurifiedUndeadConfig {
 
         private Values(ForgeConfigSpec.Builder builder) {
             balanceRevision = builder.defineInRange("balanceRevision", 0, 0, 100);
-            builder.push("contract");
+            builder.comment("契约、饰品槽与材料掉落；槽位数量修改后重启游戏／服务器。").push("contract");
             warriorSlots = builder.comment("Undead Warrior slots granted by an equipped contract. Restart required.")
                     .defineInRange("warriorSlots", 8, 0, 64);
             whiteWitchRelicSlots = builder.comment("White Witch Relic slots. Restart required.")
@@ -139,21 +139,21 @@ public final class PurifiedUndeadConfig {
                     .defineInRange("transformationDurationTicks", 12000, 20, 720000);
             builder.pop();
 
-            builder.push("acquisition");
+            builder.comment("自然获取路线开关；任务整合包可关闭路线后使用管理员指令或API授予奖励。已获取记录和待补发奖励不受开关清除。").push("acquisition");
             builder.comment("Disable an acquisition route when a modpack supplies its own recipes or quests.");
-            contractAcquisitionEnabled = builder.define("contractEnabled", true);
-            ferinAcquisitionEnabled = builder.define("ferinEnabled", true);
-            grothAcquisitionEnabled = builder.define("grothEnabled", true);
-            juliusAcquisitionEnabled = builder.define("juliusEnabled", true);
-            guardianAcquisitionEnabled = builder.define("guardiansEnabled", true);
-            ulvAcquisitionEnabled = builder.define("ulvEnabled", true);
-            eleineAcquisitionEnabled = builder.define("eleineEnabled", true);
-            hoenirAcquisitionEnabled = builder.define("hoenirEnabled", true);
-            fadenAcquisitionEnabled = builder.define("fadenEnabled", true);
+            contractAcquisitionEnabled = builder.comment("契约自然获取路线；false时仍允许指令／API明确授予，且已有待补发奖励仍可领取。").define("contractEnabled", true);
+            ferinAcquisitionEnabled = builder.comment("费林自然获取路线；false时仍允许指令／API明确授予，且已有待补发奖励仍可领取。").define("ferinEnabled", true);
+            grothAcquisitionEnabled = builder.comment("格洛特自然获取路线；false时仍允许指令／API明确授予，且已有待补发奖励仍可领取。").define("grothEnabled", true);
+            juliusAcquisitionEnabled = builder.comment("尤里乌斯自然获取路线；false时仍允许指令／API明确授予，且已有待补发奖励仍可领取。").define("juliusEnabled", true);
+            guardianAcquisitionEnabled = builder.comment("西丽亚与西丽德自然获取路线；false时仍允许指令／API明确授予，且已有待补发奖励仍可领取。").define("guardiansEnabled", true);
+            ulvAcquisitionEnabled = builder.comment("狼自然获取路线；false时仍允许指令／API明确授予，且已有待补发奖励仍可领取。").define("ulvEnabled", true);
+            eleineAcquisitionEnabled = builder.comment("伊莱恩自然获取路线；false时仍允许指令／API明确授予，且已有待补发奖励仍可领取。").define("eleineEnabled", true);
+            hoenirAcquisitionEnabled = builder.comment("海尼尔自然获取路线；false时仍允许指令／API明确授予，且已有待补发奖励仍可领取。").define("hoenirEnabled", true);
+            fadenAcquisitionEnabled = builder.comment("法腾自然获取路线；false时仍允许指令／API明确授予，且已有待补发奖励仍可领取。").define("fadenEnabled", true);
             ulvMinimumSleepTicks = builder.defineInRange("ulvMinimumSleepTicks", 100, 1, 12000);
             builder.pop();
 
-            builder.push("talisman");
+            builder.comment("护身符等级与成长；怨念污秽消耗数量同时决定纯净结晶产量。").push("talisman");
             talismanMaxLevel = builder.defineInRange("maxLevel", 15, 0, 100);
             spiritsPerTalismanLevel = builder.defineInRange("blightedSpiritsPerLevel", 4, 1, 64);
             talismanBaseIncomingMultiplier = builder.defineInRange("baseIncomingDamageMultiplier", 1.20D, 0.0D, 10.0D);
@@ -162,7 +162,7 @@ public final class PurifiedUndeadConfig {
             ferinFifthStageLevel = builder.defineInRange("ferinFifthStageLevel", 10, 0, 100);
             builder.pop();
 
-            builder.push("ferin");
+            builder.comment("费林：近战、吸血与协同攻击；数组须恰好五项。").push("ferin");
             ferinUnreversedMeleeMultiplier = builder.defineInRange("unreversedMeleeMultiplier", 0.70D, 0.0D, 10.0D);
             ferinReversedMeleeMultiplier = builder.defineInRange("reversedMeleeMultiplier", 1.30D, 0.0D, 10.0D);
             ferinLifestealRatio = builder.defineInRange("lifestealRatio", 0.20D, 0.0D, 10.0D);
@@ -176,7 +176,7 @@ public final class PurifiedUndeadConfig {
             ferinExitDurationTicks = builder.defineInRange("exitDurationTicks", 4, 0, 12000);
             builder.pop();
 
-            builder.push("groth");
+            builder.comment("格洛特：减伤、暴击与眩晕。").push("groth");
             grothUnreversedDamageMultiplier = builder.defineInRange("unreversedIncomingDamageMultiplier", 1.20D, 0.0D, 10.0D);
             grothGroundDamageMultiplier = builder.defineInRange("reversedGroundIncomingDamageMultiplier", 0.80D, 0.0D, 10.0D);
             grothMiningSpeedMultiplier = builder.defineInRange("unreversedMiningSpeedMultiplier", 0.90D, 0.0D, 10.0D);
@@ -185,7 +185,7 @@ public final class PurifiedUndeadConfig {
             grothStunCooldownTicks = builder.defineInRange("stunCooldownTicks", 200, 0, 72000);
             builder.pop();
 
-            builder.push("julius");
+            builder.comment("尤里乌斯：近战惩罚、攻击距离与冲刺。").push("julius");
             juliusMeleeDamagePenalty = builder.defineInRange("unreversedFinalMeleeDamagePenalty", 1.0D, 0.0D, 100.0D);
             juliusReachPenalty = builder.defineInRange("unreversedReachPenalty", 1.0D, 0.0D, 16.0D);
             juliusReachBonus = builder.defineInRange("reversedReachBonus", 1.0D, 0.0D, 16.0D);
@@ -193,14 +193,14 @@ public final class PurifiedUndeadConfig {
             juliusSprintBonusMultiplier = builder.defineInRange("reversedSprintMultiplier", 1.20D, 0.0D, 10.0D);
             builder.pop();
 
-            builder.push("guardians");
+            builder.comment("西丽亚与西丽德：护甲和移动。移动参数建议客户端和服务端同步配置后重启。").push("guardians");
             guardianArmorFlatChange = builder.defineInRange("armorFlatChange", 5.0D, 0.0D, 1024.0D);
             guardianArmorScale = builder.defineInRange("armorAndToughnessScale", 0.10D, 0.0D, 10.0D);
             guardianDoubleJumpVelocity = builder.defineInRange("doubleJumpVelocity", 0.52D, 0.0D, 10.0D);
             guardianAirDashSpeed = builder.defineInRange("airDashSpeed", 1.15D, 0.0D, 10.0D);
             builder.pop();
 
-            builder.push("ulv");
+            builder.comment("狼：攻击速度与连击。").push("ulv");
             ulvAttackSpeedPenaltyMultiplier = builder.defineInRange("unreversedAttackSpeedMultiplier", 0.80D, 0.0D, 10.0D);
             ulvAttackSpeedBonusMultiplier = builder.defineInRange("reversedAttackSpeedMultiplier", 1.20D, 0.0D, 10.0D);
             ulvBacklashMaxHealthRatio = builder.defineInRange("backlashMaxHealthRatio", 0.05D, 0.0D, 10.0D);
@@ -210,7 +210,7 @@ public final class PurifiedUndeadConfig {
             ulvBonusPerLayer = builder.defineInRange("damageBonusPerLayer", 0.10D, 0.0D, 10.0D);
             builder.pop();
 
-            builder.push("eleine");
+            builder.comment("伊莱恩：魔法、游泳与魔弹。").push("eleine");
             eleineMagicMultiplier = builder.defineInRange("magicDamageMultiplier", 1.30D, 0.0D, 10.0D);
             eleineSwimSpeedMultiplier = builder.defineInRange("unreversedSwimSpeedMultiplier", 0.65D, 0.0D, 10.0D);
             eleineOrbChance = builder.defineInRange("orbChance", 0.30D, 0.0D, 1.0D);
@@ -219,7 +219,7 @@ public final class PurifiedUndeadConfig {
             eleineDrownedKillsRequired = builder.defineInRange("drownedKillsRequired", 3, 1, 1000);
             builder.pop();
 
-            builder.push("hoenir");
+            builder.comment("海尼尔：状态、回复与标记。").push("hoenir");
             hoenirNegativeEffectsRequired = builder.defineInRange("negativeEffectsRequired", 3, 1, 255);
             hoenirMarkDurationTicks = builder.defineInRange("markDurationTicks", 200, 1, 72000);
             hoenirRegenerationRatio = builder.defineInRange("regenerationMaxHealthRatioPerSecond", 0.05D, 0.0D, 10.0D);
@@ -228,7 +228,7 @@ public final class PurifiedUndeadConfig {
             hoenirUnreversedAmplifierIncrease = builder.defineInRange("unreversedAmplifierIncrease", 1, 0, 255);
             builder.pop();
 
-            builder.push("faden");
+            builder.comment("法腾：击退、异常状态与掉落。").push("faden");
             fadenKnockbackResistancePenalty = builder.defineInRange("knockbackResistancePenalty", 0.15D, 0.0D, 1.0D);
             fadenPoisonChance = builder.defineInRange("poisonChance", 0.20D, 0.0D, 1.0D);
             fadenPoisonDurationTicks = builder.defineInRange("poisonDurationTicks", 400, 1, 72000);
@@ -236,12 +236,12 @@ public final class PurifiedUndeadConfig {
             fadenFortuneLootingBonus = builder.defineInRange("fortuneAndLootingBonus", 1, 0, 255);
             builder.pop();
 
-            builder.push("compatibility");
+            builder.comment("可选模组兼容；关闭不会卸载任何模组。").push("compatibility");
             guardianMalumSoulHarvest = builder.comment("Let Blighted Guardian qualify for native Malum soul drops even when a modpack clears the harvesting tag. Malum drop restrictions still apply.")
                     .define("guardianMalumSoulHarvest", true);
             builder.pop();
 
-            builder.push("whiteWitchRelics");
+            builder.comment("白巫女遗物：重复佩戴、效果倍率和冷却。").push("whiteWitchRelics");
             whiteWitchRelicsEnabled = builder.comment("Master switch for White Witch Relic equipment effects.")
                     .define("enabled", true);
             allowDuplicateWhiteWitchRelics = builder.define("allowDuplicates", false);

@@ -18,8 +18,10 @@ final class WarriorProgressStorage {
     }
 
     static void save(ServerPlayer player, WarriorProgress progress) {
+        var before=ProgressManagement.snapshot(load(player));
         player.getPersistentData().put(DATA_KEY, progress.save());
         ModAdvancements.progression(player, progress);
+        ProgressManagement.notifyChange(player,before,progress);
     }
 
     static void copy(ServerPlayer original, ServerPlayer replacement) {

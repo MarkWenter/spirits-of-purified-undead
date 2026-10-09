@@ -261,5 +261,22 @@
   "jei.purified_undead.ferin_source": "Awarded once per player after collecting the other seven memories. Delivery waits for inventory space.",
   "jei.purified_undead.crystal_source": "Wear the Ancient Contract and hold use with Blighted Spirit in your main hand to obtain Pure Crystals, including at maximum talisman level. Used as the foundry right fuel.",
   "tooltip.purified_undead.guardian_wave": "Swing to release a melee wave up to 15 blocks away: 120% damage, captured swing state and an independent assist critical roll. Triggers melee warrior effects.",
-  "item.purified_undead.lily_diary.current": "Current bonuses: %s%% critical chance, %s luck."
+  "item.purified_undead.lily_diary.current": "Current bonuses: %s%% critical chance, %s luck.",
+  "command.purified_undead.help": "Purified Undead: status (self); admin: warrior grant/reset/collect, contract grant, talisman set, rewards retry, config.",
+  "command.purified_undead.grant": "%s / %s: %s.",
+  "command.purified_undead.delivered": "delivered",
+  "command.purified_undead.pending": "claimed; pending inventory space",
+  "command.purified_undead.already_obtained": "already obtained; no duplicate reward",
+  "command.purified_undead.reset": "Reset %s / %s acquisition bookkeeping. Items and advancements retained; natural acquisition can run again.",
+  "command.purified_undead.collect": "Collected %s / %s: %s items; pending reward cancelled. Ender chests, nested bags and world containers excluded.",
+  "command.purified_undead.level_range": "Talisman level must be within 0–%s.",
+  "command.purified_undead.level": "Set talisman level for %s player(s) to %s.",
+  "command.purified_undead.retry": "Retried pending rewards for %s player(s).",
+  "command.purified_undead.status": "%s: talisman %s/%s; Eleine drowned kills %s.",
+  "command.purified_undead.state": "%s: obtained=%s, pending=%s.",
+  "command.purified_undead.config_list": "%s keys: %s. Restart for TOML changes; use config reload foundry for safe foundry JSON reload.",
+  "command.purified_undead.config_value": "%s.%s = %s (server value)",
+  "command.purified_undead.unknown_key": "Unknown configuration key: %s.",
+  "command.purified_undead.reload": "Reloaded and synchronized %s foundry recipes.",
+  "command.purified_undead.reload_failed": "Foundry reload failed: %s. Check the configuration file."
 }

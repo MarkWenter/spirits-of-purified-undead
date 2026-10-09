@@ -261,5 +261,22 @@
   "jei.purified_undead.ferin_source": "收集其余七种秽鬼追忆后，每位玩家仅获得一次；背包满时等待空位补发。",
   "jei.purified_undead.crystal_source": "装备古老民族之契后，主手持怨念污秽长按使用，按消耗量获得纯净结晶。护身符满级仍可使用。纯化铸造器右侧燃料。",
   "tooltip.purified_undead.guardian_wave": "挥剑释放最远 7 格的剑气，造成 120% 近战伤害，继承挥剑状态并独立判定协同暴击。可触发近战战士效果。",
-  "item.purified_undead.lily_diary.current": "目前属性：%s%%暴击率、%s幸运值。"
+  "item.purified_undead.lily_diary.current": "目前属性：%s%%暴击率、%s幸运值。",
+  "command.purified_undead.help": "涤净亡魂：status 查询自身进度；管理员可用 warrior grant/reset/collect、contract grant、talisman set、rewards retry、config。",
+  "command.purified_undead.grant": "%s · %s：%s。",
+  "command.purified_undead.delivered": "奖励已发放",
+  "command.purified_undead.pending": "已记录，等待背包空位补发",
+  "command.purified_undead.already_obtained": "已经获取，未重复发放",
+  "command.purified_undead.reset": "已重置 %s 的 %s 获取记录（保留物品与进度成就；自然条件满足时可重新获得）。",
+  "command.purified_undead.collect": "已回收 %s 的 %s 饰品 %s 个，并取消该奖励的待补发；未处理末影箱、嵌套背包和世界容器。",
+  "command.purified_undead.level_range": "护身符等级必须在 0–%s 之间。",
+  "command.purified_undead.level": "已为 %s 名玩家设置护身符等级：%s。",
+  "command.purified_undead.retry": "已尝试向 %s 名玩家补发尚未领取的奖励。",
+  "command.purified_undead.status": "%s：护身符 %s/%s 级；伊莱恩溺尸计数 %s。",
+  "command.purified_undead.state": "%s：已获取=%s，待补发=%s。",
+  "command.purified_undead.config_list": "%s 配置键：%s。TOML 更改建议重启；铸造 JSON 可用 config reload foundry 安全重载。",
+  "command.purified_undead.config_value": "%s.%s = %s（服务端当前值）",
+  "command.purified_undead.unknown_key": "未知配置键：%s。",
+  "command.purified_undead.reload": "铸造配方已重载并同步：%s 条。",
+  "command.purified_undead.reload_failed": "铸造配方重载失败：%s。请检查配置文件。"
 }

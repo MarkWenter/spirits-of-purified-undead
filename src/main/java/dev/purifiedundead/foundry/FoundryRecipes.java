@@ -57,7 +57,7 @@ public final class FoundryRecipes {
         Path path=net.minecraftforge.fml.loading.FMLPaths.CONFIGDIR.get().resolve("purified_undead-foundry.json");
         var gson=new GsonBuilder().setPrettyPrinting().create();
         try {
-            if(!Files.exists(path)){var root=new JsonObject();root.addProperty("_help","A=top / 上槽; B=bottom / 下槽. consumeTop=false preserves A. Counts and fuels are per result batch unit; ticks=400 is 20 seconds. Restart server after changes. IDs may come from any mod; invalid entries are skipped with a warning.");root.add("recipes",gson.toJsonTree(defaults()));Files.writeString(path,gson.toJson(root),StandardCharsets.UTF_8);}
+            if(!Files.exists(path)){var root=new JsonObject();root.addProperty("_help","A=top / 上槽; B=bottom / 下槽. consumeTop=false preserves A. Counts and fuels are per result batch unit; ticks=400 is 20 seconds. Use /purifiedundead config reload foundry after changes, or restart. IDs may come from any mod; invalid entries are skipped with a warning.");root.add("recipes",gson.toJsonTree(defaults()));Files.writeString(path,gson.toJson(root),StandardCharsets.UTF_8);}
             if(Files.size(path)>8*1024*1024)throw new IllegalArgumentException("Foundry configuration exceeds 8 MiB");
             var root=JsonParser.parseString(Files.readString(path,StandardCharsets.UTF_8)).getAsJsonObject();var loaded=new ArrayList<Recipe>();
             if(root.getAsJsonArray("recipes").size()>4096)throw new IllegalArgumentException("At most 4096 foundry recipes are supported");
@@ -66,6 +66,28 @@ public final class FoundryRecipes {
             validateSync(loaded);recipes=List.copyOf(loaded);
         }catch(Exception e){recipes=List.of();com.mojang.logging.LogUtils.getLogger().error("Foundry configuration could not load; processing disabled, inventory untouched: {}",path,e);}
     }
+    /** Administrative reload: validate the whole file before replacing the active recipes. */
+    public static int reloadStrict(net.minecraft.server.MinecraftServer server) throws java.io.IOException {
+        if(!server.isSameThread())throw new IllegalStateException("Foundry reload requires the server thread");
+        Path path=net.minecraftforge.fml.loading.FMLPaths.CONFIGDIR.get().resolve("purified_undead-foundry.json");
+        if(Files.size(path)>8*1024*1024)throw new IllegalArgumentException("Foundry configuration exceeds 8 MiB");
+        var root=JsonParser.parseString(Files.readString(path,StandardCharsets.UTF_8)).getAsJsonObject();
+        var array=root.getAsJsonArray("recipes");
+        if(array==null||array.size()>4096)throw new IllegalArgumentException("Expected recipes array with at most 4096 entries");
+        var loaded=new ArrayList<Recipe>();var gson=new Gson();
+        for(var element:array) {
+            var object=element.getAsJsonObject();
+            if(!object.has("consumeTop")||!object.get("consumeTop").isJsonPrimitive()||!object.get("consumeTop").getAsJsonPrimitive().isBoolean())throw new IllegalArgumentException("consumeTop must be an explicit boolean");
+            var recipe=gson.fromJson(element,Recipe.class);validate(recipe);loaded.add(recipe);
+        }
+        validateSync(loaded);
+        // Commit only after every entry validates. Invalid reloads leave the running recipes intact.
+        recipes=List.copyOf(loaded);
+        var packet=new dev.purifiedundead.network.FoundryRecipesPacket(recipes);
+        for(var player:server.getPlayerList().getPlayers())dev.purifiedundead.network.ModNetwork.CHANNEL.send(net.minecraftforge.network.PacketDistributor.PLAYER.with(()->player),packet);
+        return recipes.size();
+    }
+
     /** Structural checks are registry-independent and safe on the network decoding thread. */
     public static void validateShape(Recipe r){
         if(r==null)throw new IllegalArgumentException("Null foundry recipe");
