@@ -11,8 +11,8 @@ import java.util.*;
 
 /** A short-lived, bounded melee wave. Not saved, not a projectile, and never loads chunks. */
 public final class GuardianWaveEntity extends Entity {
-    public static final double RANGE = 7D, SPEED = 1D;
-    public static final int LIFETIME = 7;
+    public static final double RANGE = 15D, SPEED = 1D;
+    public static final int LIFETIME = 15;
     private static final EntityDataAccessor<Integer> OWNER = SynchedEntityData.defineId(GuardianWaveEntity.class,EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> SHOT = SynchedEntityData.defineId(GuardianWaveEntity.class,EntityDataSerializers.INT);
     private boolean predicted;

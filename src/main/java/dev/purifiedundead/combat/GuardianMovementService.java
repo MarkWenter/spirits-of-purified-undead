@@ -24,6 +24,7 @@ public final class GuardianMovementService {
     static final long REQUEST_GRACE_TICKS = 5L;
 
     public static void perform(ServerPlayer player, GuardianActionPacket.Action action) {
+        if(action==GuardianActionPacket.Action.WALL_JUMP){if(!dev.purifiedundead.slate.WallGrip.jump(player))rejectPrediction(player);return;}
         if(action==GuardianActionPacket.Action.GRIP_HELD||action==GuardianActionPacket.Action.GRIP_RELEASED){dev.purifiedundead.slate.WallGrip.input(player,action==GuardianActionPacket.Action.GRIP_HELD);return;}
         if (!player.isAlive() || player.isSpectator() || player.isPassenger() || player.getAbilities().flying || player.isFallFlying() || !isEquipped(player)) {
             rejectPrediction(player);

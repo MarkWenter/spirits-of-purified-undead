@@ -16,6 +16,7 @@ minecraft {
         configureEach {
             workingDirectory project.file("run/${name}")
             property 'forge.logging.console.level', 'info'
+            args '-mixin.config', 'purified_undead.mixins.json'
             // Curios' mixins use SRG names; development runs need the mapping file.
             property 'mixin.env.remapRefMap', 'true'
             property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
@@ -108,7 +109,7 @@ tasks.withType(AbstractArchiveTask).configureEach {
     reproducibleFileOrder = true
 }
 tasks.named('jar', Jar).configure {
-    manifest { attributes 'Implementation-Version': mod_version }
+    manifest { attributes 'Implementation-Version': mod_version, 'MixinConfigs': 'purified_undead.mixins.json' }
     finalizedBy 'reobfJar'
 }
 tasks.register('stageMods', Sync) {

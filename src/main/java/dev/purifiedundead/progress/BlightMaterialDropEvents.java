@@ -19,7 +19,8 @@ public final class BlightMaterialDropEvents {
         if (!(event.getSource().getEntity() instanceof ServerPlayer player)
                 || !dev.purifiedundead.compat.UndeadCompatibility.fragmentSource(event.getEntity())
                 || event.getEntity().getRandom().nextFloat()
-                >= PurifiedUndeadConfig.get(PurifiedUndeadConfig.VALUES.fragmentDropChance)) {
+                >= Math.min(1D,PurifiedUndeadConfig.get(PurifiedUndeadConfig.VALUES.fragmentDropChance)
+                    * (dev.purifiedundead.slate.MemoryStorage.active(player,"faden")?2D:1D))) {
             return;
         }
         int looting = Math.max(0, Math.min(255, event.getLootingLevel()));

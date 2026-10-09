@@ -68,13 +68,77 @@ public final class SlateServerSmoke {
                 check(Math.abs(splash.getHealth()-(before-2))<.01,"plunge splash deals half damage actual="+splash.getHealth()+" expected="+(before-2));
                 check(victim.hasEffect(MobEffects.WITHER)&&victim.hasEffect(MobEffects.POISON)&&victim.getRemainingFireTicks()==100&&victim.getPersistentData().getLong("purified_undead:memory_freeze_until")==level.getGameTime()+100,"four independent ailments use 5 seconds");
                 check(victim.getEffect(MobEffects.WITHER).getAmplifier()==0,"ailment level I");
+                var lp=new net.minecraft.world.level.storage.loot.LootParams.Builder(level)
+                    .withParameter(net.minecraft.world.level.storage.loot.parameters.LootContextParams.ORIGIN,victim.position())
+                    .withParameter(net.minecraft.world.level.storage.loot.parameters.LootContextParams.THIS_ENTITY,victim)
+                    .withParameter(net.minecraft.world.level.storage.loot.parameters.LootContextParams.DAMAGE_SOURCE,p.damageSources().playerAttack(p))
+                    .create(net.minecraft.world.level.storage.loot.parameters.LootContextParamSets.ENTITY);
+                var lc=new net.minecraft.world.level.storage.loot.LootContext.Builder(lp).create(null);
+                var half=net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition.randomChance(.5F).build();
+                var quarter=net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition.randomChance(.25F).build();
+                var boosted=net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceWithLootingCondition.randomChanceAndLootingBoost(.5F,0).build();
+                int successes=0;for(int n=0;n<4096;n++){check(half.test(lc)&&boosted.test(lc),"50 percent becomes certain in both vanilla conditions");if(quarter.test(lc))successes++;}
+                check(successes>1800&&successes<2300,"25 percent becomes 50 percent, not independent reroll: "+successes);
                 MemoryEffects.groupStun(p,victim,40);check(splash.hasEffect(dev.purifiedundead.content.ModEffects.STUNNED.get()),"plunge group stun");
-                var lootEvent=new net.minecraftforge.event.entity.living.LootingLevelEvent(victim,p.damageSources().playerAttack(p),3);net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(lootEvent);check(lootEvent.getLootingLevel()==5,"Faden adds two looting levels");
+                var lootEvent=new net.minecraftforge.event.entity.living.LootingLevelEvent(victim,p.damageSources().playerAttack(p),3);net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(lootEvent);check(lootEvent.getLootingLevel()==3,"Faden memory no longer adds looting");
             }finally{SlateConfig.statusChance.set(.25);victim.discard();splash.discard();p.fallDistance=0;}
             var dying=net.minecraft.world.entity.EntityType.COW.create(level);var nearby=net.minecraft.world.entity.EntityType.COW.create(level);dying.setPos(48,120,48);nearby.setPos(49,120,48);level.addFreshEntity(dying);level.addFreshEntity(nearby);dying.setHealth(1);p.fallDistance=2;
             try{dying.hurt(p.damageSources().playerAttack(p),4);check(!dying.isAlive()&&Math.abs(nearby.getHealth()-8)<.01,"lethal plunge still splashes");}finally{dying.discard();nearby.discard();p.fallDistance=0;}
+            p.getFoodData().setFoodLevel(10);p.getFoodData().setSaturation(0);p.tickCount=100;MemoryEffects.tickPlayer(p);
+            check(p.getFoodData().getFoodLevel()==14&&p.getFoodData().getSaturationLevel()==4,"wolf restores four food and saturation points");
+            p.tickCount=101;MemoryEffects.tickPlayer(p);check(p.getFoodData().getFoodLevel()==14,"food only every 100 ticks");
+            check(Math.abs(MemoryJump.height(MemoryJump.raise(.42,.08,.5),.08)-MemoryJump.height(.42,.08)-.5)<.00001,"sisters half block jump");
+            var source=p.damageSources().playerAttack(p);
+            check(!source.is(net.minecraft.tags.DamageTypeTags.IS_FIRE)&&!source.is(net.minecraft.tags.DamageTypeTags.IS_FREEZING)&&!source.is(net.minecraft.tags.DamageTypeTags.BYPASSES_ENCHANTMENTS),"actual attack type unchanged");
+            var tagList=java.util.List.of(net.minecraft.advancements.critereon.TagPredicate.is(net.minecraft.tags.DamageTypeTags.IS_FIRE),net.minecraft.advancements.critereon.TagPredicate.is(net.minecraft.tags.DamageTypeTags.IS_FREEZING),net.minecraft.advancements.critereon.TagPredicate.is(net.minecraft.tags.DamageTypeTags.BYPASSES_ARMOR));
+            var criteria=new net.minecraft.advancements.critereon.DamageSourcePredicate(tagList,net.minecraft.advancements.critereon.EntityPredicate.ANY,net.minecraft.advancements.critereon.EntityPredicate.ANY);
+            check(MemoryDamageCriteria.matches(criteria,level,p.position(),source),"simultaneous elemental loot/advancement criteria");check(!criteria.matches(level,p.position(),source),"identity scope cleaned and ordinary criteria unaffected");
+            var paramsCriteria=new net.minecraft.world.level.storage.loot.LootParams.Builder(level)
+                .withParameter(net.minecraft.world.level.storage.loot.parameters.LootContextParams.ORIGIN,p.position())
+                .withParameter(net.minecraft.world.level.storage.loot.parameters.LootContextParams.THIS_ENTITY,p)
+                .withParameter(net.minecraft.world.level.storage.loot.parameters.LootContextParams.DAMAGE_SOURCE,source).create(net.minecraft.world.level.storage.loot.parameters.LootContextParamSets.ENTITY);
+            var contextCriteria=new net.minecraft.world.level.storage.loot.LootContext.Builder(paramsCriteria).create(null);
+            var conditionCriteria=net.minecraft.world.level.storage.loot.predicates.DamageSourceCondition.hasDamageSource(net.minecraft.advancements.critereon.DamageSourcePredicate.Builder.damageType().tag(net.minecraft.advancements.critereon.TagPredicate.is(net.minecraft.tags.DamageTypeTags.IS_FIRE))).build();
+            check(conditionCriteria.test(contextCriteria),"actual loot condition receives extra identity");
+            var blaze=net.minecraft.world.entity.EntityType.BLAZE.create(level);blaze.setPos(80,120,80);level.addFreshEntity(blaze);
+            try{p.fallDistance=0;blaze.hurt(source,4);check(Math.abs(blaze.getHealth()-16)<.01,"fire immunity cannot suppress ordinary attack");}finally{blaze.discard();}
+            check(Math.abs(SlateConfig.get(SlateConfig.ferinBonus)-1.5)<.001,"migrated Ferin bonus is 150 percent");
+            if(net.minecraftforge.fml.ModList.get().isLoaded("celestial_artifacts")) {
+                var id=net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("celestial_artifacts","loot_modifiers/drops/nihility_etching.json");
+                try(var reader=server.getResourceManager().getResource(id).orElseThrow().openAsReader()) {
+                    var json=com.google.gson.JsonParser.parseReader(reader).getAsJsonObject();boolean found=false;
+                    for(var entry:json.getAsJsonArray("conditions")){var condition=entry.getAsJsonObject();if(condition.get("condition").getAsString().equals("minecraft:damage_source_properties")){
+                        var nativePredicate=net.minecraft.advancements.critereon.DamageSourcePredicate.fromJson(condition.get("predicate"));
+                        check(!nativePredicate.matches(level,p.position(),source),"Celestial abyssal condition remains distinct from wither");found=true;
+                    }}check(found,"native etching condition loaded");
+                }catch(java.io.IOException ex){throw new IllegalStateException(ex);}
+                try {
+                    var nativeClass=Class.forName("com.xiaoyue.celestial_core.content.loot.AddItemModifier");
+                    var constructor=nativeClass.getConstructor(net.minecraft.world.item.Item.class,Class.forName("com.xiaoyue.celestial_core.content.loot.DoubleConfigValue"),net.minecraft.world.level.storage.loot.predicates.LootItemCondition[].class);
+                    var etching=net.minecraft.core.registries.BuiltInRegistries.ITEM.get(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("celestial_artifacts","nihility_etching"));
+                    var abyss=net.minecraft.world.level.storage.loot.predicates.DamageSourceCondition.hasDamageSource(net.minecraft.advancements.critereon.DamageSourcePredicate.Builder.damageType().tag(net.minecraft.advancements.critereon.TagPredicate.is(net.minecraft.tags.DamageTypeTags.BYPASSES_ENCHANTMENTS))).build();
+                    var nativeModifier=(net.minecraftforge.common.loot.IGlobalLootModifier)constructor.newInstance(etching,null,new net.minecraft.world.level.storage.loot.predicates.LootItemCondition[]{abyss});
+                    var nativeGuarded=(net.minecraftforge.common.loot.IGlobalLootModifier)constructor.newInstance(etching,null,new net.minecraft.world.level.storage.loot.predicates.LootItemCondition[]{abyss,net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition.randomChance(0).build()});
+                    for(var type:java.util.List.of(net.minecraft.world.entity.EntityType.WARDEN,net.minecraft.world.entity.EntityType.COW)) {
+                        var target=type.create(level);
+                        var params=new net.minecraft.world.level.storage.loot.LootParams.Builder(level)
+                            .withParameter(net.minecraft.world.level.storage.loot.parameters.LootContextParams.ORIGIN,p.position())
+                            .withParameter(net.minecraft.world.level.storage.loot.parameters.LootContextParams.THIS_ENTITY,target)
+                            .withParameter(net.minecraft.world.level.storage.loot.parameters.LootContextParams.KILLER_ENTITY,p)
+                            .withParameter(net.minecraft.world.level.storage.loot.parameters.LootContextParams.LAST_DAMAGE_PLAYER,p)
+                            .withParameter(net.minecraft.world.level.storage.loot.parameters.LootContextParams.DAMAGE_SOURCE,source).create(net.minecraft.world.level.storage.loot.parameters.LootContextParamSets.ENTITY);
+                        var context=new net.minecraft.world.level.storage.loot.LootContext.Builder(params).create(null);
+                        var drops=nativeModifier.apply(new it.unimi.dsi.fastutil.objects.ObjectArrayList<>(),context);
+                        check(type==net.minecraft.world.entity.EntityType.WARDEN?drops.size()==1&&drops.get(0).is(etching):drops.isEmpty(),"native Celestial modifier etching scope");
+                        check(nativeGuarded.apply(new it.unimi.dsi.fastutil.objects.ObjectArrayList<>(),context).isEmpty(),"etching other prerequisites retained");
+                    }
+                    check(!dev.purifiedundead.compat.CelestialEtchingCompatibility.active(source),"etching scope released");
+                }catch(ReflectiveOperationException ex){throw new IllegalStateException(ex);}
+                System.out.println("CELESTIAL_ETCHING_CRITERIA_OK: actual native modifier, Warden-only single drop, unrelated victims and failed prerequisites rejected, scope cleanup");
+            }
+            float beforeFall=p.getHealth();p.invulnerableTime=0;p.causeFallDamage(10,1,p.damageSources().fall());check(p.getHealth()==beforeFall,"sisters fall protection");p.invulnerableTime=0;p.hurt(p.damageSources().fall(),10);check(p.getHealth()==beforeFall,"direct fall damage also rejected");
             var wall=new BlockPos(43,120,43);level.setBlockAndUpdate(wall,Blocks.STONE.defaultBlockState());p.setPos(42.69,120,43.5);p.setOnGround(false);p.setDeltaMovement(0,-1,0);WallGrip.input(p,true);WallGrip.tick(p);
-            check(p.getDeltaMovement().y>-.5&&p.getAttribute(net.minecraftforge.common.ForgeMod.ENTITY_GRAVITY.get()).getValue()==0,"wall grip arrests fall and gravity");WallGrip.input(p,false);WallGrip.tick(p);check(p.getAttribute(net.minecraftforge.common.ForgeMod.ENTITY_GRAVITY.get()).getValue()>0,"release restores gravity");level.setBlockAndUpdate(wall,Blocks.AIR.defaultBlockState());
+            check(p.getDeltaMovement().y>-.5&&p.getAttribute(net.minecraftforge.common.ForgeMod.ENTITY_GRAVITY.get()).getValue()==0,"wall grip arrests fall and gravity");check(WallGrip.jump(p)&&p.getDeltaMovement().y==.52,"server wall jump");check(!WallGrip.jump(p),"duplicate wall jump rejected");WallGrip.input(p,false);WallGrip.tick(p);check(p.getAttribute(net.minecraftforge.common.ForgeMod.ENTITY_GRAVITY.get()).getValue()>0,"release restores gravity");level.setBlockAndUpdate(wall,Blocks.AIR.defaultBlockState());
             var modifier=new dev.purifiedundead.loot.CipherLootModifier(new net.minecraft.world.level.storage.loot.predicates.LootItemCondition[0]);
             try {SlateConfig.chestChance.set(1.0);for(var dim:new net.minecraft.resources.ResourceKey[]{net.minecraft.world.level.Level.OVERWORLD,net.minecraft.world.level.Level.NETHER,net.minecraft.world.level.Level.END}){
                 var lootLevel=server.getLevel(dim);var params=new net.minecraft.world.level.storage.loot.LootParams.Builder(lootLevel).withParameter(net.minecraft.world.level.storage.loot.parameters.LootContextParams.ORIGIN,p.position()).withParameter(net.minecraft.world.level.storage.loot.parameters.LootContextParams.THIS_ENTITY,p).create(net.minecraft.world.level.storage.loot.parameters.LootContextParamSets.CHEST);
@@ -83,7 +147,7 @@ public final class SlateServerSmoke {
                 check(dim==net.minecraft.world.level.Level.END?drops.isEmpty():drops.size()==1&&drops.get(0).getCount()>=1&&drops.get(0).getCount()<=5,"modded chest dimensions/count including player opener");
             }}finally{SlateConfig.chestChance.set(.25);}
             var cloned=new net.minecraft.nbt.CompoundTag();MemoryRewards.copy(p.getPersistentData(),cloned);check(cloned.getBoolean("purified_undead:ferin_memory_received"),"reward clone flag");
-            diarySlot.setStackInSlot(0,ItemStack.EMPTY);MemoryEffects.tickPlayer(p);check(!MemoryEffects.active(p,"groth"),"unequip isolates memory effects");
+            diarySlot.setStackInSlot(0,ItemStack.EMPTY);MemoryEffects.tickPlayer(p);check(!MemoryEffects.active(p,"groth"),"unequip isolates memory effects");check(!criteria.matches(level,p.position(),source),"criteria enhancement removed on unequip");
             System.out.println("SLATE_SERVER_OK: batch capacity/remainders/reload, retained template, recipe remainder, locked diary, duplicate rejection, equipped effects, one-time gift, health, cooldown, sprint/speed, splash, ailments, fire immunity, night vision, swim, looting, wall grip and chest dimensions");
         }finally{level.setBlockAndUpdate(pos,Blocks.AIR.defaultBlockState());}
     }

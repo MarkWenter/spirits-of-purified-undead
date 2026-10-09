@@ -6,7 +6,7 @@ import net.minecraftforge.common.ForgeConfigSpec;
 public final class SlateConfig {
     public static final ForgeConfigSpec SPEC;
     public static final ForgeConfigSpec.DoubleValue chestChance, grothDamage, sprintDamage, speedStepDamage, swimBonus, orbChance, orbDamage, statusChance, ferinBonus, healthBonus;
-    public static final ForgeConfigSpec.IntValue statusTicks, sistersTicks, sistersCooldown, lootingBonus;
+    public static final ForgeConfigSpec.IntValue statusTicks, sistersTicks, sistersCooldown, revision;
     static {
         var b = new ForgeConfigSpec.Builder();
         b.comment("Slate update / 石板更新第二部分。Foundry recipes: purified_undead-foundry.json; restart server after editing.").push("slate");
@@ -21,11 +21,17 @@ public final class SlateConfig {
         statusTicks=b.comment("20 ticks = 1 second; effects use amplifier 0 (level I).").defineInRange("hoenirStatusTicks",100,1,12000);
         sistersTicks=b.defineInRange("sistersBuffTicks",1000,1,72000);
         sistersCooldown=b.defineInRange("sistersCooldownTicks",3600,1,72000);
-        lootingBonus=b.defineInRange("fadenExtraLooting",2,0,100);
-        ferinBonus=b.defineInRange("ferinStageDamageBonus",.5,0,10);
+        revision=b.comment("Internal default migration revision.").defineInRange("revision",0,0,100);
+        ferinBonus=b.defineInRange("ferinStageDamageBonus",1.5,0,10);
         healthBonus=b.comment("Multiplicative total maximum-health bonus; 1.0 doubles maximum health.").defineInRange("shiningGuardianHealthBonus",1.0,0,10);
         b.pop(); SPEC=b.build();
     }
     public static <T> T get(ForgeConfigSpec.ConfigValue<T> value) {return dev.purifiedundead.config.PurifiedUndeadConfig.get(value);}
+    public static void migrate() {
+        if (get(revision) < 1) {
+            if (get(ferinBonus) == .5D) ferinBonus.set(1.5D);
+            revision.set(1); SPEC.save();
+        }
+    }
     private SlateConfig() {}
 }

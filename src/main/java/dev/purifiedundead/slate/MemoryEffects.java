@@ -24,7 +24,7 @@ public final class MemoryEffects {
     private static boolean splashing;
     public static boolean active(Player p,String key){return MemoryStorage.active(p,key);}
     public static boolean legal(Player p,LivingEntity target){return target!=p&&(!target.isAlive()||target.isAttackable())&&!p.isAlliedTo(target)&&(!(target instanceof Player other)||p.canHarmPlayer(other))&&(!(target instanceof OwnableEntity pet)||!p.getUUID().equals(pet.getOwnerUUID()));}
-    @SubscribeEvent public static void start(net.minecraftforge.event.server.ServerAboutToStartEvent e){dev.purifiedundead.foundry.FoundryRecipes.load();}
+    @SubscribeEvent public static void start(net.minecraftforge.event.server.ServerAboutToStartEvent e){SlateConfig.migrate();dev.purifiedundead.foundry.FoundryRecipes.load();}
     @SubscribeEvent public static void tick(TickEvent.PlayerTickEvent e){if(e.phase!=TickEvent.Phase.END||!(e.player instanceof ServerPlayer p))return;tickPlayer(p);}
     public static void tickPlayer(ServerPlayer p){
         boolean living=p.isAlive()&&!p.isSpectator();
@@ -34,6 +34,10 @@ public final class MemoryEffects {
         attribute(p.getAttribute(net.minecraftforge.common.ForgeMod.SWIM_SPEED.get()),SWIM,active(p,"eleine")?SlateConfig.get(SlateConfig.swimBonus):0);
         WallGrip.tick(p);
         if(!living)return;
+        if(p.tickCount%100==0&&active(p,"ulv")) {
+            var food=p.getFoodData(); food.setFoodLevel(Math.min(20,food.getFoodLevel()+4));
+            food.setSaturation(Math.min(food.getFoodLevel(),food.getSaturationLevel()+4));
+        }
         if(p.tickCount%100==0&&active(p,"faden"))p.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION,400,0,true,false,true));
         boolean low=p.getHealth()<p.getMaxHealth()*.3;
         if(active(p,"guardians")&&low&&!p.getPersistentData().getBoolean(LOW)&&p.server.overworld().getGameTime()>=p.getPersistentData().getLong(COOLDOWN)){
@@ -44,7 +48,18 @@ public final class MemoryEffects {
         MemoryRewards.scan(p);
     }
     private static void attribute(AttributeInstance a,UUID id,double amount){if(a==null)return;var old=a.getModifier(id);if(old!=null&&old.getAmount()==amount)return;if(old!=null)a.removeModifier(id);if(amount!=0)a.addTransientModifier(new AttributeModifier(id,"Slate memory",amount,AttributeModifier.Operation.MULTIPLY_TOTAL));}
-    @SubscribeEvent(priority=EventPriority.HIGHEST) public static void fire(LivingAttackEvent e){if(e.getEntity() instanceof ServerPlayer p&&active(p,"hoenir")&&e.getSource().is(DamageTypeTags.IS_FIRE))e.setCanceled(true);}
+    @SubscribeEvent(priority=EventPriority.HIGHEST) public static void fire(LivingAttackEvent e){if(e.getEntity() instanceof ServerPlayer p&&((active(p,"hoenir")&&e.getSource().is(DamageTypeTags.IS_FIRE))||(active(p,"guardians")&&e.getSource().is(DamageTypeTags.IS_FALL))))e.setCanceled(true);}
+    @SubscribeEvent public static void fall(LivingFallEvent e) {
+        if(e.getEntity() instanceof Player p && active(p,"guardians")) e.setCanceled(true);
+    }
+    @SubscribeEvent public static void jump(LivingEvent.LivingJumpEvent e) {
+        if(e.getEntity() instanceof Player p && active(p,"guardians")) {
+            var v=p.getDeltaMovement();
+            var a=p.getAttribute(net.minecraftforge.common.ForgeMod.ENTITY_GRAVITY.get());
+            double g=a==null?.08:a.getValue();
+            p.setDeltaMovement(v.x,MemoryJump.raise(v.y,g,.5),v.z);
+        }
+    }
     @SubscribeEvent(priority=EventPriority.NORMAL) public static void outgoing(LivingHurtEvent e){
         if(!(e.getSource().getEntity() instanceof ServerPlayer p)||e.getAmount()<=0||!active(p,"julius")||!dev.purifiedundead.combat.GuardianWaveCombat.sprinting(p))return;
         // Auxiliary attacks already inherit the boosted triggering hit; do not boost them a second time.
@@ -70,7 +85,6 @@ public final class MemoryEffects {
         }
     }
     @SubscribeEvent public static void freeze(LivingEvent.LivingTickEvent e){var t=e.getEntity();if(t.level().isClientSide)return;long until=t.getPersistentData().getLong(FREEZE);if(until==0)return;if(until>t.level().getGameTime()&&t.canFreeze())t.setTicksFrozen(t.getTicksRequiredToFreeze()+20);else {t.getPersistentData().remove(FREEZE);t.setTicksFrozen(0);}}
-    @SubscribeEvent public static void looting(LootingLevelEvent e){if(e.getDamageSource()!=null&&e.getDamageSource().getEntity() instanceof ServerPlayer p&&active(p,"faden"))e.setLootingLevel(e.getLootingLevel()+SlateConfig.get(SlateConfig.lootingBonus));}
     @SubscribeEvent public static void login(PlayerEvent.PlayerLoggedInEvent e){if(e.getEntity() instanceof ServerPlayer p){var packet=new dev.purifiedundead.network.FoundryRecipesPacket(dev.purifiedundead.foundry.FoundryRecipes.all());dev.purifiedundead.network.ModNetwork.CHANNEL.send(net.minecraftforge.network.PacketDistributor.PLAYER.with(()->p),packet);}}
     @SubscribeEvent public static void crafted(PlayerEvent.ItemCraftedEvent e){if(e.getEntity() instanceof ServerPlayer p)MemoryRewards.record(p,e.getCrafting());}
     @SubscribeEvent public static void picked(PlayerEvent.ItemPickupEvent e){if(e.getEntity() instanceof ServerPlayer p)MemoryRewards.record(p,e.getStack());}

@@ -21,6 +21,7 @@ public final class GuardianInputEvents {
         jumpVelocity = jump;
         dashSpeed = dash;
     }
+    private static int lastGripTick=-100, lastWallJumpTick=-100;
     private static boolean jumpWasDown;
     private static boolean sprintWasDown;
     private static boolean jumpedThisAir;
@@ -47,7 +48,7 @@ public final class GuardianInputEvents {
         }
         boolean jumpDown = minecraft.options.keyJump.isDown();
         boolean sprintDown = minecraft.options.keySprint.isDown();
-        if(player.tickCount%5==0 && dev.purifiedundead.slate.MemoryStorage.active(player,"ulv")) {
+        if((player.tickCount%5==0 || jumpDown!=jumpWasDown) && dev.purifiedundead.slate.MemoryStorage.active(player,"ulv")) {
             boolean grip=jumpDown&&minecraft.screen==null&&player.isAlive()&&!player.onGround()&&!player.isSpectator();
             ModNetwork.CHANNEL.sendToServer(new GuardianActionPacket(grip?GuardianActionPacket.Action.GRIP_HELD:GuardianActionPacket.Action.GRIP_RELEASED));
         }
@@ -57,11 +58,19 @@ public final class GuardianInputEvents {
             sprintWasDown = sprintDown;
             return;
         }
+        boolean wallJump=false;
+        if(dev.purifiedundead.slate.WallGrip.eligible(player)) {
+            if(jumpDown&&!jumpWasDown&&player.tickCount-lastGripTick<=8&&player.tickCount-lastWallJumpTick>=3) {
+                ModNetwork.CHANNEL.sendToServer(new GuardianActionPacket(GuardianActionPacket.Action.WALL_JUMP));
+                var v=player.getDeltaMovement();player.setDeltaMovement(v.x,.52,v.z);player.fallDistance=0;
+                lastWallJumpTick=player.tickCount;lastGripTick=-100;wallJump=true;
+            } else if(jumpDown&&player.getDeltaMovement().y<=0) lastGripTick=player.tickCount;
+        } else lastGripTick=-100;
         if (player.onGround()) {
             jumpedThisAir = false;
             dashedThisAir = false;
             jumpReleasedThisAir = false;
-        } else if (hasGuardians(player)) {
+        } else if (!wallJump && hasGuardians(player)) {
             if (!jumpDown) {
                 jumpReleasedThisAir = true;
             }
@@ -89,6 +98,7 @@ public final class GuardianInputEvents {
     }
 
     private static void resetAll() {
+        lastGripTick=-100;lastWallJumpTick=-100;
         previousPlayer = null;
         jumpWasDown = false;
         sprintWasDown = false;
