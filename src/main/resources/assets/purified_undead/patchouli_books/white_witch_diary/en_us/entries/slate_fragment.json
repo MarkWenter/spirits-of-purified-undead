@@ -1,0 +1,19 @@
+{
+  "name": "石板残片",
+  "icon": "purified_undead:slate_fragment",
+  "category": "purified_undead:slate_enhancement",
+  "sortnum": 1,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "text": "将污秽碎片与岩石结合而成的产物，上面刻蚀着完全看不懂的文字……？",
+      "item": "purified_undead:slate_fragment",
+      "title": "石板残片",
+      "link_recipe": false
+    },
+    {
+      "type": "patchouli:text",
+      "text": "将不死战士的力量灌注到石板残片中，或许能够对石板进行初步解读……"
+    }
+  ]
+}

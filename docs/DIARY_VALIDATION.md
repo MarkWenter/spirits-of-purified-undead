@@ -15,3 +15,7 @@
 `DiaryClientSmoke` 在 `purified_undead.diaryClientSmoke=true` 时打开开发存档 `diary-validation`，加载所有条目并逐个展开，每个跨页保存截图，检查文本末行是否超出页面。存档须事先放在该客户端运行目录的 `saves` 中。该检查会在完成后关闭开发客户端。测试代码在独立 smoke source set 中，不进入发布 JAR。
 
 本地独立验证记录保存在两版各自的 `验证记录/0.42.0` 文件夹。专用服务器分别加载对应版本的必要 Patchouli；客户端分别测试全部条目和跨页。整合包更换字体、资源包或旧版 Patchouli 后，仍建议重新检查显示效果。
+
+## 0.54.0 更新
+
+当前为6个目录、53个条目、130页。客户端增加实际目录排序检查 `DIARY_CATEGORY_ORDER_OK`，红色问号“其他内容”必须为最后一项。截图前缀为 `diary-v054-`；具体更新见[发布说明](RELEASE_V054.md)。

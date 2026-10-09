@@ -1,0 +1,15 @@
+{
+  "name": "解语密文文本",
+  "icon": "purified_undead:cipher_text",
+  "category": "purified_undead:slate_enhancement",
+  "sortnum": 4,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "text": "整合后得到的密语译本，可用于解读铸造的石板残片。$(br2)$(reset)与解语密文文本合成的铸造石板残片不会被消耗。",
+      "item": "purified_undead:cipher_text",
+      "title": "解语密文文本",
+      "link_recipe": false
+    }
+  ]
+}

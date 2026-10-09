@@ -1,0 +1,23 @@
+{
+  "name": "秽鬼追忆（尤里乌斯）",
+  "icon": "purified_undead:blighted_memory_julius",
+  "category": "purified_undead:slate_enhancement",
+  "sortnum": 7,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "text": "$(7)……我也一样，一切都是为了自己，而不是为了捍卫国土。$(br2)$(reset)$(7)我不过是想逼他承认抛弃我，是他的愚昧，有眼无珠。",
+      "item": "purified_undead:blighted_memory_julius",
+      "title": "秽鬼追忆（尤里乌斯）",
+      "link_recipe": false
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(7)当我把剑对准他时，他那充满恐惧的眼里，映着我的脸庞。$(br2)$(reset)$(7)终于逼他正视我，我等这等了很久。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "将追忆放入莉莉手记之中，尤里乌斯的力量便会得到强化。"
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "name": "纯化铸造器",
+  "icon": "purified_undead:purification_foundry",
+  "category": "purified_undead:slate_enhancement",
+  "sortnum": 0,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "text": "许久的研究，法腾与伊莱恩的帮助使你研究出了一种新的物质获取方式。通过净化结晶将污秽之力纯化，你可以铸造出一些原本难以获得的物品……。",
+      "item": "purified_undead:purification_foundry",
+      "title": "纯化铸造器",
+      "link_recipe": false
+    },
+    {
+      "type": "patchouli:text",
+      "text": "纯化铸造器有两种使用方式，一种是灌注，一种是铸造。灌注时的纯化铸造器不会消耗上方槽位内的物品，"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "而铸造则会同时消耗上下两个槽位内的物品以获得成品。无论是灌注还是铸造，工作时都需要消耗左右两边槽位中的净化结晶和怨念污秽。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "值得一提的是，纯化铸造器会尝试以可能的最大产量进行工作，这也就意味着你可以在物资充足的前提下一次性完成一组的铸造……"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "name": "秽鬼追忆（狼）",
+  "icon": "purified_undead:blighted_memory_ulv",
+  "category": "purified_undead:slate_enhancement",
+  "sortnum": 8,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "text": "$(7)……泉之白巫女看到就笑了起来，但老子也没啥不爽。$(br2)$(reset)$(7)这次打完后，应该就不会再见面了。",
+      "item": "purified_undead:blighted_memory_ulv",
+      "title": "秽鬼追忆（狼）",
+      "link_recipe": false
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(7)想一想这也好吧。$(br2)$(reset)$(7)泉之白巫女说她喜欢这花田。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(7)要是以后她来的时候花田还在，她一定会开心吧。$(br2)$(reset)将追忆放入莉莉手记之中，狼的力量便会得到强化。"
+    }
+  ]
+}

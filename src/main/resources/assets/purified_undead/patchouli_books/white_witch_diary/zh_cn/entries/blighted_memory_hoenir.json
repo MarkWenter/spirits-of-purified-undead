@@ -1,0 +1,23 @@
+{
+  "name": "秽鬼追忆（海尼尔）",
+  "icon": "purified_undead:blighted_memory_hoenir",
+  "category": "purified_undead:slate_enhancement",
+  "sortnum": 10,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "text": "$(7)……承受着背负污秽所带来的痛苦，为了这国家付出一切的人的……$(br2)$(reset)$(7)唯一的希望。",
+      "item": "purified_undead:blighted_memory_hoenir",
+      "title": "秽鬼追忆（海尼尔）",
+      "link_recipe": false
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(7)虽然扮演的角色不同，但同样是为了国家付出一切的人。$(br2)$(reset)$(7)所以必须去守护。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(7)决不允许任何人的践踏。$(br2)$(reset)将追忆放入莉莉手记之中，海尼尔的力量便会得到强化。"
+    }
+  ]
+}

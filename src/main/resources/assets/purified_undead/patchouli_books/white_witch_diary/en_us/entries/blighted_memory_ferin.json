@@ -1,0 +1,23 @@
+{
+  "name": "秽鬼追忆（费林）",
+  "icon": "purified_undead:blighted_memory_ferin",
+  "category": "purified_undead:slate_enhancement",
+  "sortnum": 12,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "text": "$(7)费林……最后的不死战士啊……$(br2)$(reset)$(7)不死的契约印……将会由新的巫女继承……",
+      "item": "purified_undead:blighted_memory_ferin",
+      "title": "秽鬼追忆（费林）",
+      "link_recipe": false
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(7)我们的意志……就由你继承了……$(br2)$(reset)$(7)请守护最后的巫女……替我们……"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "获得其他七个秽鬼追忆后，将自动获得费林的追忆。$(br2)$(reset)将追忆放入莉莉手记之中，费林的力量便会得到强化。"
+    }
+  ]
+}

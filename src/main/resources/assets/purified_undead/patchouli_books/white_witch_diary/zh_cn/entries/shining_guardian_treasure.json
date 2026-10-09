@@ -1,0 +1,15 @@
+{
+  "name": "闪耀的守护宝具",
+  "icon": "purified_undead:shining_guardian_treasure",
+  "category": "purified_undead:slate_enhancement",
+  "sortnum": 13,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "text": "将全部的铸造石板残片合成而得，佩戴时，玩家获得额外的100%生命值。",
+      "item": "purified_undead:shining_guardian_treasure",
+      "title": "闪耀的守护宝具",
+      "link_recipe": false
+    }
+  ]
+}

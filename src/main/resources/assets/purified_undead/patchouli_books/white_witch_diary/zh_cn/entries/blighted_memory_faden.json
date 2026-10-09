@@ -1,0 +1,23 @@
+{
+  "name": "秽鬼追忆（法腾）",
+  "icon": "purified_undead:blighted_memory_faden",
+  "category": "purified_undead:slate_enhancement",
+  "sortnum": 11,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "text": "$(7)……尽管如此我还是不能放弃。$(br2)$(reset)$(7)必须完成她的希望……拯救白巫女……",
+      "item": "purified_undead:blighted_memory_faden",
+      "title": "秽鬼追忆（法腾）",
+      "link_recipe": false
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(7)迷瑞尔……求求你……$(br2)$(reset)$(7)让我听一听你的声音……"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "将追忆放入莉莉手记之中，法腾的力量便会得到强化。"
+    }
+  ]
+}

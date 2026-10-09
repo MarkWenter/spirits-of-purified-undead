@@ -1,0 +1,19 @@
+{
+  "name": "铸造的石板残片",
+  "icon": "purified_undead:forged_slate_groth",
+  "category": "purified_undead:slate_enhancement",
+  "sortnum": 2,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "text": "借助不死战士的力量灌注后的石板残片，却依然难以读懂，或许需要一些密语的译本才能研读……？",
+      "item": "purified_undead:forged_slate_groth",
+      "title": "铸造的石板残片",
+      "link_recipe": false
+    },
+    {
+      "type": "patchouli:text",
+      "text": "通过纯化铸造器，可以获得不同不死战士的铸造石板残片。"
+    }
+  ]
+}

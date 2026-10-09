@@ -1,0 +1,19 @@
+{
+  "name": "秽鬼追忆（格洛特）",
+  "icon": "purified_undead:blighted_memory_groth",
+  "category": "purified_undead:slate_enhancement",
+  "sortnum": 5,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "text": "$(7)……但只要意识不灭，老身便会一直当守护着她的盾。$(br2)$(reset)$(7)只要想起孩子们，一切的痛苦不算什么。",
+      "item": "purified_undead:blighted_memory_groth",
+      "title": "秽鬼追忆（格洛特）",
+      "link_recipe": false
+    },
+    {
+      "type": "patchouli:text",
+      "text": "将追忆放入莉莉手记之中，格洛特的力量便会获得强化。"
+    }
+  ]
+}

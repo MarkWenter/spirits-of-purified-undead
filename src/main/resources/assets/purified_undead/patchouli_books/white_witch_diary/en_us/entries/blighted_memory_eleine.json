@@ -1,0 +1,23 @@
+{
+  "name": "秽鬼追忆（伊莱恩）",
+  "icon": "purified_undead:blighted_memory_eleine",
+  "category": "purified_undead:slate_enhancement",
+  "sortnum": 9,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "text": "$(7)……我所剥夺的宝贵时间……一去不复返。$(br2)$(reset)$(7)一切功亏一篑吗……岂能如此。",
+      "item": "purified_undead:blighted_memory_eleine",
+      "title": "秽鬼追忆（伊莱恩）",
+      "link_recipe": false
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(7)片刻也行，直到雨停那天，能守护多久就多久，持续吧。$(br2)$(reset)$(7)我细心凝聚而成的魔法。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(7)一切为了这一刻，这瞬间。$(br2)$(reset)将追忆放入莉莉手记之中，伊莱恩的力量便会得到强化。"
+    }
+  ]
+}

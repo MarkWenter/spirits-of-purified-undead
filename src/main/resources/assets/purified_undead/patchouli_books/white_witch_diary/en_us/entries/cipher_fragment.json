@@ -1,0 +1,15 @@
+{
+  "name": "解语密文残片",
+  "icon": "purified_undead:cipher_fragment",
+  "category": "purified_undead:slate_enhancement",
+  "sortnum": 3,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "text": "在遗迹中发现的密文残片，不存在除了合成之外的其他用途。",
+      "item": "purified_undead:cipher_fragment",
+      "title": "解语密文残片",
+      "link_recipe": false
+    }
+  ]
+}

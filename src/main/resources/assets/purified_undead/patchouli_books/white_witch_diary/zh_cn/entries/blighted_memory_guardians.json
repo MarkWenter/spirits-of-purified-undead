@@ -1,0 +1,27 @@
+{
+  "name": "秽鬼追忆（西丽亚与西丽德）",
+  "icon": "purified_undead:blighted_memory_guardians",
+  "category": "purified_undead:slate_enhancement",
+  "sortnum": 6,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "text": "$(7)……支撑着我黑暗心灵的是与泉之白巫女相似，开朗又温柔的孩子“莉莉”",
+      "item": "purified_undead:blighted_memory_guardians",
+      "title": "秽鬼追忆（西丽亚与西丽德）",
+      "link_recipe": false
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(7)她迟早会成为白巫女，那时候我也许无法继续跟随她，但至少现在我会倾尽全力守护她。$(br2)$(reset)$(7)死亡之雨无止无休。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(c)……在意识消失之前……好想见西丽德最后一面……$(br2)$(reset)$(c)我真正想要守护的……"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(c)我亲爱的妹妹……用这……双……手……$(br2)$(reset)将追忆放入莉莉手记之中，西丽亚与西丽德的力量便会得到强化。"
+    }
+  ]
+}
