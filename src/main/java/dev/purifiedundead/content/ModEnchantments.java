@@ -17,11 +17,12 @@ public final class ModEnchantments {
 
     public static final List<String> BLIGHT_IDS = ContractRoster.BLIGHT_IDS;
 
-    public static final List<RegistryObject<BlightCurseEnchantment>> BLIGHT_CURSES = BLIGHT_IDS.stream()
-            .map(id -> ENCHANTMENTS.register(id, BlightCurseEnchantment::new)).toList();
+    public static final List<RegistryObject<BlightCurseEnchantment>> BLIGHT_CURSES =
+            BLIGHT_IDS.stream()
+                    .map(id -> ENCHANTMENTS.register(id, BlightCurseEnchantment::new))
+                    .toList();
 
-    private ModEnchantments() {
-    }
+    private ModEnchantments() {}
 
     public static void register(IEventBus modBus) {
         ENCHANTMENTS.register(modBus);

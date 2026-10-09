@@ -20,7 +20,8 @@ public final class UlvAcquisitionEvents {
     @SubscribeEvent
     public void onPlayerTick(TickEvent.PlayerTickEvent event) {
         if (!PurifiedUndeadConfig.get(PurifiedUndeadConfig.VALUES.ulvAcquisitionEnabled)
-                || event.phase != TickEvent.Phase.END || event.player.level().isClientSide()
+                || event.phase != TickEvent.Phase.END
+                || event.player.level().isClientSide()
                 || !(event.player instanceof ServerPlayer player)) {
             return;
         }
@@ -36,9 +37,12 @@ public final class UlvAcquisitionEvents {
             return;
         }
         boolean beganCorrectly = startedAtNight.remove(player.getUUID());
-        if (!beganCorrectly || event.wakeImmediately()
-                || player.getSleepTimer() < PurifiedUndeadConfig.get(PurifiedUndeadConfig.VALUES.ulvMinimumSleepTicks)
-                || !hasRitualItems(player) || !WarriorRewardService.grantUlv(player)) {
+        if (!beganCorrectly
+                || event.wakeImmediately()
+                || player.getSleepTimer()
+                        < PurifiedUndeadConfig.get(PurifiedUndeadConfig.VALUES.ulvMinimumSleepTicks)
+                || !hasRitualItems(player)
+                || !WarriorRewardService.grantUlv(player)) {
             return;
         }
         if (!player.getAbilities().instabuild) {

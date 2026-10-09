@@ -9,11 +9,10 @@ public final class HoenirModel {
     public static final float MAX_HEALTH_REGEN_RATIO = 0.05F;
     public static final float FERIN_MARK_MULTIPLIER = 1.50F;
 
-    private HoenirModel() {
-    }
+    private HoenirModel() {}
 
-    public static EffectAdjustment adjustNegativeEffect(int amplifier, int duration,
-                                                        boolean contractEquipped, boolean hoenirEquipped) {
+    public static EffectAdjustment adjustNegativeEffect(
+            int amplifier, int duration, boolean contractEquipped, boolean hoenirEquipped) {
         if (amplifier < 0 || duration < -1) {
             throw new IllegalArgumentException("Invalid effect amplifier or duration");
         }
@@ -21,11 +20,26 @@ public final class HoenirModel {
             return new EffectAdjustment(amplifier, duration);
         }
         if (!hoenirEquipped) {
-            return new EffectAdjustment(Math.min(255, amplifier
-                    + PurifiedUndeadConfig.get(PurifiedUndeadConfig.VALUES.hoenirUnreversedAmplifierIncrease)), duration);
+            return new EffectAdjustment(
+                    Math.min(
+                            255,
+                            amplifier
+                                    + PurifiedUndeadConfig.get(
+                                            PurifiedUndeadConfig.VALUES
+                                                    .hoenirUnreversedAmplifierIncrease)),
+                    duration);
         }
-        int adjustedDuration = duration == -1 ? -1 : Math.max(1,
-                (int) Math.ceil(duration * PurifiedUndeadConfig.get(PurifiedUndeadConfig.VALUES.hoenirHarmfulDurationMultiplier)));
+        int adjustedDuration =
+                duration == -1
+                        ? -1
+                        : Math.max(
+                                1,
+                                (int)
+                                        Math.ceil(
+                                                duration
+                                                        * PurifiedUndeadConfig.get(
+                                                                PurifiedUndeadConfig.VALUES
+                                                                        .hoenirHarmfulDurationMultiplier)));
         return new EffectAdjustment(amplifier, adjustedDuration);
     }
 
@@ -33,7 +47,10 @@ public final class HoenirModel {
         if (!Float.isFinite(maximumHealth) || maximumHealth < 0.0F) {
             throw new IllegalArgumentException("Maximum health must be finite and non-negative");
         }
-        return (float) (maximumHealth * PurifiedUndeadConfig.get(PurifiedUndeadConfig.VALUES.hoenirRegenerationRatio));
+        return (float)
+                (maximumHealth
+                        * PurifiedUndeadConfig.get(
+                                PurifiedUndeadConfig.VALUES.hoenirRegenerationRatio));
     }
 
     public static float ferinDamage(float amount, boolean ownerMarkPresent) {
@@ -41,9 +58,12 @@ public final class HoenirModel {
             throw new IllegalArgumentException("Damage must be finite and non-negative");
         }
         return ownerMarkPresent
-                ? (float) (amount * PurifiedUndeadConfig.get(PurifiedUndeadConfig.VALUES.hoenirFerinMarkMultiplier)) : amount;
+                ? (float)
+                        (amount
+                                * PurifiedUndeadConfig.get(
+                                        PurifiedUndeadConfig.VALUES.hoenirFerinMarkMultiplier))
+                : amount;
     }
 
-    public record EffectAdjustment(int amplifier, int duration) {
-    }
+    public record EffectAdjustment(int amplifier, int duration) {}
 }

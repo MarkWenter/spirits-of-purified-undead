@@ -18,7 +18,8 @@ class FerinDamageModelTest {
     void rejectsInvalidStagesAndSnapshots() {
         assertThrows(IllegalArgumentException.class, () -> FerinDamageModel.baseDamage(0, 10.0F));
         assertThrows(IllegalArgumentException.class, () -> FerinDamageModel.baseDamage(6, 10.0F));
-        assertThrows(IllegalArgumentException.class, () -> FerinDamageModel.baseDamage(1, Float.NaN));
+        assertThrows(
+                IllegalArgumentException.class, () -> FerinDamageModel.baseDamage(1, Float.NaN));
         assertThrows(IllegalArgumentException.class, () -> FerinDamageModel.baseDamage(1, -1.0F));
     }
 }

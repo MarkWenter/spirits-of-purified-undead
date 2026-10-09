@@ -5,13 +5,16 @@ import net.minecraft.world.entity.LivingEntity;
 import top.theillusivec4.curios.api.CuriosApi;
 
 final class FerinEquipment {
-    private FerinEquipment() {
-    }
+    private FerinEquipment() {}
 
     static State read(LivingEntity entity) {
-        return CuriosApi.getCuriosInventory(entity).map(handler -> new State(
-                handler.isEquipped(ModItems.ANCIENT_CONTRACT.get()),
-                handler.isEquipped(ModItems.FERIN_WARRIOR.get()))).orElse(State.NONE);
+        return CuriosApi.getCuriosInventory(entity)
+                .map(
+                        handler ->
+                                new State(
+                                        handler.isEquipped(ModItems.ANCIENT_CONTRACT.get()),
+                                        handler.isEquipped(ModItems.FERIN_WARRIOR.get())))
+                .orElse(State.NONE);
     }
 
     record State(boolean contract, boolean ferinWarrior) {

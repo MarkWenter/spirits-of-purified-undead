@@ -13,8 +13,7 @@ public final class PurifiedUndeadConfig {
         SPEC = builder.build();
     }
 
-    private PurifiedUndeadConfig() {
-    }
+    private PurifiedUndeadConfig() {}
 
     /** Uses the declared default during registry construction and pure tests, before Forge attaches a file. */
     public static <T> T get(ForgeConfigSpec.ConfigValue<T> value) {
@@ -31,13 +30,13 @@ public final class PurifiedUndeadConfig {
         if (revision >= 2) return;
         if (revision < 1) {
             if (VALUES.fragmentDropChance.get() == 0.125D) VALUES.fragmentDropChance.set(0.25D);
-            if (VALUES.hoenirNegativeEffectsRequired.get() == 5) VALUES.hoenirNegativeEffectsRequired.set(3);
+            if (VALUES.hoenirNegativeEffectsRequired.get() == 5)
+                VALUES.hoenirNegativeEffectsRequired.set(3);
         }
         if (VALUES.fragmentDropChance.get() == 0.25D) VALUES.fragmentDropChance.set(0.35D);
         VALUES.balanceRevision.set(2);
         SPEC.save();
     }
-
 
     public static final class Values {
         public final ForgeConfigSpec.BooleanValue guardianMalumSoulHarvest;
@@ -69,7 +68,8 @@ public final class PurifiedUndeadConfig {
         public final ForgeConfigSpec.DoubleValue ferinUnreversedMeleeMultiplier;
         public final ForgeConfigSpec.DoubleValue ferinReversedMeleeMultiplier;
         public final ForgeConfigSpec.DoubleValue ferinLifestealRatio;
-        public final ForgeConfigSpec.ConfigValue<java.util.List<? extends Double>> ferinStageDamageMultipliers;
+        public final ForgeConfigSpec.ConfigValue<java.util.List<? extends Double>>
+                ferinStageDamageMultipliers;
         public final ForgeConfigSpec.IntValue ferinSummonCooldownTicks;
         public final ForgeConfigSpec.IntValue ferinComboLockTicks;
         public final ForgeConfigSpec.IntValue ferinComboWindowTicks;
@@ -129,90 +129,145 @@ public final class PurifiedUndeadConfig {
         private Values(ForgeConfigSpec.Builder builder) {
             balanceRevision = builder.defineInRange("balanceRevision", 0, 0, 100);
             builder.comment("契约、饰品槽与材料掉落；槽位数量修改后重启游戏／服务器。").push("contract");
-            warriorSlots = builder.comment("Undead Warrior slots granted by an equipped contract. Restart required.")
-                    .defineInRange("warriorSlots", 8, 0, 64);
-            whiteWitchRelicSlots = builder.comment("White Witch Relic slots. Restart required.")
-                    .defineInRange("whiteWitchRelicSlots", 3, 0, 16);
-            fragmentDropChance = builder.defineInRange("blightFragmentDropChance", 0.35D, 0.0D, 1.0D);
-            autoDetectModdedUndeadDrops = builder.comment("Allow modded hostile mobs declared undead by their mod to drop fragments. Explicit source/exclusion entity tags remain available.").define("autoDetectModdedUndeadDrops", true);
-            transformationDurationTicks = builder.comment("Blighted Transformation duration. 20 ticks = one second.")
-                    .defineInRange("transformationDurationTicks", 12000, 20, 720000);
+            warriorSlots =
+                    builder.comment(
+                                    "Undead Warrior slots granted by an equipped contract. Restart required.")
+                            .defineInRange("warriorSlots", 8, 0, 64);
+            whiteWitchRelicSlots =
+                    builder.comment("White Witch Relic slots. Restart required.")
+                            .defineInRange("whiteWitchRelicSlots", 3, 0, 16);
+            fragmentDropChance =
+                    builder.defineInRange("blightFragmentDropChance", 0.35D, 0.0D, 1.0D);
+            autoDetectModdedUndeadDrops =
+                    builder.comment(
+                                    "Allow modded hostile mobs declared undead by their mod to drop fragments. Explicit source/exclusion entity tags remain available.")
+                            .define("autoDetectModdedUndeadDrops", true);
+            transformationDurationTicks =
+                    builder.comment("Blighted Transformation duration. 20 ticks = one second.")
+                            .defineInRange("transformationDurationTicks", 12000, 20, 720000);
             builder.pop();
 
-            builder.comment("自然获取路线开关；任务整合包可关闭路线后使用管理员指令或API授予奖励。已获取记录和待补发奖励不受开关清除。").push("acquisition");
-            builder.comment("Disable an acquisition route when a modpack supplies its own recipes or quests.");
-            contractAcquisitionEnabled = builder.comment("契约自然获取路线；false时仍允许指令／API明确授予，且已有待补发奖励仍可领取。").define("contractEnabled", true);
-            ferinAcquisitionEnabled = builder.comment("费林自然获取路线；false时仍允许指令／API明确授予，且已有待补发奖励仍可领取。").define("ferinEnabled", true);
-            grothAcquisitionEnabled = builder.comment("格洛特自然获取路线；false时仍允许指令／API明确授予，且已有待补发奖励仍可领取。").define("grothEnabled", true);
-            juliusAcquisitionEnabled = builder.comment("尤里乌斯自然获取路线；false时仍允许指令／API明确授予，且已有待补发奖励仍可领取。").define("juliusEnabled", true);
-            guardianAcquisitionEnabled = builder.comment("西丽亚与西丽德自然获取路线；false时仍允许指令／API明确授予，且已有待补发奖励仍可领取。").define("guardiansEnabled", true);
-            ulvAcquisitionEnabled = builder.comment("狼自然获取路线；false时仍允许指令／API明确授予，且已有待补发奖励仍可领取。").define("ulvEnabled", true);
-            eleineAcquisitionEnabled = builder.comment("伊莱恩自然获取路线；false时仍允许指令／API明确授予，且已有待补发奖励仍可领取。").define("eleineEnabled", true);
-            hoenirAcquisitionEnabled = builder.comment("海尼尔自然获取路线；false时仍允许指令／API明确授予，且已有待补发奖励仍可领取。").define("hoenirEnabled", true);
-            fadenAcquisitionEnabled = builder.comment("法腾自然获取路线；false时仍允许指令／API明确授予，且已有待补发奖励仍可领取。").define("fadenEnabled", true);
+            builder.comment("自然获取路线开关；任务整合包可关闭路线后使用管理员指令或API授予奖励。已获取记录和待补发奖励不受开关清除。")
+                    .push("acquisition");
+            builder.comment(
+                    "Disable an acquisition route when a modpack supplies its own recipes or quests.");
+            contractAcquisitionEnabled =
+                    builder.comment("契约自然获取路线；false时仍允许指令／API明确授予，且已有待补发奖励仍可领取。")
+                            .define("contractEnabled", true);
+            ferinAcquisitionEnabled =
+                    builder.comment("费林自然获取路线；false时仍允许指令／API明确授予，且已有待补发奖励仍可领取。")
+                            .define("ferinEnabled", true);
+            grothAcquisitionEnabled =
+                    builder.comment("格洛特自然获取路线；false时仍允许指令／API明确授予，且已有待补发奖励仍可领取。")
+                            .define("grothEnabled", true);
+            juliusAcquisitionEnabled =
+                    builder.comment("尤里乌斯自然获取路线；false时仍允许指令／API明确授予，且已有待补发奖励仍可领取。")
+                            .define("juliusEnabled", true);
+            guardianAcquisitionEnabled =
+                    builder.comment("西丽亚与西丽德自然获取路线；false时仍允许指令／API明确授予，且已有待补发奖励仍可领取。")
+                            .define("guardiansEnabled", true);
+            ulvAcquisitionEnabled =
+                    builder.comment("狼自然获取路线；false时仍允许指令／API明确授予，且已有待补发奖励仍可领取。")
+                            .define("ulvEnabled", true);
+            eleineAcquisitionEnabled =
+                    builder.comment("伊莱恩自然获取路线；false时仍允许指令／API明确授予，且已有待补发奖励仍可领取。")
+                            .define("eleineEnabled", true);
+            hoenirAcquisitionEnabled =
+                    builder.comment("海尼尔自然获取路线；false时仍允许指令／API明确授予，且已有待补发奖励仍可领取。")
+                            .define("hoenirEnabled", true);
+            fadenAcquisitionEnabled =
+                    builder.comment("法腾自然获取路线；false时仍允许指令／API明确授予，且已有待补发奖励仍可领取。")
+                            .define("fadenEnabled", true);
             ulvMinimumSleepTicks = builder.defineInRange("ulvMinimumSleepTicks", 100, 1, 12000);
             builder.pop();
 
             builder.comment("护身符等级与成长；怨念污秽消耗数量同时决定纯净结晶产量。").push("talisman");
             talismanMaxLevel = builder.defineInRange("maxLevel", 15, 0, 100);
             spiritsPerTalismanLevel = builder.defineInRange("blightedSpiritsPerLevel", 4, 1, 64);
-            talismanBaseIncomingMultiplier = builder.defineInRange("baseIncomingDamageMultiplier", 1.20D, 0.0D, 10.0D);
-            talismanReductionPerLevel = builder.defineInRange("damageMultiplierReductionPerLevel", 0.04D, 0.0D, 1.0D);
+            talismanBaseIncomingMultiplier =
+                    builder.defineInRange("baseIncomingDamageMultiplier", 1.20D, 0.0D, 10.0D);
+            talismanReductionPerLevel =
+                    builder.defineInRange("damageMultiplierReductionPerLevel", 0.04D, 0.0D, 1.0D);
             ferinFourthStageLevel = builder.defineInRange("ferinFourthStageLevel", 5, 0, 100);
             ferinFifthStageLevel = builder.defineInRange("ferinFifthStageLevel", 10, 0, 100);
             builder.pop();
 
             builder.comment("费林：近战、吸血与协同攻击；数组须恰好五项。").push("ferin");
-            ferinUnreversedMeleeMultiplier = builder.defineInRange("unreversedMeleeMultiplier", 0.70D, 0.0D, 10.0D);
-            ferinReversedMeleeMultiplier = builder.defineInRange("reversedMeleeMultiplier", 1.30D, 0.0D, 10.0D);
+            ferinUnreversedMeleeMultiplier =
+                    builder.defineInRange("unreversedMeleeMultiplier", 0.70D, 0.0D, 10.0D);
+            ferinReversedMeleeMultiplier =
+                    builder.defineInRange("reversedMeleeMultiplier", 1.30D, 0.0D, 10.0D);
             ferinLifestealRatio = builder.defineInRange("lifestealRatio", 0.20D, 0.0D, 10.0D);
-            ferinStageDamageMultipliers = builder.comment("Exactly five stage multipliers.")
-                    .defineList("stageDamageMultipliers", java.util.List.of(0.75D, 0.75D, 0.65D, 0.65D, 1.25D),
-                            value -> value instanceof Double number && number >= 0.0D && number <= 20.0D);
+            ferinStageDamageMultipliers =
+                    builder.comment("Exactly five stage multipliers.")
+                            .defineList(
+                                    "stageDamageMultipliers",
+                                    java.util.List.of(0.75D, 0.75D, 0.65D, 0.65D, 1.25D),
+                                    value ->
+                                            value instanceof Double number
+                                                    && number >= 0.0D
+                                                    && number <= 20.0D);
             ferinSummonCooldownTicks = builder.defineInRange("summonCooldownTicks", 40, 0, 12000);
             ferinComboLockTicks = builder.defineInRange("comboLockTicks", 10, 0, 12000);
             ferinComboWindowTicks = builder.defineInRange("comboWindowTicks", 24, 1, 12000);
-            ferinFinalActionDurationTicks = builder.defineInRange("finalActionDurationTicks", 16, 0, 12000);
+            ferinFinalActionDurationTicks =
+                    builder.defineInRange("finalActionDurationTicks", 16, 0, 12000);
             ferinExitDurationTicks = builder.defineInRange("exitDurationTicks", 4, 0, 12000);
             builder.pop();
 
             builder.comment("格洛特：减伤、暴击与眩晕。").push("groth");
-            grothUnreversedDamageMultiplier = builder.defineInRange("unreversedIncomingDamageMultiplier", 1.20D, 0.0D, 10.0D);
-            grothGroundDamageMultiplier = builder.defineInRange("reversedGroundIncomingDamageMultiplier", 0.80D, 0.0D, 10.0D);
-            grothMiningSpeedMultiplier = builder.defineInRange("unreversedMiningSpeedMultiplier", 0.90D, 0.0D, 10.0D);
-            grothCriticalDamageBonus = builder.defineInRange("criticalDamageBonus", 0.50D, 0.0D, 20.0D);
+            grothUnreversedDamageMultiplier =
+                    builder.defineInRange("unreversedIncomingDamageMultiplier", 1.20D, 0.0D, 10.0D);
+            grothGroundDamageMultiplier =
+                    builder.defineInRange(
+                            "reversedGroundIncomingDamageMultiplier", 0.80D, 0.0D, 10.0D);
+            grothMiningSpeedMultiplier =
+                    builder.defineInRange("unreversedMiningSpeedMultiplier", 0.90D, 0.0D, 10.0D);
+            grothCriticalDamageBonus =
+                    builder.defineInRange("criticalDamageBonus", 0.50D, 0.0D, 20.0D);
             grothStunDurationTicks = builder.defineInRange("stunDurationTicks", 60, 1, 12000);
             grothStunCooldownTicks = builder.defineInRange("stunCooldownTicks", 200, 0, 72000);
             builder.pop();
 
             builder.comment("尤里乌斯：近战惩罚、攻击距离与冲刺。").push("julius");
-            juliusMeleeDamagePenalty = builder.defineInRange("unreversedFinalMeleeDamagePenalty", 1.0D, 0.0D, 100.0D);
+            juliusMeleeDamagePenalty =
+                    builder.defineInRange("unreversedFinalMeleeDamagePenalty", 1.0D, 0.0D, 100.0D);
             juliusReachPenalty = builder.defineInRange("unreversedReachPenalty", 1.0D, 0.0D, 16.0D);
             juliusReachBonus = builder.defineInRange("reversedReachBonus", 1.0D, 0.0D, 16.0D);
-            juliusSprintPenaltyMultiplier = builder.defineInRange("unreversedSprintMultiplier", 0.80D, 0.0D, 10.0D);
-            juliusSprintBonusMultiplier = builder.defineInRange("reversedSprintMultiplier", 1.20D, 0.0D, 10.0D);
+            juliusSprintPenaltyMultiplier =
+                    builder.defineInRange("unreversedSprintMultiplier", 0.80D, 0.0D, 10.0D);
+            juliusSprintBonusMultiplier =
+                    builder.defineInRange("reversedSprintMultiplier", 1.20D, 0.0D, 10.0D);
             builder.pop();
 
             builder.comment("西丽亚与西丽德：护甲和移动。移动参数建议客户端和服务端同步配置后重启。").push("guardians");
             guardianArmorFlatChange = builder.defineInRange("armorFlatChange", 5.0D, 0.0D, 1024.0D);
-            guardianArmorScale = builder.defineInRange("armorAndToughnessScale", 0.10D, 0.0D, 10.0D);
-            guardianDoubleJumpVelocity = builder.defineInRange("doubleJumpVelocity", 0.52D, 0.0D, 10.0D);
+            guardianArmorScale =
+                    builder.defineInRange("armorAndToughnessScale", 0.10D, 0.0D, 10.0D);
+            guardianDoubleJumpVelocity =
+                    builder.defineInRange("doubleJumpVelocity", 0.52D, 0.0D, 10.0D);
             guardianAirDashSpeed = builder.defineInRange("airDashSpeed", 1.15D, 0.0D, 10.0D);
             builder.pop();
 
             builder.comment("狼：攻击速度与连击。").push("ulv");
-            ulvAttackSpeedPenaltyMultiplier = builder.defineInRange("unreversedAttackSpeedMultiplier", 0.80D, 0.0D, 10.0D);
-            ulvAttackSpeedBonusMultiplier = builder.defineInRange("reversedAttackSpeedMultiplier", 1.20D, 0.0D, 10.0D);
-            ulvBacklashMaxHealthRatio = builder.defineInRange("backlashMaxHealthRatio", 0.05D, 0.0D, 10.0D);
-            ulvFollowUpDamageRatio = builder.defineInRange("followUpDamageRatio", 0.50D, 0.0D, 20.0D);
+            ulvAttackSpeedPenaltyMultiplier =
+                    builder.defineInRange("unreversedAttackSpeedMultiplier", 0.80D, 0.0D, 10.0D);
+            ulvAttackSpeedBonusMultiplier =
+                    builder.defineInRange("reversedAttackSpeedMultiplier", 1.20D, 0.0D, 10.0D);
+            ulvBacklashMaxHealthRatio =
+                    builder.defineInRange("backlashMaxHealthRatio", 0.05D, 0.0D, 10.0D);
+            ulvFollowUpDamageRatio =
+                    builder.defineInRange("followUpDamageRatio", 0.50D, 0.0D, 20.0D);
             ulvMaxLayers = builder.defineInRange("maxComboLayers", 5, 1, 100);
             ulvComboWindowTicks = builder.defineInRange("comboWindowTicks", 100, 1, 72000);
             ulvBonusPerLayer = builder.defineInRange("damageBonusPerLayer", 0.10D, 0.0D, 10.0D);
             builder.pop();
 
             builder.comment("伊莱恩：魔法、游泳与魔弹。").push("eleine");
-            eleineMagicMultiplier = builder.defineInRange("magicDamageMultiplier", 1.30D, 0.0D, 10.0D);
-            eleineSwimSpeedMultiplier = builder.defineInRange("unreversedSwimSpeedMultiplier", 0.65D, 0.0D, 10.0D);
+            eleineMagicMultiplier =
+                    builder.defineInRange("magicDamageMultiplier", 1.30D, 0.0D, 10.0D);
+            eleineSwimSpeedMultiplier =
+                    builder.defineInRange("unreversedSwimSpeedMultiplier", 0.65D, 0.0D, 10.0D);
             eleineOrbChance = builder.defineInRange("orbChance", 0.30D, 0.0D, 1.0D);
             eleineOrbDamageRatio = builder.defineInRange("orbDamageRatio", 0.45D, 0.0D, 20.0D);
             eleineWaterBreathingTicks = builder.defineInRange("waterBreathingTicks", 200, 1, 72000);
@@ -220,16 +275,23 @@ public final class PurifiedUndeadConfig {
             builder.pop();
 
             builder.comment("海尼尔：状态、回复与标记。").push("hoenir");
-            hoenirNegativeEffectsRequired = builder.defineInRange("negativeEffectsRequired", 3, 1, 255);
+            hoenirNegativeEffectsRequired =
+                    builder.defineInRange("negativeEffectsRequired", 3, 1, 255);
             hoenirMarkDurationTicks = builder.defineInRange("markDurationTicks", 200, 1, 72000);
-            hoenirRegenerationRatio = builder.defineInRange("regenerationMaxHealthRatioPerSecond", 0.05D, 0.0D, 10.0D);
-            hoenirFerinMarkMultiplier = builder.defineInRange("ferinMarkedDamageMultiplier", 1.50D, 0.0D, 20.0D);
-            hoenirHarmfulDurationMultiplier = builder.defineInRange("reversedHarmfulDurationMultiplier", 0.50D, 0.0D, 10.0D);
-            hoenirUnreversedAmplifierIncrease = builder.defineInRange("unreversedAmplifierIncrease", 1, 0, 255);
+            hoenirRegenerationRatio =
+                    builder.defineInRange(
+                            "regenerationMaxHealthRatioPerSecond", 0.05D, 0.0D, 10.0D);
+            hoenirFerinMarkMultiplier =
+                    builder.defineInRange("ferinMarkedDamageMultiplier", 1.50D, 0.0D, 20.0D);
+            hoenirHarmfulDurationMultiplier =
+                    builder.defineInRange("reversedHarmfulDurationMultiplier", 0.50D, 0.0D, 10.0D);
+            hoenirUnreversedAmplifierIncrease =
+                    builder.defineInRange("unreversedAmplifierIncrease", 1, 0, 255);
             builder.pop();
 
             builder.comment("法腾：击退、异常状态与掉落。").push("faden");
-            fadenKnockbackResistancePenalty = builder.defineInRange("knockbackResistancePenalty", 0.15D, 0.0D, 1.0D);
+            fadenKnockbackResistancePenalty =
+                    builder.defineInRange("knockbackResistancePenalty", 0.15D, 0.0D, 1.0D);
             fadenPoisonChance = builder.defineInRange("poisonChance", 0.20D, 0.0D, 1.0D);
             fadenPoisonDurationTicks = builder.defineInRange("poisonDurationTicks", 400, 1, 72000);
             fadenPoisonAmplifier = builder.defineInRange("poisonAmplifier", 0, 0, 255);
@@ -237,16 +299,21 @@ public final class PurifiedUndeadConfig {
             builder.pop();
 
             builder.comment("可选模组兼容；关闭不会卸载任何模组。").push("compatibility");
-            guardianMalumSoulHarvest = builder.comment("Let Blighted Guardian qualify for native Malum soul drops even when a modpack clears the harvesting tag. Malum drop restrictions still apply.")
-                    .define("guardianMalumSoulHarvest", true);
+            guardianMalumSoulHarvest =
+                    builder.comment(
+                                    "Let Blighted Guardian qualify for native Malum soul drops even when a modpack clears the harvesting tag. Malum drop restrictions still apply.")
+                            .define("guardianMalumSoulHarvest", true);
             builder.pop();
 
             builder.comment("白巫女遗物：重复佩戴、效果倍率和冷却。").push("whiteWitchRelics");
-            whiteWitchRelicsEnabled = builder.comment("Master switch for White Witch Relic equipment effects.")
-                    .define("enabled", true);
+            whiteWitchRelicsEnabled =
+                    builder.comment("Master switch for White Witch Relic equipment effects.")
+                            .define("enabled", true);
             allowDuplicateWhiteWitchRelics = builder.define("allowDuplicates", false);
-            whiteWitchRelicEffectScale = builder.defineInRange("globalEffectScale", 1.0D, 0.0D, 100.0D);
-            whiteWitchRelicCooldownScale = builder.defineInRange("globalCooldownScale", 1.0D, 0.01D, 100.0D);
+            whiteWitchRelicEffectScale =
+                    builder.defineInRange("globalEffectScale", 1.0D, 0.0D, 100.0D);
+            whiteWitchRelicCooldownScale =
+                    builder.defineInRange("globalCooldownScale", 1.0D, 0.01D, 100.0D);
             builder.pop();
         }
     }

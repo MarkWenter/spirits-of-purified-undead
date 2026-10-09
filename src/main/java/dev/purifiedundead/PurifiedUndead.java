@@ -59,13 +59,22 @@ public final class PurifiedUndead {
     private static final Logger LOGGER = LogUtils.getLogger();
 
     public PurifiedUndead(FMLJavaModLoadingContext context) {
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, PurifiedUndeadConfig.SPEC,
-                "purified_undead-common.toml");
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, dev.purifiedundead.slate.SlateConfig.SPEC, "purified_undead-slate.toml");
+        ModLoadingContext.get()
+                .registerConfig(
+                        ModConfig.Type.COMMON,
+                        PurifiedUndeadConfig.SPEC,
+                        "purified_undead-common.toml");
+        ModLoadingContext.get()
+                .registerConfig(
+                        ModConfig.Type.COMMON,
+                        dev.purifiedundead.slate.SlateConfig.SPEC,
+                        "purified_undead-slate.toml");
         var modBus = context.getModEventBus();
-        modBus.addListener((net.minecraftforge.fml.event.config.ModConfigEvent.Loading event) -> {
-            if (event.getConfig().getSpec() == PurifiedUndeadConfig.SPEC) PurifiedUndeadConfig.migrateBalanceDefaults();
-        });
+        modBus.addListener(
+                (net.minecraftforge.fml.event.config.ModConfigEvent.Loading event) -> {
+                    if (event.getConfig().getSpec() == PurifiedUndeadConfig.SPEC)
+                        PurifiedUndeadConfig.migrateBalanceDefaults();
+                });
         dev.purifiedundead.slate.SlateContent.register(modBus);
         dev.purifiedundead.foundry.FoundryContent.register(modBus);
         ModItems.register(modBus);
@@ -105,14 +114,19 @@ public final class PurifiedUndead {
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
-        event.enqueueWork(() -> {
-            ModNetwork.register();
-            BrewingRecipeRegistry.addRecipe(new BlightElixirBrewingRecipe());
-            dev.purifiedundead.progress.PureElixirBrewing.register(BrewingRecipeRegistry::addRecipe);
-        });
-        LOGGER.info("Purified Undead environment ready: Curios={}, GeckoLib={}, Attributes={}, Placebo={}",
-                ModList.get().isLoaded("curios"), ModList.get().isLoaded("geckolib"),
-                ModList.get().isLoaded("attributeslib"), ModList.get().isLoaded("placebo"));
+        event.enqueueWork(
+                () -> {
+                    ModNetwork.register();
+                    BrewingRecipeRegistry.addRecipe(new BlightElixirBrewingRecipe());
+                    dev.purifiedundead.progress.PureElixirBrewing.register(
+                            BrewingRecipeRegistry::addRecipe);
+                });
+        LOGGER.info(
+                "Purified Undead environment ready: Curios={}, GeckoLib={}, Attributes={}, Placebo={}",
+                ModList.get().isLoaded("curios"),
+                ModList.get().isLoaded("geckolib"),
+                ModList.get().isLoaded("attributeslib"),
+                ModList.get().isLoaded("placebo"));
     }
 
     private void addCreativeTabItems(final BuildCreativeModeTabContentsEvent event) {
@@ -137,9 +151,18 @@ public final class PurifiedUndead {
 
             event.accept(ModItems.PURIFIED_ARCSTEEL.get());
             event.accept(ModItems.PURIFIED_ARCSTEEL_UPGRADE_SMITHING_TEMPLATE.get());
-            for(var potion:java.util.List.of(ModPotions.PURE_ELIXIR.get(),ModPotions.LONG_PURE_ELIXIR.get(),ModPotions.STRONG_PURE_ELIXIR.get()))
-                for(var bottle:java.util.List.of(net.minecraft.world.item.Items.POTION,net.minecraft.world.item.Items.SPLASH_POTION,net.minecraft.world.item.Items.LINGERING_POTION))
-                    event.accept(dev.purifiedundead.progress.PureElixirBrewing.stack(bottle,potion));
+            for (var potion :
+                    java.util.List.of(
+                            ModPotions.PURE_ELIXIR.get(),
+                            ModPotions.LONG_PURE_ELIXIR.get(),
+                            ModPotions.STRONG_PURE_ELIXIR.get()))
+                for (var bottle :
+                        java.util.List.of(
+                                net.minecraft.world.item.Items.POTION,
+                                net.minecraft.world.item.Items.SPLASH_POTION,
+                                net.minecraft.world.item.Items.LINGERING_POTION))
+                    event.accept(
+                            dev.purifiedundead.progress.PureElixirBrewing.stack(bottle, potion));
             event.accept(ModItems.GROTH_WARRIOR);
             event.accept(ModItems.JULIUS_WARRIOR);
             event.accept(ModItems.FORMER_ORNAMENT);
@@ -162,35 +185,66 @@ public final class PurifiedUndead {
     }
 
     private void createAttributes(final EntityAttributeCreationEvent event) {
-        event.put(ModEntities.BLIGHTED_GOLEM.get(), IronGolem.createAttributes()
-                .add(net.minecraft.world.entity.ai.attributes.Attributes.MAX_HEALTH, 200).build());
-        event.put(ModEntities.BLIGHTED_KING.get(), net.minecraft.world.entity.monster.Evoker.createAttributes()
-                .add(net.minecraft.world.entity.ai.attributes.Attributes.MAX_HEALTH, 100).build());
+        event.put(
+                ModEntities.BLIGHTED_GOLEM.get(),
+                IronGolem.createAttributes()
+                        .add(net.minecraft.world.entity.ai.attributes.Attributes.MAX_HEALTH, 200)
+                        .build());
+        event.put(
+                ModEntities.BLIGHTED_KING.get(),
+                net.minecraft.world.entity.monster.Evoker.createAttributes()
+                        .add(net.minecraft.world.entity.ai.attributes.Attributes.MAX_HEALTH, 100)
+                        .build());
     }
 
     private void serverStarted(final ServerStartedEvent event) {
-        boolean contractSlotLoaded = CuriosApi.getPlayerSlots(event.getServer().overworld())
-                .containsKey(AncientContractItem.SLOT_ID);
-        boolean warriorSlotLoaded = CuriosApi.getPlayerSlots(event.getServer().overworld())
-                .containsKey(FerinWarriorItem.SLOT_ID);
-        boolean relicSlotLoaded = CuriosApi.getPlayerSlots(event.getServer().overworld())
-                .containsKey(AncientContractItem.WHITE_WITCH_RELIC_SLOT_ID);
-        boolean ferinDamageTypeLoaded = event.getServer().registryAccess()
-                .registryOrThrow(Registries.DAMAGE_TYPE).containsKey(ModDamageTypes.FERIN_ASSIST.location());
-        boolean snowFlowerRecipeLoaded = event.getServer().getRecipeManager().byKey(
-                net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(MOD_ID, "snow_flower")).isPresent();
-        boolean tiredHeartRecipeLoaded = event.getServer().getRecipeManager().byKey(
-                net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(MOD_ID, "tired_heart")).isPresent();
-        boolean eleineDamageTypeLoaded = event.getServer().registryAccess()
-                .registryOrThrow(Registries.DAMAGE_TYPE).containsKey(ModDamageTypes.ELEINE_MAGIC_ORB.location());
-        net.minecraft.world.item.ItemStack awkwardPotion = net.minecraft.world.item.alchemy.PotionUtils.setPotion(
-                new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.POTION),
-                net.minecraft.world.item.alchemy.Potions.AWKWARD);
-        net.minecraft.world.item.ItemStack elixirOutput = BrewingRecipeRegistry.getOutput(
-                awkwardPotion, new net.minecraft.world.item.ItemStack(ModItems.BLIGHTED_SPIRIT.get()));
-        boolean blightElixirRecipeLoaded = net.minecraft.world.item.alchemy.PotionUtils.getPotion(elixirOutput)
-                == ModPotions.BLIGHT_ELIXIR.get();
-        LOGGER.info("Purified Undead server validation: Ancient Contract registered={}, contract slot loaded={}, "
+        boolean contractSlotLoaded =
+                CuriosApi.getPlayerSlots(event.getServer().overworld())
+                        .containsKey(AncientContractItem.SLOT_ID);
+        boolean warriorSlotLoaded =
+                CuriosApi.getPlayerSlots(event.getServer().overworld())
+                        .containsKey(FerinWarriorItem.SLOT_ID);
+        boolean relicSlotLoaded =
+                CuriosApi.getPlayerSlots(event.getServer().overworld())
+                        .containsKey(AncientContractItem.WHITE_WITCH_RELIC_SLOT_ID);
+        boolean ferinDamageTypeLoaded =
+                event.getServer()
+                        .registryAccess()
+                        .registryOrThrow(Registries.DAMAGE_TYPE)
+                        .containsKey(ModDamageTypes.FERIN_ASSIST.location());
+        boolean snowFlowerRecipeLoaded =
+                event.getServer()
+                        .getRecipeManager()
+                        .byKey(
+                                net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(
+                                        MOD_ID, "snow_flower"))
+                        .isPresent();
+        boolean tiredHeartRecipeLoaded =
+                event.getServer()
+                        .getRecipeManager()
+                        .byKey(
+                                net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(
+                                        MOD_ID, "tired_heart"))
+                        .isPresent();
+        boolean eleineDamageTypeLoaded =
+                event.getServer()
+                        .registryAccess()
+                        .registryOrThrow(Registries.DAMAGE_TYPE)
+                        .containsKey(ModDamageTypes.ELEINE_MAGIC_ORB.location());
+        net.minecraft.world.item.ItemStack awkwardPotion =
+                net.minecraft.world.item.alchemy.PotionUtils.setPotion(
+                        new net.minecraft.world.item.ItemStack(
+                                net.minecraft.world.item.Items.POTION),
+                        net.minecraft.world.item.alchemy.Potions.AWKWARD);
+        net.minecraft.world.item.ItemStack elixirOutput =
+                BrewingRecipeRegistry.getOutput(
+                        awkwardPotion,
+                        new net.minecraft.world.item.ItemStack(ModItems.BLIGHTED_SPIRIT.get()));
+        boolean blightElixirRecipeLoaded =
+                net.minecraft.world.item.alchemy.PotionUtils.getPotion(elixirOutput)
+                        == ModPotions.BLIGHT_ELIXIR.get();
+        LOGGER.info(
+                "Purified Undead server validation: Ancient Contract registered={}, contract slot loaded={}, "
                         + "Ferin Warrior registered={}, Ferin entity registered={}, warrior slot loaded={}, "
                         + "white witch relic slot loaded={}, eight curses registered={}, "
                         + "Groth registered={}, blighted golem registered={}, stun registered={}, Julius registered={}, "
@@ -198,25 +252,41 @@ public final class PurifiedUndead {
                         + "Ferin damage type loaded={}, Ulv damage types loaded={}, Eleine damage type loaded={}, "
                         + "snow flower recipe loaded={}, tired heart recipe loaded={}, "
                         + "slash particle registered={}, Hoenir mark particle registered={}, Faden fortune modifier registered={}",
-                ModItems.ANCIENT_CONTRACT.isPresent(), contractSlotLoaded, ModItems.FERIN_WARRIOR.isPresent(),
-                ModEntities.FERIN.isPresent(), warriorSlotLoaded, relicSlotLoaded,
-                ModEnchantments.BLIGHT_CURSES.stream().allMatch(net.minecraftforge.registries.RegistryObject::isPresent),
-                ModItems.GROTH_WARRIOR.isPresent(), ModEntities.BLIGHTED_GOLEM.isPresent(),
-                ModEffects.STUNNED.isPresent(), ModItems.JULIUS_WARRIOR.isPresent(),
+                ModItems.ANCIENT_CONTRACT.isPresent(),
+                contractSlotLoaded,
+                ModItems.FERIN_WARRIOR.isPresent(),
+                ModEntities.FERIN.isPresent(),
+                warriorSlotLoaded,
+                relicSlotLoaded,
+                ModEnchantments.BLIGHT_CURSES.stream()
+                        .allMatch(net.minecraftforge.registries.RegistryObject::isPresent),
+                ModItems.GROTH_WARRIOR.isPresent(),
+                ModEntities.BLIGHTED_GOLEM.isPresent(),
+                ModEffects.STUNNED.isPresent(),
+                ModItems.JULIUS_WARRIOR.isPresent(),
                 ModItems.GUARDIAN_WARRIORS.isPresent(),
                 ModItems.ULV_WARRIOR.isPresent(),
-                ModItems.ELEINE_WARRIOR.isPresent(), ModEntities.ELEINE_MAGIC_ORB.isPresent(),
+                ModItems.ELEINE_WARRIOR.isPresent(),
+                ModEntities.ELEINE_MAGIC_ORB.isPresent(),
                 ModItems.HOENIR_WARRIOR.isPresent(),
                 ModItems.FADEN_WARRIOR.isPresent(),
-                ModPotions.BLIGHT_ELIXIR.isPresent() && ModEffects.BLIGHTED_TRANSFORMATION.isPresent()
+                ModPotions.BLIGHT_ELIXIR.isPresent()
+                        && ModEffects.BLIGHTED_TRANSFORMATION.isPresent()
                         && blightElixirRecipeLoaded,
                 ferinDamageTypeLoaded,
-                event.getServer().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE)
-                        .containsKey(ModDamageTypes.ULV_BLIGHT.location())
-                        && event.getServer().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE)
-                        .containsKey(ModDamageTypes.ULV_FOLLOW_UP.location()),
-                eleineDamageTypeLoaded, snowFlowerRecipeLoaded, tiredHeartRecipeLoaded,
-                ModParticles.FERIN_SLASH.isPresent(), ModParticles.HOENIR_MARK.isPresent(),
+                event.getServer()
+                                .registryAccess()
+                                .registryOrThrow(Registries.DAMAGE_TYPE)
+                                .containsKey(ModDamageTypes.ULV_BLIGHT.location())
+                        && event.getServer()
+                                .registryAccess()
+                                .registryOrThrow(Registries.DAMAGE_TYPE)
+                                .containsKey(ModDamageTypes.ULV_FOLLOW_UP.location()),
+                eleineDamageTypeLoaded,
+                snowFlowerRecipeLoaded,
+                tiredHeartRecipeLoaded,
+                ModParticles.FERIN_SLASH.isPresent(),
+                ModParticles.HOENIR_MARK.isPresent(),
                 ModLootModifiers.FADEN_FORTUNE.isPresent());
     }
 }

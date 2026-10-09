@@ -17,7 +17,8 @@ public final class EleineAcquisitionEvents {
                 || !player.getOffhandItem().is(ModItems.TIRED_HEART.get())) {
             return;
         }
-        if (WarriorRewardService.recordEleineDrownedKill(player) && !player.getAbilities().instabuild) {
+        if (WarriorRewardService.recordEleineDrownedKill(player)
+                && !player.getAbilities().instabuild) {
             player.getOffhandItem().shrink(1);
         }
     }

@@ -17,8 +17,9 @@ final class FadenCureLedger extends SavedData {
     private final Set<UUID> pendingPlayers = new HashSet<>();
 
     static FadenCureLedger get(MinecraftServer server) {
-        return server.overworld().getDataStorage().computeIfAbsent(
-                FadenCureLedger::load, FadenCureLedger::new, DATA_NAME);
+        return server.overworld()
+                .getDataStorage()
+                .computeIfAbsent(FadenCureLedger::load, FadenCureLedger::new, DATA_NAME);
     }
 
     static FadenCureLedger load(CompoundTag tag) {
@@ -53,7 +54,9 @@ final class FadenCureLedger extends SavedData {
     @Override
     public CompoundTag save(CompoundTag tag) {
         ListTag list = new ListTag();
-        pendingPlayers.stream().map(UUID::toString).sorted()
+        pendingPlayers.stream()
+                .map(UUID::toString)
+                .sorted()
                 .forEach(value -> list.add(StringTag.valueOf(value)));
         tag.put("pending", list);
         return tag;

@@ -6,12 +6,12 @@ import top.theillusivec4.curios.api.CuriosApi;
 
 /** Server-authoritative access to contract progression stored on the player. */
 public final class ContractProgressService {
-    private ContractProgressService() {
-    }
+    private ContractProgressService() {}
 
     public static boolean hasContract(ServerPlayer player) {
         return CuriosApi.getCuriosInventory(player)
-                .map(handler -> handler.isEquipped(ModItems.ANCIENT_CONTRACT.get())).orElse(false);
+                .map(handler -> handler.isEquipped(ModItems.ANCIENT_CONTRACT.get()))
+                .orElse(false);
     }
 
     public static int talismanLevel(ServerPlayer player) {

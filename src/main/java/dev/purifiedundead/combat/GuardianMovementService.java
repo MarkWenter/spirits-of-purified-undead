@@ -18,15 +18,29 @@ import java.util.UUID;
 
 /** Server authority for one double jump and one dash per airborne period. */
 public final class GuardianMovementService {
-    private static final double DOUBLE_JUMP_VELOCITY = 0.52D;
-    private static final double AIR_DASH_SPEED = 1.15D;
     private static final Map<UUID, AirState> STATES = new HashMap<>();
+    private static final Map<UUID, MovementRequestBudget> REQUESTS = new HashMap<>();
     static final long REQUEST_GRACE_TICKS = 5L;
 
     public static void perform(ServerPlayer player, GuardianActionPacket.Action action) {
-        if(action==GuardianActionPacket.Action.WALL_JUMP){if(!dev.purifiedundead.slate.WallGrip.jump(player))rejectPrediction(player);return;}
-        if(action==GuardianActionPacket.Action.GRIP_HELD||action==GuardianActionPacket.Action.GRIP_RELEASED){dev.purifiedundead.slate.WallGrip.input(player,action==GuardianActionPacket.Action.GRIP_HELD);return;}
-        if (!player.isAlive() || player.isSpectator() || player.isPassenger() || player.getAbilities().flying || player.isFallFlying() || !isEquipped(player)) {
+        if (!REQUESTS.computeIfAbsent(player.getUUID(), ignored -> new MovementRequestBudget())
+                .allow(player.server.getTickCount())) return;
+        if (action == GuardianActionPacket.Action.WALL_JUMP) {
+            if (!dev.purifiedundead.slate.WallGrip.jump(player)) rejectPrediction(player);
+            return;
+        }
+        if (action == GuardianActionPacket.Action.GRIP_HELD
+                || action == GuardianActionPacket.Action.GRIP_RELEASED) {
+            dev.purifiedundead.slate.WallGrip.input(
+                    player, action == GuardianActionPacket.Action.GRIP_HELD);
+            return;
+        }
+        if (!player.isAlive()
+                || player.isSpectator()
+                || player.isPassenger()
+                || player.getAbilities().flying
+                || player.isFallFlying()
+                || !isEquipped(player)) {
             rejectPrediction(player);
             return;
         }
@@ -38,20 +52,30 @@ public final class GuardianMovementService {
         performAirborne(player, state, action);
     }
 
-    private static void performAirborne(ServerPlayer player, AirState state, GuardianActionPacket.Action action) {
+    private static void performAirborne(
+            ServerPlayer player, AirState state, GuardianActionPacket.Action action) {
         if (action == GuardianActionPacket.Action.DOUBLE_JUMP && !state.jumped) {
             Vec3 motion = player.getDeltaMovement();
-            player.setDeltaMovement(motion.x,
-                    PurifiedUndeadConfig.get(PurifiedUndeadConfig.VALUES.guardianDoubleJumpVelocity), motion.z);
+            player.setDeltaMovement(
+                    motion.x,
+                    PurifiedUndeadConfig.get(
+                            PurifiedUndeadConfig.VALUES.guardianDoubleJumpVelocity),
+                    motion.z);
             player.fallDistance = 0.0F;
             player.hasImpulse = true;
-            // The owner already predicted this impulse; echoing it would replay the jump after a round trip.
+            // The owner already predicted this impulse; echoing it would replay the jump after a
+            // round trip.
             state.jumped = true;
         } else if (action == GuardianActionPacket.Action.AIR_DASH && !state.dashed) {
-            player.setDeltaMovement(GuardianMotion.dash(player.getDeltaMovement(), player.getYRot(),
-                    PurifiedUndeadConfig.get(PurifiedUndeadConfig.VALUES.guardianAirDashSpeed)));
+            player.setDeltaMovement(
+                    GuardianMotion.dash(
+                            player.getDeltaMovement(),
+                            player.getYRot(),
+                            PurifiedUndeadConfig.get(
+                                    PurifiedUndeadConfig.VALUES.guardianAirDashSpeed)));
             player.hasImpulse = true;
-            // The owner already predicted this impulse; echoing it would replay the jump after a round trip.
+            // The owner already predicted this impulse; echoing it would replay the jump after a
+            // round trip.
             state.dashed = true;
         } else {
             rejectPrediction(player);
@@ -84,41 +108,59 @@ public final class GuardianMovementService {
     @SubscribeEvent
     public void onLogout(PlayerEvent.PlayerLoggedOutEvent event) {
         STATES.remove(event.getEntity().getUUID());
+        REQUESTS.remove(event.getEntity().getUUID());
     }
 
     @SubscribeEvent
     public void onServerStopped(net.minecraftforge.event.server.ServerStoppedEvent event) {
         STATES.clear();
+        REQUESTS.clear();
     }
 
     private static void rejectPrediction(ServerPlayer player) {
-        player.connection.teleport(player.getX(), player.getY(), player.getZ(), player.getYRot(), player.getXRot());
+        player.connection.teleport(
+                player.getX(), player.getY(), player.getZ(), player.getYRot(), player.getXRot());
         player.connection.send(new ClientboundSetEntityMotionPacket(player));
     }
 
     private static void syncMotion(ServerPlayer player) {
-        var packet = new dev.purifiedundead.network.GuardianMotionSettingsPacket(
-                PurifiedUndeadConfig.get(PurifiedUndeadConfig.VALUES.guardianDoubleJumpVelocity),
-                PurifiedUndeadConfig.get(PurifiedUndeadConfig.VALUES.guardianAirDashSpeed));
-        dev.purifiedundead.network.ModNetwork.CHANNEL.send(net.minecraftforge.network.PacketDistributor.PLAYER.with(() -> player), packet);
+        var packet =
+                new dev.purifiedundead.network.GuardianMotionSettingsPacket(
+                        PurifiedUndeadConfig.get(
+                                PurifiedUndeadConfig.VALUES.guardianDoubleJumpVelocity),
+                        PurifiedUndeadConfig.get(PurifiedUndeadConfig.VALUES.guardianAirDashSpeed));
+        dev.purifiedundead.network.ModNetwork.CHANNEL.send(
+                net.minecraftforge.network.PacketDistributor.PLAYER.with(() -> player), packet);
     }
+
     @SubscribeEvent
     public void onLogin(PlayerEvent.PlayerLoggedInEvent event) {
         if (event.getEntity() instanceof ServerPlayer player) syncMotion(player);
     }
+
     @SubscribeEvent
     public void onRespawn(PlayerEvent.PlayerRespawnEvent event) {
-        if (event.getEntity() instanceof ServerPlayer player) { STATES.remove(player.getUUID()); syncMotion(player); }
+        if (event.getEntity() instanceof ServerPlayer player) {
+            STATES.remove(player.getUUID());
+            syncMotion(player);
+        }
     }
+
     @SubscribeEvent
     public void onDimension(PlayerEvent.PlayerChangedDimensionEvent event) {
-        if (event.getEntity() instanceof ServerPlayer player) { STATES.remove(player.getUUID()); syncMotion(player); }
+        if (event.getEntity() instanceof ServerPlayer player) {
+            STATES.remove(player.getUUID());
+            syncMotion(player);
+        }
     }
 
     private static boolean isEquipped(ServerPlayer player) {
-        return CuriosApi.getCuriosInventory(player).map(handler ->
-                handler.isEquipped(ModItems.ANCIENT_CONTRACT.get())
-                        && handler.isEquipped(ModItems.GUARDIAN_WARRIORS.get())).orElse(false);
+        return CuriosApi.getCuriosInventory(player)
+                .map(
+                        handler ->
+                                handler.isEquipped(ModItems.ANCIENT_CONTRACT.get())
+                                        && handler.isEquipped(ModItems.GUARDIAN_WARRIORS.get()))
+                .orElse(false);
     }
 
     static final class AirState {

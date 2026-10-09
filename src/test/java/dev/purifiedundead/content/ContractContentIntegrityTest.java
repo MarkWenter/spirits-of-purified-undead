@@ -40,7 +40,8 @@ class ContractContentIntegrityTest {
     void deathRetentionTagContainsContractAndEveryWarrior() throws IOException {
         Set<String> expected = new HashSet<>();
         expected.add("purified_undead:ancient_contract");
-        for (var kind : dev.purifiedundead.content.relic.RelicKind.values()) expected.add("purified_undead:" + kind.id);
+        for (var kind : dev.purifiedundead.content.relic.RelicKind.values())
+            expected.add("purified_undead:" + kind.id);
         ContractRoster.WARRIOR_ITEM_IDS.forEach(id -> expected.add("purified_undead:" + id));
 
         JsonObject tag = parse(DATA.resolve("purified_undead/tags/items/accessories.json"));
@@ -50,7 +51,8 @@ class ContractContentIntegrityTest {
     @Test
     void curiosSlotsRetainEquippedAccessoriesOnDeath() throws IOException {
         for (String slot : Set.of("ancient_contract", "undead_warrior", "white_witch_relic")) {
-            JsonObject definition = parse(DATA.resolve("purified_undead/curios/slots/" + slot + ".json"));
+            JsonObject definition =
+                    parse(DATA.resolve("purified_undead/curios/slots/" + slot + ".json"));
             assertEquals("ALWAYS_KEEP", definition.get("drop_rule").getAsString());
         }
     }
@@ -60,8 +62,10 @@ class ContractContentIntegrityTest {
         for (String language : Set.of("zh_cn", "en_us")) {
             JsonObject entries = parse(ASSETS.resolve("lang/" + language + ".json"));
             for (int index = 1; index <= ContractRoster.WARRIOR_SLOTS; index++) {
-                assertEquals(true, entries.has("item.purified_undead.ancient_contract.blight." + index));
-                assertEquals(true, entries.has("item.purified_undead.ancient_contract.answer." + index));
+                assertEquals(
+                        true, entries.has("item.purified_undead.ancient_contract.blight." + index));
+                assertEquals(
+                        true, entries.has("item.purified_undead.ancient_contract.answer." + index));
             }
             assertEquals(true, entries.has("item.purified_undead.ancient_contract.talisman"));
             assertEquals(false, entries.has("item.purified_undead.ancient_contract.blight"));

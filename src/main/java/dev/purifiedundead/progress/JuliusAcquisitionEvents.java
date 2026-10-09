@@ -41,9 +41,18 @@ public final class JuliusAcquisitionEvents {
         if (!player.getAbilities().instabuild) {
             event.getItemStack().shrink(1);
         }
-        level.sendParticles(ParticleTypes.SOUL, king.getX(), king.getY() + 1.0D, king.getZ(),
-                24, 0.55D, 0.8D, 0.55D, 0.035D);
-        player.displayClientMessage(Component.translatable("message.purified_undead.julius.transformed"), false);
+        level.sendParticles(
+                ParticleTypes.SOUL,
+                king.getX(),
+                king.getY() + 1.0D,
+                king.getZ(),
+                24,
+                0.55D,
+                0.8D,
+                0.55D,
+                0.035D);
+        player.displayClientMessage(
+                Component.translatable("message.purified_undead.julius.transformed"), false);
         event.setCancellationResult(InteractionResult.SUCCESS);
         event.setCanceled(true);
     }
@@ -70,7 +79,8 @@ public final class JuliusAcquisitionEvents {
         data.remove("UUID");
         king.load(data);
         king.getAttribute(Attributes.MAX_HEALTH).setBaseValue(BlightedKingEntity.MAX_HEALTH);
-        king.setHealth(BlightedHealth.rescale(previousHealth, previousMaximum, king.getMaxHealth()));
+        king.setHealth(
+                BlightedHealth.rescale(previousHealth, previousMaximum, king.getMaxHealth()));
         king.getPersistentData().putBoolean(BLIGHTED_KING_KEY, true);
         king.setPersistenceRequired();
         if (!king.hasCustomName()) {
@@ -84,7 +94,8 @@ public final class JuliusAcquisitionEvents {
     public void onBlightedKingDeath(LivingDeathEvent event) {
         if (PurifiedUndeadConfig.get(PurifiedUndeadConfig.VALUES.juliusAcquisitionEnabled)
                 && event.getEntity() instanceof Evoker evoker
-                && (evoker instanceof BlightedKingEntity || evoker.getPersistentData().getBoolean(BLIGHTED_KING_KEY))
+                && (evoker instanceof BlightedKingEntity
+                        || evoker.getPersistentData().getBoolean(BLIGHTED_KING_KEY))
                 && event.getSource().getEntity() instanceof ServerPlayer player
                 && ContractProgressService.hasContract(player)) {
             WarriorRewardService.onJuliusDefeated(player);

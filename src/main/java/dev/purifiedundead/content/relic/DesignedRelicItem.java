@@ -11,11 +11,22 @@ import java.util.List;
 
 public final class DesignedRelicItem extends WhiteWitchRelicItem {
     public final RelicKind kind;
-    public DesignedRelicItem(RelicKind kind) { super(new Properties()); this.kind = kind; }
-    @Override public ResourceLocation relicId() {
+
+    public DesignedRelicItem(RelicKind kind) {
+        super(new Properties());
+        this.kind = kind;
+    }
+
+    @Override
+    public ResourceLocation relicId() {
         return ResourceLocation.fromNamespaceAndPath(PurifiedUndead.MOD_ID, kind.id);
     }
-    @Override public void appendHoverText(ItemStack stack, Level level, List<Component> lines, TooltipFlag flag) {
-        lines.add(Component.translatable("item.purified_undead." + kind.id + ".summary").withStyle(ChatFormatting.GRAY));
+
+    @Override
+    public void appendHoverText(
+            ItemStack stack, Level level, List<Component> lines, TooltipFlag flag) {
+        lines.add(
+                Component.translatable("item.purified_undead." + kind.id + ".summary")
+                        .withStyle(ChatFormatting.GRAY));
     }
 }

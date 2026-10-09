@@ -11,19 +11,22 @@ import net.minecraftforge.registries.RegistryObject;
 
 public final class ModLootModifiers {
     private static final DeferredRegister<Codec<? extends IGlobalLootModifier>> SERIALIZERS =
-            DeferredRegister.create(ForgeRegistries.Keys.GLOBAL_LOOT_MODIFIER_SERIALIZERS,
-                    PurifiedUndead.MOD_ID);
+            DeferredRegister.create(
+                    ForgeRegistries.Keys.GLOBAL_LOOT_MODIFIER_SERIALIZERS, PurifiedUndead.MOD_ID);
 
     public static final RegistryObject<Codec<FadenFortuneLootModifier>> FADEN_FORTUNE =
             SERIALIZERS.register("faden_fortune", () -> FadenFortuneLootModifier.CODEC);
 
-    public static final RegistryObject<Codec<dev.purifiedundead.loot.WhiteWitchRelicLootModifier>> WHITE_WITCH_RELIC =
-            SERIALIZERS.register("white_witch_relic", () -> dev.purifiedundead.loot.WhiteWitchRelicLootModifier.CODEC);
+    public static final RegistryObject<Codec<dev.purifiedundead.loot.WhiteWitchRelicLootModifier>>
+            WHITE_WITCH_RELIC =
+                    SERIALIZERS.register(
+                            "white_witch_relic",
+                            () -> dev.purifiedundead.loot.WhiteWitchRelicLootModifier.CODEC);
 
-    public static final RegistryObject<Codec<dev.purifiedundead.loot.CipherLootModifier>> CIPHER = SERIALIZERS.register("cipher", () -> dev.purifiedundead.loot.CipherLootModifier.CODEC);
+    public static final RegistryObject<Codec<dev.purifiedundead.loot.CipherLootModifier>> CIPHER =
+            SERIALIZERS.register("cipher", () -> dev.purifiedundead.loot.CipherLootModifier.CODEC);
 
-    private ModLootModifiers() {
-    }
+    private ModLootModifiers() {}
 
     public static void register(IEventBus bus) {
         SERIALIZERS.register(bus);

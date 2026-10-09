@@ -29,23 +29,38 @@ public final class RelicEvents {
 
     private static EnumMap<RelicKind, Integer> equipped(ServerPlayer player) {
         var result = new EnumMap<RelicKind, Integer>(RelicKind.class);
-        if (!PurifiedUndeadConfig.get(PurifiedUndeadConfig.VALUES.whiteWitchRelicsEnabled)) return result;
-        CuriosApi.getCuriosInventory(player).ifPresent(handler -> {
-            var slots = handler.getCurios().get(AncientContractItem.WHITE_WITCH_RELIC_SLOT_ID);
-            if (slots == null) return;
-            var stacks = slots.getStacks();
-            boolean duplicates = PurifiedUndeadConfig.get(PurifiedUndeadConfig.VALUES.allowDuplicateWhiteWitchRelics);
-            for (int i = 0; i < stacks.getSlots(); i++) {
-                if (stacks.getStackInSlot(i).getItem() instanceof DesignedRelicItem relic) {
-                    result.merge(relic.kind, 1, (a, b) -> duplicates ? a + b : 1);
-                }
-            }
-        });
+        if (!PurifiedUndeadConfig.get(PurifiedUndeadConfig.VALUES.whiteWitchRelicsEnabled))
+            return result;
+        CuriosApi.getCuriosInventory(player)
+                .ifPresent(
+                        handler -> {
+                            var slots =
+                                    handler.getCurios()
+                                            .get(AncientContractItem.WHITE_WITCH_RELIC_SLOT_ID);
+                            if (slots == null) return;
+                            var stacks = slots.getStacks();
+                            boolean duplicates =
+                                    PurifiedUndeadConfig.get(
+                                            PurifiedUndeadConfig.VALUES
+                                                    .allowDuplicateWhiteWitchRelics);
+                            for (int i = 0; i < stacks.getSlots(); i++) {
+                                if (stacks.getStackInSlot(i).getItem()
+                                        instanceof DesignedRelicItem relic) {
+                                    result.merge(relic.kind, 1, (a, b) -> duplicates ? a + b : 1);
+                                }
+                            }
+                        });
         return result;
     }
 
-    private static int count(EnumMap<RelicKind, Integer> items, RelicKind kind) { return items.getOrDefault(kind, 0); }
-    private static double scale() { return PurifiedUndeadConfig.get(PurifiedUndeadConfig.VALUES.whiteWitchRelicEffectScale); }
+    private static int count(EnumMap<RelicKind, Integer> items, RelicKind kind) {
+        return items.getOrDefault(kind, 0);
+    }
+
+    private static double scale() {
+        return PurifiedUndeadConfig.get(PurifiedUndeadConfig.VALUES.whiteWitchRelicEffectScale);
+    }
+
     private static CompoundTag data(ServerPlayer player) {
         var root = player.getPersistentData();
         if (!root.contains(DATA)) root.put(DATA, new CompoundTag());
@@ -55,12 +70,20 @@ public final class RelicEvents {
     // Apply after auxiliary attacks capture their unboosted base, so each hit is boosted once.
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onDamage(LivingHurtEvent event) {
-        if (!(event.getSource().getEntity() instanceof ServerPlayer player) || event.getAmount() <= 0) return;
+        if (!(event.getSource().getEntity() instanceof ServerPlayer player)
+                || event.getAmount() <= 0) return;
         var items = equipped(player);
-        boolean ranged = event.getSource().is(DamageTypeTags.IS_PROJECTILE)
-                || event.getSource().getDirectEntity() instanceof Projectile;
-        event.setAmount((float) (event.getAmount() * RelicRules.damageMultiplier(
-                count(items, RelicKind.BLIGHTED_FINGER), count(items, RelicKind.ANCIENT_DRAGON_CLAW), ranged, scale())));
+        boolean ranged =
+                event.getSource().is(DamageTypeTags.IS_PROJECTILE)
+                        || event.getSource().getDirectEntity() instanceof Projectile;
+        event.setAmount(
+                (float)
+                        (event.getAmount()
+                                * RelicRules.damageMultiplier(
+                                        count(items, RelicKind.BLIGHTED_FINGER),
+                                        count(items, RelicKind.ANCIENT_DRAGON_CLAW),
+                                        ranged,
+                                        scale())));
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -69,28 +92,40 @@ public final class RelicEvents {
         int ribbons = count(equipped(player), RelicKind.BLOODSTAINED_RIBBON);
         if (ribbons == 0) return;
         var state = data(player);
-        var gain = RelicRules.experience(event.getAmount(), state.getDouble("xp_remainder"), ribbons, scale());
+        var gain =
+                RelicRules.experience(
+                        event.getAmount(), state.getDouble("xp_remainder"), ribbons, scale());
         state.putDouble("xp_remainder", gain.remainder());
         event.setAmount(gain.amount());
     }
 
     @SubscribeEvent
     public void onTick(TickEvent.PlayerTickEvent event) {
-        if (event.phase != TickEvent.Phase.END || !(event.player instanceof ServerPlayer player)) return;
+        if (event.phase != TickEvent.Phase.END || !(event.player instanceof ServerPlayer player))
+            return;
         var items = equipped(player);
-        double amount = RelicRules.healthBonus(count(items, RelicKind.SOILED_SILVER_ROSARY),
-                count(items, RelicKind.KINGS_SHIELD_BADGE), scale());
+        double amount =
+                RelicRules.healthBonus(
+                        count(items, RelicKind.SOILED_SILVER_ROSARY),
+                        count(items, RelicKind.KINGS_SHIELD_BADGE),
+                        scale());
         var attribute = player.getAttribute(Attributes.MAX_HEALTH);
         if (attribute == null) return;
         var existing = attribute.getModifier(HEALTH_ID);
         if (existing != null && existing.getAmount() == amount) return;
         if (existing != null) attribute.removeModifier(HEALTH_ID);
-        if (amount != 0) attribute.addTransientModifier(new AttributeModifier(HEALTH_ID,
-                "White Witch relic health", amount, AttributeModifier.Operation.MULTIPLY_BASE));
+        if (amount != 0)
+            attribute.addTransientModifier(
+                    new AttributeModifier(
+                            HEALTH_ID,
+                            "White Witch relic health",
+                            amount,
+                            AttributeModifier.Operation.MULTIPLY_BASE));
         if (player.getHealth() > player.getMaxHealth()) player.setHealth(player.getMaxHealth());
     }
 
-    // Run before acquisition/death-retention listeners; vanilla hand-held totems already had first refusal.
+    // Run before acquisition/death-retention listeners; vanilla hand-held totems already had first
+    // refusal.
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onDeathProtection(LivingDeathEvent event) {
         if (!(event.getEntity() instanceof ServerPlayer player)
@@ -99,13 +134,26 @@ public final class RelicEvents {
         var state = data(player);
         long now = player.server.overworld().getGameTime();
         RelicKind selected = null;
-        for (var kind : new RelicKind[]{RelicKind.WHITE_PRIESTESS_STATUE, RelicKind.WHITE_PRIESTESS_EARRINGS}) {
-            if (count(items, kind) > 0 && RelicRules.ready(now, state.getLong(kind.id))) { selected = kind; break; }
+        for (var kind :
+                new RelicKind[] {
+                    RelicKind.WHITE_PRIESTESS_STATUE, RelicKind.WHITE_PRIESTESS_EARRINGS
+                }) {
+            if (count(items, kind) > 0 && RelicRules.ready(now, state.getLong(kind.id))) {
+                selected = kind;
+                break;
+            }
         }
         if (selected == null) return;
         int seconds = selected == RelicKind.WHITE_PRIESTESS_STATUE ? 120 : 600;
-        long cooldown = Math.max(1, Math.round(seconds * 20.0 * PurifiedUndeadConfig.get(
-                PurifiedUndeadConfig.VALUES.whiteWitchRelicCooldownScale)));
+        long cooldown =
+                Math.max(
+                        1,
+                        Math.round(
+                                seconds
+                                        * 20.0
+                                        * PurifiedUndeadConfig.get(
+                                                PurifiedUndeadConfig.VALUES
+                                                        .whiteWitchRelicCooldownScale)));
         state.putLong(selected.id, now + cooldown);
         event.setCanceled(true);
         player.setHealth(1.0F);
@@ -115,22 +163,31 @@ public final class RelicEvents {
         player.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 100, 1));
         player.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 800, 0));
         player.level().broadcastEntityEvent(player, (byte) 35);
-        player.displayClientMessage(net.minecraft.network.chat.Component.translatable(
-                "message.purified_undead.relic_saved", net.minecraft.network.chat.Component.translatable(
-                        "item.purified_undead." + selected.id), (cooldown + 19) / 20), true);
+        player.displayClientMessage(
+                net.minecraft.network.chat.Component.translatable(
+                        "message.purified_undead.relic_saved",
+                        net.minecraft.network.chat.Component.translatable(
+                                "item.purified_undead." + selected.id),
+                        (cooldown + 19) / 20),
+                true);
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onKill(LivingDeathEvent event) {
-        if (!(event.getEntity() instanceof Enemy) || !(event.getSource().getEntity() instanceof ServerPlayer player)
+        if (!(event.getEntity() instanceof Enemy)
+                || !(event.getSource().getEntity() instanceof ServerPlayer player)
                 || !player.isAlive()) return;
         int necklaces = count(equipped(player), RelicKind.WEATHERED_WARRIOR_NECKLACE);
-        if (necklaces > 0) player.heal(RelicRules.killHealing(player.getHealth(), player.getMaxHealth(), necklaces, scale()));
+        if (necklaces > 0)
+            player.heal(
+                    RelicRules.killHealing(
+                            player.getHealth(), player.getMaxHealth(), necklaces, scale()));
     }
 
     @SubscribeEvent
     public void onClone(PlayerEvent.Clone event) {
         var old = event.getOriginal().getPersistentData();
-        if (old.contains(DATA)) event.getEntity().getPersistentData().put(DATA, old.getCompound(DATA).copy());
+        if (old.contains(DATA))
+            event.getEntity().getPersistentData().put(DATA, old.getCompound(DATA).copy());
     }
 }

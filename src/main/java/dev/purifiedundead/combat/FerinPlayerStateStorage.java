@@ -6,7 +6,7 @@ import net.minecraft.world.entity.player.Player;
 final class FerinPlayerStateStorage {
     static final String KEY = "purified_undead:ferin_state";
 
-    private FerinPlayerStateStorage() { }
+    private FerinPlayerStateStorage() {}
 
     static boolean has(Player player) {
         return player.getPersistentData().contains(KEY, Tag.TAG_COMPOUND);
@@ -22,7 +22,9 @@ final class FerinPlayerStateStorage {
 
     static void copy(Player original, Player replacement) {
         if (has(original)) {
-            replacement.getPersistentData().put(KEY, original.getPersistentData().getCompound(KEY).copy());
+            replacement
+                    .getPersistentData()
+                    .put(KEY, original.getPersistentData().getCompound(KEY).copy());
         }
     }
 }

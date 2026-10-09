@@ -15,12 +15,22 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ItemTextureResourcesTest {
     private static final Path ASSETS = Path.of("src/main/resources/assets/purified_undead");
-    private static final Set<String> FORMAL_ITEMS = Set.of(
-            "ferin_warrior", "groth_warrior", "guardian_warriors", "julius_warrior",
-            "ulv_warrior", "eleine_warrior", "hoenir_warrior", "faden_warrior",
-            "blighted_spirit", "blight_fragment", "ancient_contract", "snow_flower",
-            "former_ornament", "tired_heart"
-    );
+    private static final Set<String> FORMAL_ITEMS =
+            Set.of(
+                    "ferin_warrior",
+                    "groth_warrior",
+                    "guardian_warriors",
+                    "julius_warrior",
+                    "ulv_warrior",
+                    "eleine_warrior",
+                    "hoenir_warrior",
+                    "faden_warrior",
+                    "blighted_spirit",
+                    "blight_fragment",
+                    "ancient_contract",
+                    "snow_flower",
+                    "former_ornament",
+                    "tired_heart");
 
     @Test
     void formalItemTexturesAreMinecraftSizedAndUseTransparency() throws Exception {
@@ -52,8 +62,10 @@ class ItemTextureResourcesTest {
             try (var reader = Files.newBufferedReader(modelPath)) {
                 JsonObject model = JsonParser.parseReader(reader).getAsJsonObject();
                 assertEquals("minecraft:item/generated", model.get("parent").getAsString(), id);
-                assertEquals("purified_undead:item/" + id,
-                        model.getAsJsonObject("textures").get("layer0").getAsString(), id);
+                assertEquals(
+                        "purified_undead:item/" + id,
+                        model.getAsJsonObject("textures").get("layer0").getAsString(),
+                        id);
             }
         }
     }

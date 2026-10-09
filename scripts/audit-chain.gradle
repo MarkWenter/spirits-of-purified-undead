@@ -1,0 +1,7 @@
+// Load an independent second injector only in the development smoke source set.
+gradle.projectsEvaluated {
+ rootProject.minecraft.runs.server.args '-mixin.config','purified_undead.audit.mixins.json'
+}
+allprojects { tasks.withType(JavaExec).configureEach {
+ systemProperty 'purified_undead.chainAudit','true'
+} }

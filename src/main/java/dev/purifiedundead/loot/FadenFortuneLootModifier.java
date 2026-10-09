@@ -27,8 +27,10 @@ import java.util.Map;
 
 /** Re-evaluates player-broken block loot with one extra effective Fortune level. */
 public final class FadenFortuneLootModifier extends LootModifier {
-    public static final Codec<FadenFortuneLootModifier> CODEC = RecordCodecBuilder.create(
-            instance -> codecStart(instance).apply(instance, FadenFortuneLootModifier::new));
+    public static final Codec<FadenFortuneLootModifier> CODEC =
+            RecordCodecBuilder.create(
+                    instance ->
+                            codecStart(instance).apply(instance, FadenFortuneLootModifier::new));
     private static final ThreadLocal<Boolean> REEVALUATING = ThreadLocal.withInitial(() -> false);
 
     public FadenFortuneLootModifier(LootItemCondition[] conditions) {
@@ -36,9 +38,10 @@ public final class FadenFortuneLootModifier extends LootModifier {
     }
 
     @Override
-    protected @NotNull ObjectArrayList<ItemStack> doApply(ObjectArrayList<ItemStack> generatedLoot,
-                                                           LootContext context) {
-        if (REEVALUATING.get() || !(context.getParamOrNull(LootContextParams.THIS_ENTITY) instanceof Player player)
+    protected @NotNull ObjectArrayList<ItemStack> doApply(
+            ObjectArrayList<ItemStack> generatedLoot, LootContext context) {
+        if (REEVALUATING.get()
+                || !(context.getParamOrNull(LootContextParams.THIS_ENTITY) instanceof Player player)
                 || !FadenCombatEvents.isReversed(player)) {
             return generatedLoot;
         }
@@ -49,18 +52,26 @@ public final class FadenFortuneLootModifier extends LootModifier {
             return generatedLoot;
         }
 
-        ItemStack boostedTool = originalTool.isEmpty() ? new ItemStack(Items.STICK) : originalTool.copy();
+        ItemStack boostedTool =
+                originalTool.isEmpty() ? new ItemStack(Items.STICK) : originalTool.copy();
         Map<Enchantment, Integer> enchantments = EnchantmentHelper.getEnchantments(boostedTool);
-        int fortune = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.BLOCK_FORTUNE, boostedTool);
-        enchantments.put(Enchantments.BLOCK_FORTUNE,
-                FadenModel.effectiveEnchantmentLevel(fortune, true));
+        int fortune =
+                EnchantmentHelper.getItemEnchantmentLevel(Enchantments.BLOCK_FORTUNE, boostedTool);
+        enchantments.put(
+                Enchantments.BLOCK_FORTUNE, FadenModel.effectiveEnchantmentLevel(fortune, true));
         EnchantmentHelper.setEnchantments(enchantments, boostedTool);
 
         BlockEntity blockEntity = context.getParamOrNull(LootContextParams.BLOCK_ENTITY);
         try {
             REEVALUATING.set(true);
-            return new ObjectArrayList<>(Block.getDrops(state, context.getLevel(),
-                    BlockPos.containing(origin), blockEntity, player, boostedTool));
+            return new ObjectArrayList<>(
+                    Block.getDrops(
+                            state,
+                            context.getLevel(),
+                            BlockPos.containing(origin),
+                            blockEntity,
+                            player,
+                            boostedTool));
         } finally {
             REEVALUATING.remove();
         }

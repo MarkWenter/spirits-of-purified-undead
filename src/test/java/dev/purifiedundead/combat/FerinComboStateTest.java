@@ -48,8 +48,10 @@ class FerinComboStateTest {
 
     @Test
     void rejectsInvalidTimingAndStageDefinitions() {
-        assertThrows(IllegalArgumentException.class, () -> new FerinComboTimings(40, 10, 10, 16, 4));
-        assertThrows(IllegalArgumentException.class,
+        assertThrows(
+                IllegalArgumentException.class, () -> new FerinComboTimings(40, 10, 10, 16, 4));
+        assertThrows(
+                IllegalArgumentException.class,
                 () -> new FerinComboState().onQualifyingHit(0, 6, TIMINGS));
     }
 
@@ -62,6 +64,7 @@ class FerinComboStateTest {
         assertEquals(100, restored.stageStartedAt());
         assertEquals(140, restored.cooldownUntil());
     }
+
     @Test
     void lifecycleCancellationRetainsCooldownAcrossSaveAndReload() {
         var state = new FerinComboState();

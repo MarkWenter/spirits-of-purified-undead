@@ -32,9 +32,15 @@ public final class GrothAcquisitionEvents {
         if (converted == null) {
             return;
         }
-        converted.moveTo(original.getX(), original.getY(), original.getZ(), original.getYRot(), original.getXRot());
-        converted.setHealth(dev.purifiedundead.entity.BlightedHealth.rescale(
-                original.getHealth(), original.getMaxHealth(), converted.getMaxHealth()));
+        converted.moveTo(
+                original.getX(),
+                original.getY(),
+                original.getZ(),
+                original.getYRot(),
+                original.getXRot());
+        converted.setHealth(
+                dev.purifiedundead.entity.BlightedHealth.rescale(
+                        original.getHealth(), original.getMaxHealth(), converted.getMaxHealth()));
         converted.setPlayerCreated(original.isPlayerCreated());
         converted.setNoAi(original.isNoAi());
         converted.setInvulnerable(original.isInvulnerable());
@@ -42,7 +48,8 @@ public final class GrothAcquisitionEvents {
             converted.setCustomName(original.getCustomName());
             converted.setCustomNameVisible(original.isCustomNameVisible());
         } else {
-            converted.setCustomName(Component.translatable("entity.purified_undead.blighted_golem"));
+            converted.setCustomName(
+                    Component.translatable("entity.purified_undead.blighted_golem"));
         }
 
         if (!level.addFreshEntity(converted)) {
@@ -52,9 +59,18 @@ public final class GrothAcquisitionEvents {
         if (!player.getAbilities().instabuild) {
             event.getItemStack().shrink(1);
         }
-        level.sendParticles(ParticleTypes.SOUL, converted.getX(), converted.getY() + 1.3D, converted.getZ(),
-                32, 0.7D, 1.1D, 0.7D, 0.04D);
-        player.displayClientMessage(Component.translatable("message.purified_undead.groth.transformed"), false);
+        level.sendParticles(
+                ParticleTypes.SOUL,
+                converted.getX(),
+                converted.getY() + 1.3D,
+                converted.getZ(),
+                32,
+                0.7D,
+                1.1D,
+                0.7D,
+                0.04D);
+        player.displayClientMessage(
+                Component.translatable("message.purified_undead.groth.transformed"), false);
         event.setCancellationResult(InteractionResult.SUCCESS);
         event.setCanceled(true);
     }

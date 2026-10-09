@@ -123,3 +123,9 @@ scripts/*
 !docs/COMMANDS_AND_CONFIG.md
 !docs/CONFIG_REFERENCE.md
 !docs/ADDON_API.md
+
+!docs/RELEASE_V056.md
+!docs/COMPATIBILITY_AUDIT_056.md
+!docs/CODE_STANDARDS.md
+!scripts/format-java.ps1
+!scripts/audit-chain.gradle

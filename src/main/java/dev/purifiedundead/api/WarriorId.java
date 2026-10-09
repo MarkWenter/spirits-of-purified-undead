@@ -5,8 +5,19 @@ import net.minecraft.world.item.Item;
 
 /** Stable acquisition identifiers. Guardians is the single paired-warrior reward. */
 public enum WarriorId {
-    FERIN, GROTH, JULIUS, GUARDIANS, ULV, ELEINE, HOENIR, FADEN;
-    public String id() { return name().toLowerCase(java.util.Locale.ROOT); }
+    FERIN,
+    GROTH,
+    JULIUS,
+    GUARDIANS,
+    ULV,
+    ELEINE,
+    HOENIR,
+    FADEN;
+
+    public String id() {
+        return name().toLowerCase(java.util.Locale.ROOT);
+    }
+
     public Item item() {
         return switch (this) {
             case FERIN -> ModItems.FERIN_WARRIOR.get();

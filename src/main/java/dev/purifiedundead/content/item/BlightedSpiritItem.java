@@ -30,29 +30,42 @@ public final class BlightedSpiritItem extends Item {
     // Curios lookup caches may remain valid until the next tick after an inventory mutation.
     // A consuming transaction must inspect the actual equipped stacks at completion.
     private static boolean equippedNow(ServerPlayer player) {
-        return top.theillusivec4.curios.api.CuriosApi.getCuriosInventory(player).map(h -> {
-            for (var handler : h.getCurios().values()) {
-                var stacks = handler.getStacks();
-                for (int i = 0; i < stacks.getSlots(); i++)
-                    if (stacks.getStackInSlot(i).is(dev.purifiedundead.content.ModItems.ANCIENT_CONTRACT.get())) return true;
-            }
-            return false;
-        }).orElse(false);
+        return top.theillusivec4.curios.api.CuriosApi.getCuriosInventory(player)
+                .map(
+                        h -> {
+                            for (var handler : h.getCurios().values()) {
+                                var stacks = handler.getStacks();
+                                for (int i = 0; i < stacks.getSlots(); i++)
+                                    if (stacks.getStackInSlot(i)
+                                            .is(
+                                                    dev.purifiedundead.content.ModItems
+                                                            .ANCIENT_CONTRACT
+                                                            .get())) return true;
+                            }
+                            return false;
+                        })
+                .orElse(false);
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+    public InteractionResultHolder<ItemStack> use(
+            Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (!(player instanceof ServerPlayer serverPlayer)) {
             return ItemUtils.startUsingInstantly(level, player, hand);
         }
         if (!equippedNow(serverPlayer)) {
-            player.displayClientMessage(Component.translatable("message.purified_undead.talisman.no_contract"), true);
+            player.displayClientMessage(
+                    Component.translatable("message.purified_undead.talisman.no_contract"), true);
             return InteractionResultHolder.fail(stack);
         }
-        if (!player.getAbilities().instabuild && stack.getCount() < WhiteWitchTalisman.spiritsPerLevel()) {
-            player.displayClientMessage(Component.translatable("message.purified_undead.talisman.insufficient",
-                    WhiteWitchTalisman.spiritsPerLevel()), true);
+        if (!player.getAbilities().instabuild
+                && stack.getCount() < WhiteWitchTalisman.spiritsPerLevel()) {
+            player.displayClientMessage(
+                    Component.translatable(
+                            "message.purified_undead.talisman.insufficient",
+                            WhiteWitchTalisman.spiritsPerLevel()),
+                    true);
             return InteractionResultHolder.fail(stack);
         }
         return ItemUtils.startUsingInstantly(level, player, hand);
@@ -61,22 +74,34 @@ public final class BlightedSpiritItem extends Item {
     @Override
     public ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity entity) {
         int amount = WhiteWitchTalisman.spiritsPerLevel();
-        if (!stack.isEmpty() && stack.is(this) && !level.isClientSide() && entity instanceof ServerPlayer player
+        if (!stack.isEmpty()
+                && stack.is(this)
+                && !level.isClientSide()
+                && entity instanceof ServerPlayer player
                 && equippedNow(player)
                 && (player.getAbilities().instabuild || stack.getCount() >= amount)) {
             boolean upgraded = ContractProgressService.upgradeTalisman(player);
             if (!player.getAbilities().instabuild) stack.shrink(amount);
-            ItemStack crystals = new ItemStack(dev.purifiedundead.content.ModItems.PURE_CRYSTAL.get(), amount);
+            ItemStack crystals =
+                    new ItemStack(dev.purifiedundead.content.ModItems.PURE_CRYSTAL.get(), amount);
             if (!player.getInventory().add(crystals)) player.drop(crystals, false);
             int currentLevel = ContractProgressService.talismanLevel(player);
             if (upgraded) {
-                player.displayClientMessage(Component.translatable("message.purified_undead.talisman.upgraded",
-                        currentLevel, WhiteWitchTalisman.maxLevel(),
-                        String.format(java.util.Locale.ROOT, "%.0f%%",
-                                WhiteWitchTalisman.incomingDamageMultiplier(currentLevel) * 100.0F)), false);
+                player.displayClientMessage(
+                        Component.translatable(
+                                "message.purified_undead.talisman.upgraded",
+                                currentLevel,
+                                WhiteWitchTalisman.maxLevel(),
+                                String.format(
+                                        java.util.Locale.ROOT,
+                                        "%.0f%%",
+                                        WhiteWitchTalisman.incomingDamageMultiplier(currentLevel)
+                                                * 100.0F)),
+                        false);
             } else {
                 dev.purifiedundead.progress.RewardSounds.onPurification(player);
-                player.displayClientMessage(Component.translatable("message.purified_undead.purified", amount), true);
+                player.displayClientMessage(
+                        Component.translatable("message.purified_undead.purified", amount), true);
             }
         }
         return stack;
@@ -93,10 +118,16 @@ public final class BlightedSpiritItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> lines, TooltipFlag flag) {
-        lines.add(Component.translatable("item.purified_undead.blighted_spirit.summary")
-                .withStyle(ChatFormatting.DARK_PURPLE));
-        lines.add(Component.translatable("item.purified_undead.blighted_spirit.use",
-                WhiteWitchTalisman.spiritsPerLevel(), WhiteWitchTalisman.spiritsPerLevel()).withStyle(ChatFormatting.GRAY));
+    public void appendHoverText(
+            ItemStack stack, @Nullable Level level, List<Component> lines, TooltipFlag flag) {
+        lines.add(
+                Component.translatable("item.purified_undead.blighted_spirit.summary")
+                        .withStyle(ChatFormatting.DARK_PURPLE));
+        lines.add(
+                Component.translatable(
+                                "item.purified_undead.blighted_spirit.use",
+                                WhiteWitchTalisman.spiritsPerLevel(),
+                                WhiteWitchTalisman.spiritsPerLevel())
+                        .withStyle(ChatFormatting.GRAY));
     }
 }

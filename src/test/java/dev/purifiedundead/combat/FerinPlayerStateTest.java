@@ -30,7 +30,8 @@ class FerinPlayerStateTest {
         assertEquals(12.0F, restored.triggerPreDefenseDamage);
         assertEquals(1.5F, restored.stageCriticalMultiplier);
         assertTrue(restored.hitTargets.contains(target));
-        assertNull(restored.previousBlade, "A loaded state must not sweep from a stale pre-save pose");
+        assertNull(
+                restored.previousBlade, "A loaded state must not sweep from a stale pre-save pose");
     }
 
     @Test
@@ -67,7 +68,10 @@ class FerinPlayerStateTest {
         assertEquals(FerinPlayerState.COMPANION_LEFT_OFFSET, offset.dot(state.right), 0.0001D);
         assertEquals(FerinPlayerState.COMPANION_FORWARD_OFFSET, offset.dot(state.forward), 0.0001D);
         assertEquals(0.0F, state.capturedYawDegrees(), 0.0001F);
-        assertEquals(180.0F, state.ferinVisualYawDegrees(), 0.0001F,
+        assertEquals(
+                180.0F,
+                state.ferinVisualYawDegrees(),
+                0.0001F,
                 "The model front must face combat-forward rather than back toward its owner");
 
         FerinBladeTrajectory.BladePose local = FerinBladeTrajectory.sample(1, 2).orElseThrow();
@@ -80,15 +84,19 @@ class FerinPlayerStateTest {
         assertEquals(90.0F, state.capturedYawDegrees(), 0.0001F);
         assertEquals(270.0F, state.ferinVisualYawDegrees(), 0.0001F);
         Vec3 rotatedOffset = state.companionAnchor();
-        assertEquals(FerinPlayerState.COMPANION_LEFT_OFFSET, rotatedOffset.dot(state.right), 0.0001D);
-        assertEquals(FerinPlayerState.COMPANION_FORWARD_OFFSET, rotatedOffset.dot(state.forward), 0.0001D);
+        assertEquals(
+                FerinPlayerState.COMPANION_LEFT_OFFSET, rotatedOffset.dot(state.right), 0.0001D);
+        assertEquals(
+                FerinPlayerState.COMPANION_FORWARD_OFFSET,
+                rotatedOffset.dot(state.forward),
+                0.0001D);
     }
 
     @Test
     void aimsTheSummonAtTheActuallyHitTargetAndFallsBackForCoincidentPositions() {
         var state = new FerinPlayerState();
-        state.captureStageTowards(new Vec3(10.0, 64.0, 10.0), new Vec3(13.0, 70.0, 14.0),
-                180.0F, 8.0F, 1.0F);
+        state.captureStageTowards(
+                new Vec3(10.0, 64.0, 10.0), new Vec3(13.0, 70.0, 14.0), 180.0F, 8.0F, 1.0F);
         assertEquals(0.6D, state.forward.x, 0.0001D);
         assertEquals(0.0D, state.forward.y, 0.0001D);
         assertEquals(0.8D, state.forward.z, 0.0001D);
@@ -97,18 +105,19 @@ class FerinPlayerStateTest {
         assertEquals(-1.0D, state.forward.x, 0.0001D);
         assertEquals(0.0D, state.forward.z, 0.0001D);
     }
+
     @Test
     void cancellationClearsQueuedContinuationAndTargets() {
         var state = new FerinPlayerState();
-        state.combo.onQualifyingHit(100,3,TIMINGS);
-        state.continuation.request(1,100);
-        state.continuationTarget = new Vec3(10,64,10);
+        state.combo.onQualifyingHit(100, 3, TIMINGS);
+        state.continuation.request(1, 100);
+        state.continuationTarget = new Vec3(10, 64, 10);
         state.hitTargets.add(UUID.randomUUID());
         state.cancelActive();
-        assertFalse(state.continuation.pending(1,100));
+        assertFalse(state.continuation.pending(1, 100));
         assertNull(state.continuationTarget);
         assertTrue(state.hitTargets.isEmpty());
-        assertEquals(140,state.combo.cooldownUntil());
-        assertEquals(0,FerinPlayerState.load(state.save()).combo.stage());
+        assertEquals(140, state.combo.cooldownUntil());
+        assertEquals(0, FerinPlayerState.load(state.save()).combo.stage());
     }
 }

@@ -32,9 +32,12 @@ public final class FadenCombatEvents {
             return;
         }
         Equipment equipment = readEquipment(player);
-        replaceKnockbackPenalty(player.getAttribute(Attributes.KNOCKBACK_RESISTANCE),
+        replaceKnockbackPenalty(
+                player.getAttribute(Attributes.KNOCKBACK_RESISTANCE),
                 equipment.unreversed()
-                        ? -PurifiedUndeadConfig.get(PurifiedUndeadConfig.VALUES.fadenKnockbackResistancePenalty) : 0.0D);
+                        ? -PurifiedUndeadConfig.get(
+                                PurifiedUndeadConfig.VALUES.fadenKnockbackResistancePenalty)
+                        : 0.0D);
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -47,26 +50,39 @@ public final class FadenCombatEvents {
                 && readEquipment(target).unreversed()
                 && source.getEntity() instanceof LivingEntity
                 && FadenModel.rollPoison(target.getRandom().nextFloat())) {
-            target.addEffect(new MobEffectInstance(MobEffects.POISON,
-                    PurifiedUndeadConfig.get(PurifiedUndeadConfig.VALUES.fadenPoisonDurationTicks),
-                    PurifiedUndeadConfig.get(PurifiedUndeadConfig.VALUES.fadenPoisonAmplifier)));
+            target.addEffect(
+                    new MobEffectInstance(
+                            MobEffects.POISON,
+                            PurifiedUndeadConfig.get(
+                                    PurifiedUndeadConfig.VALUES.fadenPoisonDurationTicks),
+                            PurifiedUndeadConfig.get(
+                                    PurifiedUndeadConfig.VALUES.fadenPoisonAmplifier)));
         }
         if (source.getEntity() instanceof ServerPlayer attacker
                 && isDirectPlayerAttack(source, attacker)
                 && readEquipment(attacker).reversed()
                 && isLegalTarget(attacker, event.getEntity())
                 && FadenModel.rollPoison(attacker.getRandom().nextFloat())) {
-            event.getEntity().addEffect(new MobEffectInstance(MobEffects.POISON,
-                    PurifiedUndeadConfig.get(PurifiedUndeadConfig.VALUES.fadenPoisonDurationTicks),
-                    PurifiedUndeadConfig.get(PurifiedUndeadConfig.VALUES.fadenPoisonAmplifier)), attacker);
+            event.getEntity()
+                    .addEffect(
+                            new MobEffectInstance(
+                                    MobEffects.POISON,
+                                    PurifiedUndeadConfig.get(
+                                            PurifiedUndeadConfig.VALUES.fadenPoisonDurationTicks),
+                                    PurifiedUndeadConfig.get(
+                                            PurifiedUndeadConfig.VALUES.fadenPoisonAmplifier)),
+                            attacker);
         }
     }
 
     @SubscribeEvent
     public void onLootingLevel(LootingLevelEvent event) {
         DamageSource source = event.getDamageSource();
-        if (source != null && source.getEntity() instanceof ServerPlayer player && isReversed(player)) {
-            event.setLootingLevel(FadenModel.effectiveEnchantmentLevel(event.getLootingLevel(), true));
+        if (source != null
+                && source.getEntity() instanceof ServerPlayer player
+                && isReversed(player)) {
+            event.setLootingLevel(
+                    FadenModel.effectiveEnchantmentLevel(event.getLootingLevel(), true));
         }
     }
 
@@ -86,13 +102,18 @@ public final class FadenCombatEvents {
             attribute.removeModifier(KNOCKBACK_PENALTY_ID);
         }
         if (amount != 0.0D) {
-            attribute.addTransientModifier(new AttributeModifier(KNOCKBACK_PENALTY_ID,
-                    "Heretic knockback resistance", amount, AttributeModifier.Operation.ADDITION));
+            attribute.addTransientModifier(
+                    new AttributeModifier(
+                            KNOCKBACK_PENALTY_ID,
+                            "Heretic knockback resistance",
+                            amount,
+                            AttributeModifier.Operation.ADDITION));
         }
     }
 
     private static boolean isDirectPlayerAttack(DamageSource source, ServerPlayer player) {
-        return source.getEntity() == player && source.getDirectEntity() != null
+        return source.getEntity() == player
+                && source.getDirectEntity() != null
                 && !source.is(ModDamageTypes.FERIN_ASSIST)
                 && !source.is(ModDamageTypes.ULV_FOLLOW_UP)
                 && !source.is(ModDamageTypes.ULV_BLIGHT)
@@ -100,19 +121,27 @@ public final class FadenCombatEvents {
     }
 
     private static boolean isLegalTarget(ServerPlayer owner, LivingEntity target) {
-        if (target == owner || !target.isAlive() || !target.isAttackable() || owner.isAlliedTo(target)) {
+        if (target == owner
+                || !target.isAlive()
+                || !target.isAttackable()
+                || owner.isAlliedTo(target)) {
             return false;
         }
         if (target instanceof Player other && !owner.canHarmPlayer(other)) {
             return false;
         }
-        return !(target instanceof OwnableEntity ownable && owner.getUUID().equals(ownable.getOwnerUUID()));
+        return !(target instanceof OwnableEntity ownable
+                && owner.getUUID().equals(ownable.getOwnerUUID()));
     }
 
     private static Equipment readEquipment(LivingEntity entity) {
-        return CuriosApi.getCuriosInventory(entity).map(handler -> new Equipment(
-                handler.isEquipped(ModItems.ANCIENT_CONTRACT.get()),
-                handler.isEquipped(ModItems.FADEN_WARRIOR.get()))).orElse(Equipment.NONE);
+        return CuriosApi.getCuriosInventory(entity)
+                .map(
+                        handler ->
+                                new Equipment(
+                                        handler.isEquipped(ModItems.ANCIENT_CONTRACT.get()),
+                                        handler.isEquipped(ModItems.FADEN_WARRIOR.get())))
+                .orElse(Equipment.NONE);
     }
 
     private record Equipment(boolean contract, boolean faden) {

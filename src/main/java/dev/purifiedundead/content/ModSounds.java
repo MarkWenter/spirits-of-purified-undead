@@ -14,15 +14,30 @@ public final class ModSounds {
     private static final DeferredRegister<SoundEvent> SOUNDS =
             DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, PurifiedUndead.MOD_ID);
     private static final Map<String, RegistryObject<SoundEvent>> EVENTS = new LinkedHashMap<>();
+
     static {
-        for (String name : new String[]{"ancient_contract", "groth", "julius", "guardians",
-                "ulv", "eleine", "faden", "talisman_max"}) {
-            EVENTS.put(name, SOUNDS.register(name, () -> SoundEvent.createVariableRangeEvent(
-                    new ResourceLocation(PurifiedUndead.MOD_ID, name))));
+        for (String name :
+                new String[] {
+                    "ancient_contract",
+                    "groth",
+                    "julius",
+                    "guardians",
+                    "ulv",
+                    "eleine",
+                    "faden",
+                    "talisman_max"
+                }) {
+            EVENTS.put(
+                    name,
+                    SOUNDS.register(
+                            name,
+                            () ->
+                                    SoundEvent.createVariableRangeEvent(
+                                            new ResourceLocation(PurifiedUndead.MOD_ID, name))));
         }
     }
 
-    private ModSounds() { }
+    private ModSounds() {}
 
     public static SoundEvent find(String name) {
         RegistryObject<SoundEvent> event = EVENTS.get(name);

@@ -22,7 +22,8 @@ class FerinBlightModelTest {
 
     @Test
     void invalidDamageIsRejectedOrSafelyIgnored() {
-        assertThrows(IllegalArgumentException.class,
+        assertThrows(
+                IllegalArgumentException.class,
                 () -> FerinBlightModel.meleeDamage(Float.NaN, true, false));
         assertEquals(0.0F, FerinBlightModel.lifesteal(Float.NaN, 20.0F), 0.0001F);
     }
@@ -31,7 +32,8 @@ class FerinBlightModelTest {
     void ulvBonusAddsInTheSameMeleeLayer() {
         assertEquals(18.0F, FerinBlightModel.meleeDamage(10.0F, true, true, 0.50D), 0.0001F);
         assertEquals(12.0F, FerinBlightModel.meleeDamage(10.0F, true, false, 0.50D), 0.0001F);
-        assertThrows(IllegalArgumentException.class,
+        assertThrows(
+                IllegalArgumentException.class,
                 () -> FerinBlightModel.meleeDamage(10.0F, true, true, Double.NaN));
     }
 }

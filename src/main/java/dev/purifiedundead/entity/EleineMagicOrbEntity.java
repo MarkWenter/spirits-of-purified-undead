@@ -23,14 +23,19 @@ import java.util.UUID;
 
 /** Visible, finite-life magic orb with mild steering and normal wall collision. */
 public final class EleineMagicOrbEntity extends AbstractHurtingProjectile {
-    private static final ParticleOptions EMBER = new net.minecraft.core.particles.DustParticleOptions(
-            new org.joml.Vector3f(0.65F, 0.025F, 0.04F), 0.65F);
-    private static final ParticleOptions SOOT = new net.minecraft.core.particles.DustParticleOptions(
-            new org.joml.Vector3f(0.035F, 0.012F, 0.02F), 1.15F);
+    private static final ParticleOptions EMBER =
+            new net.minecraft.core.particles.DustParticleOptions(
+                    new org.joml.Vector3f(0.65F, 0.025F, 0.04F), 0.65F);
+    private static final ParticleOptions SOOT =
+            new net.minecraft.core.particles.DustParticleOptions(
+                    new org.joml.Vector3f(0.035F, 0.012F, 0.02F), 1.15F);
     private final java.util.List<Vec3> trail = new java.util.ArrayList<>();
     private final java.util.List<Vec3> trailView = java.util.Collections.unmodifiableList(trail);
 
-    public java.util.List<Vec3> trailPositions() { return trailView; }
+    public java.util.List<Vec3> trailPositions() {
+        return trailView;
+    }
+
     public static final double SPEED = 0.55D;
     public static final double TURN_STRENGTH = 0.12D;
     public static final int LIFE_TICKS = 60;
@@ -60,16 +65,17 @@ public final class EleineMagicOrbEntity extends AbstractHurtingProjectile {
         if (level().isClientSide()) {
             trail.add(0, position());
             if (trail.size() > 10) trail.remove(trail.size() - 1);
-            level().addParticle(EMBER,
-                    getX(), getY(), getZ(), 0, 0, 0);
+            level().addParticle(EMBER, getX(), getY(), getZ(), 0, 0, 0);
         }
         if (!level().isClientSide()) {
             if (tickCount >= LIFE_TICKS) {
                 discard();
                 return;
             }
-            if (targetId != null && level() instanceof ServerLevel serverLevel
-                    && serverLevel.getEntity(targetId) instanceof LivingEntity target && target.isAlive()) {
+            if (targetId != null
+                    && level() instanceof ServerLevel serverLevel
+                    && serverLevel.getEntity(targetId) instanceof LivingEntity target
+                    && target.isAlive()) {
                 Vec3 desired = target.getEyePosition().subtract(position());
                 Vec3 current = getDeltaMovement();
                 if (desired.lengthSqr() > 1.0E-6D && current.lengthSqr() > 1.0E-6D) {
@@ -85,22 +91,29 @@ public final class EleineMagicOrbEntity extends AbstractHurtingProjectile {
 
     @Override
     protected boolean canHitEntity(Entity entity) {
-        if (!super.canHitEntity(entity) || !(getOwner() instanceof Player owner)
-                || !(entity instanceof LivingEntity target) || target == owner
-                || !target.isAlive() || !target.isAttackable() || owner.isAlliedTo(target)) {
+        if (!super.canHitEntity(entity)
+                || !(getOwner() instanceof Player owner)
+                || !(entity instanceof LivingEntity target)
+                || target == owner
+                || !target.isAlive()
+                || !target.isAttackable()
+                || owner.isAlliedTo(target)) {
             return false;
         }
         if (target instanceof Player otherPlayer && !owner.canHarmPlayer(otherPlayer)) {
             return false;
         }
-        return !(target instanceof OwnableEntity ownable && owner.getUUID().equals(ownable.getOwnerUUID()));
+        return !(target instanceof OwnableEntity ownable
+                && owner.getUUID().equals(ownable.getOwnerUUID()));
     }
 
     @Override
     protected void onHitEntity(EntityHitResult hit) {
         super.onHitEntity(hit);
-        if (!level().isClientSide() && getOwner() instanceof Player owner
-                && hit.getEntity() instanceof LivingEntity target && damage > 0.0F) {
+        if (!level().isClientSide()
+                && getOwner() instanceof Player owner
+                && hit.getEntity() instanceof LivingEntity target
+                && damage > 0.0F) {
             target.hurt(ModDamageTypes.eleineMagicOrb(level(), this, owner), damage);
         }
         discard();

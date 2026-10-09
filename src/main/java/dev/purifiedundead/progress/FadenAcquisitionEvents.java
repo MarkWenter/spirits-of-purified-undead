@@ -26,8 +26,10 @@ public final class FadenAcquisitionEvents {
             return;
         }
         UUID ownerId = data.getUUID("ConversionPlayer");
-        ServerPlayer owner = zombie.getServer() == null
-                ? null : zombie.getServer().getPlayerList().getPlayer(ownerId);
+        ServerPlayer owner =
+                zombie.getServer() == null
+                        ? null
+                        : zombie.getServer().getPlayerList().getPlayer(ownerId);
         if (owner != null) {
             WarriorRewardService.grantFaden(owner);
         } else if (zombie.getServer() != null) {

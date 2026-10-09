@@ -13,14 +13,20 @@ public final class GuardianAcquisitionEvents {
     @SubscribeEvent
     public void onPlayerTick(TickEvent.PlayerTickEvent event) {
         if (!PurifiedUndeadConfig.get(PurifiedUndeadConfig.VALUES.guardianAcquisitionEnabled)
-                || event.phase != TickEvent.Phase.END || event.player.level().isClientSide()
-                || event.player.tickCount % 5 != 0 || !(event.player instanceof ServerPlayer player)
-                || !ContractProgressService.hasContract(player) || !player.hasEffect(MobEffects.SLOW_FALLING)) {
+                || event.phase != TickEvent.Phase.END
+                || event.player.level().isClientSide()
+                || event.player.tickCount % 5 != 0
+                || !(event.player instanceof ServerPlayer player)
+                || !ContractProgressService.hasContract(player)
+                || !player.hasEffect(MobEffects.SLOW_FALLING)) {
             return;
         }
-        ItemStack ornament = player.getMainHandItem().is(ModItems.FORMER_ORNAMENT.get())
-                ? player.getMainHandItem() : player.getOffhandItem();
-        if (!ornament.is(ModItems.FORMER_ORNAMENT.get()) || !WarriorRewardService.grantGuardians(player)) {
+        ItemStack ornament =
+                player.getMainHandItem().is(ModItems.FORMER_ORNAMENT.get())
+                        ? player.getMainHandItem()
+                        : player.getOffhandItem();
+        if (!ornament.is(ModItems.FORMER_ORNAMENT.get())
+                || !WarriorRewardService.grantGuardians(player)) {
             return;
         }
         if (!player.getAbilities().instabuild) {

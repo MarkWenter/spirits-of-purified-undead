@@ -15,7 +15,8 @@ import org.joml.Matrix4f;
 
 /** Initial release: only the independent slash mesh is visible; the knight rig is archived. */
 public final class FerinRenderer extends EntityRenderer<FerinEntity> {
-    private static final ResourceLocation TEXTURE = new ResourceLocation("purified_undead", "textures/entity/ferin_slash_white.png");
+    private static final ResourceLocation TEXTURE =
+            new ResourceLocation("purified_undead", "textures/entity/ferin_slash_white.png");
 
     public FerinRenderer(EntityRendererProvider.Context context) {
         super(context);
@@ -23,8 +24,13 @@ public final class FerinRenderer extends EntityRenderer<FerinEntity> {
     }
 
     @Override
-    public void render(FerinEntity entity, float yaw, float partialTick, PoseStack poses,
-                       MultiBufferSource buffers, int packedLight) {
+    public void render(
+            FerinEntity entity,
+            float yaw,
+            float partialTick,
+            PoseStack poses,
+            MultiBufferSource buffers,
+            int packedLight) {
         double age = entity.level().getGameTime() - entity.getStageStartedAt() + partialTick;
         // Undo the old GeckoLib +180-degree correction to match the captured combat basis.
         double angle = Math.toRadians(entity.getYRot() - 180.0);
@@ -39,20 +45,29 @@ public final class FerinRenderer extends EntityRenderer<FerinEntity> {
         }
     }
 
-    private static void vertex(VertexConsumer out, Matrix4f matrix, FerinSlashMesh.Vertex v,
-                               double cos, double sin) {
-        out.vertex(matrix, (float) (-v.right() * cos - v.forward() * sin), (float) v.up(),
+    private static void vertex(
+            VertexConsumer out, Matrix4f matrix, FerinSlashMesh.Vertex v, double cos, double sin) {
+        out.vertex(
+                        matrix,
+                        (float) (-v.right() * cos - v.forward() * sin),
+                        (float) v.up(),
                         (float) (-v.right() * sin + v.forward() * cos))
-                .color(v.red(), v.green(), v.blue(), v.alpha()).uv(0.5F, 0.5F)
-                .overlayCoords(OverlayTexture.NO_OVERLAY).uv2(15728880)
-                .normal(0, 1, 0).endVertex();
+                .color(v.red(), v.green(), v.blue(), v.alpha())
+                .uv(0.5F, 0.5F)
+                .overlayCoords(OverlayTexture.NO_OVERLAY)
+                .uv2(15728880)
+                .normal(0, 1, 0)
+                .endVertex();
     }
 
     @Override
     public boolean shouldRender(FerinEntity entity, Frustum frustum, double x, double y, double z) {
-        return entity.shouldRender(x, y, z) && frustum.isVisible(entity.getBoundingBox().inflate(12));
+        return entity.shouldRender(x, y, z)
+                && frustum.isVisible(entity.getBoundingBox().inflate(12));
     }
 
     @Override
-    public ResourceLocation getTextureLocation(FerinEntity entity) { return TEXTURE; }
+    public ResourceLocation getTextureLocation(FerinEntity entity) {
+        return TEXTURE;
+    }
 }

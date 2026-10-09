@@ -31,10 +31,10 @@ import java.util.UUID;
 
 /** Abyss Guardian blight, Hoenir regeneration, and owner-scoped Ferin marks. */
 public final class HoenirCombatEvents {
-    private static final Field EFFECT_DURATION = ObfuscationReflectionHelper.findField(
-            MobEffectInstance.class, "f_19503_");
-    private static final Field EFFECT_AMPLIFIER = ObfuscationReflectionHelper.findField(
-            MobEffectInstance.class, "f_19504_");
+    private static final Field EFFECT_DURATION =
+            ObfuscationReflectionHelper.findField(MobEffectInstance.class, "f_19503_");
+    private static final Field EFFECT_AMPLIFIER =
+            ObfuscationReflectionHelper.findField(MobEffectInstance.class, "f_19504_");
     private static final Map<UUID, MarkedTarget> MARKS = new HashMap<>();
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
@@ -47,8 +47,12 @@ public final class HoenirCombatEvents {
             return;
         }
         Equipment equipment = readEquipment(player);
-        HoenirModel.EffectAdjustment adjusted = HoenirModel.adjustNegativeEffect(
-                instance.getAmplifier(), instance.getDuration(), equipment.contract, equipment.hoenir);
+        HoenirModel.EffectAdjustment adjusted =
+                HoenirModel.adjustNegativeEffect(
+                        instance.getAmplifier(),
+                        instance.getDuration(),
+                        equipment.contract,
+                        equipment.hoenir);
         setInt(EFFECT_AMPLIFIER, instance, adjusted.amplifier());
         setInt(EFFECT_DURATION, instance, adjusted.duration());
     }
@@ -56,25 +60,35 @@ public final class HoenirCombatEvents {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onLivingDamage(LivingDamageEvent event) {
         DamageSource source = event.getSource();
-        if (event.getAmount() <= 0.0F || !(source.getEntity() instanceof ServerPlayer owner)
-                || !isPlayerAttack(source, owner) || !readEquipment(owner).reversed()
+        if (event.getAmount() <= 0.0F
+                || !(source.getEntity() instanceof ServerPlayer owner)
+                || !isPlayerAttack(source, owner)
+                || !readEquipment(owner).reversed()
                 || !isLegalTarget(owner, event.getEntity())) {
             return;
         }
-        long expiry = owner.serverLevel().getGameTime()
-                + PurifiedUndeadConfig.get(PurifiedUndeadConfig.VALUES.hoenirMarkDurationTicks);
-        MARKS.compute(event.getEntity().getUUID(), (ignored, existing) -> {
-            MarkedTarget marked = existing != null && existing.dimension.equals(owner.level().dimension())
-                    ? existing : new MarkedTarget(owner.level().dimension());
-            marked.ownerExpiry.put(owner.getUUID(), expiry);
-            return marked;
-        });
+        long expiry =
+                owner.serverLevel().getGameTime()
+                        + PurifiedUndeadConfig.get(
+                                PurifiedUndeadConfig.VALUES.hoenirMarkDurationTicks);
+        MARKS.compute(
+                event.getEntity().getUUID(),
+                (ignored, existing) -> {
+                    MarkedTarget marked =
+                            existing != null && existing.dimension.equals(owner.level().dimension())
+                                    ? existing
+                                    : new MarkedTarget(owner.level().dimension());
+                    marked.ownerExpiry.put(owner.getUUID(), expiry);
+                    return marked;
+                });
     }
 
     @SubscribeEvent
     public void onPlayerTick(TickEvent.PlayerTickEvent event) {
-        if (event.phase != TickEvent.Phase.END || !(event.player instanceof ServerPlayer player)
-                || player.tickCount % 20 != 0 || !readEquipment(player).reversed()) {
+        if (event.phase != TickEvent.Phase.END
+                || !(event.player instanceof ServerPlayer player)
+                || player.tickCount % 20 != 0
+                || !readEquipment(player).reversed()) {
             return;
         }
         player.heal(HoenirModel.regenerationAmount(player.getMaxHealth()));
@@ -93,7 +107,9 @@ public final class HoenirCombatEvents {
             marked.ownerExpiry.values().removeIf(expiry -> expiry < now);
             ServerLevel level = event.getServer().getLevel(marked.dimension);
             Entity found = level == null ? null : level.getEntity(entry.getKey());
-            if (!(found instanceof LivingEntity target) || !target.isAlive() || marked.ownerExpiry.isEmpty()) {
+            if (!(found instanceof LivingEntity target)
+                    || !target.isAlive()
+                    || marked.ownerExpiry.isEmpty()) {
                 iterator.remove();
                 continue;
             }
@@ -101,9 +117,16 @@ public final class HoenirCombatEvents {
                 double yaw = Math.toRadians(target.getYRot());
                 double leftX = -Math.cos(yaw) * 0.32D;
                 double leftZ = -Math.sin(yaw) * 0.32D;
-                level.sendParticles(ModParticles.HOENIR_MARK.get(), target.getX() + leftX,
-                        target.getY() + target.getBbHeight() + 0.18D, target.getZ() + leftZ,
-                        1, 0.0D, 0.0D, 0.0D, 0.0D);
+                level.sendParticles(
+                        ModParticles.HOENIR_MARK.get(),
+                        target.getX() + leftX,
+                        target.getY() + target.getBbHeight() + 0.18D,
+                        target.getZ() + leftZ,
+                        1,
+                        0.0D,
+                        0.0D,
+                        0.0D,
+                        0.0D);
             }
         }
     }
@@ -149,7 +172,8 @@ public final class HoenirCombatEvents {
     }
 
     private static boolean isPlayerAttack(DamageSource source, ServerPlayer player) {
-        return source.getEntity() == player && source.getDirectEntity() != null
+        return source.getEntity() == player
+                && source.getDirectEntity() != null
                 && !source.is(ModDamageTypes.FERIN_ASSIST)
                 && !source.is(ModDamageTypes.ULV_FOLLOW_UP)
                 && !source.is(ModDamageTypes.ULV_BLIGHT)
@@ -157,19 +181,27 @@ public final class HoenirCombatEvents {
     }
 
     private static boolean isLegalTarget(ServerPlayer owner, LivingEntity target) {
-        if (target == owner || !target.isAlive() || !target.isAttackable() || owner.isAlliedTo(target)) {
+        if (target == owner
+                || !target.isAlive()
+                || !target.isAttackable()
+                || owner.isAlliedTo(target)) {
             return false;
         }
         if (target instanceof Player other && !owner.canHarmPlayer(other)) {
             return false;
         }
-        return !(target instanceof OwnableEntity ownable && owner.getUUID().equals(ownable.getOwnerUUID()));
+        return !(target instanceof OwnableEntity ownable
+                && owner.getUUID().equals(ownable.getOwnerUUID()));
     }
 
     private static Equipment readEquipment(LivingEntity entity) {
-        return CuriosApi.getCuriosInventory(entity).map(handler -> new Equipment(
-                handler.isEquipped(ModItems.ANCIENT_CONTRACT.get()),
-                handler.isEquipped(ModItems.HOENIR_WARRIOR.get()))).orElse(Equipment.NONE);
+        return CuriosApi.getCuriosInventory(entity)
+                .map(
+                        handler ->
+                                new Equipment(
+                                        handler.isEquipped(ModItems.ANCIENT_CONTRACT.get()),
+                                        handler.isEquipped(ModItems.HOENIR_WARRIOR.get())))
+                .orElse(Equipment.NONE);
     }
 
     private record Equipment(boolean contract, boolean hoenir) {

@@ -5,7 +5,14 @@ package dev.purifiedundead.combat;
  * callers must only submit verified player direct-melee damage events.
  */
 public final class FerinComboState {
-    public enum Result { STARTED, ADVANCED, LOCKED, WINDOW_EXPIRED, MAX_STAGE, COOLDOWN }
+    public enum Result {
+        STARTED,
+        ADVANCED,
+        LOCKED,
+        WINDOW_EXPIRED,
+        MAX_STAGE,
+        COOLDOWN
+    }
 
     private int stage;
     private long stageStartedAt;
@@ -86,11 +93,25 @@ public final class FerinComboState {
         }
     }
 
-    public int stage() { return stage; }
-    public long stageStartedAt() { return stageStartedAt; }
-    public long cooldownUntil() { return cooldownUntil; }
-    public boolean exiting() { return exiting; }
-    public boolean ready(long gameTick) { return stage == 0 && !exiting && gameTick >= cooldownUntil; }
+    public int stage() {
+        return stage;
+    }
+
+    public long stageStartedAt() {
+        return stageStartedAt;
+    }
+
+    public long cooldownUntil() {
+        return cooldownUntil;
+    }
+
+    public boolean exiting() {
+        return exiting;
+    }
+
+    public boolean ready(long gameTick) {
+        return stage == 0 && !exiting && gameTick >= cooldownUntil;
+    }
 
     public Snapshot snapshot() {
         return new Snapshot(stage, stageStartedAt, cooldownUntil, exitUntil, exiting);
@@ -109,5 +130,6 @@ public final class FerinComboState {
         return state;
     }
 
-    public record Snapshot(int stage, long stageStartedAt, long cooldownUntil, long exitUntil, boolean exiting) { }
+    public record Snapshot(
+            int stage, long stageStartedAt, long cooldownUntil, long exitUntil, boolean exiting) {}
 }

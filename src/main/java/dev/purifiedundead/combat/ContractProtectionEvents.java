@@ -12,22 +12,43 @@ public final class ContractProtectionEvents {
     public void onLivingDamage(LivingDamageEvent event) {
         float amount = event.getAmount();
         float absorption = 0.0F;
-        if (event.getEntity() instanceof ServerPlayer player && ContractProgressService.hasContract(player)
+        if (event.getEntity() instanceof ServerPlayer player
+                && ContractProgressService.hasContract(player)
                 && !event.getSource().is(ModDamageTypes.ULV_BLIGHT)) {
             amount = amount * ContractProgressService.incomingDamageMultiplier(player);
         }
         var source = event.getSource();
-        if (source.getEntity() instanceof ServerPlayer attacker && source.getDirectEntity() == attacker
+        if (source.getEntity() instanceof ServerPlayer attacker
+                && source.getDirectEntity() == attacker
                 && source.is(net.minecraft.world.damagesource.DamageTypes.PLAYER_ATTACK)) {
-            boolean cursed = top.theillusivec4.curios.api.CuriosApi.getCuriosInventory(attacker).map(h ->
-                    h.isEquipped(dev.purifiedundead.content.ModItems.ANCIENT_CONTRACT.get())
-                    && !h.isEquipped(dev.purifiedundead.content.ModItems.JULIUS_WARRIOR.get())).orElse(false);
-            if (cursed) amount = FinalDamageRules.subtractFromHealth(amount, absorption,
-                    dev.purifiedundead.config.PurifiedUndeadConfig.get(
-                            dev.purifiedundead.config.PurifiedUndeadConfig.VALUES.juliusMeleeDamagePenalty).floatValue());
+            boolean cursed =
+                    top.theillusivec4.curios.api.CuriosApi.getCuriosInventory(attacker)
+                            .map(
+                                    h ->
+                                            h.isEquipped(
+                                                            dev.purifiedundead.content.ModItems
+                                                                    .ANCIENT_CONTRACT
+                                                                    .get())
+                                                    && !h.isEquipped(
+                                                            dev.purifiedundead.content.ModItems
+                                                                    .JULIUS_WARRIOR
+                                                                    .get()))
+                            .orElse(false);
+            if (cursed)
+                amount =
+                        FinalDamageRules.subtractFromHealth(
+                                amount,
+                                absorption,
+                                dev.purifiedundead.config.PurifiedUndeadConfig.get(
+                                                dev.purifiedundead.config.PurifiedUndeadConfig
+                                                        .VALUES
+                                                        .juliusMeleeDamagePenalty)
+                                        .floatValue());
         }
         if (event.getEntity() instanceof ServerPlayer player) {
-            amount += UlvCombatEvents.incomingBlight(player, source, Math.max(0.0F, amount - absorption));
+            amount +=
+                    UlvCombatEvents.incomingBlight(
+                            player, source, Math.max(0.0F, amount - absorption));
         }
         event.setAmount(amount);
     }

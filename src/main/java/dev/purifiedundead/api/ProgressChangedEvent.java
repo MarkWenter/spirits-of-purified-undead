@@ -9,10 +9,23 @@ import net.minecraftforge.eventbus.api.Event;
 public final class ProgressChangedEvent extends Event {
     private final ServerPlayer player;
     private final ProgressSnapshot before, after;
-    public ProgressChangedEvent(ServerPlayer player, ProgressSnapshot before, ProgressSnapshot after) {
-        this.player=player; this.before=before; this.after=after;
+
+    public ProgressChangedEvent(
+            ServerPlayer player, ProgressSnapshot before, ProgressSnapshot after) {
+        this.player = player;
+        this.before = before;
+        this.after = after;
     }
-    public ServerPlayer player() { return player; }
-    public ProgressSnapshot before() { return before; }
-    public ProgressSnapshot after() { return after; }
+
+    public ServerPlayer player() {
+        return player;
+    }
+
+    public ProgressSnapshot before() {
+        return before;
+    }
+
+    public ProgressSnapshot after() {
+        return after;
+    }
 }

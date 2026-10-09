@@ -7,10 +7,11 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 
 public final class ModEntityTypeTags {
-    public static final TagKey<EntityType<?>> BLIGHT_FRAGMENT_SOURCES = TagKey.create(
-            Registries.ENTITY_TYPE,
-            ResourceLocation.fromNamespaceAndPath(PurifiedUndead.MOD_ID, "blight_fragment_sources"));
+    public static final TagKey<EntityType<?>> BLIGHT_FRAGMENT_SOURCES =
+            TagKey.create(
+                    Registries.ENTITY_TYPE,
+                    ResourceLocation.fromNamespaceAndPath(
+                            PurifiedUndead.MOD_ID, "blight_fragment_sources"));
 
-    private ModEntityTypeTags() {
-    }
+    private ModEntityTypeTags() {}
 }

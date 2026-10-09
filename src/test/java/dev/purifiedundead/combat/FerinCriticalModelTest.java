@@ -26,7 +26,10 @@ class FerinCriticalModelTest {
 
     @Test
     void rejectsInvalidAttributeValues() {
-        assertThrows(IllegalArgumentException.class, () -> FerinCriticalModel.roll(-0.1, 1.5, () -> 0.0));
-        assertThrows(IllegalArgumentException.class, () -> FerinCriticalModel.roll(0.1, 0.9, () -> 0.0));
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> FerinCriticalModel.roll(-0.1, 1.5, () -> 0.0));
+        assertThrows(
+                IllegalArgumentException.class, () -> FerinCriticalModel.roll(0.1, 0.9, () -> 0.0));
     }
 }

@@ -32,7 +32,8 @@ import java.util.UUID;
 
 /** Dark Witch blight, water behavior, and server-owned magic-orb spawning. */
 public final class EleineCombatEvents {
-    private static final UUID SWIM_SPEED_ID = UUID.fromString("7592cb17-937b-4acd-9ac1-d57d17583f28");
+    private static final UUID SWIM_SPEED_ID =
+            UUID.fromString("7592cb17-937b-4acd-9ac1-d57d17583f28");
 
     private final Map<CombatHitKey, PendingMelee> pendingHits = new HashMap<>();
     private final Map<UUID, FerinMeleeTrigger.AttackTickGate> orbAttackGates = new HashMap<>();
@@ -40,19 +41,22 @@ public final class EleineCombatEvents {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onMagicHurt(LivingHurtEvent event) {
         if (!event.getSource().is(ModDamageTypeTags.MAGIC)
-                || !Float.isFinite(event.getAmount()) || event.getAmount() < 0.0F) {
+                || !Float.isFinite(event.getAmount())
+                || event.getAmount() < 0.0F) {
             return;
         }
         float amount = event.getAmount();
         if (event.getEntity() instanceof ServerPlayer target) {
             Equipment targetEquipment = readEquipment(target);
-            amount = EleineModel.incomingMagicDamage(amount,
-                    targetEquipment.contract, targetEquipment.eleine);
+            amount =
+                    EleineModel.incomingMagicDamage(
+                            amount, targetEquipment.contract, targetEquipment.eleine);
         }
         if (event.getSource().getEntity() instanceof ServerPlayer attacker) {
             Equipment attackerEquipment = readEquipment(attacker);
-            amount = EleineModel.outgoingMagicDamage(amount,
-                    attackerEquipment.contract, attackerEquipment.eleine);
+            amount =
+                    EleineModel.outgoingMagicDamage(
+                            amount, attackerEquipment.contract, attackerEquipment.eleine);
         }
         event.setAmount(amount);
     }
@@ -60,11 +64,18 @@ public final class EleineCombatEvents {
     @SubscribeEvent(priority = EventPriority.LOW)
     public void rememberMelee(LivingHurtEvent event) {
         DamageSource source = event.getSource();
-        if (source.getEntity() instanceof ServerPlayer player && isDirectPlayerMelee(source, player)
-                && readEquipment(player).reversed() && isLegalTarget(player, event.getEntity())
-                && Float.isFinite(event.getAmount()) && event.getAmount() > 0.0F) {
-            pendingHits.put(new CombatHitKey(event.getEntity().getUUID(), player.getUUID()), new PendingMelee(
-                    player.getUUID(), player.serverLevel().getGameTime(), event.getAmount()));
+        if (source.getEntity() instanceof ServerPlayer player
+                && isDirectPlayerMelee(source, player)
+                && readEquipment(player).reversed()
+                && isLegalTarget(player, event.getEntity())
+                && Float.isFinite(event.getAmount())
+                && event.getAmount() > 0.0F) {
+            pendingHits.put(
+                    new CombatHitKey(event.getEntity().getUUID(), player.getUUID()),
+                    new PendingMelee(
+                            player.getUUID(),
+                            player.serverLevel().getGameTime(),
+                            event.getAmount()));
         }
     }
 
@@ -74,18 +85,34 @@ public final class EleineCombatEvents {
         if (!(source.getEntity() instanceof ServerPlayer player)) {
             return;
         }
-        PendingMelee pending = pendingHits.remove(new CombatHitKey(event.getEntity().getUUID(), player.getUUID()));
-        if (pending == null || event.getAmount() <= 0.0F
-                || !pending.playerId.equals(player.getUUID()) || !isDirectPlayerMelee(source, player)
-                || !readEquipment(player).reversed() || !isLegalTarget(player, event.getEntity())) {
+        PendingMelee pending =
+                pendingHits.remove(new CombatHitKey(event.getEntity().getUUID(), player.getUUID()));
+        if (pending == null
+                || event.getAmount() <= 0.0F
+                || !pending.playerId.equals(player.getUUID())
+                || !isDirectPlayerMelee(source, player)
+                || !readEquipment(player).reversed()
+                || !isLegalTarget(player, event.getEntity())) {
             return;
         }
-        FerinMeleeTrigger.AttackTickGate gate = orbAttackGates.computeIfAbsent(
-                player.getUUID(), ignored -> new FerinMeleeTrigger.AttackTickGate());
-        if (!gate.accept(pending.gameTick) || !(dev.purifiedundead.slate.MemoryEffects.active(player,"eleine") ? player.getRandom().nextDouble()<dev.purifiedundead.slate.SlateConfig.get(dev.purifiedundead.slate.SlateConfig.orbChance) : EleineModel.rollOrb(player.getRandom().nextFloat()))) {
+        FerinMeleeTrigger.AttackTickGate gate =
+                orbAttackGates.computeIfAbsent(
+                        player.getUUID(), ignored -> new FerinMeleeTrigger.AttackTickGate());
+        if (!gate.accept(pending.gameTick)
+                || !(dev.purifiedundead.slate.MemoryEffects.active(player, "eleine")
+                        ? player.getRandom().nextDouble()
+                                < dev.purifiedundead.slate.SlateConfig.get(
+                                        dev.purifiedundead.slate.SlateConfig.orbChance)
+                        : EleineModel.rollOrb(player.getRandom().nextFloat()))) {
             return;
         }
-        float damage = dev.purifiedundead.slate.MemoryEffects.active(player,"eleine") ? (float)(pending.preDefenseDamage*dev.purifiedundead.slate.SlateConfig.get(dev.purifiedundead.slate.SlateConfig.orbDamage)) : EleineModel.orbDamage(pending.preDefenseDamage);
+        float damage =
+                dev.purifiedundead.slate.MemoryEffects.active(player, "eleine")
+                        ? (float)
+                                (pending.preDefenseDamage
+                                        * dev.purifiedundead.slate.SlateConfig.get(
+                                                dev.purifiedundead.slate.SlateConfig.orbDamage))
+                        : EleineModel.orbDamage(pending.preDefenseDamage);
         EleineMagicOrbEntity orb = ModEntities.ELEINE_MAGIC_ORB.get().create(player.serverLevel());
         if (orb != null && damage > 0.0F) {
             orb.configure(player, event.getEntity(), damage);
@@ -95,7 +122,8 @@ public final class EleineCombatEvents {
 
     @SubscribeEvent
     public void onPlayerTick(TickEvent.PlayerTickEvent event) {
-        if (event.phase != TickEvent.Phase.END || event.player.level().isClientSide()
+        if (event.phase != TickEvent.Phase.END
+                || event.player.level().isClientSide()
                 || !(event.player instanceof ServerPlayer player)) {
             return;
         }
@@ -103,10 +131,18 @@ public final class EleineCombatEvents {
         updateSwimSpeed(player, equipment);
         if (equipment.reversed() && player.isInWater()) {
             if (player.tickCount % 20 == 0) {
-                player.addEffect(new MobEffectInstance(MobEffects.WATER_BREATHING,
-                        PurifiedUndeadConfig.get(PurifiedUndeadConfig.VALUES.eleineWaterBreathingTicks), 0, true, false, true));
+                player.addEffect(
+                        new MobEffectInstance(
+                                MobEffects.WATER_BREATHING,
+                                PurifiedUndeadConfig.get(
+                                        PurifiedUndeadConfig.VALUES.eleineWaterBreathingTicks),
+                                0,
+                                true,
+                                false,
+                                true));
             }
-        } else if (equipment.unreversed() && player.isEyeInFluid(FluidTags.WATER)
+        } else if (equipment.unreversed()
+                && player.isEyeInFluid(FluidTags.WATER)
                 && !player.getAbilities().invulnerable
                 && !player.hasEffect(MobEffects.WATER_BREATHING)
                 && !player.hasEffect(MobEffects.CONDUIT_POWER)) {
@@ -128,8 +164,12 @@ public final class EleineCombatEvents {
     @SubscribeEvent
     public void onLogout(PlayerEvent.PlayerLoggedOutEvent event) {
         UUID playerId = event.getEntity().getUUID();
-        pendingHits.entrySet().removeIf(entry -> entry.getKey().attackerId().equals(playerId)
-                || entry.getKey().targetId().equals(playerId));
+        pendingHits
+                .entrySet()
+                .removeIf(
+                        entry ->
+                                entry.getKey().attackerId().equals(playerId)
+                                        || entry.getKey().targetId().equals(playerId));
         orbAttackGates.remove(playerId);
     }
 
@@ -144,10 +184,14 @@ public final class EleineCombatEvents {
         if (swimSpeed == null) {
             return;
         }
-        double amount = player.isInWater()
-                ? EleineModel.swimSpeedMultiplier(equipment.contract, equipment.eleine) - 1.0D : 0.0D;
+        double amount =
+                player.isInWater()
+                        ? EleineModel.swimSpeedMultiplier(equipment.contract, equipment.eleine)
+                                - 1.0D
+                        : 0.0D;
         AttributeModifier existing = swimSpeed.getModifier(SWIM_SPEED_ID);
-        if (existing != null && existing.getAmount() == amount
+        if (existing != null
+                && existing.getAmount() == amount
                 && existing.getOperation() == AttributeModifier.Operation.MULTIPLY_TOTAL) {
             return;
         }
@@ -155,30 +199,43 @@ public final class EleineCombatEvents {
             swimSpeed.removeModifier(SWIM_SPEED_ID);
         }
         if (amount != 0.0D) {
-            swimSpeed.addTransientModifier(new AttributeModifier(SWIM_SPEED_ID,
-                    "Dark Witch swim speed", amount, AttributeModifier.Operation.MULTIPLY_TOTAL));
+            swimSpeed.addTransientModifier(
+                    new AttributeModifier(
+                            SWIM_SPEED_ID,
+                            "Dark Witch swim speed",
+                            amount,
+                            AttributeModifier.Operation.MULTIPLY_TOTAL));
         }
     }
 
     private static Equipment readEquipment(LivingEntity entity) {
-        return CuriosApi.getCuriosInventory(entity).map(handler -> new Equipment(
-                handler.isEquipped(ModItems.ANCIENT_CONTRACT.get()),
-                handler.isEquipped(ModItems.ELEINE_WARRIOR.get()))).orElse(Equipment.NONE);
+        return CuriosApi.getCuriosInventory(entity)
+                .map(
+                        handler ->
+                                new Equipment(
+                                        handler.isEquipped(ModItems.ANCIENT_CONTRACT.get()),
+                                        handler.isEquipped(ModItems.ELEINE_WARRIOR.get())))
+                .orElse(Equipment.NONE);
     }
 
     private static boolean isDirectPlayerMelee(DamageSource source, Player player) {
-        return source.getEntity() == player && source.getDirectEntity() == player
+        return source.getEntity() == player
+                && source.getDirectEntity() == player
                 && source.is(DamageTypes.PLAYER_ATTACK);
     }
 
     private static boolean isLegalTarget(ServerPlayer owner, LivingEntity target) {
-        if (target == owner || !target.isAlive() || !target.isAttackable() || owner.isAlliedTo(target)) {
+        if (target == owner
+                || !target.isAlive()
+                || !target.isAttackable()
+                || owner.isAlliedTo(target)) {
             return false;
         }
         if (target instanceof Player otherPlayer && !owner.canHarmPlayer(otherPlayer)) {
             return false;
         }
-        return !(target instanceof OwnableEntity ownable && owner.getUUID().equals(ownable.getOwnerUUID()));
+        return !(target instanceof OwnableEntity ownable
+                && owner.getUUID().equals(ownable.getOwnerUUID()));
     }
 
     private record Equipment(boolean contract, boolean eleine) {
@@ -193,5 +250,5 @@ public final class EleineCombatEvents {
         }
     }
 
-    private record PendingMelee(UUID playerId, long gameTick, float preDefenseDamage) { }
+    private record PendingMelee(UUID playerId, long gameTick, float preDefenseDamage) {}
 }

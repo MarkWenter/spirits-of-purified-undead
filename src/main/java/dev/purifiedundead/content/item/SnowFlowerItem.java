@@ -16,8 +16,10 @@ public final class SnowFlowerItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> lines, TooltipFlag flag) {
-        lines.add(Component.translatable("item.purified_undead.snow_flower.summary")
-                .withStyle(ChatFormatting.GRAY));
+    public void appendHoverText(
+            ItemStack stack, @Nullable Level level, List<Component> lines, TooltipFlag flag) {
+        lines.add(
+                Component.translatable("item.purified_undead.snow_flower.summary")
+                        .withStyle(ChatFormatting.GRAY));
     }
 }

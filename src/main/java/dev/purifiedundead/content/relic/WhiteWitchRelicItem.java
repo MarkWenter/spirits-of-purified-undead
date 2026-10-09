@@ -10,7 +10,8 @@ import top.theillusivec4.curios.api.type.capability.ICurio;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
 /** Shared slot restrictions and death retention for White Witch Relics. */
-public abstract class WhiteWitchRelicItem extends Item implements ICurioItem, WhiteWitchRelicEffect {
+public abstract class WhiteWitchRelicItem extends Item
+        implements ICurioItem, WhiteWitchRelicEffect {
     protected WhiteWitchRelicItem(Properties properties) {
         super(properties.stacksTo(1).fireResistant());
     }
@@ -26,16 +27,28 @@ public abstract class WhiteWitchRelicItem extends Item implements ICurioItem, Wh
             return true;
         }
         return CuriosApi.getCuriosInventory(slotContext.entity())
-                .map(handler -> handler.findCurios(stack.getItem()).stream()
-                        .allMatch(found -> found.slotContext().identifier().equals(slotContext.identifier())
-                                && found.slotContext().index() == slotContext.index()))
+                .map(
+                        handler ->
+                                handler.findCurios(stack.getItem()).stream()
+                                        .allMatch(
+                                                found ->
+                                                        found.slotContext()
+                                                                        .identifier()
+                                                                        .equals(
+                                                                                slotContext
+                                                                                        .identifier())
+                                                                && found.slotContext().index()
+                                                                        == slotContext.index()))
                 .orElse(false);
     }
 
     @Override
-    public ICurio.DropRule getDropRule(SlotContext slotContext,
-                                       net.minecraft.world.damagesource.DamageSource source,
-                                       int lootingLevel, boolean recentlyHit, ItemStack stack) {
+    public ICurio.DropRule getDropRule(
+            SlotContext slotContext,
+            net.minecraft.world.damagesource.DamageSource source,
+            int lootingLevel,
+            boolean recentlyHit,
+            ItemStack stack) {
         return ICurio.DropRule.ALWAYS_KEEP;
     }
 }

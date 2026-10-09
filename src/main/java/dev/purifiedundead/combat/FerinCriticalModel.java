@@ -4,10 +4,13 @@ import java.util.function.DoubleSupplier;
 
 /** One critical roll per stage, shared by every target hit by that stage. */
 public final class FerinCriticalModel {
-    private FerinCriticalModel() { }
+    private FerinCriticalModel() {}
 
     public static Result roll(double chance, double criticalDamage, DoubleSupplier random) {
-        if (!Double.isFinite(chance) || !Double.isFinite(criticalDamage) || chance < 0.0 || criticalDamage < 1.0) {
+        if (!Double.isFinite(chance)
+                || !Double.isFinite(criticalDamage)
+                || chance < 0.0
+                || criticalDamage < 1.0) {
             throw new IllegalArgumentException("Invalid Ferin critical attributes");
         }
         float multiplier = 1.0F;
@@ -21,5 +24,5 @@ public final class FerinCriticalModel {
         return new Result(multiplier, multiplier > 1.0F);
     }
 
-    public record Result(float multiplier, boolean critical) { }
+    public record Result(float multiplier, boolean critical) {}
 }

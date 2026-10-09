@@ -8,7 +8,13 @@ import net.minecraftforge.network.NetworkEvent;
 import java.util.function.Supplier;
 
 public record GuardianActionPacket(Action action) {
-    public enum Action { DOUBLE_JUMP, AIR_DASH, GRIP_HELD, GRIP_RELEASED, WALL_JUMP }
+    public enum Action {
+        DOUBLE_JUMP,
+        AIR_DASH,
+        GRIP_HELD,
+        GRIP_RELEASED,
+        WALL_JUMP
+    }
 
     static void encode(GuardianActionPacket packet, FriendlyByteBuf buffer) {
         buffer.writeEnum(packet.action);
@@ -18,7 +24,8 @@ public record GuardianActionPacket(Action action) {
         return new GuardianActionPacket(buffer.readEnum(Action.class));
     }
 
-    static void handle(GuardianActionPacket packet, Supplier<NetworkEvent.Context> contextSupplier) {
+    static void handle(
+            GuardianActionPacket packet, Supplier<NetworkEvent.Context> contextSupplier) {
         NetworkEvent.Context context = contextSupplier.get();
         ServerPlayer sender = context.getSender();
         if (sender != null) {

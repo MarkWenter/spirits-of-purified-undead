@@ -13,7 +13,8 @@ class FadenModelTest {
         assertEquals(0, FadenModel.effectiveEnchantmentLevel(0, false));
         assertEquals(1, FadenModel.effectiveEnchantmentLevel(0, true));
         assertEquals(4, FadenModel.effectiveEnchantmentLevel(3, true));
-        assertThrows(IllegalArgumentException.class,
+        assertThrows(
+                IllegalArgumentException.class,
                 () -> FadenModel.effectiveEnchantmentLevel(-1, true));
     }
 

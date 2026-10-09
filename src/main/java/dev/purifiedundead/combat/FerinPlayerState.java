@@ -11,8 +11,10 @@ import java.util.UUID;
 public final class FerinPlayerState {
     private static final int VERSION = 1;
     private static final int MAX_SAVED_TARGETS = 256;
+
     /** Player-centered slash origin shared by rendering and authoritative collision. */
     static final double COMPANION_LEFT_OFFSET = 0.0D;
+
     static final double COMPANION_FORWARD_OFFSET = 0.0D;
 
     final FerinContinuationBuffer continuation = new FerinContinuationBuffer();
@@ -29,24 +31,39 @@ public final class FerinPlayerState {
     FerinSweptBlade.WorldPose previousBlade;
     final HashSet<UUID> hitTargets = new HashSet<>();
 
-    void captureStage(Vec3 playerPosition, float yawDegrees, float preDefenseDamage, float criticalMultiplier) {
+    void captureStage(
+            Vec3 playerPosition,
+            float yawDegrees,
+            float preDefenseDamage,
+            float criticalMultiplier) {
         float radians = yawDegrees * ((float) Math.PI / 180.0F);
-        captureStageWithForward(playerPosition, new Vec3(-Math.sin(radians), 0.0, Math.cos(radians)),
-                preDefenseDamage, criticalMultiplier);
+        captureStageWithForward(
+                playerPosition,
+                new Vec3(-Math.sin(radians), 0.0, Math.cos(radians)),
+                preDefenseDamage,
+                criticalMultiplier);
     }
 
-    void captureStageTowards(Vec3 playerPosition, Vec3 targetPosition, float fallbackYawDegrees,
-                             float preDefenseDamage, float criticalMultiplier) {
+    void captureStageTowards(
+            Vec3 playerPosition,
+            Vec3 targetPosition,
+            float fallbackYawDegrees,
+            float preDefenseDamage,
+            float criticalMultiplier) {
         Vec3 towardTarget = targetPosition.subtract(playerPosition).multiply(1.0D, 0.0D, 1.0D);
         if (towardTarget.lengthSqr() < 1.0E-4D) {
             captureStage(playerPosition, fallbackYawDegrees, preDefenseDamage, criticalMultiplier);
             return;
         }
-        captureStageWithForward(playerPosition, towardTarget.normalize(), preDefenseDamage, criticalMultiplier);
+        captureStageWithForward(
+                playerPosition, towardTarget.normalize(), preDefenseDamage, criticalMultiplier);
     }
 
-    private void captureStageWithForward(Vec3 playerPosition, Vec3 stageForward,
-                                         float preDefenseDamage, float criticalMultiplier) {
+    private void captureStageWithForward(
+            Vec3 playerPosition,
+            Vec3 stageForward,
+            float preDefenseDamage,
+            float criticalMultiplier) {
         forward = stageForward;
         right = new Vec3(-forward.z, 0.0, forward.x);
         origin = playerPosition;
@@ -58,7 +75,8 @@ public final class FerinPlayerState {
     }
 
     FerinSweptBlade.WorldPose toWorld(FerinBladeTrajectory.BladePose pose) {
-        return new FerinSweptBlade.WorldPose(pointToWorld(pose.root()), pointToWorld(pose.tip()), pose.thickness());
+        return new FerinSweptBlade.WorldPose(
+                pointToWorld(pose.root()), pointToWorld(pose.tip()), pose.thickness());
     }
 
     Vec3 companionAnchor() {
@@ -123,17 +141,25 @@ public final class FerinPlayerState {
         }
         try {
             var state = new FerinPlayerState();
-            state.combo = FerinComboState.restore(new FerinComboState.Snapshot(tag.getInt("stage"),
-                    tag.getLong("stage_started_at"), tag.getLong("cooldown_until"),
-                    tag.getLong("exit_until"), tag.getBoolean("exiting")));
-            state.attackTickGate = new FerinMeleeTrigger.AttackTickGate(tag.getLong("last_attack_tick"));
+            state.combo =
+                    FerinComboState.restore(
+                            new FerinComboState.Snapshot(
+                                    tag.getInt("stage"),
+                                    tag.getLong("stage_started_at"),
+                                    tag.getLong("cooldown_until"),
+                                    tag.getLong("exit_until"),
+                                    tag.getBoolean("exiting")));
+            state.attackTickGate =
+                    new FerinMeleeTrigger.AttackTickGate(tag.getLong("last_attack_tick"));
             state.origin = getFiniteVec(tag, "origin", Vec3.ZERO);
             state.forward = getDirection(tag, "forward", new Vec3(0.0, 0.0, 1.0));
             state.right = getDirection(tag, "right", new Vec3(-1.0, 0.0, 0.0));
             float damage = tag.getFloat("damage_snapshot");
             float critical = tag.getFloat("critical_multiplier");
-            state.triggerPreDefenseDamage = Float.isFinite(damage) && damage >= 0.0F ? damage : 0.0F;
-            state.stageCriticalMultiplier = Float.isFinite(critical) && critical >= 1.0F ? critical : 1.0F;
+            state.triggerPreDefenseDamage =
+                    Float.isFinite(damage) && damage >= 0.0F ? damage : 0.0F;
+            state.stageCriticalMultiplier =
+                    Float.isFinite(critical) && critical >= 1.0F ? critical : 1.0F;
             long[] targets = tag.getLongArray("hit_targets");
             int limit = Math.min(targets.length - targets.length % 2, MAX_SAVED_TARGETS * 2);
             for (int index = 0; index < limit; index += 2) {
@@ -148,7 +174,8 @@ public final class FerinPlayerState {
     }
 
     private Vec3 pointToWorld(FerinBladeTrajectory.Point point) {
-        return companionAnchor().add(right.scale(point.right()))
+        return companionAnchor()
+                .add(right.scale(point.right()))
                 .add(0.0, point.up(), 0.0)
                 .add(forward.scale(point.forward()));
     }
@@ -169,7 +196,9 @@ public final class FerinPlayerState {
         double x = value.getDouble("x");
         double y = value.getDouble("y");
         double z = value.getDouble("z");
-        return Double.isFinite(x) && Double.isFinite(y) && Double.isFinite(z) ? new Vec3(x, y, z) : fallback;
+        return Double.isFinite(x) && Double.isFinite(y) && Double.isFinite(z)
+                ? new Vec3(x, y, z)
+                : fallback;
     }
 
     private static Vec3 getDirection(CompoundTag tag, String name, Vec3 fallback) {

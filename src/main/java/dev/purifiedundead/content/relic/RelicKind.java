@@ -11,5 +11,8 @@ public enum RelicKind {
     WHITE_PRIESTESS_EARRINGS("white_priestess_earrings");
 
     public final String id;
-    RelicKind(String id) { this.id = id; }
+
+    RelicKind(String id) {
+        this.id = id;
+    }
 }

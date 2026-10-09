@@ -13,8 +13,7 @@ import java.util.List;
 final class AccessoryDeathRetentionService {
     private static final String DATA_KEY = PurifiedUndead.MOD_ID + ":retained_accessories";
 
-    private AccessoryDeathRetentionService() {
-    }
+    private AccessoryDeathRetentionService() {}
 
     static boolean isProtected(ItemStack stack) {
         return !stack.isEmpty() && stack.is(ModItemTags.ACCESSORIES);
@@ -43,7 +42,8 @@ final class AccessoryDeathRetentionService {
     }
 
     static void restore(ServerPlayer player) {
-        // The old player continues ticking on the death screen; its inventory is not copied on respawn.
+        // The old player continues ticking on the death screen; its inventory is not copied on
+        // respawn.
         if (!player.isAlive()) return;
         RetainedAccessoryBuffer source = load(player);
         if (source.isEmpty()) {
@@ -67,7 +67,8 @@ final class AccessoryDeathRetentionService {
     private static RetainedAccessoryBuffer load(ServerPlayer player) {
         CompoundTag root = player.getPersistentData();
         return root.contains(DATA_KEY, Tag.TAG_COMPOUND)
-                ? RetainedAccessoryBuffer.load(root.getCompound(DATA_KEY)) : new RetainedAccessoryBuffer();
+                ? RetainedAccessoryBuffer.load(root.getCompound(DATA_KEY))
+                : new RetainedAccessoryBuffer();
     }
 
     private static void save(ServerPlayer player, RetainedAccessoryBuffer buffer) {

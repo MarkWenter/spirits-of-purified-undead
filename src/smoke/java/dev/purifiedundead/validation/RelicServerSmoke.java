@@ -21,19 +21,47 @@ public final class RelicServerSmoke {
     private static void check(boolean ok, String message) {
         if (!ok) throw new IllegalStateException("RELIC_SMOKE_FAILED: " + message);
     }
-    @SubscribeEvent public static void started(ServerStartedEvent event) {
+
+    @SubscribeEvent
+    public static void started(ServerStartedEvent event) {
         if (!Boolean.getBoolean("purified_undead.relicSmoke")) return;
         var server = event.getServer();
         var level = server.overworld();
         for (var kind : RelicKind.values()) {
-            if (kind == RelicKind.WHITE_PRIESTESS_STATUE || kind == RelicKind.WHITE_PRIESTESS_EARRINGS) continue;
-            check(server.getRecipeManager().byKey(ResourceLocation.fromNamespaceAndPath("purified_undead", kind.id)).isPresent(), "recipe " + kind.id);
+            if (kind == RelicKind.WHITE_PRIESTESS_STATUE
+                    || kind == RelicKind.WHITE_PRIESTESS_EARRINGS) continue;
+            check(
+                    server.getRecipeManager()
+                            .byKey(
+                                    ResourceLocation.fromNamespaceAndPath(
+                                            "purified_undead", kind.id))
+                            .isPresent(),
+                    "recipe " + kind.id);
         }
-        var lootParams = new net.minecraft.world.level.storage.loot.LootParams.Builder(level)
-                .withParameter(net.minecraft.world.level.storage.loot.parameters.LootContextParams.ORIGIN, net.minecraft.world.phys.Vec3.ZERO)
-                .create(net.minecraft.world.level.storage.loot.parameters.LootContextParamSets.CHEST);
-        for (String tableName : new String[]{"abandoned_mineshaft", "stronghold_corridor", "stronghold_crossing", "stronghold_library", "ancient_city", "ancient_city_ice_box", "simple_dungeon"}) {
-            var table = server.getLootData().getLootTable(ResourceLocation.fromNamespaceAndPath("minecraft", "chests/" + tableName));
+        var lootParams =
+                new net.minecraft.world.level.storage.loot.LootParams.Builder(level)
+                        .withParameter(
+                                net.minecraft.world.level.storage.loot.parameters.LootContextParams
+                                        .ORIGIN,
+                                net.minecraft.world.phys.Vec3.ZERO)
+                        .create(
+                                net.minecraft.world.level.storage.loot.parameters
+                                        .LootContextParamSets.CHEST);
+        for (String tableName :
+                new String[] {
+                    "abandoned_mineshaft",
+                    "stronghold_corridor",
+                    "stronghold_crossing",
+                    "stronghold_library",
+                    "ancient_city",
+                    "ancient_city_ice_box",
+                    "simple_dungeon"
+                }) {
+            var table =
+                    server.getLootData()
+                            .getLootTable(
+                                    ResourceLocation.fromNamespaceAndPath(
+                                            "minecraft", "chests/" + tableName));
             int statues = 0, earrings = 0, vanilla = 0;
             for (int seed = 1; seed <= 512; seed++) {
                 for (var stack : table.getRandomItems(lootParams, seed * 104729L)) {
@@ -43,18 +71,49 @@ public final class RelicServerSmoke {
                 }
             }
             check(vanilla > 0, "vanilla loot preserved " + tableName);
-            check(tableName.equals("simple_dungeon") ? statues == 0 && earrings == 0 : statues > 0 && earrings > 0, "loot injection " + tableName);
-            System.out.println("RELIC_LOOT " + tableName + " statue=" + statues + " earrings=" + earrings);
+            check(
+                    tableName.equals("simple_dungeon")
+                            ? statues == 0 && earrings == 0
+                            : statues > 0 && earrings > 0,
+                    "loot injection " + tableName);
+            System.out.println(
+                    "RELIC_LOOT " + tableName + " statue=" + statues + " earrings=" + earrings);
         }
-        var necklace = server.getRecipeManager().byKey(ResourceLocation.fromNamespaceAndPath("purified_undead", "weathered_warrior_necklace")).orElseThrow();
+        var necklace =
+                server.getRecipeManager()
+                        .byKey(
+                                ResourceLocation.fromNamespaceAndPath(
+                                        "purified_undead", "weathered_warrior_necklace"))
+                        .orElseThrow();
         var potion = necklace.getIngredients().get(3);
-        var strong = net.minecraft.world.item.alchemy.PotionUtils.setPotion(new ItemStack(Items.POTION), net.minecraft.world.item.alchemy.Potions.STRONG_HEALING);
-        var weak = net.minecraft.world.item.alchemy.PotionUtils.setPotion(new ItemStack(Items.POTION), net.minecraft.world.item.alchemy.Potions.HEALING);
-        check(potion.test(strong) && !potion.test(weak) && !potion.test(new ItemStack(Items.POTION)), "Healing II ingredient");
-        var player = new net.minecraftforge.common.util.FakePlayer(level, new com.mojang.authlib.GameProfile(UUID.fromString("2474d251-e742-4be6-94ea-025f398db314"), "RelicSmoke")) {
-            @Override public boolean isInvulnerableTo(net.minecraft.world.damagesource.DamageSource source) { return false; }
-        };
-        var inventory = CuriosApi.getCuriosInventory(player).orElseThrow(() -> new IllegalStateException("Curios missing"));
+        var strong =
+                net.minecraft.world.item.alchemy.PotionUtils.setPotion(
+                        new ItemStack(Items.POTION),
+                        net.minecraft.world.item.alchemy.Potions.STRONG_HEALING);
+        var weak =
+                net.minecraft.world.item.alchemy.PotionUtils.setPotion(
+                        new ItemStack(Items.POTION),
+                        net.minecraft.world.item.alchemy.Potions.HEALING);
+        check(
+                potion.test(strong)
+                        && !potion.test(weak)
+                        && !potion.test(new ItemStack(Items.POTION)),
+                "Healing II ingredient");
+        var player =
+                new net.minecraftforge.common.util.FakePlayer(
+                        level,
+                        new com.mojang.authlib.GameProfile(
+                                UUID.fromString("2474d251-e742-4be6-94ea-025f398db314"),
+                                "RelicSmoke")) {
+                    @Override
+                    public boolean isInvulnerableTo(
+                            net.minecraft.world.damagesource.DamageSource source) {
+                        return false;
+                    }
+                };
+        var inventory =
+                CuriosApi.getCuriosInventory(player)
+                        .orElseThrow(() -> new IllegalStateException("Curios missing"));
         var slots = inventory.getCurios().get("white_witch_relic").getStacks();
         if (slots.getSlots() < 3) slots.grow(3 - slots.getSlots());
         slots.setStackInSlot(0, new ItemStack(ModItems.BLOODSTAINED_RIBBON.get()));
@@ -84,17 +143,27 @@ public final class RelicServerSmoke {
         check(Math.abs(player.getHealth() - 13.5) < .01, "kill healing");
         slots.setStackInSlot(0, new ItemStack(ModItems.WHITE_PRIESTESS_STATUE.get()));
         slots.setStackInSlot(1, new ItemStack(ModItems.WHITE_PRIESTESS_EARRINGS.get()));
-        var first = new LivingDeathEvent(player, level.damageSources().generic()); effects.onDeathProtection(first);
-        check(first.isCanceled() && player.getHealth() == 1 && player.hasEffect(net.minecraft.world.effect.MobEffects.REGENERATION), "statue resurrection");
-        var second = new LivingDeathEvent(player, level.damageSources().generic()); effects.onDeathProtection(second);
+        var first = new LivingDeathEvent(player, level.damageSources().generic());
+        effects.onDeathProtection(first);
+        check(
+                first.isCanceled()
+                        && player.getHealth() == 1
+                        && player.hasEffect(net.minecraft.world.effect.MobEffects.REGENERATION),
+                "statue resurrection");
+        var second = new LivingDeathEvent(player, level.damageSources().generic());
+        effects.onDeathProtection(second);
         check(second.isCanceled(), "independent earring cooldown");
-        var third = new LivingDeathEvent(player, level.damageSources().generic()); effects.onDeathProtection(third);
+        var third = new LivingDeathEvent(player, level.damageSources().generic());
+        effects.onDeathProtection(third);
         check(!third.isCanceled(), "cooldowns block repeated resurrection");
         var state = player.getPersistentData().getCompound("purified_undead:white_witch_relics");
         check(state.getLong("white_priestess_statue") - level.getGameTime() == 2400, "120 seconds");
-        check(state.getLong("white_priestess_earrings") - level.getGameTime() == 12000, "600 seconds");
+        check(
+                state.getLong("white_priestess_earrings") - level.getGameTime() == 12000,
+                "600 seconds");
         state.putLong("white_priestess_statue", 0);
-        var bypass = new LivingDeathEvent(player, level.damageSources().fellOutOfWorld()); effects.onDeathProtection(bypass);
+        var bypass = new LivingDeathEvent(player, level.damageSources().fellOutOfWorld());
+        effects.onDeathProtection(bypass);
         check(!bypass.isCanceled(), "void bypass preserved");
         for (int i = 0; i < slots.getSlots(); i++) slots.setStackInSlot(i, ItemStack.EMPTY);
         // Exercise the real fall-damage pipeline, including installed attribute mods.
@@ -110,16 +179,32 @@ public final class RelicServerSmoke {
         fall(player, 8, 1.5F);
         warriors.setStackInSlot(0, ItemStack.EMPTY);
         fall(player, 4, 1);
-        check(dev.purifiedundead.config.PurifiedUndeadConfig.VALUES.balanceRevision.get() == 2, "config revision 2");
-        check(dev.purifiedundead.config.PurifiedUndeadConfig.VALUES.fragmentDropChance.get() == .35D, "fragment chance 35 percent");
-        System.out.println("PURIFIED_UNDEAD_BALANCE_SMOKE_OK: actual falls 4/5/6/8 blocks, unequip, migrated drop chance 35 percent");
-        System.out.println("PURIFIED_UNDEAD_RELIC_SMOKE_OK: six recipes, strict potion, XP, health, damage, healing, independent resurrection and bypass");
-    }
-    private static void fall(net.minecraft.server.level.ServerPlayer player, float distance, float expectedDamage) {
-        player.setHealth(20); player.invulnerableTime = 0; player.setAbsorptionAmount(0);
-        player.causeFallDamage(distance, 1.0F, player.damageSources().fall());
-        check(Math.abs(player.getHealth() - (20 - expectedDamage)) < .001,
-                "fall " + distance + ": expected " + expectedDamage + ", got " + (20 - player.getHealth()));
+        check(
+                dev.purifiedundead.config.PurifiedUndeadConfig.VALUES.balanceRevision.get() == 2,
+                "config revision 2");
+        check(
+                dev.purifiedundead.config.PurifiedUndeadConfig.VALUES.fragmentDropChance.get()
+                        == .35D,
+                "fragment chance 35 percent");
+        System.out.println(
+                "PURIFIED_UNDEAD_BALANCE_SMOKE_OK: actual falls 4/5/6/8 blocks, unequip, migrated drop chance 35 percent");
+        System.out.println(
+                "PURIFIED_UNDEAD_RELIC_SMOKE_OK: six recipes, strict potion, XP, health, damage, healing, independent resurrection and bypass");
     }
 
+    private static void fall(
+            net.minecraft.server.level.ServerPlayer player, float distance, float expectedDamage) {
+        player.setHealth(20);
+        player.invulnerableTime = 0;
+        player.setAbsorptionAmount(0);
+        player.causeFallDamage(distance, 1.0F, player.damageSources().fall());
+        check(
+                Math.abs(player.getHealth() - (20 - expectedDamage)) < .001,
+                "fall "
+                        + distance
+                        + ": expected "
+                        + expectedDamage
+                        + ", got "
+                        + (20 - player.getHealth()));
+    }
 }

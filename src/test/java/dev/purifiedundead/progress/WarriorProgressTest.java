@@ -54,7 +54,9 @@ class WarriorProgressTest {
             assertEquals(level, progress.talismanLevel());
         }
         assertFalse(progress.upgradeTalisman());
-        assertEquals(WhiteWitchTalisman.MAX_LEVEL, WarriorProgress.load(progress.save()).talismanLevel());
+        assertEquals(
+                WhiteWitchTalisman.MAX_LEVEL,
+                WarriorProgress.load(progress.save()).talismanLevel());
     }
 
     @Test

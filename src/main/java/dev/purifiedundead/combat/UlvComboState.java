@@ -44,8 +44,11 @@ public final class UlvComboState {
     }
 
     public boolean expire(long now) {
-        if (layers > 0 && (now < lastHitTick
-                || now - lastHitTick > PurifiedUndeadConfig.get(PurifiedUndeadConfig.VALUES.ulvComboWindowTicks))) {
+        if (layers > 0
+                && (now < lastHitTick
+                        || now - lastHitTick
+                                > PurifiedUndeadConfig.get(
+                                        PurifiedUndeadConfig.VALUES.ulvComboWindowTicks))) {
             layers = 0;
             lastHitTick = Long.MIN_VALUE;
             return true;

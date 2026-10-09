@@ -23,16 +23,19 @@ public final class GrothCombatEvents {
         if (event.getEntity() instanceof ServerPlayer player
                 && !event.getSource().is(ModDamageTypes.ULV_BLIGHT)) {
             Equipment equipment = readEquipment(player);
-            event.setAmount(event.getAmount() * GrothModel.incomingDamageMultiplier(
-                    equipment.contract, equipment.groth, player.onGround()));
+            event.setAmount(
+                    event.getAmount()
+                            * GrothModel.incomingDamageMultiplier(
+                                    equipment.contract, equipment.groth, player.onGround()));
         }
     }
 
     @SubscribeEvent
     public void onBreakSpeed(PlayerEvent.BreakSpeed event) {
         Equipment equipment = readEquipment(event.getEntity());
-        event.setNewSpeed(event.getNewSpeed() * GrothModel.miningSpeedMultiplier(
-                equipment.contract, equipment.groth));
+        event.setNewSpeed(
+                event.getNewSpeed()
+                        * GrothModel.miningSpeedMultiplier(equipment.contract, equipment.groth));
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -50,11 +53,26 @@ public final class GrothCombatEvents {
         if (!GrothModel.canTriggerStun(equipment.reversed(), jumpAttack, now, cooldownUntil)) {
             return;
         }
-        if (event.getEntity().addEffect(new MobEffectInstance(ModEffects.STUNNED.get(),
-                PurifiedUndeadConfig.get(PurifiedUndeadConfig.VALUES.grothStunDurationTicks), 0, false, true, true))) {
-            dev.purifiedundead.slate.MemoryEffects.groupStun(player,event.getEntity(),PurifiedUndeadConfig.get(PurifiedUndeadConfig.VALUES.grothStunDurationTicks));
-            player.getPersistentData().putLong(STUN_COOLDOWN_KEY,
-                    now + PurifiedUndeadConfig.get(PurifiedUndeadConfig.VALUES.grothStunCooldownTicks));
+        if (event.getEntity()
+                .addEffect(
+                        new MobEffectInstance(
+                                ModEffects.STUNNED.get(),
+                                PurifiedUndeadConfig.get(
+                                        PurifiedUndeadConfig.VALUES.grothStunDurationTicks),
+                                0,
+                                false,
+                                true,
+                                true))) {
+            dev.purifiedundead.slate.MemoryEffects.groupStun(
+                    player,
+                    event.getEntity(),
+                    PurifiedUndeadConfig.get(PurifiedUndeadConfig.VALUES.grothStunDurationTicks));
+            player.getPersistentData()
+                    .putLong(
+                            STUN_COOLDOWN_KEY,
+                            now
+                                    + PurifiedUndeadConfig.get(
+                                            PurifiedUndeadConfig.VALUES.grothStunCooldownTicks));
         }
     }
 
@@ -68,9 +86,13 @@ public final class GrothCombatEvents {
     }
 
     private static Equipment readEquipment(LivingEntity entity) {
-        return CuriosApi.getCuriosInventory(entity).map(handler -> new Equipment(
-                handler.isEquipped(ModItems.ANCIENT_CONTRACT.get()),
-                handler.isEquipped(ModItems.GROTH_WARRIOR.get()))).orElse(Equipment.NONE);
+        return CuriosApi.getCuriosInventory(entity)
+                .map(
+                        handler ->
+                                new Equipment(
+                                        handler.isEquipped(ModItems.ANCIENT_CONTRACT.get()),
+                                        handler.isEquipped(ModItems.GROTH_WARRIOR.get())))
+                .orElse(Equipment.NONE);
     }
 
     private record Equipment(boolean contract, boolean groth) {

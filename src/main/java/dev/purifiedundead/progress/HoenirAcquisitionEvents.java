@@ -17,12 +17,18 @@ public final class HoenirAcquisitionEvents {
                 || !(event.getSource().getEntity() instanceof ServerPlayer player)) {
             return;
         }
-        long harmfulEffects = player.getActiveEffects().stream()
-                .filter(effect -> effect.getEffect().getCategory() == MobEffectCategory.HARMFUL)
-                .map(effect -> effect.getEffect())
-                .distinct()
-                .count();
-        if (harmfulEffects >= PurifiedUndeadConfig.get(PurifiedUndeadConfig.VALUES.hoenirNegativeEffectsRequired)) {
+        long harmfulEffects =
+                player.getActiveEffects().stream()
+                        .filter(
+                                effect ->
+                                        effect.getEffect().getCategory()
+                                                == MobEffectCategory.HARMFUL)
+                        .map(effect -> effect.getEffect())
+                        .distinct()
+                        .count();
+        if (harmfulEffects
+                >= PurifiedUndeadConfig.get(
+                        PurifiedUndeadConfig.VALUES.hoenirNegativeEffectsRequired)) {
             WarriorRewardService.grantHoenir(player);
         }
     }

@@ -11,3 +11,5 @@
 白巫女手记的书页界面改自 Patchouli 原版书页纹理，保留原有按钮布局并加入页角血迹。该衍生纹理遵循 CC BY-NC-SA 3.0，作者归属与许可链接见 `docs/licenses/PATCHOULI_TEXTURE.md`。日记物品图标由内置 imagegen 制作并整理为 64×64 透明贴图。
 
 Forge 开发模板的 LICENSE 和 CREDITS 保留于 `docs/licenses/`；Gradle Wrapper 保留原许可声明。Curios、GeckoLib、Apothic Attributes、Placebo 等依赖通过构建工具获取，不打包进本模组。
+
+Forge 0.56.0 起在本体内以 Jar-in-Jar 附带官方 MixinExtras 0.5.3 基础库（MIT），未修改其代码，许可见 `docs/licenses/MIXINEXTRAS_LICENSE.txt`。NeoForge 使用加载器自带版本。该库不属于本项目原创内容。

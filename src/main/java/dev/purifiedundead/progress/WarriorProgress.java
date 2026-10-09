@@ -208,7 +208,8 @@ public final class WarriorProgress {
     }
 
     public int recordEleineDrownedKill() {
-        int required = PurifiedUndeadConfig.get(PurifiedUndeadConfig.VALUES.eleineDrownedKillsRequired);
+        int required =
+                PurifiedUndeadConfig.get(PurifiedUndeadConfig.VALUES.eleineDrownedKillsRequired);
         if (!eleineObtained && eleineDrownedKills < required) {
             eleineDrownedKills++;
         }
@@ -221,7 +222,8 @@ public final class WarriorProgress {
         }
         eleineObtained = true;
         eleinePending = !delivered;
-        eleineDrownedKills = PurifiedUndeadConfig.get(PurifiedUndeadConfig.VALUES.eleineDrownedKillsRequired);
+        eleineDrownedKills =
+                PurifiedUndeadConfig.get(PurifiedUndeadConfig.VALUES.eleineDrownedKillsRequired);
         return delivered ? ClaimResult.DELIVERED : ClaimResult.PENDING;
     }
 
@@ -322,13 +324,17 @@ public final class WarriorProgress {
             progress.juliusObtained = tag.getBoolean("julius_obtained");
             progress.juliusPending = progress.juliusObtained && tag.getBoolean("julius_pending");
             progress.guardiansObtained = tag.getBoolean("guardians_obtained");
-            progress.guardiansPending = progress.guardiansObtained && tag.getBoolean("guardians_pending");
+            progress.guardiansPending =
+                    progress.guardiansObtained && tag.getBoolean("guardians_pending");
             progress.ulvObtained = tag.getBoolean("ulv_obtained");
             progress.ulvPending = progress.ulvObtained && tag.getBoolean("ulv_pending");
             progress.eleineObtained = tag.getBoolean("eleine_obtained");
             progress.eleinePending = progress.eleineObtained && tag.getBoolean("eleine_pending");
-            int required = PurifiedUndeadConfig.get(PurifiedUndeadConfig.VALUES.eleineDrownedKillsRequired);
-            progress.eleineDrownedKills = Math.max(0, Math.min(required, tag.getInt("eleine_drowned_kills")));
+            int required =
+                    PurifiedUndeadConfig.get(
+                            PurifiedUndeadConfig.VALUES.eleineDrownedKillsRequired);
+            progress.eleineDrownedKills =
+                    Math.max(0, Math.min(required, tag.getInt("eleine_drowned_kills")));
             if (progress.eleineObtained) {
                 progress.eleineDrownedKills = required;
             }
@@ -337,7 +343,8 @@ public final class WarriorProgress {
             progress.fadenObtained = tag.getBoolean("faden_obtained");
             progress.fadenPending = progress.fadenObtained && tag.getBoolean("faden_pending");
             progress.contractObtained = tag.getBoolean("contract_obtained");
-            progress.contractPending = progress.contractObtained && tag.getBoolean("contract_pending");
+            progress.contractPending =
+                    progress.contractObtained && tag.getBoolean("contract_pending");
             progress.talismanLevel = WhiteWitchTalisman.clampLevel(tag.getInt("talisman_level"));
             return progress;
         }
@@ -348,13 +355,16 @@ public final class WarriorProgress {
         progress.juliusObtained = tag.getBoolean("julius_obtained");
         progress.juliusPending = progress.juliusObtained && tag.getBoolean("julius_pending");
         progress.guardiansObtained = tag.getBoolean("guardians_obtained");
-        progress.guardiansPending = progress.guardiansObtained && tag.getBoolean("guardians_pending");
+        progress.guardiansPending =
+                progress.guardiansObtained && tag.getBoolean("guardians_pending");
         progress.ulvObtained = tag.getBoolean("ulv_obtained");
         progress.ulvPending = progress.ulvObtained && tag.getBoolean("ulv_pending");
         progress.eleineObtained = tag.getBoolean("eleine_obtained");
         progress.eleinePending = progress.eleineObtained && tag.getBoolean("eleine_pending");
-        int required = PurifiedUndeadConfig.get(PurifiedUndeadConfig.VALUES.eleineDrownedKillsRequired);
-        progress.eleineDrownedKills = Math.max(0, Math.min(required, tag.getInt("eleine_drowned_kills")));
+        int required =
+                PurifiedUndeadConfig.get(PurifiedUndeadConfig.VALUES.eleineDrownedKillsRequired);
+        progress.eleineDrownedKills =
+                Math.max(0, Math.min(required, tag.getInt("eleine_drowned_kills")));
         if (progress.eleineObtained) {
             progress.eleineDrownedKills = required;
         }

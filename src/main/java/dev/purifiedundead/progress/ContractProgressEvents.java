@@ -16,7 +16,8 @@ public final class ContractProgressEvents {
 
     @SubscribeEvent
     public void onPlayerTick(TickEvent.PlayerTickEvent event) {
-        if (event.phase != TickEvent.Phase.END || event.player.level().isClientSide()
+        if (event.phase != TickEvent.Phase.END
+                || event.player.level().isClientSide()
                 || !(event.player instanceof ServerPlayer player)) {
             return;
         }
@@ -24,8 +25,10 @@ public final class ContractProgressEvents {
         if (player.tickCount % 20 != 0) return;
         ModAdvancements.migrate(player);
         WarriorRewardService.retryPending(player);
-        boolean contractEquipped = CuriosApi.getCuriosInventory(player)
-                .map(handler -> handler.isEquipped(ModItems.ANCIENT_CONTRACT.get())).orElse(false);
+        boolean contractEquipped =
+                CuriosApi.getCuriosInventory(player)
+                        .map(handler -> handler.isEquipped(ModItems.ANCIENT_CONTRACT.get()))
+                        .orElse(false);
         if (contractEquipped) {
             WarriorRewardService.onContractEquipped(player);
         }
@@ -33,7 +36,8 @@ public final class ContractProgressEvents {
 
     @SubscribeEvent
     public void onPlayerClone(PlayerEvent.Clone event) {
-        if (event.getOriginal() instanceof ServerPlayer original && event.getEntity() instanceof ServerPlayer replacement) {
+        if (event.getOriginal() instanceof ServerPlayer original
+                && event.getEntity() instanceof ServerPlayer replacement) {
             WarriorRewardService.copyProgress(original, replacement);
             if (PurifiedUndeadConfig.get(PurifiedUndeadConfig.VALUES.contractAcquisitionEnabled)
                     && event.isWasDeath()
@@ -48,7 +52,8 @@ public final class ContractProgressEvents {
     public void onPlayerDeath(LivingDeathEvent event) {
         if (PurifiedUndeadConfig.get(PurifiedUndeadConfig.VALUES.contractAcquisitionEnabled)
                 && event.getEntity() instanceof ServerPlayer player
-                && player.hasEffect(dev.purifiedundead.content.ModEffects.BLIGHTED_TRANSFORMATION.get())) {
+                && player.hasEffect(
+                        dev.purifiedundead.content.ModEffects.BLIGHTED_TRANSFORMATION.get())) {
             if (HardcoreBlightRescue.rescue(player)) {
                 event.setCanceled(true);
                 return;
@@ -56,9 +61,9 @@ public final class ContractProgressEvents {
             player.getPersistentData().putBoolean(BLIGHTED_DEATH_KEY, true);
         }
     }
+
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onTotemRescue(net.minecraftforge.event.entity.living.LivingUseTotemEvent event) {
         if (event.getEntity() instanceof ServerPlayer player) HardcoreBlightRescue.onSaved(player);
     }
-
 }

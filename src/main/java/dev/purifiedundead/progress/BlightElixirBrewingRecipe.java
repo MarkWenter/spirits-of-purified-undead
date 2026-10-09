@@ -14,7 +14,9 @@ import org.jetbrains.annotations.NotNull;
 public final class BlightElixirBrewingRecipe extends BrewingRecipe {
     /** Standard descriptors let recipe viewers discover this recipe; isInput still checks potion data. */
     public BlightElixirBrewingRecipe() {
-        super(Ingredient.of(potion(Potions.AWKWARD)), Ingredient.of(ModItems.BLIGHTED_SPIRIT.get()),
+        super(
+                Ingredient.of(potion(Potions.AWKWARD)),
+                Ingredient.of(ModItems.BLIGHTED_SPIRIT.get()),
                 potion(ModPotions.BLIGHT_ELIXIR.get()));
     }
 

@@ -36,7 +36,9 @@ public final class FerinEntity extends Entity implements GeoEntity {
     private int lastOwnerRefreshTick;
 
     /** Non-networked lease: a visual without an authoritative owner update must not linger. */
-    public void refreshOwnerLease() { lastOwnerRefreshTick = tickCount; }
+    public void refreshOwnerLease() {
+        lastOwnerRefreshTick = tickCount;
+    }
 
     public FerinEntity(EntityType<? extends FerinEntity> type, Level level) {
         super(type, level);
@@ -82,9 +84,12 @@ public final class FerinEntity extends Entity implements GeoEntity {
     @Override
     public void tick() {
         super.tick();
-        if (!level().isClientSide() && (tickCount - lastOwnerRefreshTick > 100
-                || getOwnerUuid().map(level()::getPlayerByUUID)
-                .filter(player -> player.isAlive()).isEmpty())) {
+        if (!level().isClientSide()
+                && (tickCount - lastOwnerRefreshTick > 100
+                        || getOwnerUuid()
+                                .map(level()::getPlayerByUUID)
+                                .filter(player -> player.isAlive())
+                                .isEmpty())) {
             discard();
             return;
         }
@@ -139,16 +144,26 @@ public final class FerinEntity extends Entity implements GeoEntity {
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, "main", 0, state -> {
-            // A new attack must also restart when it repeats the same stage after a timeout.
-            if (lastAnimatedStage != getStage() || lastAnimatedStageStartedAt != getStageStartedAt()) {
-                state.getController().forceAnimationReset();
-                lastAnimatedStage = getStage();
-                lastAnimatedStageStartedAt = getStageStartedAt();
-            }
-            return state.setAndContinue(RawAnimation.begin()
-                    .thenPlayAndHold(FerinVisualModel.animationForStage(getStage())));
-        }));
+        controllers.add(
+                new AnimationController<>(
+                        this,
+                        "main",
+                        0,
+                        state -> {
+                            // A new attack must also restart when it repeats the same stage after a
+                            // timeout.
+                            if (lastAnimatedStage != getStage()
+                                    || lastAnimatedStageStartedAt != getStageStartedAt()) {
+                                state.getController().forceAnimationReset();
+                                lastAnimatedStage = getStage();
+                                lastAnimatedStageStartedAt = getStageStartedAt();
+                            }
+                            return state.setAndContinue(
+                                    RawAnimation.begin()
+                                            .thenPlayAndHold(
+                                                    FerinVisualModel.animationForStage(
+                                                            getStage())));
+                        }));
     }
 
     @Override

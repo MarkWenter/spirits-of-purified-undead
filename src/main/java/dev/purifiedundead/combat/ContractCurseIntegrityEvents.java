@@ -32,8 +32,13 @@ public final class ContractCurseIntegrityEvents {
     }
 
     private static void restoreEquippedContract(ServerPlayer player) {
-        CuriosApi.getCuriosInventory(player).ifPresent(handler ->
-                handler.findCurios(ModItems.ANCIENT_CONTRACT.get()).forEach(found ->
-                        ModEnchantments.applyAllBlightCurses(found.stack())));
+        CuriosApi.getCuriosInventory(player)
+                .ifPresent(
+                        handler ->
+                                handler.findCurios(ModItems.ANCIENT_CONTRACT.get())
+                                        .forEach(
+                                                found ->
+                                                        ModEnchantments.applyAllBlightCurses(
+                                                                found.stack())));
     }
 }

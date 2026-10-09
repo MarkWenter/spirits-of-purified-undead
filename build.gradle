@@ -33,7 +33,10 @@ minecraft {
 }
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
+jarJar.enable()
+
 repositories {
+    mavenCentral { content { includeGroup "io.github.llamalad7" } }
     maven { url = 'https://api.modrinth.com/maven'; content { includeGroup 'maven.modrinth' } }
     maven { url = 'https://maven.blamejared.com'; content { includeGroup 'vazkii.patchouli' } }
     maven {
@@ -62,6 +65,10 @@ def attributeMods = [
     "dev.shadowsoffire:Placebo:${placebo_version}"
 ]
 dependencies {
+    compileOnly 'io.github.llamalad7:mixinextras-common:0.5.3'
+    implementation(jarJar('io.github.llamalad7:mixinextras-forge:0.5.3')) {
+        jarJar.ranged(it, '[0.5.3,)')
+    }
     compileOnly fg.deobf("maven.modrinth:jei:${providers.gradleProperty('jei_version').orElse('HcUiurg6').get()}")
     if (providers.gradleProperty('with_enigmatic').orElse('false').get().toBoolean()) {
         runtimeOnly fg.deobf('maven.modrinth:enigmatic-legacy:yUuDfmnk')
@@ -109,15 +116,22 @@ tasks.withType(AbstractArchiveTask).configureEach {
     reproducibleFileOrder = true
 }
 tasks.named('jar', Jar).configure {
+    archiveClassifier = 'slim'
     manifest { attributes 'Implementation-Version': mod_version, 'MixinConfigs': 'purified_undead.mixins.json' }
     finalizedBy 'reobfJar'
 }
+tasks.named('jarJar', Jar).configure {
+    archiveClassifier = ''
+    manifest { attributes 'Implementation-Version': mod_version, 'MixinConfigs': 'purified_undead.mixins.json' }
+    finalizedBy 'reobfJarJar'
+}
+
 tasks.register('stageMods', Sync) {
     description = 'Collect original dependency JARs and this mod for a standalone Forge test instance.'
     group = 'distribution'
-    dependsOn 'reobfJar'
+    dependsOn 'reobfJarJar'
     from configurations.installedMods
-    from tasks.jar
+    from tasks.jarJar
     // The original staging directory developed an unreadable Windows ACL after
     // a concurrent IDE clean. Keep generated install files in a fresh path.
     into layout.buildDirectory.dir('pcl2-test-mods')

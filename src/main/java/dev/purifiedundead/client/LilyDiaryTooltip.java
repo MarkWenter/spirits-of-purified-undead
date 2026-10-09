@@ -6,9 +6,12 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.contents.TranslatableContents;
 
-@net.minecraftforge.fml.common.Mod.EventBusSubscriber(modid="purified_undead",value=net.minecraftforge.api.distmarker.Dist.CLIENT)
+@net.minecraftforge.fml.common.Mod.EventBusSubscriber(
+        modid = "purified_undead",
+        value = net.minecraftforge.api.distmarker.Dist.CLIENT)
 public final class LilyDiaryTooltip {
     private LilyDiaryTooltip() {}
+
     @net.minecraftforge.eventbus.api.SubscribeEvent
     public static void tooltip(net.minecraftforge.event.entity.player.ItemTooltipEvent event) {
         if (!event.getItemStack().is(ModItems.LILY_DIARY.get())) return;
@@ -21,11 +24,19 @@ public final class LilyDiaryTooltip {
             }
         }
         var player = event.getEntity();
-        lines.add(insertion, Component.translatable("item.purified_undead.lily_diary.current",
-                number(LilyDiaryProgress.currentCriticalBonus(player) * 100),
-                number(LilyDiaryProgress.currentLuckBonus(player))).withStyle(ChatFormatting.GRAY));
+        lines.add(
+                insertion,
+                Component.translatable(
+                                "item.purified_undead.lily_diary.current",
+                                number(LilyDiaryProgress.currentCriticalBonus(player) * 100),
+                                number(LilyDiaryProgress.currentLuckBonus(player)))
+                        .withStyle(ChatFormatting.GRAY));
     }
+
     private static String number(double value) {
-        return java.math.BigDecimal.valueOf(value).setScale(2, java.math.RoundingMode.HALF_UP).stripTrailingZeros().toPlainString();
+        return java.math.BigDecimal.valueOf(value)
+                .setScale(2, java.math.RoundingMode.HALF_UP)
+                .stripTrailingZeros()
+                .toPlainString();
     }
 }

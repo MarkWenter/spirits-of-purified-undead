@@ -17,16 +17,24 @@ public interface WhiteWitchRelicEffect {
         return amount;
     }
 
-    default void serverTick(ServerPlayer wearer) {
-    }
+    default void serverTick(ServerPlayer wearer) {}
 
     default double scaleEffect(double baseValue) {
         return PurifiedUndeadConfig.get(PurifiedUndeadConfig.VALUES.whiteWitchRelicsEnabled)
-                ? baseValue * PurifiedUndeadConfig.get(PurifiedUndeadConfig.VALUES.whiteWitchRelicEffectScale) : 0.0D;
+                ? baseValue
+                        * PurifiedUndeadConfig.get(
+                                PurifiedUndeadConfig.VALUES.whiteWitchRelicEffectScale)
+                : 0.0D;
     }
 
     default int scaleCooldown(int baseTicks) {
-        return Math.max(1, (int) Math.round(baseTicks
-                * PurifiedUndeadConfig.get(PurifiedUndeadConfig.VALUES.whiteWitchRelicCooldownScale)));
+        return Math.max(
+                1,
+                (int)
+                        Math.round(
+                                baseTicks
+                                        * PurifiedUndeadConfig.get(
+                                                PurifiedUndeadConfig.VALUES
+                                                        .whiteWitchRelicCooldownScale)));
     }
 }

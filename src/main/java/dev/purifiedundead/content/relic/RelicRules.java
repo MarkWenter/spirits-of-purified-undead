@@ -4,7 +4,8 @@ package dev.purifiedundead.content.relic;
 public final class RelicRules {
     private RelicRules() {}
 
-    public static double damageMultiplier(int fingers, int claws, boolean projectile, double scale) {
+    public static double damageMultiplier(
+            int fingers, int claws, boolean projectile, double scale) {
         return (1 + .25 * fingers * scale) * (1 + (projectile ? 1.35 * claws * scale : 0));
     }
 
@@ -23,6 +24,9 @@ public final class RelicRules {
         return (.05 * rosaries + .25 * badges) * scale;
     }
 
-    public static boolean ready(long now, long availableAt) { return now >= availableAt; }
+    public static boolean ready(long now, long availableAt) {
+        return now >= availableAt;
+    }
+
     public record XpGain(int amount, double remainder) {}
 }

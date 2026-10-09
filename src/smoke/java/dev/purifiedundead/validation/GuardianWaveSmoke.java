@@ -1,4 +1,5 @@
 package dev.purifiedundead.validation;
+
 import dev.purifiedundead.combat.*;
 import dev.purifiedundead.content.*;
 import dev.purifiedundead.entity.GuardianWaveEntity;
@@ -7,86 +8,399 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.Blocks;
+
 public final class GuardianWaveSmoke {
- private static void check(boolean ok,String why){if(!ok)throw new IllegalStateException("GUARDIAN_WAVE_FAILED: "+why);}
- private static net.minecraft.world.entity.animal.Cow cow(net.minecraft.server.level.ServerLevel l,double x,double z){var c=EntityType.COW.create(l);c.setPos(x,160,z);c.setNoAi(true);c.getAttribute(Attributes.MAX_HEALTH).setBaseValue(1000);c.setHealth(1000);l.addFreshEntity(c);return c;}
- private static GuardianWaveEntity wave(net.minecraft.server.level.ServerPlayer p,boolean falling,float damage,float crit){var w=ModEntities.GUARDIAN_WAVE.get().create(p.serverLevel());w.launch(new GuardianWaveCombat.State(p,falling,false,1,damage,crit),new ItemStack(ModItems.BLIGHTED_GUARDIAN.get()));p.serverLevel().addFreshEntity(w);return w;}
- public static void run(net.minecraft.server.MinecraftServer server){
-  var l=server.overworld();l.getChunk(3,3);var p=new net.minecraftforge.common.util.FakePlayer(l,new com.mojang.authlib.GameProfile(java.util.UUID.randomUUID(),"GuardianWave"));p.setPos(50,160,50);p.setYRot(0);p.setXRot(0);p.setOnGround(true);
-  var targets=new java.util.ArrayList<LivingEntity>();
-  try{
-   var chance=net.minecraftforge.registries.ForgeRegistries.ATTRIBUTES.getValue(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("attributeslib","crit_chance"));if(chance!=null&&p.getAttribute(chance)!=null)p.getAttribute(chance).setBaseValue(0);
-   var sword=new ItemStack(ModItems.BLIGHTED_GUARDIAN.get());p.setItemSlot(EquipmentSlot.MAINHAND,sword);
-   var modifiers=sword.getAttributeModifiers(EquipmentSlot.MAINHAND);check(modifiers.get(Attributes.ARMOR).stream().mapToDouble(a->a.getAmount()).sum()==10,"held armor +10");check(sword.getAttributeModifiers(EquipmentSlot.OFFHAND).get(Attributes.ARMOR).isEmpty(),"no offhand armor");
-   var counts=new java.util.HashMap<String,Integer>();
-   for(var enchant:net.minecraft.core.registries.BuiltInRegistries.ENCHANTMENT){
-    var id=net.minecraft.core.registries.BuiltInRegistries.ENCHANTMENT.getKey(enchant);if(!java.util.Set.of("apotheosis","celestial_enchantments","goety","malum").contains(id.getNamespace())||enchant.isCurse())continue;
-    if(dev.purifiedundead.compat.GuardianEnchantments.accepts(enchant)){
-     check(enchant.canEnchant(sword),"optional anvil eligibility "+id);check(sword.canApplyAtEnchantingTable(enchant),"optional table eligibility "+id);
-     var menu=new net.minecraft.world.inventory.AnvilMenu(21,p.getInventory());menu.getSlot(0).set(sword.copy());menu.getSlot(1).set(EnchantedBookItem.createForEnchantment(new net.minecraft.world.item.enchantment.EnchantmentInstance(enchant,1)));menu.createResult();check(!menu.getSlot(2).getItem().isEmpty(),"real anvil result "+id);counts.merge(id.getNamespace(),1,Integer::sum);
+    private static void check(boolean ok, String why) {
+        if (!ok) throw new IllegalStateException("GUARDIAN_WAVE_FAILED: " + why);
     }
-   }
-   if(!counts.isEmpty()){check(counts.getOrDefault("celestial_enchantments",0)>0&&counts.getOrDefault("apotheosis",0)>0&&counts.getOrDefault("goety",0)>0,"all three optional mods exercised");System.out.println("GUARDIAN_ENCHANT_OK: actual anvil and table eligibility "+counts);}
-   if(net.minecraftforge.fml.ModList.get().isLoaded("malum")){
-    for(String name:new String[]{"spirit_plunder","haunted"}){
-     var id=net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("malum",name);var e=net.minecraft.core.registries.BuiltInRegistries.ENCHANTMENT.get(id);
-     check(e!=null&&dev.purifiedundead.compat.GuardianEnchantments.accepts(e),"Malum explicit enchantment "+name);
+
+    private static net.minecraft.world.entity.animal.Cow cow(
+            net.minecraft.server.level.ServerLevel l, double x, double z) {
+        var c = EntityType.COW.create(l);
+        c.setPos(x, 160, z);
+        c.setNoAi(true);
+        c.getAttribute(Attributes.MAX_HEALTH).setBaseValue(1000);
+        c.setHealth(1000);
+        l.addFreshEntity(c);
+        return c;
     }
-    check(counts.getOrDefault("malum",0)>=2,"Malum real anvil tests executed");
-    var id=net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("malum","animated");var animated=net.minecraft.core.registries.BuiltInRegistries.ENCHANTMENT.get(id);
-    id=net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("malum","haunted");var haunted=net.minecraft.core.registries.BuiltInRegistries.ENCHANTMENT.get(id);
-    if(animated!=null&&haunted!=null){var enchanted=sword.copy();enchanted.enchant(animated,1);var menu=new net.minecraft.world.inventory.AnvilMenu(22,p.getInventory());menu.getSlot(0).set(enchanted);menu.getSlot(1).set(EnchantedBookItem.createForEnchantment(new net.minecraft.world.item.enchantment.EnchantmentInstance(haunted,1)));menu.createResult();check(menu.getSlot(2).getItem().isEmpty()||menu.getSlot(2).getItem().getEnchantmentLevel(haunted)==0,"Haunted and Animated exclusivity preserved");}
-    System.out.println("GUARDIAN_MALUM_OK: Spirit Plunder, Haunted and scythe enchantments real anvil eligibility");
-   }
-   var c=cow(l,50,52);targets.add(c);var outside=cow(l,50,66);targets.add(outside);
-   c.hurt(p.damageSources().playerAttack(p),10);float before=c.getHealth();check(c.invulnerableTime>0,"direct hit grants hurt cooldown");
-   var w=wave(p,false,10,1);for(int i=0;i<15;i++){w.tickCount++;w.tick();}check(Math.abs(before-c.getHealth()-12)<.05,"wave adds separate 120 percent hit: "+(before-c.getHealth()));check(outside.getHealth()==1000,"fifteen block limit");check(w.isRemoved(),"wave expires");
-   before=c.getHealth();w=wave(p,false,10,2);for(int i=0;i<15;i++){w.tickCount++;w.tick();}check(Math.abs(before-c.getHealth()-24)<.05,"independent crit multiplier");
-   var wider=cow(l,51.35,53);targets.add(wider);w=wave(p,false,10,1);for(int i=0;i<15;i++){w.tickCount++;w.tick();}check(wider.getHealth()<1000,"expanded wave width reaches lateral target");wider.discard();
-   var distant=cow(l,50,64.9);targets.add(distant);w=wave(p,false,10,1);for(int i=0;i<15;i++){w.tickCount++;w.tick();}check(distant.getHealth()<1000,"fifteen block distant target hit");check(w.isRemoved()&&Math.abs(w.position().z-65)<.001,"fifteen blocks reached in fifteen ticks");distant.discard();
-   var arrowAttribute=net.minecraftforge.registries.ForgeRegistries.ATTRIBUTES.getValue(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("attributeslib","arrow_damage"));
-   if(arrowAttribute!=null&&p.getAttribute(arrowAttribute)!=null){
-    var attr=p.getAttribute(arrowAttribute);double saved=attr.getBaseValue();
-    try{attr.setBaseValue(2);before=c.getHealth();w=wave(p,false,10,1);attr.setBaseValue(3);for(int i=0;i<15;i++){w.tickCount++;w.tick();}check(Math.abs(before-c.getHealth()-24)<.05,"projectile multiplier snapshotted once, still melee damage");}
-    finally{attr.setBaseValue(saved);}
-   }
-   check(!p.damageSources().playerAttack(p).is(net.minecraft.tags.DamageTypeTags.IS_PROJECTILE),"wave source has no projectile tag");
-   for(int y=160;y<=162;y++)l.setBlockAndUpdate(new BlockPos(50,y,51),Blocks.STONE.defaultBlockState());before=c.getHealth();w=wave(p,false,10,1);for(int i=0;i<15&&!w.isRemoved();i++){w.tickCount++;w.tick();}check(before==c.getHealth(),"solid wall blocks wave");
-   for(int y=160;y<=162;y++)l.setBlockAndUpdate(new BlockPos(50,y,51),Blocks.AIR.defaultBlockState());
-   var ally=cow(l,50,51.5);targets.add(ally);var board=server.getScoreboard();var team=board.addPlayerTeam("guardian_wave_test");board.addPlayerToTeam(p.getScoreboardName(),team);board.addPlayerToTeam(ally.getScoreboardName(),team);w=wave(p,false,10,1);for(int i=0;i<15;i++){w.tickCount++;w.tick();}check(ally.getHealth()==1000,"ally ignored");board.removePlayerTeam(team);ally.discard();
-   if(net.minecraftforge.fml.ModList.get().isLoaded("malum")){
-    var soulTag=net.minecraft.tags.TagKey.create(net.minecraft.core.registries.Registries.ITEM,net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("malum","soul_hunter_weapon"));check(sword.is(soulTag),"guardian has native Malum soul harvesting tag");
-    var holder=ModItems.BLIGHTED_GUARDIAN.get().builtInRegistryHolder();var originalTags=holder.tags().toList();holder.bindTags(originalTags.stream().filter(t->!t.equals(soulTag)).toList());check(!sword.is(soulTag),"reproduce pack removing guardian from native tag");
-    var reaper=sword.copy();for(String name:new String[]{"spirit_plunder","haunted"}){var id=net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("malum",name);reaper.enchant(net.minecraft.core.registries.BuiltInRegistries.ENCHANTMENT.get(id),1);}p.setItemSlot(EquipmentSlot.MAINHAND,reaper);
-    for(int mode:new int[]{0,1,2,3,4}){
-     dev.purifiedundead.config.PurifiedUndeadConfig.VALUES.guardianMalumSoulHarvest.set(mode!=3);p.setItemSlot(EquipmentSlot.MAINHAND,mode==4?new ItemStack(Items.IRON_SWORD):reaper);
-     var victim=cow(l,50,52);targets.add(victim);victim.setHealth(1);
-     var ids=new java.util.HashSet<java.util.UUID>();for(var e:l.getAllEntities())ids.add(e.getUUID());
-     if(mode==1){w=wave(p,false,100,1);for(int i=0;i<15;i++){w.tickCount++;w.tick();}}else if(mode==2)victim.hurt(ModDamageTypes.ferinAssist(l,p),100);else victim.hurt(p.damageSources().playerAttack(p),100);
-     check(!victim.isAlive(),"soul test target died");
-     var spawned=new java.util.ArrayList<Entity>();l.getAllEntities().forEach(spawned::add);int souls=0;for(var e:spawned){var id=net.minecraft.core.registries.BuiltInRegistries.ENTITY_TYPE.getKey(e.getType());if(!ids.contains(e.getUUID())&&id.getNamespace().equals("malum")&&id.getPath().contains("spirit")){souls++;e.discard();}}
-     check((souls>0)==(mode<3),"native soul drops with cleared tag; blade/wave/Ferin/disabled/ordinary sword mode="+mode);victim.discard();
+
+    private static GuardianWaveEntity wave(
+            net.minecraft.server.level.ServerPlayer p, boolean falling, float damage, float crit) {
+        var w = ModEntities.GUARDIAN_WAVE.get().create(p.serverLevel());
+        w.launch(
+                new GuardianWaveCombat.State(p, falling, false, 1, damage, crit),
+                new ItemStack(ModItems.BLIGHTED_GUARDIAN.get()));
+        p.serverLevel().addFreshEntity(w);
+        return w;
     }
-    dev.purifiedundead.config.PurifiedUndeadConfig.VALUES.guardianMalumSoulHarvest.set(true);
-    holder.bindTags(originalTags);p.setItemSlot(EquipmentSlot.MAINHAND,sword);
-    System.out.println("GUARDIAN_SOUL_DROPS_OK: cleared pack tag, actual blade/wave/Ferin drops, disabled bridge and ordinary sword no drops");
-   }
-   dev.purifiedundead.purification.PurificationProgress.unlock(p);var curios=top.theillusivec4.curios.api.CuriosApi.getCuriosInventory(p).orElseThrow(IllegalStateException::new);
-   for(var entry:curios.getCurios().entrySet())if(entry.getKey().equals("ancient_contract"))entry.getValue().getStacks().setStackInSlot(0,new ItemStack(ModItems.ANCIENT_CONTRACT.get()));
-   var warriors=curios.getCurios().get("undead_warrior").getStacks();if(warriors.getSlots()<3)warriors.grow(3-warriors.getSlots());
-   warriors.setStackInSlot(0,new ItemStack(ModItems.ELEINE_WARRIOR.get()));warriors.setStackInSlot(1,new ItemStack(ModItems.HOENIR_WARRIOR.get()));warriors.setStackInSlot(2,new ItemStack(ModItems.GROTH_WARRIOR.get()));
-   var book=new ItemStack(ModItems.LILY_DIARY.get());var memories=net.minecraft.core.NonNullList.withSize(8,ItemStack.EMPTY);memories.set(4,new ItemStack(dev.purifiedundead.slate.SlateContent.MEMORIES.get("eleine").get()));dev.purifiedundead.slate.MemoryStorage.write(book,memories);curios.getCurios().get("wanderer_log").getStacks().setStackInSlot(0,book);
-   int orbs=l.getEntitiesOfClass(dev.purifiedundead.entity.EleineMagicOrbEntity.class,p.getBoundingBox().inflate(10)).size();
-   server.getWorldData().overworldData().setGameTime(l.getGameTime()+1);
-   check(curios.isEquipped(ModItems.ANCIENT_CONTRACT.get()),"contract equipped for cooperative trigger");
-   w=wave(p,true,10,1);for(int i=0;i<15;i++){w.tickCount++;w.tick();}check(p.getPersistentData().contains("purified_undead:ferin_state"),"wave-only hit triggers Ferin");
-   check(HoenirCombatEvents.hasMark(p,c),"wave applies Hoenir mark");check(c.hasEffect(ModEffects.STUNNED.get()),"captured falling state triggers Groth after landing");check(l.getEntitiesOfClass(dev.purifiedundead.entity.EleineMagicOrbEntity.class,p.getBoundingBox().inflate(10)).size()>orbs,"wave triggers Eleine orb");
-   GuardianWaveCombat.with(new GuardianWaveCombat.State(p,true,false,1,10,1),()->check(GuardianWaveCombat.falling(p),"captured jump survives landing"));check(!GuardianWaveCombat.active(),"context cleared");
-   p.getPersistentData().remove("purified_undead:guardian_wave_tick");int count=l.getEntitiesOfClass(GuardianWaveEntity.class,p.getBoundingBox().inflate(5),e->!e.isRemoved()).size();GuardianWaveCombat.swing(p);GuardianWaveCombat.swing(p);check(l.getEntitiesOfClass(GuardianWaveEntity.class,p.getBoundingBox().inflate(5),e->!e.isRemoved()).size()==count+1,"air swing accepted and duplicate packet blocked");
-   try{GuardianWaveCombat.with(new GuardianWaveCombat.State(p,true,false,1,10,1),()->{throw new IllegalArgumentException("test context cleanup");});}catch(IllegalArgumentException expected){}check(!GuardianWaveCombat.active(),"context cleared after exception");
-   w=wave(p,false,10,1);p.setGameMode(net.minecraft.world.level.GameType.SPECTATOR);w.tickCount++;w.tick();check(w.isRemoved(),"owner invalidated wave removed");p.setGameMode(net.minecraft.world.level.GameType.SURVIVAL);
-   System.out.println("GUARDIAN_WAVE_OPTIMIZATION_OK: fifteen-tick fifteen-block sweep, projectile attribute snapshot, melee source, scope exception cleanup, owner invalidation");
-   System.out.println("GUARDIAN_WAVE_OK: mainhand armor, separate direct/wave damage, 120 percent, independent crit, range, wall, allies, expiry, captured jump, Groth stun, Eleine orb, Hoenir mark, Ferin trigger and duplicate packet guard");
-  }finally{for(var t:targets)t.discard();for(var w:l.getEntitiesOfClass(GuardianWaveEntity.class,p.getBoundingBox().inflate(10)))w.discard();for(int y=160;y<=162;y++)l.setBlockAndUpdate(new BlockPos(50,y,51),Blocks.AIR.defaultBlockState());p.discard();}
- }
+
+    public static void run(net.minecraft.server.MinecraftServer server) {
+        var l = server.overworld();
+        l.getChunk(3, 3);
+        var p =
+                new net.minecraftforge.common.util.FakePlayer(
+                        l,
+                        new com.mojang.authlib.GameProfile(
+                                java.util.UUID.randomUUID(), "GuardianWave"));
+        p.setPos(50, 160, 50);
+        p.setYRot(0);
+        p.setXRot(0);
+        p.setOnGround(true);
+        var targets = new java.util.ArrayList<LivingEntity>();
+        try {
+            var chance =
+                    net.minecraftforge.registries.ForgeRegistries.ATTRIBUTES.getValue(
+                            net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(
+                                    "attributeslib", "crit_chance"));
+            if (chance != null && p.getAttribute(chance) != null)
+                p.getAttribute(chance).setBaseValue(0);
+            var sword = new ItemStack(ModItems.BLIGHTED_GUARDIAN.get());
+            p.setItemSlot(EquipmentSlot.MAINHAND, sword);
+            var modifiers = sword.getAttributeModifiers(EquipmentSlot.MAINHAND);
+            check(
+                    modifiers.get(Attributes.ARMOR).stream().mapToDouble(a -> a.getAmount()).sum()
+                            == 10,
+                    "held armor +10");
+            check(
+                    sword.getAttributeModifiers(EquipmentSlot.OFFHAND)
+                            .get(Attributes.ARMOR)
+                            .isEmpty(),
+                    "no offhand armor");
+            var counts = new java.util.HashMap<String, Integer>();
+            for (var enchant : net.minecraft.core.registries.BuiltInRegistries.ENCHANTMENT) {
+                var id =
+                        net.minecraft.core.registries.BuiltInRegistries.ENCHANTMENT.getKey(enchant);
+                if (!java.util.Set.of("apotheosis", "celestial_enchantments", "goety", "malum")
+                                .contains(id.getNamespace())
+                        || enchant.isCurse()) continue;
+                if (dev.purifiedundead.compat.GuardianEnchantments.accepts(enchant)) {
+                    check(enchant.canEnchant(sword), "optional anvil eligibility " + id);
+                    check(
+                            sword.canApplyAtEnchantingTable(enchant),
+                            "optional table eligibility " + id);
+                    var menu = new net.minecraft.world.inventory.AnvilMenu(21, p.getInventory());
+                    menu.getSlot(0).set(sword.copy());
+                    menu.getSlot(1)
+                            .set(
+                                    EnchantedBookItem.createForEnchantment(
+                                            new net.minecraft.world.item.enchantment
+                                                    .EnchantmentInstance(enchant, 1)));
+                    menu.createResult();
+                    check(!menu.getSlot(2).getItem().isEmpty(), "real anvil result " + id);
+                    counts.merge(id.getNamespace(), 1, Integer::sum);
+                }
+            }
+            if (!counts.isEmpty()) {
+                check(
+                        counts.getOrDefault("celestial_enchantments", 0) > 0
+                                && counts.getOrDefault("apotheosis", 0) > 0
+                                && counts.getOrDefault("goety", 0) > 0,
+                        "all three optional mods exercised");
+                System.out.println(
+                        "GUARDIAN_ENCHANT_OK: actual anvil and table eligibility " + counts);
+            }
+            if (net.minecraftforge.fml.ModList.get().isLoaded("malum")) {
+                for (String name : new String[] {"spirit_plunder", "haunted"}) {
+                    var id =
+                            net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(
+                                    "malum", name);
+                    var e = net.minecraft.core.registries.BuiltInRegistries.ENCHANTMENT.get(id);
+                    check(
+                            e != null && dev.purifiedundead.compat.GuardianEnchantments.accepts(e),
+                            "Malum explicit enchantment " + name);
+                }
+                check(counts.getOrDefault("malum", 0) >= 2, "Malum real anvil tests executed");
+                var id =
+                        net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(
+                                "malum", "animated");
+                var animated = net.minecraft.core.registries.BuiltInRegistries.ENCHANTMENT.get(id);
+                id =
+                        net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(
+                                "malum", "haunted");
+                var haunted = net.minecraft.core.registries.BuiltInRegistries.ENCHANTMENT.get(id);
+                if (animated != null && haunted != null) {
+                    var enchanted = sword.copy();
+                    enchanted.enchant(animated, 1);
+                    var menu = new net.minecraft.world.inventory.AnvilMenu(22, p.getInventory());
+                    menu.getSlot(0).set(enchanted);
+                    menu.getSlot(1)
+                            .set(
+                                    EnchantedBookItem.createForEnchantment(
+                                            new net.minecraft.world.item.enchantment
+                                                    .EnchantmentInstance(haunted, 1)));
+                    menu.createResult();
+                    check(
+                            menu.getSlot(2).getItem().isEmpty()
+                                    || menu.getSlot(2).getItem().getEnchantmentLevel(haunted) == 0,
+                            "Haunted and Animated exclusivity preserved");
+                }
+                System.out.println(
+                        "GUARDIAN_MALUM_OK: Spirit Plunder, Haunted and scythe enchantments real anvil eligibility");
+            }
+            var c = cow(l, 50, 52);
+            targets.add(c);
+            var outside = cow(l, 50, 66);
+            targets.add(outside);
+            c.hurt(p.damageSources().playerAttack(p), 10);
+            float before = c.getHealth();
+            check(c.invulnerableTime > 0, "direct hit grants hurt cooldown");
+            var w = wave(p, false, 10, 1);
+            for (int i = 0; i < 15; i++) {
+                w.tickCount++;
+                w.tick();
+            }
+            check(
+                    Math.abs(before - c.getHealth() - 12) < .05,
+                    "wave adds separate 120 percent hit: " + (before - c.getHealth()));
+            check(outside.getHealth() == 1000, "fifteen block limit");
+            check(w.isRemoved(), "wave expires");
+            before = c.getHealth();
+            w = wave(p, false, 10, 2);
+            for (int i = 0; i < 15; i++) {
+                w.tickCount++;
+                w.tick();
+            }
+            check(Math.abs(before - c.getHealth() - 24) < .05, "independent crit multiplier");
+            var wider = cow(l, 51.35, 53);
+            targets.add(wider);
+            w = wave(p, false, 10, 1);
+            for (int i = 0; i < 15; i++) {
+                w.tickCount++;
+                w.tick();
+            }
+            check(wider.getHealth() < 1000, "expanded wave width reaches lateral target");
+            wider.discard();
+            var distant = cow(l, 50, 64.9);
+            targets.add(distant);
+            w = wave(p, false, 10, 1);
+            for (int i = 0; i < 15; i++) {
+                w.tickCount++;
+                w.tick();
+            }
+            check(distant.getHealth() < 1000, "fifteen block distant target hit");
+            check(
+                    w.isRemoved() && Math.abs(w.position().z - 65) < .001,
+                    "fifteen blocks reached in fifteen ticks");
+            distant.discard();
+            var arrowAttribute =
+                    net.minecraftforge.registries.ForgeRegistries.ATTRIBUTES.getValue(
+                            net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(
+                                    "attributeslib", "arrow_damage"));
+            if (arrowAttribute != null && p.getAttribute(arrowAttribute) != null) {
+                var attr = p.getAttribute(arrowAttribute);
+                double saved = attr.getBaseValue();
+                try {
+                    attr.setBaseValue(2);
+                    before = c.getHealth();
+                    w = wave(p, false, 10, 1);
+                    attr.setBaseValue(3);
+                    for (int i = 0; i < 15; i++) {
+                        w.tickCount++;
+                        w.tick();
+                    }
+                    check(
+                            Math.abs(before - c.getHealth() - 24) < .05,
+                            "projectile multiplier snapshotted once, still melee damage");
+                } finally {
+                    attr.setBaseValue(saved);
+                }
+            }
+            check(
+                    !p.damageSources()
+                            .playerAttack(p)
+                            .is(net.minecraft.tags.DamageTypeTags.IS_PROJECTILE),
+                    "wave source has no projectile tag");
+            for (int y = 160; y <= 162; y++)
+                l.setBlockAndUpdate(new BlockPos(50, y, 51), Blocks.STONE.defaultBlockState());
+            before = c.getHealth();
+            w = wave(p, false, 10, 1);
+            for (int i = 0; i < 15 && !w.isRemoved(); i++) {
+                w.tickCount++;
+                w.tick();
+            }
+            check(before == c.getHealth(), "solid wall blocks wave");
+            for (int y = 160; y <= 162; y++)
+                l.setBlockAndUpdate(new BlockPos(50, y, 51), Blocks.AIR.defaultBlockState());
+            var ally = cow(l, 50, 51.5);
+            targets.add(ally);
+            var board = server.getScoreboard();
+            var team = board.addPlayerTeam("guardian_wave_test");
+            board.addPlayerToTeam(p.getScoreboardName(), team);
+            board.addPlayerToTeam(ally.getScoreboardName(), team);
+            w = wave(p, false, 10, 1);
+            for (int i = 0; i < 15; i++) {
+                w.tickCount++;
+                w.tick();
+            }
+            check(ally.getHealth() == 1000, "ally ignored");
+            board.removePlayerTeam(team);
+            ally.discard();
+            if (net.minecraftforge.fml.ModList.get().isLoaded("malum")) {
+                var soulTag =
+                        net.minecraft.tags.TagKey.create(
+                                net.minecraft.core.registries.Registries.ITEM,
+                                net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(
+                                        "malum", "soul_hunter_weapon"));
+                check(sword.is(soulTag), "guardian has native Malum soul harvesting tag");
+                var holder = ModItems.BLIGHTED_GUARDIAN.get().builtInRegistryHolder();
+                var originalTags = holder.tags().toList();
+                holder.bindTags(originalTags.stream().filter(t -> !t.equals(soulTag)).toList());
+                check(!sword.is(soulTag), "reproduce pack removing guardian from native tag");
+                var reaper = sword.copy();
+                for (String name : new String[] {"spirit_plunder", "haunted"}) {
+                    var id =
+                            net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(
+                                    "malum", name);
+                    reaper.enchant(
+                            net.minecraft.core.registries.BuiltInRegistries.ENCHANTMENT.get(id), 1);
+                }
+                p.setItemSlot(EquipmentSlot.MAINHAND, reaper);
+                for (int mode : new int[] {0, 1, 2, 3, 4}) {
+                    dev.purifiedundead.config.PurifiedUndeadConfig.VALUES.guardianMalumSoulHarvest
+                            .set(mode != 3);
+                    p.setItemSlot(
+                            EquipmentSlot.MAINHAND,
+                            mode == 4 ? new ItemStack(Items.IRON_SWORD) : reaper);
+                    var victim = cow(l, 50, 52);
+                    targets.add(victim);
+                    victim.setHealth(1);
+                    var ids = new java.util.HashSet<java.util.UUID>();
+                    for (var e : l.getAllEntities()) ids.add(e.getUUID());
+                    if (mode == 1) {
+                        w = wave(p, false, 100, 1);
+                        for (int i = 0; i < 15; i++) {
+                            w.tickCount++;
+                            w.tick();
+                        }
+                    } else if (mode == 2) victim.hurt(ModDamageTypes.ferinAssist(l, p), 100);
+                    else victim.hurt(p.damageSources().playerAttack(p), 100);
+                    check(!victim.isAlive(), "soul test target died");
+                    var spawned = new java.util.ArrayList<Entity>();
+                    l.getAllEntities().forEach(spawned::add);
+                    int souls = 0;
+                    for (var e : spawned) {
+                        var id =
+                                net.minecraft.core.registries.BuiltInRegistries.ENTITY_TYPE.getKey(
+                                        e.getType());
+                        if (!ids.contains(e.getUUID())
+                                && id.getNamespace().equals("malum")
+                                && id.getPath().contains("spirit")) {
+                            souls++;
+                            e.discard();
+                        }
+                    }
+                    check(
+                            (souls > 0) == (mode < 3),
+                            "native soul drops with cleared tag; blade/wave/Ferin/disabled/ordinary sword mode="
+                                    + mode);
+                    victim.discard();
+                }
+                dev.purifiedundead.config.PurifiedUndeadConfig.VALUES.guardianMalumSoulHarvest.set(
+                        true);
+                holder.bindTags(originalTags);
+                p.setItemSlot(EquipmentSlot.MAINHAND, sword);
+                System.out.println(
+                        "GUARDIAN_SOUL_DROPS_OK: cleared pack tag, actual blade/wave/Ferin drops, disabled bridge and ordinary sword no drops");
+            }
+            dev.purifiedundead.purification.PurificationProgress.unlock(p);
+            var curios =
+                    top.theillusivec4.curios.api.CuriosApi.getCuriosInventory(p)
+                            .orElseThrow(IllegalStateException::new);
+            for (var entry : curios.getCurios().entrySet())
+                if (entry.getKey().equals("ancient_contract"))
+                    entry.getValue()
+                            .getStacks()
+                            .setStackInSlot(0, new ItemStack(ModItems.ANCIENT_CONTRACT.get()));
+            var warriors = curios.getCurios().get("undead_warrior").getStacks();
+            if (warriors.getSlots() < 3) warriors.grow(3 - warriors.getSlots());
+            warriors.setStackInSlot(0, new ItemStack(ModItems.ELEINE_WARRIOR.get()));
+            warriors.setStackInSlot(1, new ItemStack(ModItems.HOENIR_WARRIOR.get()));
+            warriors.setStackInSlot(2, new ItemStack(ModItems.GROTH_WARRIOR.get()));
+            var book = new ItemStack(ModItems.LILY_DIARY.get());
+            var memories = net.minecraft.core.NonNullList.withSize(8, ItemStack.EMPTY);
+            memories.set(
+                    4,
+                    new ItemStack(
+                            dev.purifiedundead.slate.SlateContent.MEMORIES.get("eleine").get()));
+            dev.purifiedundead.slate.MemoryStorage.write(book, memories);
+            curios.getCurios().get("wanderer_log").getStacks().setStackInSlot(0, book);
+            int orbs =
+                    l.getEntitiesOfClass(
+                                    dev.purifiedundead.entity.EleineMagicOrbEntity.class,
+                                    p.getBoundingBox().inflate(10))
+                            .size();
+            server.getWorldData().overworldData().setGameTime(l.getGameTime() + 1);
+            check(
+                    curios.isEquipped(ModItems.ANCIENT_CONTRACT.get()),
+                    "contract equipped for cooperative trigger");
+            w = wave(p, true, 10, 1);
+            for (int i = 0; i < 15; i++) {
+                w.tickCount++;
+                w.tick();
+            }
+            check(
+                    p.getPersistentData().contains("purified_undead:ferin_state"),
+                    "wave-only hit triggers Ferin");
+            check(HoenirCombatEvents.hasMark(p, c), "wave applies Hoenir mark");
+            check(
+                    c.hasEffect(ModEffects.STUNNED.get()),
+                    "captured falling state triggers Groth after landing");
+            check(
+                    l.getEntitiesOfClass(
+                                            dev.purifiedundead.entity.EleineMagicOrbEntity.class,
+                                            p.getBoundingBox().inflate(10))
+                                    .size()
+                            > orbs,
+                    "wave triggers Eleine orb");
+            GuardianWaveCombat.with(
+                    new GuardianWaveCombat.State(p, true, false, 1, 10, 1),
+                    () -> check(GuardianWaveCombat.falling(p), "captured jump survives landing"));
+            check(!GuardianWaveCombat.active(), "context cleared");
+            p.getPersistentData().remove("purified_undead:guardian_wave_tick");
+            int count =
+                    l.getEntitiesOfClass(
+                                    GuardianWaveEntity.class,
+                                    p.getBoundingBox().inflate(5),
+                                    e -> !e.isRemoved())
+                            .size();
+            GuardianWaveCombat.swing(p);
+            GuardianWaveCombat.swing(p);
+            check(
+                    l.getEntitiesOfClass(
+                                            GuardianWaveEntity.class,
+                                            p.getBoundingBox().inflate(5),
+                                            e -> !e.isRemoved())
+                                    .size()
+                            == count + 1,
+                    "air swing accepted and duplicate packet blocked");
+            try {
+                GuardianWaveCombat.with(
+                        new GuardianWaveCombat.State(p, true, false, 1, 10, 1),
+                        () -> {
+                            throw new IllegalArgumentException("test context cleanup");
+                        });
+            } catch (IllegalArgumentException expected) {
+            }
+            check(!GuardianWaveCombat.active(), "context cleared after exception");
+            w = wave(p, false, 10, 1);
+            p.setGameMode(net.minecraft.world.level.GameType.SPECTATOR);
+            w.tickCount++;
+            w.tick();
+            check(w.isRemoved(), "owner invalidated wave removed");
+            p.setGameMode(net.minecraft.world.level.GameType.SURVIVAL);
+            System.out.println(
+                    "GUARDIAN_WAVE_OPTIMIZATION_OK: fifteen-tick fifteen-block sweep, projectile attribute snapshot, melee source, scope exception cleanup, owner invalidation");
+            System.out.println(
+                    "GUARDIAN_WAVE_OK: mainhand armor, separate direct/wave damage, 120 percent, independent crit, range, wall, allies, expiry, captured jump, Groth stun, Eleine orb, Hoenir mark, Ferin trigger and duplicate packet guard");
+        } finally {
+            for (var t : targets) t.discard();
+            for (var w :
+                    l.getEntitiesOfClass(GuardianWaveEntity.class, p.getBoundingBox().inflate(10)))
+                w.discard();
+            for (int y = 160; y <= 162; y++)
+                l.setBlockAndUpdate(new BlockPos(50, y, 51), Blocks.AIR.defaultBlockState());
+            p.discard();
+        }
+    }
 }

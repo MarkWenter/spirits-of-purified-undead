@@ -17,8 +17,7 @@ public final class ModParticles {
     public static final RegistryObject<SimpleParticleType> HOENIR_MARK =
             PARTICLES.register("hoenir_mark", () -> new SimpleParticleType(true));
 
-    private ModParticles() {
-    }
+    private ModParticles() {}
 
     public static void register(IEventBus bus) {
         PARTICLES.register(bus);

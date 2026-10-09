@@ -16,8 +16,10 @@ public final class FormerOrnamentItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> lines, TooltipFlag flag) {
-        lines.add(Component.translatable("item.purified_undead.former_ornament.summary")
-                .withStyle(ChatFormatting.GRAY));
+    public void appendHoverText(
+            ItemStack stack, @Nullable Level level, List<Component> lines, TooltipFlag flag) {
+        lines.add(
+                Component.translatable("item.purified_undead.former_ornament.summary")
+                        .withStyle(ChatFormatting.GRAY));
     }
 }

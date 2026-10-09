@@ -22,7 +22,8 @@ class GuardianModelTest {
         assertEquals(7.2D, GuardianModel.toughness(8.0D, false));
         assertEquals(8.8D, GuardianModel.toughness(8.0D, true), 1.0E-9D);
         assertThrows(IllegalArgumentException.class, () -> GuardianModel.armor(-1.0D, false));
-        assertThrows(IllegalArgumentException.class, () -> GuardianModel.toughness(Double.NaN, true));
+        assertThrows(
+                IllegalArgumentException.class, () -> GuardianModel.toughness(Double.NaN, true));
     }
 
     @Test

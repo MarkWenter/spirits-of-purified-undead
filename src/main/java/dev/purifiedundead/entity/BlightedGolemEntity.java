@@ -9,6 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 /** Vanilla iron golem behavior with a ten-tick melee interval instead of twenty. */
 public final class BlightedGolemEntity extends IronGolem {
     public static final double MAX_HEALTH = 200;
+
     public BlightedGolemEntity(EntityType<? extends IronGolem> type, Level level) {
         super(type, level);
     }
@@ -18,7 +19,8 @@ public final class BlightedGolemEntity extends IronGolem {
         super.readAdditionalSaveData(tag);
         if (tag.getInt("purified_undead:blighted_stats_version") < 1) {
             float previousMaximum = getMaxHealth(), previousHealth = getHealth();
-            getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.MAX_HEALTH).setBaseValue(MAX_HEALTH);
+            getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.MAX_HEALTH)
+                    .setBaseValue(MAX_HEALTH);
             setHealth(BlightedHealth.rescale(previousHealth, previousMaximum, getMaxHealth()));
         }
     }
@@ -33,12 +35,14 @@ public final class BlightedGolemEntity extends IronGolem {
     protected void registerGoals() {
         super.registerGoals();
         this.goalSelector.removeAllGoals(goal -> goal instanceof MeleeAttackGoal);
-        this.goalSelector.addGoal(1, new MeleeAttackGoal(this, 1.0D, true) {
-            @Override
-            protected int getAttackInterval() {
-                return 10;
-            }
-        });
+        this.goalSelector.addGoal(
+                1,
+                new MeleeAttackGoal(this, 1.0D, true) {
+                    @Override
+                    protected int getAttackInterval() {
+                        return 10;
+                    }
+                });
     }
 
     @Override

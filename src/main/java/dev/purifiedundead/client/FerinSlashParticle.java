@@ -11,8 +11,15 @@ import net.minecraft.core.particles.SimpleParticleType;
 public final class FerinSlashParticle extends TextureSheetParticle {
     private final SpriteSet sprites;
 
-    private FerinSlashParticle(ClientLevel level, double x, double y, double z,
-                               double xSpeed, double ySpeed, double zSpeed, SpriteSet sprites) {
+    private FerinSlashParticle(
+            ClientLevel level,
+            double x,
+            double y,
+            double z,
+            double xSpeed,
+            double ySpeed,
+            double zSpeed,
+            SpriteSet sprites) {
         super(level, x, y, z, xSpeed, ySpeed, zSpeed);
         this.sprites = sprites;
         this.xd = xSpeed * 0.08D;
@@ -50,9 +57,15 @@ public final class FerinSlashParticle extends TextureSheetParticle {
         }
 
         @Override
-        public Particle createParticle(SimpleParticleType type, ClientLevel level,
-                                       double x, double y, double z,
-                                       double xSpeed, double ySpeed, double zSpeed) {
+        public Particle createParticle(
+                SimpleParticleType type,
+                ClientLevel level,
+                double x,
+                double y,
+                double z,
+                double xSpeed,
+                double ySpeed,
+                double zSpeed) {
             return new FerinSlashParticle(level, x, y, z, xSpeed, ySpeed, zSpeed, sprites);
         }
     }

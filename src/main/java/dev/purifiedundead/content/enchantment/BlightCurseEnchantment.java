@@ -7,8 +7,9 @@ import net.minecraft.world.item.enchantment.EnchantmentCategory;
 
 /** One of the contract's eight independent, non-lootable blight curses. */
 public final class BlightCurseEnchantment extends Enchantment {
-    private static final EnchantmentCategory CONTRACT = EnchantmentCategory.create(
-            "purified_undead_contract", item -> item instanceof AncientContractItem);
+    private static final EnchantmentCategory CONTRACT =
+            EnchantmentCategory.create(
+                    "purified_undead_contract", item -> item instanceof AncientContractItem);
 
     public BlightCurseEnchantment() {
         super(Rarity.VERY_RARE, CONTRACT, EquipmentSlot.values());

@@ -29,7 +29,8 @@ public final class AccessoryDeathRetentionEvents {
             }
         }
         if (!protectedDrops.isEmpty()) {
-            List<ItemStack> stacks = protectedDrops.stream().map(drop -> drop.getItem().copy()).toList();
+            List<ItemStack> stacks =
+                    protectedDrops.stream().map(drop -> drop.getItem().copy()).toList();
             int retained = AccessoryDeathRetentionService.retain(player, stacks);
             for (int index = 0; index < retained; index++) {
                 event.getDrops().remove(protectedDrops.get(index));
@@ -47,8 +48,10 @@ public final class AccessoryDeathRetentionEvents {
 
     @SubscribeEvent
     public void onPlayerTick(TickEvent.PlayerTickEvent event) {
-        if (event.phase == TickEvent.Phase.END && !event.player.level().isClientSide()
-                && event.player.tickCount % 20 == 0 && event.player instanceof ServerPlayer player) {
+        if (event.phase == TickEvent.Phase.END
+                && !event.player.level().isClientSide()
+                && event.player.tickCount % 20 == 0
+                && event.player instanceof ServerPlayer player) {
             AccessoryDeathRetentionService.restore(player);
         }
     }

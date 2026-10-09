@@ -16,15 +16,25 @@ import software.bernie.geckolib.util.RenderUtils;
 
 /** Independent weapon geometry rendered at the character's animated grip socket. */
 public final class FerinSwordLayer extends GeoRenderLayer<FerinEntity> {
-    private static final ResourceLocation MODEL = ResourceLocation.fromNamespaceAndPath(
-            PurifiedUndead.MOD_ID, "geo/ferin_sword.geo.json");
+    private static final ResourceLocation MODEL =
+            ResourceLocation.fromNamespaceAndPath(
+                    PurifiedUndead.MOD_ID, "geo/ferin_sword.geo.json");
 
-    public FerinSwordLayer(GeoRenderer<FerinEntity> renderer) { super(renderer); }
+    public FerinSwordLayer(GeoRenderer<FerinEntity> renderer) {
+        super(renderer);
+    }
 
     @Override
-    public void renderForBone(PoseStack poseStack, FerinEntity entity, GeoBone bone,
-                              RenderType renderType, MultiBufferSource buffers, VertexConsumer buffer,
-                              float partialTick, int light, int overlay) {
+    public void renderForBone(
+            PoseStack poseStack,
+            FerinEntity entity,
+            GeoBone bone,
+            RenderType renderType,
+            MultiBufferSource buffers,
+            VertexConsumer buffer,
+            float partialTick,
+            int light,
+            int overlay) {
         String socket = FerinVisualModel.swordSocketForStage(entity.getStage());
         if (!socket.equals(bone.getName()) || bone.isHidden()) return;
         var weapon = GeckoLibCache.getBakedModels().get(MODEL);
@@ -35,9 +45,22 @@ public final class FerinSwordLayer extends GeoRenderLayer<FerinEntity> {
         // Weapon vertices are relative to its grip, so restore the socket pivot.
         RenderUtils.translateToPivotPoint(poseStack, bone);
         for (GeoBone root : weapon.topLevelBones()) {
-            getRenderer().renderRecursively(poseStack, entity, root, renderType, buffers, buffer,
-                    true, partialTick, light, overlay, color.getRedFloat(), color.getGreenFloat(),
-                    color.getBlueFloat(), color.getAlphaFloat());
+            getRenderer()
+                    .renderRecursively(
+                            poseStack,
+                            entity,
+                            root,
+                            renderType,
+                            buffers,
+                            buffer,
+                            true,
+                            partialTick,
+                            light,
+                            overlay,
+                            color.getRedFloat(),
+                            color.getGreenFloat(),
+                            color.getBlueFloat(),
+                            color.getAlphaFloat());
         }
         poseStack.popPose();
     }

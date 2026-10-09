@@ -7,7 +7,7 @@ import net.minecraft.world.phys.Vec3;
 public final class FerinSweptBlade {
     private static final int TIME_SAMPLES = 5;
 
-    private FerinSweptBlade() { }
+    private FerinSweptBlade() {}
 
     public static boolean intersects(WorldPose previous, WorldPose current, AABB target) {
         double thickness = Math.max(previous.thickness(), current.thickness());
@@ -25,18 +25,30 @@ public final class FerinSweptBlade {
 
     public static AABB bounds(WorldPose previous, WorldPose current) {
         double thickness = Math.max(previous.thickness(), current.thickness());
-        double minX = Math.min(Math.min(previous.root().x, previous.tip().x),
-                Math.min(current.root().x, current.tip().x));
-        double minY = Math.min(Math.min(previous.root().y, previous.tip().y),
-                Math.min(current.root().y, current.tip().y));
-        double minZ = Math.min(Math.min(previous.root().z, previous.tip().z),
-                Math.min(current.root().z, current.tip().z));
-        double maxX = Math.max(Math.max(previous.root().x, previous.tip().x),
-                Math.max(current.root().x, current.tip().x));
-        double maxY = Math.max(Math.max(previous.root().y, previous.tip().y),
-                Math.max(current.root().y, current.tip().y));
-        double maxZ = Math.max(Math.max(previous.root().z, previous.tip().z),
-                Math.max(current.root().z, current.tip().z));
+        double minX =
+                Math.min(
+                        Math.min(previous.root().x, previous.tip().x),
+                        Math.min(current.root().x, current.tip().x));
+        double minY =
+                Math.min(
+                        Math.min(previous.root().y, previous.tip().y),
+                        Math.min(current.root().y, current.tip().y));
+        double minZ =
+                Math.min(
+                        Math.min(previous.root().z, previous.tip().z),
+                        Math.min(current.root().z, current.tip().z));
+        double maxX =
+                Math.max(
+                        Math.max(previous.root().x, previous.tip().x),
+                        Math.max(current.root().x, current.tip().x));
+        double maxY =
+                Math.max(
+                        Math.max(previous.root().y, previous.tip().y),
+                        Math.max(current.root().y, current.tip().y));
+        double maxZ =
+                Math.max(
+                        Math.max(previous.root().z, previous.tip().z),
+                        Math.max(current.root().z, current.tip().z));
         return new AABB(minX, minY, minZ, maxX, maxY, maxZ).inflate(thickness);
     }
 
@@ -47,7 +59,8 @@ public final class FerinSweptBlade {
                 && clip(start.z, end.z - start.z, box.minZ, box.maxZ, range);
     }
 
-    private static boolean clip(double start, double direction, double min, double max, double[] range) {
+    private static boolean clip(
+            double start, double direction, double min, double max, double[] range) {
         if (Math.abs(direction) < 1.0E-9) {
             return start >= min && start <= max;
         }
@@ -63,5 +76,5 @@ public final class FerinSweptBlade {
         return range[0] <= range[1];
     }
 
-    public record WorldPose(Vec3 root, Vec3 tip, double thickness) { }
+    public record WorldPose(Vec3 root, Vec3 tip, double thickness) {}
 }

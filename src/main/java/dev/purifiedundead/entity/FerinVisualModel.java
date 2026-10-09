@@ -2,8 +2,7 @@ package dev.purifiedundead.entity;
 
 /** Shared stage-to-animation contract used by the synchronized entity and client renderer. */
 public final class FerinVisualModel {
-    private FerinVisualModel() {
-    }
+    private FerinVisualModel() {}
 
     public static String swordSocketForStage(int stage) {
         return stage == 1 ? "sword" : "sword_legacy";
