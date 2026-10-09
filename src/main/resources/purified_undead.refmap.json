@@ -1,45 +1,45 @@
 {
   "mappings": {
-    "dev.purifiedundead.mixin.MemoryDropChanceMixin": {
+    "dev/purifiedundead/mixin/MemoryDropChanceMixin": {
       "test(Lnet/minecraft/world/level/storage/loot/LootContext;)Z": "test(Lnet/minecraft/world/level/storage/loot/LootContext;)Z",
       "Lnet/minecraft/util/RandomSource;nextFloat()F": "Lnet/minecraft/util/RandomSource;m_188501_()F"
     },
-    "dev.purifiedundead.mixin.MemoryDamageCriteriaMixin": {
+    "dev/purifiedundead/mixin/MemoryDamageCriteriaMixin": {
       "matches(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/phys/Vec3;Lnet/minecraft/world/damagesource/DamageSource;)Z": "m_25444_(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/phys/Vec3;Lnet/minecraft/world/damagesource/DamageSource;)Z",
       "Lnet/minecraft/advancements/critereon/TagPredicate;matches(Lnet/minecraft/core/Holder;)Z": "Lnet/minecraft/advancements/critereon/TagPredicate;m_269475_(Lnet/minecraft/core/Holder;)Z"
     },
-    "dev.purifiedundead.mixin.MemoryTagPredicateAccessor": {
+    "dev/purifiedundead/mixin/MemoryTagPredicateAccessor": {
       "tag": "f_268479_:Lnet/minecraft/tags/TagKey;",
       "expected": "f_268414_:Z"
     },
-    "dev.purifiedundead.mixin.MemoryLootCriteriaMixin": {
+    "dev/purifiedundead/mixin/MemoryLootCriteriaMixin": {
       "test(Lnet/minecraft/world/level/storage/loot/LootContext;)Z": "test(Lnet/minecraft/world/level/storage/loot/LootContext;)Z",
       "Lnet/minecraft/advancements/critereon/DamageSourcePredicate;matches(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/phys/Vec3;Lnet/minecraft/world/damagesource/DamageSource;)Z": "Lnet/minecraft/advancements/critereon/DamageSourcePredicate;m_25444_(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/phys/Vec3;Lnet/minecraft/world/damagesource/DamageSource;)Z"
     },
-    "dev.purifiedundead.mixin.MemoryKillCriteriaMixin": {
+    "dev/purifiedundead/mixin/MemoryKillCriteriaMixin": {
       "matches(Lnet/minecraft/server/level/ServerPlayer;Lnet/minecraft/world/level/storage/loot/LootContext;Lnet/minecraft/world/damagesource/DamageSource;)Z": "m_48130_(Lnet/minecraft/server/level/ServerPlayer;Lnet/minecraft/world/level/storage/loot/LootContext;Lnet/minecraft/world/damagesource/DamageSource;)Z",
       "Lnet/minecraft/advancements/critereon/DamageSourcePredicate;matches(Lnet/minecraft/server/level/ServerPlayer;Lnet/minecraft/world/damagesource/DamageSource;)Z": "Lnet/minecraft/advancements/critereon/DamageSourcePredicate;m_25448_(Lnet/minecraft/server/level/ServerPlayer;Lnet/minecraft/world/damagesource/DamageSource;)Z"
     }
   },
   "data": {
     "searge": {
-      "dev.purifiedundead.mixin.MemoryDropChanceMixin": {
+      "dev/purifiedundead/mixin/MemoryDropChanceMixin": {
         "test(Lnet/minecraft/world/level/storage/loot/LootContext;)Z": "test(Lnet/minecraft/world/level/storage/loot/LootContext;)Z",
         "Lnet/minecraft/util/RandomSource;nextFloat()F": "Lnet/minecraft/util/RandomSource;m_188501_()F"
       },
-      "dev.purifiedundead.mixin.MemoryDamageCriteriaMixin": {
+      "dev/purifiedundead/mixin/MemoryDamageCriteriaMixin": {
         "matches(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/phys/Vec3;Lnet/minecraft/world/damagesource/DamageSource;)Z": "m_25444_(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/phys/Vec3;Lnet/minecraft/world/damagesource/DamageSource;)Z",
         "Lnet/minecraft/advancements/critereon/TagPredicate;matches(Lnet/minecraft/core/Holder;)Z": "Lnet/minecraft/advancements/critereon/TagPredicate;m_269475_(Lnet/minecraft/core/Holder;)Z"
       },
-      "dev.purifiedundead.mixin.MemoryTagPredicateAccessor": {
+      "dev/purifiedundead/mixin/MemoryTagPredicateAccessor": {
         "tag": "f_268479_:Lnet/minecraft/tags/TagKey;",
         "expected": "f_268414_:Z"
       },
-      "dev.purifiedundead.mixin.MemoryLootCriteriaMixin": {
+      "dev/purifiedundead/mixin/MemoryLootCriteriaMixin": {
         "test(Lnet/minecraft/world/level/storage/loot/LootContext;)Z": "test(Lnet/minecraft/world/level/storage/loot/LootContext;)Z",
         "Lnet/minecraft/advancements/critereon/DamageSourcePredicate;matches(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/phys/Vec3;Lnet/minecraft/world/damagesource/DamageSource;)Z": "Lnet/minecraft/advancements/critereon/DamageSourcePredicate;m_25444_(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/phys/Vec3;Lnet/minecraft/world/damagesource/DamageSource;)Z"
       },
-      "dev.purifiedundead.mixin.MemoryKillCriteriaMixin": {
+      "dev/purifiedundead/mixin/MemoryKillCriteriaMixin": {
         "matches(Lnet/minecraft/server/level/ServerPlayer;Lnet/minecraft/world/level/storage/loot/LootContext;Lnet/minecraft/world/damagesource/DamageSource;)Z": "m_48130_(Lnet/minecraft/server/level/ServerPlayer;Lnet/minecraft/world/level/storage/loot/LootContext;Lnet/minecraft/world/damagesource/DamageSource;)Z",
         "Lnet/minecraft/advancements/critereon/DamageSourcePredicate;matches(Lnet/minecraft/server/level/ServerPlayer;Lnet/minecraft/world/damagesource/DamageSource;)Z": "Lnet/minecraft/advancements/critereon/DamageSourcePredicate;m_25448_(Lnet/minecraft/server/level/ServerPlayer;Lnet/minecraft/world/damagesource/DamageSource;)Z"
       }
