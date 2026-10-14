@@ -20,6 +20,7 @@ public final class ClientSmoke {
                 || Boolean.getBoolean("purified_undead.jeiSmoke")
                 || Boolean.getBoolean("purified_undead.diaryClientSmoke")
                 || Boolean.getBoolean("purified_undead.wispSmoke")) return;
+        if (Boolean.getBoolean("purified_undead.rainClientSmoke")) return;
         var mc = Minecraft.getInstance();
         if (mc.screen instanceof TitleScreen && mc.getOverlay() == null && ++titleTicks == 40) {
             System.out.println("PURIFIED_UNDEAD_CLIENT_SMOKE_OK: title screen and resources ready");

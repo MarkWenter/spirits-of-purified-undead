@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "purified_undead:ulv_blight"
+    "purified_undead:ulv_blight",
+    "purified_undead:blighted_rain"
   ]
 }

@@ -83,6 +83,8 @@ scripts/*
 !docs/PROJECT_AUDIT_0432.md
 !docs/RELEASE_V0432.md
 !scripts/audit-server.gradle
+
+!docs/MOD_DEVELOPMENT_GUIDE.md
 !docs/RELEASE_V044.md
 !docs/slate-update/
 !docs/RELEASE_V0441.md
@@ -100,6 +102,7 @@ scripts/*
 !docs/RELEASE_V0462.md
 
 !docs/RELEASE_V0463.md
+
 !docs/RELEASE_V047.md
 !docs/COMPATIBILITY_AUDIT_047.md
 
@@ -127,5 +130,10 @@ scripts/*
 !docs/RELEASE_V056.md
 !docs/COMPATIBILITY_AUDIT_056.md
 !docs/CODE_STANDARDS.md
+
 !scripts/format-java.ps1
 !scripts/audit-chain.gradle
+
+!docs/RELEASE_V100.md
+
+!docs/blighted-rain-update/

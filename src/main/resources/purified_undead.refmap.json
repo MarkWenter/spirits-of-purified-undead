@@ -19,6 +19,23 @@
     "dev/purifiedundead/mixin/MemoryKillCriteriaMixin": {
       "matches(Lnet/minecraft/server/level/ServerPlayer;Lnet/minecraft/world/level/storage/loot/LootContext;Lnet/minecraft/world/damagesource/DamageSource;)Z": "m_48130_(Lnet/minecraft/server/level/ServerPlayer;Lnet/minecraft/world/level/storage/loot/LootContext;Lnet/minecraft/world/damagesource/DamageSource;)Z",
       "Lnet/minecraft/advancements/critereon/DamageSourcePredicate;matches(Lnet/minecraft/server/level/ServerPlayer;Lnet/minecraft/world/damagesource/DamageSource;)Z": "Lnet/minecraft/advancements/critereon/DamageSourcePredicate;m_25448_(Lnet/minecraft/server/level/ServerPlayer;Lnet/minecraft/world/damagesource/DamageSource;)Z"
+    },
+    "dev/purifiedundead/mixin/RainFoxAccessor": {
+      "getTrustedUUIDs": "m_28566_()Ljava/util/List;"
+    },
+    "dev/purifiedundead/mixin/BlightedRainVisualMixin": {
+      "renderSnowAndRain": "m_109703_(Lnet/minecraft/client/renderer/LightTexture;FDDD)V",
+      "Lcom/mojang/blaze3d/vertex/VertexConsumer;color(FFFF)Lcom/mojang/blaze3d/vertex/VertexConsumer;": "Lcom/mojang/blaze3d/vertex/VertexConsumer;m_85950_(FFFF)Lcom/mojang/blaze3d/vertex/VertexConsumer;"
+    },
+    "dev/purifiedundead/mixin/BlightedRainCloudMixin": {
+      "getCloudColor": "m_104808_(F)Lnet/minecraft/world/phys/Vec3;"
+    },
+    "dev/purifiedundead/mixin/BlightedRainParticleMixin": {
+      "tick": "m_5989_()V"
+    },
+    "dev/purifiedundead/mixin/RainPlayerDamageMixin": {
+      "hurt": "m_6469_(Lnet/minecraft/world/damagesource/DamageSource;F)Z",
+      "Lnet/minecraft/world/entity/LivingEntity;actuallyHurt(Lnet/minecraft/world/damagesource/DamageSource;F)V": "Lnet/minecraft/world/entity/LivingEntity;m_6475_(Lnet/minecraft/world/damagesource/DamageSource;F)V"
     }
   },
   "data": {
@@ -42,6 +59,23 @@
       "dev/purifiedundead/mixin/MemoryKillCriteriaMixin": {
         "matches(Lnet/minecraft/server/level/ServerPlayer;Lnet/minecraft/world/level/storage/loot/LootContext;Lnet/minecraft/world/damagesource/DamageSource;)Z": "m_48130_(Lnet/minecraft/server/level/ServerPlayer;Lnet/minecraft/world/level/storage/loot/LootContext;Lnet/minecraft/world/damagesource/DamageSource;)Z",
         "Lnet/minecraft/advancements/critereon/DamageSourcePredicate;matches(Lnet/minecraft/server/level/ServerPlayer;Lnet/minecraft/world/damagesource/DamageSource;)Z": "Lnet/minecraft/advancements/critereon/DamageSourcePredicate;m_25448_(Lnet/minecraft/server/level/ServerPlayer;Lnet/minecraft/world/damagesource/DamageSource;)Z"
+      },
+      "dev/purifiedundead/mixin/RainFoxAccessor": {
+        "getTrustedUUIDs": "m_28566_()Ljava/util/List;"
+      },
+      "dev/purifiedundead/mixin/BlightedRainVisualMixin": {
+        "renderSnowAndRain": "m_109703_(Lnet/minecraft/client/renderer/LightTexture;FDDD)V",
+        "Lcom/mojang/blaze3d/vertex/VertexConsumer;color(FFFF)Lcom/mojang/blaze3d/vertex/VertexConsumer;": "Lcom/mojang/blaze3d/vertex/VertexConsumer;m_85950_(FFFF)Lcom/mojang/blaze3d/vertex/VertexConsumer;"
+      },
+      "dev/purifiedundead/mixin/BlightedRainCloudMixin": {
+        "getCloudColor": "m_104808_(F)Lnet/minecraft/world/phys/Vec3;"
+      },
+      "dev/purifiedundead/mixin/BlightedRainParticleMixin": {
+        "tick": "m_5989_()V"
+      },
+      "dev/purifiedundead/mixin/RainPlayerDamageMixin": {
+        "hurt": "m_6469_(Lnet/minecraft/world/damagesource/DamageSource;F)Z",
+        "Lnet/minecraft/world/entity/LivingEntity;actuallyHurt(Lnet/minecraft/world/damagesource/DamageSource;F)V": "Lnet/minecraft/world/entity/LivingEntity;m_6475_(Lnet/minecraft/world/damagesource/DamageSource;F)V"
       }
     }
   }

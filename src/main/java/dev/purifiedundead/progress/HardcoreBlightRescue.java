@@ -8,10 +8,15 @@ import net.minecraft.world.effect.MobEffects;
 
 /** Consumes the ritual state instead of a hardcore player's life. */
 public final class HardcoreBlightRescue {
+    public static final String USED = "purified_undead:hardcore_blight_rescue_used";
+
     public static boolean onSaved(ServerPlayer player) {
         if (!player.server.isHardcore()
                 || !PurifiedUndeadConfig.get(PurifiedUndeadConfig.VALUES.contractAcquisitionEnabled)
                 || !player.hasEffect(ModEffects.BLIGHTED_TRANSFORMATION.get())) return false;
+        if (player.getPersistentData().getBoolean(USED)
+                || WarriorProgressStorage.load(player).contractObtained()) return false;
+        player.getPersistentData().putBoolean(USED, true);
         player.removeEffect(ModEffects.BLIGHTED_TRANSFORMATION.get());
         player.getPersistentData().remove("purified_undead:blighted_death");
         // A committed rescue must restore life before handing items to the live-player delivery

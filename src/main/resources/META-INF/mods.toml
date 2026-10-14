@@ -6,6 +6,7 @@ license="All Rights Reserved (temporary; release license pending source and asse
 modId="purified_undead"
 version="${mod_version}"
 displayName="spirits of purified undead / 涤净亡魂"
+logoFile="icon.png"
 description='''ENDER LILIES fan mod featuring the Ancient Contract, undead warriors, and contract progression.
 以古老民族之契、不死战士与契约成长为核心的 ENDER LILIES 同人模组。'''
 

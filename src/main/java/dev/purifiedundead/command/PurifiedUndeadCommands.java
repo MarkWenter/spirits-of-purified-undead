@@ -88,6 +88,7 @@ public final class PurifiedUndeadCommands {
             warrior.then(literal(action).then(target));
         }
         root.then(warrior);
+        root.then(dev.purifiedundead.blightedrain.BlightedRainCommands.tree());
         root.then(
                 literal("contract")
                         .requires(s -> s.hasPermission(2))
