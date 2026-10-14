@@ -15,8 +15,19 @@ public final class BlightedGolemEntity extends IronGolem {
     }
 
     @Override
+    public net.minecraft.world.entity.MobType getMobType() {
+        return net.minecraft.world.entity.MobType.UNDEAD;
+    }
+
+    @Override
     public void readAdditionalSaveData(net.minecraft.nbt.CompoundTag tag) {
         super.readAdditionalSaveData(tag);
+        if (net.minecraft.network.chat.Component.translatable(
+                        "entity.purified_undead.blighted_golem")
+                .equals(getCustomName())) {
+            setCustomName(null);
+            setCustomNameVisible(false);
+        }
         if (tag.getInt("purified_undead:blighted_stats_version") < 1) {
             float previousMaximum = getMaxHealth(), previousHealth = getHealth();
             getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.MAX_HEALTH)

@@ -50,6 +50,16 @@ public final class RainEffects {
                 || RainOwnership.protectedOwner(mob);
     }
 
+    public static boolean damageImmune(LivingEntity mob) {
+        return protectedMob(mob)
+                || (mob.getType() != EntityType.PHANTOM
+                        && (mob.getMobType() == net.minecraft.world.entity.MobType.UNDEAD
+                                || mob.getType()
+                                        .is(
+                                                dev.purifiedundead.blightedrain.mob.BlightedMobRules
+                                                        .BLIGHTED)));
+    }
+
     public static void tick(LivingEntity mob) {
         if (!(mob.level() instanceof ServerLevel level)
                 || level.dimension() != net.minecraft.world.level.Level.OVERWORLD
@@ -73,7 +83,12 @@ public final class RainEffects {
         boolean convertible =
                 (mob instanceof IronGolem && !(mob instanceof BlightedGolemEntity))
                         || (mob instanceof Evoker && !(mob instanceof BlightedKingEntity));
-        convertible = convertible && mob.getType().is(AFFECTED);
+        convertible =
+                (convertible
+                                || (mob instanceof net.minecraft.world.entity.Mob m
+                                        && dev.purifiedundead.blightedrain.mob
+                                                .BlightedMobConversions.candidate(m)))
+                        && mob.getType().is(AFFECTED);
         var tag = mob.getPersistentData();
         int progress = convertible ? tag.getInt(PROGRESS) : 0;
         if (!active && progress == 0) return;
@@ -91,12 +106,14 @@ public final class RainEffects {
             progress = BlightedRainModel.progress(progress, exposed, Math.max(0, now - last - 1));
             tag.putLong(LAST, now);
             tag.putInt(PROGRESS, progress);
-            if (progress >= 100 && now >= tag.getLong("purified_undead:rain_retry")) {
+            if (progress >= BlightedRainModel.CONVERSION_TICKS
+                    && now >= tag.getLong("purified_undead:rain_retry")) {
                 if (BlightedConversions.convert(mob, level) != null) return;
                 tag.putLong("purified_undead:rain_retry", now + 20);
             }
         }
         if (exposed
+                && !damageImmune(mob)
                 && mob.getType().is(AFFECTED)
                 && mob.tickCount % BlightedRainModel.DAMAGE_INTERVAL == 0)
             mob.hurt(damage(level), 1F);

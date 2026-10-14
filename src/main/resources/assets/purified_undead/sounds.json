@@ -62,5 +62,15 @@
         "stream": false
       }
     ]
+  },
+  "blighted_rain_warning": {
+    "subtitle": "subtitle.purified_undead.blighted_rain_warning",
+    "sounds": [
+      {
+        "name": "purified_undead:blighted_rain_warning",
+        "stream": true,
+        "attenuation_distance": 128
+      }
+    ]
   }
 }

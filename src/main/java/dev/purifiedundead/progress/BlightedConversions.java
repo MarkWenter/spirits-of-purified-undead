@@ -33,13 +33,15 @@ public final class BlightedConversions {
             if (golem.hasCustomName()) {
                 next.setCustomName(golem.getCustomName());
                 next.setCustomNameVisible(golem.isCustomNameVisible());
-            } else
-                next.setCustomName(Component.translatable("entity.purified_undead.blighted_golem"));
+            }
             converted = next;
         } else if (original instanceof Evoker evoker && !(original instanceof BlightedKingEntity)) {
             converted = JuliusAcquisitionEvents.convert(evoker, level);
             if (converted == null) return null;
-        } else return null;
+        } else if (original instanceof net.minecraft.world.entity.Mob mob)
+            return dev.purifiedundead.blightedrain.mob.BlightedMobConversions.convert(
+                    mob, level, false);
+        else return null;
         converted
                 .getPersistentData()
                 .putBoolean(
@@ -47,7 +49,17 @@ public final class BlightedConversions {
                         original.getPersistentData()
                                 .getBoolean(
                                         dev.purifiedundead.blightedrain.RainEffects.PLAYER_HIT));
+        for (var slot : net.minecraft.world.entity.EquipmentSlot.values())
+            converted.setItemSlot(slot, net.minecraft.world.item.ItemStack.EMPTY);
         if (!level.addFreshEntity(converted)) return null;
+        for (var slot : net.minecraft.world.entity.EquipmentSlot.values()) {
+            var stack = original.getItemBySlot(slot);
+            if (!stack.isEmpty()) original.spawnAtLocation(stack.copy());
+            original.setItemSlot(slot, net.minecraft.world.item.ItemStack.EMPTY);
+        }
+
+        original.stopRiding();
+        original.ejectPassengers();
         original.discard();
         level.sendParticles(
                 net.minecraft.core.particles.ParticleTypes.SOUL,

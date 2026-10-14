@@ -72,10 +72,7 @@ public final class JuliusAcquisitionEvents {
                 BlightedHealth.rescale(previousHealth, previousMaximum, king.getMaxHealth()));
         king.getPersistentData().putBoolean(BLIGHTED_KING_KEY, true);
         king.setPersistenceRequired();
-        if (!king.hasCustomName()) {
-            king.setCustomName(Component.translatable("entity.purified_undead.blighted_king"));
-            king.setCustomNameVisible(true);
-        }
+
         return king;
     }
 

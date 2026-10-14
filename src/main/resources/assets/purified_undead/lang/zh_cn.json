@@ -292,5 +292,21 @@
   "command.purified_undead.rain.stopped": "已停止污秽之雨，十五分钟冷却现已开始。",
   "command.purified_undead.rain.reset": "已重置污秽之雨测试状态与冷却。",
   "command.purified_undead.rain.weather": "常年降雨限制：%s。",
-  "command.purified_undead.rain.status": "污秽之雨：%s，阶段剩余 %s 秒，常年降雨限制：%s。"
+  "command.purified_undead.rain.status": "污秽之雨：%s，阶段剩余 %s 秒，常年降雨限制：%s。",
+  "entity.purified_undead.blighted_zombie": "秽鬼僵尸",
+  "entity.purified_undead.blighted_skeleton": "秽鬼骷髅",
+  "entity.purified_undead.blighted_drowned": "秽鬼溺尸",
+  "entity.purified_undead.blighted_husk": "秽鬼尸壳",
+  "entity.purified_undead.blighted_stray": "秽鬼流浪者",
+  "entity.purified_undead.blighted_villager": "秽鬼村民",
+  "entity.purified_undead.blighted_pillager": "秽鬼掠夺者",
+  "entity.purified_undead.blighted_vindicator": "秽鬼卫道士",
+  "entity.purified_undead.blighted_witch": "秽鬼女巫",
+  "entity.purified_undead.blighted_pig": "秽鬼猪",
+  "entity.purified_undead.blighted_cow": "秽鬼牛",
+  "entity.purified_undead.blighted_sheep": "秽鬼羊",
+  "entity.purified_undead.blighted_chicken": "秽鬼鸡",
+  "entity.purified_undead.blighted_horse": "秽鬼马",
+  "entity.purified_undead.blighted_donkey": "秽鬼驴",
+  "subtitle.purified_undead.blighted_rain_warning": "污秽之雨预警"
 }

@@ -111,7 +111,14 @@ public final class RainController {
     }
 
     private static void announce(ServerLevel level, String key) {
-        for (var player : level.players())
+        for (var player : level.players()) {
             player.sendSystemMessage(Component.translatable("message.purified_undead.rain." + key));
+            if (key.equals("warning"))
+                player.playNotifySound(
+                        dev.purifiedundead.content.ModSounds.find("blighted_rain_warning"),
+                        net.minecraft.sounds.SoundSource.MASTER,
+                        1,
+                        1);
+        }
     }
 }

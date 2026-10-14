@@ -9,6 +9,7 @@ public final class BlightedRainContent {
 
     public static void register(IEventBus modBus) {
         Objects.requireNonNull(modBus, "modBus");
+        dev.purifiedundead.blightedrain.mob.BlightedMobContent.register(modBus);
         net.minecraftforge.common.MinecraftForge.EVENT_BUS.register(new BlightedRainEvents());
     }
 }

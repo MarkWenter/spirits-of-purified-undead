@@ -4,6 +4,7 @@ package dev.purifiedundead.blightedrain;
 public final class BlightedRainModel {
     public static final int WARNING_TICKS = 300, COOLDOWN_TICKS = 18000;
     public static final int MIN_DURATION = 6000, MAX_DURATION = 12000, DAMAGE_INTERVAL = 25;
+    public static final int CONVERSION_TICKS = 200;
     public static final double CHANCE_PER_SECOND = .001;
 
     public enum Phase {
@@ -91,7 +92,8 @@ public final class BlightedRainModel {
     }
 
     public static int progress(int previous, boolean exposed, long missedTicks) {
-        int value = (int) Math.max(0, Math.min(100, previous) - Math.max(0, missedTicks));
-        return exposed ? Math.min(100, value + 1) : Math.max(0, value - 1);
+        int value =
+                (int) Math.max(0, Math.min(CONVERSION_TICKS, previous) - Math.max(0, missedTicks));
+        return exposed ? Math.min(CONVERSION_TICKS, value + 1) : Math.max(0, value - 1);
     }
 }

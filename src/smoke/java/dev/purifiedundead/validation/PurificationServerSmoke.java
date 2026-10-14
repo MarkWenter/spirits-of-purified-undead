@@ -263,6 +263,7 @@ public final class PurificationServerSmoke {
             }
             try {
                 dev.purifiedundead.blightedrain.BlightedRainSmoke.run(server);
+                dev.purifiedundead.blightedrain.BlightedMobSmoke.run(server);
             } catch (Exception rainFailure) {
                 throw new RuntimeException(rainFailure);
             }

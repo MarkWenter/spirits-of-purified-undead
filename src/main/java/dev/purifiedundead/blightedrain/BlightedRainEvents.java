@@ -53,7 +53,7 @@ public final class BlightedRainEvents {
     public void immunity(LivingAttackEvent event) {
         if (event.getSource().is(RainEffects.DAMAGE)
                 && (event.getEntity() instanceof net.minecraft.world.entity.player.Player
-                        || RainEffects.protectedMob(event.getEntity()))) event.setCanceled(true);
+                        || RainEffects.damageImmune(event.getEntity()))) event.setCanceled(true);
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -61,5 +61,55 @@ public final class BlightedRainEvents {
         if (event.getSource().is(RainEffects.DAMAGE)
                 && !event.getEntity().getPersistentData().getBoolean(RainEffects.PLAYER_HIT))
             event.setCanceled(true);
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void villagerDeath(net.minecraftforge.event.entity.living.LivingDeathEvent e) {
+        if (e.getSource().is(RainEffects.DAMAGE)
+                && e.getEntity() instanceof net.minecraft.world.entity.Mob villager
+                && (villager.getType() == net.minecraft.world.entity.EntityType.VILLAGER
+                        || villager.getType() == net.minecraft.world.entity.EntityType.CHICKEN)
+                && !RainEffects.damageImmune(villager)
+                && villager.level() instanceof net.minecraft.server.level.ServerLevel level) {
+            if (dev.purifiedundead.blightedrain.mob.BlightedMobConversions.convert(
+                            villager, level, true)
+                    != null) e.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void extraFragment(net.minecraftforge.event.entity.living.LivingDropsEvent e) {
+        if (e.getEntity() instanceof dev.purifiedundead.blightedrain.mob.BlightedVariant
+                && e.getEntity().level() instanceof net.minecraft.server.level.ServerLevel level
+                && level.getGameRules()
+                        .getBoolean(net.minecraft.world.level.GameRules.RULE_DOMOBLOOT))
+            e.getDrops()
+                    .add(
+                            new net.minecraft.world.entity.item.ItemEntity(
+                                    level,
+                                    e.getEntity().getX(),
+                                    e.getEntity().getY(),
+                                    e.getEntity().getZ(),
+                                    new net.minecraft.world.item.ItemStack(
+                                            dev.purifiedundead.content.ModItems.BLIGHT_FRAGMENT
+                                                    .get())));
+    }
+
+    @SubscribeEvent
+    public void blightClick(
+            net.minecraftforge.event.entity.player.PlayerInteractEvent.EntityInteract e) {
+        if (e.getEntity() instanceof net.minecraft.server.level.ServerPlayer player
+                && e.getTarget() instanceof net.minecraft.world.entity.Mob mob
+                && mob.level() instanceof net.minecraft.server.level.ServerLevel level
+                && e.getItemStack().is(dev.purifiedundead.content.ModItems.BLIGHTED_SPIRIT.get())
+                && dev.purifiedundead.progress.ContractProgressService.hasContract(player)
+                && dev.purifiedundead.blightedrain.mob.BlightedMobConversions.clickable(mob)
+                && !RainEffects.protectedMob(mob)) {
+            if (dev.purifiedundead.progress.BlightedConversions.convert(mob, level) != null) {
+                if (!player.getAbilities().instabuild) e.getItemStack().shrink(1);
+                e.setCancellationResult(net.minecraft.world.InteractionResult.SUCCESS);
+                e.setCanceled(true);
+            }
+        }
     }
 }

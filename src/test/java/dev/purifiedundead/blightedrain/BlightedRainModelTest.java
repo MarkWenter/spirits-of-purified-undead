@@ -39,7 +39,8 @@ class BlightedRainModelTest {
     void residueDecaysInsteadOfImmediatelyResetting() {
         assertEquals(60, BlightedRainModel.progress(59, true, 0));
         assertEquals(59, BlightedRainModel.progress(60, false, 0));
-        assertEquals(100, BlightedRainModel.progress(99, true, 0));
+        assertEquals(200, BlightedRainModel.progress(199, true, 0));
+        assertEquals(200, BlightedRainModel.progress(200, true, 0));
         assertEquals(0, BlightedRainModel.progress(0, false, 0));
         assertEquals(1, BlightedRainModel.progress(60, true, 100));
         assertEquals(40, BlightedRainModel.progress(60, false, 19));

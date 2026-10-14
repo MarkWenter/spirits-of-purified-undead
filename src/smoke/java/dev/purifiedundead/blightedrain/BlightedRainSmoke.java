@@ -215,11 +215,11 @@ public final class BlightedRainSmoke {
                     golem.getPersistentData().getInt("purified_undead:rain_conversion") == 40,
                     "one-tick decay under roof");
             level.setBlockAndUpdate(shelter, Blocks.AIR.defaultBlockState());
-            for (int i = 81; i <= 140; i++) {
+            for (int i = 81; i <= 240; i++) {
                 golem.tickCount = i;
                 RainEffects.tick(golem);
             }
-            check(golem.isRemoved(), "100-tick golem conversion");
+            check(golem.isRemoved(), "200-tick golem conversion");
             var converted =
                     level
                             .getEntitiesOfClass(
@@ -233,11 +233,11 @@ public final class BlightedRainSmoke {
             var evoker = mob(EntityType.EVOKER, level, 48, 44);
             fixtures.add(evoker);
             evoker.getPersistentData().putBoolean(RainEffects.PLAYER_HIT, true);
-            for (int i = 1; i <= 100; i++) {
+            for (int i = 1; i <= 200; i++) {
                 evoker.tickCount = i;
                 RainEffects.tick(evoker);
             }
-            check(evoker.isRemoved(), "100-tick evoker conversion");
+            check(evoker.isRemoved(), "200-tick evoker conversion");
             var king =
                     level
                             .getEntitiesOfClass(

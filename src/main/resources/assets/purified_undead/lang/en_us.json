@@ -292,5 +292,21 @@
   "command.purified_undead.rain.stopped": "Blighted Rain stopped. The fifteen-minute cooldown has started.",
   "command.purified_undead.rain.reset": "Rain test state and cooldown reset.",
   "command.purified_undead.rain.weather": "Permanent rain restriction: %s.",
-  "command.purified_undead.rain.status": "Blighted Rain: %s, %s seconds remaining, permanent rain restriction: %s."
+  "command.purified_undead.rain.status": "Blighted Rain: %s, %s seconds remaining, permanent rain restriction: %s.",
+  "entity.purified_undead.blighted_zombie": "Blighted Zombie",
+  "entity.purified_undead.blighted_skeleton": "Blighted Skeleton",
+  "entity.purified_undead.blighted_drowned": "Blighted Drowned",
+  "entity.purified_undead.blighted_husk": "Blighted Husk",
+  "entity.purified_undead.blighted_stray": "Blighted Stray",
+  "entity.purified_undead.blighted_villager": "Blighted Villager",
+  "entity.purified_undead.blighted_pillager": "Blighted Pillager",
+  "entity.purified_undead.blighted_vindicator": "Blighted Vindicator",
+  "entity.purified_undead.blighted_witch": "Blighted Witch",
+  "entity.purified_undead.blighted_pig": "Blighted Pig",
+  "entity.purified_undead.blighted_cow": "Blighted Cow",
+  "entity.purified_undead.blighted_sheep": "Blighted Sheep",
+  "entity.purified_undead.blighted_chicken": "Blighted Chicken",
+  "entity.purified_undead.blighted_horse": "Blighted Horse",
+  "entity.purified_undead.blighted_donkey": "Blighted Donkey",
+  "subtitle.purified_undead.blighted_rain_warning": "Blighted Rain approaches"
 }

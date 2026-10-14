@@ -11,7 +11,12 @@
     "MemoryKillCriteriaMixin",
     "CelestialEtchingLootMixin",
     "RainFoxAccessor",
-    "RainPlayerDamageMixin"
+    "RainPlayerDamageMixin",
+    "BlightedMeleeGoalMixin",
+    "BlightedRangedGoalMixin",
+    "BlightedBowGoalMixin",
+    "BlightedCrossbowGoalMixin",
+    "BlightedCrossbowReleaseMixin"
   ],
   "injectors": {
     "defaultRequire": 1
@@ -20,6 +25,8 @@
   "client": [
     "BlightedRainVisualMixin",
     "BlightedRainCloudMixin",
-    "BlightedRainParticleMixin"
+    "BlightedRainParticleMixin",
+    "BlightedSkinMixin",
+    "BlightedLayerSkinMixin"
   ]
 }
