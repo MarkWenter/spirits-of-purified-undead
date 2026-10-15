@@ -87,6 +87,8 @@ public final class BlightedMobConversions {
                     new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.SADDLE));
         }
         next.load(data);
+        if (next instanceof BlightedPillager && next.getAttribute(Attributes.ATTACK_DAMAGE) != null)
+            next.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(3.0);
         var attr = next.getAttribute(Attributes.MAX_HEALTH);
         var originalAttr = original.getAttribute(Attributes.MAX_HEALTH);
         attr.removeModifiers();

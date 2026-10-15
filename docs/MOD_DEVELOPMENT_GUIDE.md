@@ -263,3 +263,5 @@ Forge 编译基线与加载最低要求改为 47.3.22。污秽铁傀儡、污秽
 两版在 blightedrain/ 建立空注册边界，接入本体初始化，具体玩法暂缓。没有新增注册内容、配置、存档或网络协议，版本仍为 1.0。后续实现先阅读 [更新入口](blighted-rain-update/README.md) 与 [架构约定](blighted-rain-update/ARCHITECTURE.md)。项目现状和实际验证独立记录在该目录。
 
 **污秽之雨贴图重绘（2026-10-15）：** 两版 `1.1.0-blighted-rain.2.1` 仅更新新增秽鬼的资源，原有傀儡/国王贴图保留。20 张内置 imagegen 草稿经原版 UV 校准；复现脚本在 `scripts/blighted-textures/`。参见 [重绘说明](blighted-rain-update/TEXTURE_REPAINT.md)。画面测试新增幼年、背面、毛色/斑纹、剪毛/染色与职业服装案例，测试需排除无关 smoke 数据标签并禁用测试窗口失焦暂停。
+
+**污秽之雨测试修正（2026-10-15）：** 两版 `1.1.0-blighted-rain.2.2` 新增 `content/BlightedSpawnEggs` 与 `ModCreativeTabs`。17/18 种秽鬼刷怪蛋在独立 `purified_undead:main` 创造栏；图标使用秽鬼化状态图。手记仅改创造栏归属，不改教程正文。掠夺者仍掉落原装备，但可重新拾弩，无弩时近战。新增 `RAIN_FIX_SERVER_OK` 和 `RAIN_FIX_CLIENT_OK`。详情见 [修正记录](blighted-rain-update/FIXES_2_2.md)。默认 Forge `run/server` 曾关闭契约自然获取，完整回归应使用已核对配置的独立开发实例。

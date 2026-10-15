@@ -23,7 +23,18 @@ def eyes(n):
 def compose(src,m,n,layer=False):
  # Only low-strength grade: original coat, clothes, patch outlines remain recognizable.
  arr=np.array(src).copy();rgb=arr[:,:,:3].astype(float);gray=rgb.mean(axis=2,keepdims=True);arr[:,:,:3]=np.clip((rgb*.92+gray*.08)*.92,0,255).astype('uint8')
+ if n == 'villager':
+  # Change skin only: original green hues identify skin, not gray clothes or red fissures.
+  skin=(rgb[:,:,1]>rgb[:,:,0]*1.05)&(rgb[:,:,1]>rgb[:,:,2]*1.15)
+  luminance=rgb[:,:,1]
+  arr[:,:,0][skin]=np.clip(luminance[skin]*.70+18,0,255).astype('uint8')
+  arr[:,:,1][skin]=np.clip(luminance[skin]*.30+8,0,255).astype('uint8')
+  arr[:,:,2][skin]=np.clip(luminance[skin]*.25+10,0,255).astype('uint8')
  out=Image.fromarray(arr);mask=Image.new('RGBA',src.size);mask.paste(m,(0,0));out=Image.alpha_composite(out,mask);out.putalpha(src.getchannel('A'))
+ if n == 'drowned':
+  # Vanilla drowned eyes cover two rows and three columns, unlike zombie pupils.
+  for x in [8,9,10,13,14,15]:
+   for y in [11,12]: out.putpixel((x,y),(94,23,30,src.getpixel((x,y))[3]))
  for i,(x,y) in enumerate(eyes(n)):
   if x<src.width and y<src.height and src.getpixel((x,y))[3]:out.putpixel((x,y),((222,24,35,255) if i%2==0 else (170,15,25,255)))
  return out

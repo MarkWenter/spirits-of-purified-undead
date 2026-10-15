@@ -79,6 +79,7 @@ public final class PurifiedUndead {
         dev.purifiedundead.foundry.FoundryContent.register(modBus);
         dev.purifiedundead.blightedrain.BlightedRainContent.register(modBus);
         ModItems.register(modBus);
+        dev.purifiedundead.content.ModCreativeTabs.register(modBus);
         ModEntities.register(modBus);
         ModParticles.register(modBus);
         ModEnchantments.register(modBus);
@@ -131,7 +132,8 @@ public final class PurifiedUndead {
     }
 
     private void addCreativeTabItems(final BuildCreativeModeTabContentsEvent event) {
-        if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
+        if (event.getTab() == dev.purifiedundead.content.ModCreativeTabs.MAIN.get()) {
+            dev.purifiedundead.content.BlightedSpawnEggs.creative(event::accept);
             dev.purifiedundead.slate.SlateContent.creative(event::accept);
             event.accept(dev.purifiedundead.foundry.FoundryContent.ITEM.get());
             event.accept(ModItems.ANCIENT_CONTRACT);

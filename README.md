@@ -2,13 +2,13 @@
 
 基于 **Minecraft 1.20.1 / Forge** 的《ENDER LILIES》非官方同人模组。与古老民族缔结契约，净化八组不死战士的污秽，获得加护并成长。
 
-**本分支预览版本：1.1.0-blighted-rain.2.1（Minecraft 1.20.1 Forge）**。已实现[污秽之雨第一部分](docs/blighted-rain-update/PART_1.md)与[第二部分](docs/blighted-rain-update/PART_2.md)，整体更新尚未定稿，独立分支不合并主分支。原正式版说明见 [v1.0](docs/RELEASE_V100.md)。客户端与服务端必须同时更新（网络协议 12）。
+**本分支预览版本：1.1.0-blighted-rain.2.2（Minecraft 1.20.1 Forge）**。已实现[污秽之雨第一部分](docs/blighted-rain-update/PART_1.md)与[第二部分](docs/blighted-rain-update/PART_2.md)，整体更新尚未定稿，独立分支不合并主分支。原正式版说明见 [v1.0](docs/RELEASE_V100.md)。客户端与服务端必须同时更新（网络协议 12）。
 
 最新[贴图重绘](docs/blighted-rain-update/TEXTURE_REPAINT.md)以原版 UV 为基础，使用 imagegen 与逐像素校准完成。
 
 ## 安装
 
-安装完整构建成品 `purified_undead-1.1.0-blighted-rain.2.1.jar`（勿使用 slim），放入游戏实例的 `mods` 文件夹。客户端和服务器均需安装。
+安装完整构建成品 `purified_undead-1.1.0-blighted-rain.2.2.jar`（勿使用 slim），放入游戏实例的 `mods` 文件夹。客户端和服务器均需安装。
 
 | 组件 | 已验证版本 | 说明 |
 | --- | --- | --- |
@@ -115,3 +115,5 @@ Forge 使用 Patchouli 1.20.1-85-FORGE；NeoForge 使用 Patchouli 1.21.1-93-NEO
 ## 0.52.1 启动修复
 
 修复 Forge 0.52.0 正式安装包无法启动的问题，两版发布 JAR 已验证进入主菜单。请替换旧本体 JAR；详见 [发布说明](docs/RELEASE_V0521.md)。
+
+污秽之雨测试修正：溺尸眼周、村民暗褐红皮肤、掠夺者弩拾取与空手近战、秽鬼刷怪蛋、独立创造栏位。见 [修正说明](docs/blighted-rain-update/FIXES_2_2.md)。

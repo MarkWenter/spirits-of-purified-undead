@@ -188,6 +188,7 @@ public final class BlightedMobContent {
         e.put(
                 PILLAGER.get(),
                 Pillager.createAttributes()
+                        .add(net.minecraft.world.entity.ai.attributes.Attributes.ATTACK_DAMAGE, 3.0)
                         .add(net.minecraft.world.entity.ai.attributes.Attributes.MAX_HEALTH, 48)
                         .build());
         e.put(

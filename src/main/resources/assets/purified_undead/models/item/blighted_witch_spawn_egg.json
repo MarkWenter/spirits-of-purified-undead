@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/template_spawn_egg",
+  "textures": {
+    "layer2": "purified_undead:item/blighted_spawn_egg_overlay"
+  }
+}

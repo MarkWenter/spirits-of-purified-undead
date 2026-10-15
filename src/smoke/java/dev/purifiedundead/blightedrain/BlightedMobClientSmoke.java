@@ -13,7 +13,7 @@ public final class BlightedMobClientSmoke {
     private static volatile boolean ready, sunOK;
     private static volatile int warningSounds;
     private static final java.util.Set<String> rendered = new java.util.HashSet<>();
-    private static final String[] names = {
+    private static String[] names = {
         "zombie",
         "skeleton",
         "drowned",
@@ -57,6 +57,10 @@ public final class BlightedMobClientSmoke {
         "horse:coat5",
         "horse:coat6",
     };
+    static {
+        if (Boolean.getBoolean("purified_undead.rainQuickReview"))
+            names = new String[] {"drowned", "villager", "pillager", "villager:librarian", "villager:baby"};
+    }
     private static net.minecraft.world.entity.Mob current;
 
     @net.minecraftforge.eventbus.api.SubscribeEvent
@@ -256,6 +260,29 @@ public final class BlightedMobClientSmoke {
                                 + " camera="
                                 + mc.gameRenderer.getMainCamera().getPosition());
             }
+            if (ticks == names.length * 70 + 10) {
+                net.minecraft.world.item.CreativeModeTabs.tryRebuildTabContents(mc.level.enabledFeatures(), true, mc.level.registryAccess());
+                var tab = dev.purifiedundead.content.ModCreativeTabs.MAIN.get();
+                var entries = tab.getDisplayItems();
+                var iconModel=mc.getItemRenderer().getModel(tab.getIconItem(),mc.level,mc.player,0);
+                if (iconModel.getParticleIcon().contents().name().getPath().equals("missingno"))
+                    throw new IllegalStateException("missing creative tab icon sprite");
+                long eggs = entries.stream().filter(stack -> stack.getItem() instanceof net.minecraft.world.item.SpawnEggItem).count();
+                if (eggs != 17 || entries.stream().noneMatch(stack -> stack.is(dev.purifiedundead.content.ModItems.ANCIENT_CONTRACT.get())))
+                    throw new IllegalStateException("creative catalogue missing items/eggs");
+                var tools = net.minecraft.core.registries.BuiltInRegistries.CREATIVE_MODE_TAB.get(net.minecraft.world.item.CreativeModeTabs.TOOLS_AND_UTILITIES);
+                if (tools.getDisplayItems().stream().anyMatch(stack -> net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(stack.getItem()).getNamespace().equals("purified_undead")))
+                    throw new IllegalStateException("mod item leaked into vanilla tools");
+                var screen = new net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen(mc.player, mc.level.enabledFeatures(), true);
+                mc.setScreen(screen);
+                var select=screen.getClass().getDeclaredMethod("selectTab",net.minecraft.world.item.CreativeModeTab.class);
+                select.setAccessible(true);select.invoke(screen,tab);
+                // Reinitialization selects the page containing the static selected tab.
+                mc.setScreen(new net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen(mc.player, mc.level.enabledFeatures(), true));
+                System.out.println("RAIN_FIX_CLIENT_OK: dedicated tab, " + eggs + " eggs, vanilla tools clean");
+            }
+            if (ticks == names.length * 70 + 30)
+                net.minecraft.client.Screenshot.grab(mc.gameDirectory,"blighted-creative-tab.png",mc.getMainRenderTarget(),m -> {});
             if (desired >= names.length && ticks >= names.length * 70 + 40 && !stopping) {
                 stopping = true;
                 for (String name : names)

@@ -6,7 +6,7 @@
   "use_resource_pack": true,
   "model": "purified_undead:white_witch_diary",
   "book_texture": "purified_undead:textures/gui/white_witch_diary.png",
-  "creative_tab": "minecraft:tools_and_utilities",
+  "creative_tab": "purified_undead:main",
   "show_progress": false,
   "show_toasts": false,
   "use_blocky_font": true,
