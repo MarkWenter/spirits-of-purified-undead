@@ -28,7 +28,34 @@ public final class BlightedMobClientSmoke {
         "sheep",
         "chicken",
         "horse",
-        "donkey"
+        "donkey",
+        "zombie:baby",
+        "husk:baby",
+        "drowned:baby",
+        "villager:baby",
+        "zombie:back",
+        "skeleton:back",
+        "drowned:back",
+        "husk:back",
+        "stray:back",
+        "pillager:back",
+        "vindicator:back",
+        "witch:back",
+        "pig:side",
+        "cow:side",
+        "sheep:side",
+        "sheep:sheared",
+        "sheep:red",
+        "chicken:side",
+        "villager:farmer",
+        "villager:librarian",
+        "horse:coat0",
+        "horse:coat1",
+        "horse:coat2",
+        "horse:coat3",
+        "horse:coat4",
+        "horse:coat5",
+        "horse:coat6",
     };
     private static net.minecraft.world.entity.Mob current;
 
@@ -55,6 +82,8 @@ public final class BlightedMobClientSmoke {
         if (event.phase != net.minecraftforge.event.TickEvent.Phase.END) return;
         if (!Boolean.getBoolean("purified_undead.rainClientSmoke")) return;
         var mc = Minecraft.getInstance();
+        mc.options.pauseOnLostFocus = false;
+        if (mc.level != null && mc.screen instanceof net.minecraft.client.gui.screens.PauseScreen) mc.setScreen(null);
         try {
             if (!opened && mc.screen instanceof TitleScreen && mc.getOverlay() == null) {
                 opened = true;
@@ -75,16 +104,11 @@ public final class BlightedMobClientSmoke {
                                                         .getPlayerList()
                                                         .getPlayers()
                                                         .get(0);
-                                        p.addEffect(
-                                                new net.minecraft.world.effect.MobEffectInstance(
-                                                        net.minecraft.world.effect.MobEffects
-                                                                .NIGHT_VISION,
-                                                        2400,
-                                                        0));
+                                        p.removeAllEffects();
                                         p.setGameMode(net.minecraft.world.level.GameType.CREATIVE);
                                         p.getAbilities().flying = true;
                                         p.onUpdateAbilities();
-                                        p.connection.teleport(44.5, 150.5, 49.5, 180, 8);
+                                        p.connection.teleport(44.5, 150.2, 47.8, 180, 14);
                                         level.setDayTime(6000);
                                         level.getGameRules()
                                                 .getRule(
@@ -139,11 +163,11 @@ public final class BlightedMobClientSmoke {
             mc.player.noPhysics = true;
             mc.player.setNoGravity(true);
             mc.player.setDeltaMovement(net.minecraft.world.phys.Vec3.ZERO);
-            mc.player.setPos(44.5, 150.5, 49.5);
+            mc.player.setPos(44.5, 150.2, 47.8);
             mc.player.setYRot(180);
-            mc.player.setXRot(8);
+            mc.player.setXRot(14);
 
-            if (++ticks > 2500) throw new IllegalStateException("gallery timeout");
+            if (++ticks > 6000) throw new IllegalStateException("gallery timeout");
             int desired = (ticks - 1) / 70;
             if (desired < names.length && desired != stage) {
                 stage = desired;
@@ -171,8 +195,7 @@ public final class BlightedMobClientSmoke {
                                                                             .fromNamespaceAndPath(
                                                                                     "purified_undead",
                                                                                     "blighted_"
-                                                                                            + names[
-                                                                                                    idx]));
+                                                                                            + names[idx].split(":")[0]));
                                     current = type.create(level);
                                     current.setPos(44.5, 150, 44.5);
                                     current.setNoAi(true);
@@ -187,10 +210,32 @@ public final class BlightedMobClientSmoke {
                                         current.yBodyRot = 60;
                                         current.yHeadRot = 60;
                                     }
+                                    String variant = names[idx];
+                                    if (variant.endsWith(":baby")) {
+                                        if (current instanceof net.minecraft.world.entity.monster.Zombie baby) baby.setBaby(true);
+                                    }
+                                    if (variant.endsWith(":back") || variant.endsWith(":side")) {
+                                        float yaw = variant.endsWith(":back") ? 180 : 70;
+                                        current.setYRot(yaw); current.yBodyRot = yaw; current.yHeadRot = yaw;
+                                    }
+                                    if (current instanceof net.minecraft.world.entity.animal.horse.Horse horse && variant.contains(":coat")) {
+                                        int coat = Integer.parseInt(variant.substring(variant.length()-1));
+                                        var coatData = new net.minecraft.nbt.CompoundTag();
+                                        horse.addAdditionalSaveData(coatData);
+                                        coatData.putInt("Variant", coat | ((coat % 5) << 8));
+                                        horse.readAdditionalSaveData(coatData);
+                                    }
+                                    if (current instanceof net.minecraft.world.entity.monster.ZombieVillager villager) {
+                                        if (variant.endsWith(":farmer")) villager.setVillagerData(villager.getVillagerData().setProfession(net.minecraft.world.entity.npc.VillagerProfession.FARMER));
+                                        if (variant.endsWith(":librarian")) villager.setVillagerData(villager.getVillagerData().setProfession(net.minecraft.world.entity.npc.VillagerProfession.LIBRARIAN));
+                                    }
                                     level.addFreshEntity(current);
                                     if (current
                                             instanceof net.minecraft.world.entity.animal.Sheep s)
-                                        s.setColor(net.minecraft.world.item.DyeColor.WHITE);
+                                        {
+                                            s.setColor(variant.endsWith(":red") ? net.minecraft.world.item.DyeColor.RED : net.minecraft.world.item.DyeColor.WHITE);
+                                            s.setSheared(variant.endsWith(":sheared"));
+                                        }
                                     if (idx == names.length - 1) {
                                         sunOK = current.getRemainingFireTicks() <= 0;
                                         level.setWeatherParameters(0, 24000, true, false);
@@ -199,7 +244,7 @@ public final class BlightedMobClientSmoke {
                                 });
             }
             if (desired < names.length && ticks % 70 == 55) {
-                String label = names[desired];
+                String label = names[desired].replace(':', '-');
                 net.minecraft.client.Screenshot.grab(
                         mc.gameDirectory,
                         "blighted-" + label + ".png",
@@ -214,7 +259,7 @@ public final class BlightedMobClientSmoke {
             if (desired >= names.length && ticks >= names.length * 70 + 40 && !stopping) {
                 stopping = true;
                 for (String name : names)
-                    if (!rendered.contains("blighted_" + name))
+                    if (!rendered.contains("blighted_" + name.split(":")[0]))
                         throw new IllegalStateException("not actually rendered " + name);
                 if (!sunOK || warningSounds != 1)
                     throw new IllegalStateException(

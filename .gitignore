@@ -137,3 +137,5 @@ scripts/*
 !docs/RELEASE_V100.md
 
 !docs/blighted-rain-update/
+
+!scripts/blighted-textures/

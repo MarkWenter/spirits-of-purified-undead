@@ -14,4 +14,4 @@ Forge 开发模板的 LICENSE 和 CREDITS 保留于 `docs/licenses/`；Gradle Wr
 
 Forge 0.56.0 起在本体内以 Jar-in-Jar 附带官方 MixinExtras 0.5.3 基础库（MIT），未修改其代码，许可见 `docs/licenses/MIXINEXTRAS_LICENSE.txt`。NeoForge 使用加载器自带版本。该库不属于本项目原创内容。
 
-污秽之雨新增秽鬼纹理基于 Minecraft 原版实体贴图进行逐像素变体绘制，保留原版模型与图集坐标；Minecraft 原版素材归 Mojang/Microsoft 所有。项目作者提供的参考画集页面未随公开源码分发。
+污秽之雨新增秽鬼纹理基于 Minecraft 原版实体贴图使用内置 imagegen 重绘，再提取纹路并逐像素校准，保留原版模型与图集坐标；Minecraft 原版素材归 Mojang/Microsoft 所有。项目作者提供的参考画集页面未随公开源码分发。
