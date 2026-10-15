@@ -1,7 +1,7 @@
 package dev.purifiedundead.blightedrain.mob;
 
-import net.minecraft.world.entity.animal.Pig;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.animal.Pig;
 import net.minecraft.world.level.Level;
 
 public final class BlightedPig extends Pig implements BlightedVariant {
@@ -22,6 +22,6 @@ public final class BlightedPig extends Pig implements BlightedVariant {
     @Override
     protected net.minecraft.resources.ResourceLocation getDefaultLootTable() {
         return net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(
-                "minecraft", "entities/pig");
+                "purified_undead", "entities/blighted_pig");
     }
 }

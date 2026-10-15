@@ -1,7 +1,8 @@
 # 污秽之雨更新
 
-两版主模组基线为 1.0。当前候选版本 **1.1.0-blighted-rain.2.2**：第一部分天气事件与第二部分预警音效/秽鬼生物均已实现，更新整体尚未定稿。
+两版主模组基线为 1.0。当前候选版本 **1.1.0-blighted-rain.3**：第一部分天气事件与第二部分预警音效/秽鬼生物均已实现，更新整体尚未定稿。
 
+- [独有特征、净化与秽鬼蜘蛛](TRAITS.md)及[验证](TRAITS_VALIDATION.md)
 - [测试问题修正与刷怪蛋/创造栏位](FIXES_2_2.md)
 - [新增秽鬼贴图重绘](TEXTURE_REPAINT.md)与[验证](TEXTURE_REPAINT_VALIDATION.md)
 - [第二部分实现](PART_2.md)与[第二部分验证](PART_2_VALIDATION.md)

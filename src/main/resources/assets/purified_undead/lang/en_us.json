@@ -327,5 +327,7 @@
   "item.purified_undead.blighted_horse_spawn_egg": "Blighted Horse Spawn Egg",
   "item.purified_undead.blighted_donkey_spawn_egg": "Blighted Donkey Spawn Egg",
   "item.purified_undead.blighted_golem_spawn_egg": "Blighted Golem Spawn Egg",
-  "item.purified_undead.blighted_king_spawn_egg": "Blighted King Spawn Egg"
+  "item.purified_undead.blighted_king_spawn_egg": "Blighted King Spawn Egg",
+  "entity.purified_undead.blighted_spider": "Blighted Spider",
+  "item.purified_undead.blighted_spider_spawn_egg": "Blighted Spider Spawn Egg"
 }

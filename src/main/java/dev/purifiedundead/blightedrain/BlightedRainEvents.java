@@ -1,17 +1,29 @@
 package dev.purifiedundead.blightedrain;
 
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.server.ServerStartedEvent;
 import net.minecraftforge.event.server.ServerStoppedEvent;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 /** Thin loader adapter. All mutations execute on the logical server's thread. */
 public final class BlightedRainEvents {
+    @SubscribeEvent
+    public void traitDamage(LivingHurtEvent e) {
+        e.setAmount(
+                dev.purifiedundead.blightedrain.mob.BlightedMobRules.attackDamage(
+                        e.getSource(), e.getAmount()));
+    }
+
+    @SubscribeEvent
+    public void traitAfterDamage(LivingDamageEvent e) {
+        dev.purifiedundead.blightedrain.mob.BlightedMobRules.afterDamage(
+                e.getEntity(), e.getSource(), e.getAmount());
+    }
+
     @SubscribeEvent
     public void level(net.minecraftforge.event.TickEvent.LevelTickEvent event) {
         if (event.phase != net.minecraftforge.event.TickEvent.Phase.START) return;

@@ -3,13 +3,12 @@ package dev.purifiedundead.client;
 import dev.purifiedundead.PurifiedUndead;
 import dev.purifiedundead.content.ModEntities;
 import dev.purifiedundead.content.ModParticles;
-import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
+
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraft.client.renderer.entity.IronGolemRenderer;
-import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 
 @Mod.EventBusSubscriber(
         modid = PurifiedUndead.MOD_ID,
@@ -102,6 +101,9 @@ public final class ClientModEvents {
         event.registerEntityRenderer(ModEntities.CONTRACT_WISP.get(), ContractWispRenderer::new);
         event.registerEntityRenderer(ModEntities.FERIN.get(), FerinRenderer::new);
         event.registerEntityRenderer(ModEntities.GUARDIAN_WAVE.get(), GuardianWaveRenderer::new);
+        event.registerEntityRenderer(
+                dev.purifiedundead.blightedrain.mob.BlightedMobContent.SPIDER.get(),
+                net.minecraft.client.renderer.entity.SpiderRenderer::new);
         event.registerEntityRenderer(ModEntities.BLIGHTED_GOLEM.get(), BlightedGolemRenderer::new);
         event.registerEntityRenderer(ModEntities.BLIGHTED_KING.get(), BlightedKingRenderer::new);
         event.registerEntityRenderer(

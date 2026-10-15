@@ -265,3 +265,6 @@ Forge 编译基线与加载最低要求改为 47.3.22。污秽铁傀儡、污秽
 **污秽之雨贴图重绘（2026-10-15）：** 两版 `1.1.0-blighted-rain.2.1` 仅更新新增秽鬼的资源，原有傀儡/国王贴图保留。20 张内置 imagegen 草稿经原版 UV 校准；复现脚本在 `scripts/blighted-textures/`。参见 [重绘说明](blighted-rain-update/TEXTURE_REPAINT.md)。画面测试新增幼年、背面、毛色/斑纹、剪毛/染色与职业服装案例，测试需排除无关 smoke 数据标签并禁用测试窗口失焦暂停。
 
 **污秽之雨测试修正（2026-10-15）：** 两版 `1.1.0-blighted-rain.2.2` 新增 `content/BlightedSpawnEggs` 与 `ModCreativeTabs`。17/18 种秽鬼刷怪蛋在独立 `purified_undead:main` 创造栏；图标使用秽鬼化状态图。手记仅改创造栏归属，不改教程正文。掠夺者仍掉落原装备，但可重新拾弩，无弩时近战。新增 `RAIN_FIX_SERVER_OK` 和 `RAIN_FIX_CLIENT_OK`。详情见 [修正记录](blighted-rain-update/FIXES_2_2.md)。默认 Forge `run/server` 曾关闭契约自然获取，完整回归应使用已核对配置的独立开发实例。
+
+
+**污秽独有特征补充（2026-10-16）：** 两版候选 `1.1.0-blighted-rain.3`，详见 [特征](blighted-rain-update/TRAITS.md) 与 [验证](blighted-rain-update/TRAITS_VALIDATION.md)。部分秽鬼生命改为原版 150%、移动减速，骷髅系攻击频率为原版 70%；新增纯净灵药治愈秽鬼村民、猪牛腐肉、剪毛红羊毛和秽鬼蜘蛛。已有生物通过 `BlightedTraitsVersion` 一次性迁移，NeoForge 属性字段为小写 `attributes`。新增 `BLIGHTED_TRAITS_SERVER_OK`。仅推污秽之雨分支。

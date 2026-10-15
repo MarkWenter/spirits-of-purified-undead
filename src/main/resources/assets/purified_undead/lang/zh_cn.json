@@ -327,5 +327,7 @@
   "item.purified_undead.blighted_horse_spawn_egg": "秽鬼马刷怪蛋",
   "item.purified_undead.blighted_donkey_spawn_egg": "秽鬼驴刷怪蛋",
   "item.purified_undead.blighted_golem_spawn_egg": "秽鬼傀儡刷怪蛋",
-  "item.purified_undead.blighted_king_spawn_egg": "秽鬼国王刷怪蛋"
+  "item.purified_undead.blighted_king_spawn_egg": "秽鬼国王刷怪蛋",
+  "entity.purified_undead.blighted_spider": "秽鬼蜘蛛",
+  "item.purified_undead.blighted_spider_spawn_egg": "秽鬼蜘蛛刷怪蛋"
 }

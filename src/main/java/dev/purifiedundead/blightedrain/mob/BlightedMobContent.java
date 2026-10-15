@@ -2,9 +2,9 @@ package dev.purifiedundead.blightedrain.mob;
 
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
-import net.minecraft.world.entity.monster.*;
 import net.minecraft.world.entity.animal.*;
 import net.minecraft.world.entity.animal.horse.*;
+import net.minecraft.world.entity.monster.*;
 
 public final class BlightedMobContent {
     private static final net.minecraftforge.registries.DeferredRegister<EntityType<?>> TYPES =
@@ -149,6 +149,16 @@ public final class BlightedMobContent {
                                             .clientTrackingRange(8)
                                             .build("purified_undead:blighted_donkey"));
 
+    public static final net.minecraftforge.registries.RegistryObject<EntityType<BlightedSpider>>
+            SPIDER =
+                    TYPES.register(
+                            "blighted_spider",
+                            () ->
+                                    EntityType.Builder.of(BlightedSpider::new, MobCategory.MONSTER)
+                                            .sized(1.4F, .9F)
+                                            .clientTrackingRange(8)
+                                            .build("purified_undead:blighted_spider"));
+
     public static void register(net.minecraftforge.eventbus.api.IEventBus bus) {
         TYPES.register(bus);
         bus.addListener(BlightedMobContent::attributes);
@@ -158,32 +168,50 @@ public final class BlightedMobContent {
         e.put(
                 ZOMBIE.get(),
                 Zombie.createAttributes()
-                        .add(net.minecraft.world.entity.ai.attributes.Attributes.MAX_HEALTH, 40)
+                        .add(net.minecraft.world.entity.ai.attributes.Attributes.MAX_HEALTH, 30)
+                        .add(
+                                net.minecraft.world.entity.ai.attributes.Attributes.MOVEMENT_SPEED,
+                                0.161)
                         .build());
         e.put(
                 SKELETON.get(),
                 AbstractSkeleton.createAttributes()
-                        .add(net.minecraft.world.entity.ai.attributes.Attributes.MAX_HEALTH, 40)
+                        .add(net.minecraft.world.entity.ai.attributes.Attributes.MAX_HEALTH, 30)
+                        .add(
+                                net.minecraft.world.entity.ai.attributes.Attributes.MOVEMENT_SPEED,
+                                0.175)
                         .build());
         e.put(
                 DROWNED.get(),
                 Zombie.createAttributes()
-                        .add(net.minecraft.world.entity.ai.attributes.Attributes.MAX_HEALTH, 40)
+                        .add(net.minecraft.world.entity.ai.attributes.Attributes.MAX_HEALTH, 30)
+                        .add(
+                                net.minecraft.world.entity.ai.attributes.Attributes.MOVEMENT_SPEED,
+                                0.161)
                         .build());
         e.put(
                 HUSK.get(),
                 Zombie.createAttributes()
-                        .add(net.minecraft.world.entity.ai.attributes.Attributes.MAX_HEALTH, 40)
+                        .add(net.minecraft.world.entity.ai.attributes.Attributes.MAX_HEALTH, 30)
+                        .add(
+                                net.minecraft.world.entity.ai.attributes.Attributes.MOVEMENT_SPEED,
+                                0.161)
                         .build());
         e.put(
                 STRAY.get(),
                 AbstractSkeleton.createAttributes()
-                        .add(net.minecraft.world.entity.ai.attributes.Attributes.MAX_HEALTH, 40)
+                        .add(net.minecraft.world.entity.ai.attributes.Attributes.MAX_HEALTH, 30)
+                        .add(
+                                net.minecraft.world.entity.ai.attributes.Attributes.MOVEMENT_SPEED,
+                                0.175)
                         .build());
         e.put(
                 VILLAGER.get(),
                 Zombie.createAttributes()
-                        .add(net.minecraft.world.entity.ai.attributes.Attributes.MAX_HEALTH, 40)
+                        .add(net.minecraft.world.entity.ai.attributes.Attributes.MAX_HEALTH, 30)
+                        .add(
+                                net.minecraft.world.entity.ai.attributes.Attributes.MOVEMENT_SPEED,
+                                0.25)
                         .build());
         e.put(
                 PILLAGER.get(),
@@ -230,6 +258,11 @@ public final class BlightedMobContent {
                 DONKEY.get(),
                 AbstractChestedHorse.createBaseChestedHorseAttributes()
                         .add(net.minecraft.world.entity.ai.attributes.Attributes.MAX_HEALTH, 106)
+                        .build());
+        e.put(
+                SPIDER.get(),
+                Spider.createAttributes()
+                        .add(net.minecraft.world.entity.ai.attributes.Attributes.MAX_HEALTH, 32)
                         .build());
     }
 

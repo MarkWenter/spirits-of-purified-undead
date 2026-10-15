@@ -4,6 +4,7 @@ public final class BlightedSkins {
     private static final java.util.Set<String> TEXTURES =
             java.util.Set.of(
                     "textures/entity/chicken.png",
+                    "textures/entity/spider/spider.png",
                     "textures/entity/cow/brown_mooshroom.png",
                     "textures/entity/cow/cow.png",
                     "textures/entity/cow/red_mooshroom.png",

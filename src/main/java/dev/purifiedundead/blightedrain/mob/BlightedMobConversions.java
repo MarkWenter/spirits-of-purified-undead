@@ -1,12 +1,13 @@
 package dev.purifiedundead.blightedrain.mob;
 
-import net.minecraft.world.entity.*;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 
 /** Shared transaction for environmental and item conversions. Exact vanilla sources only. */
 public final class BlightedMobConversions {
     public static EntityType<?> nativeType(EntityType<?> type) {
+        if (type == BlightedMobContent.SPIDER.get()) return EntityType.SPIDER;
         if (type == BlightedMobContent.ZOMBIE.get()) return EntityType.ZOMBIE;
         if (type == BlightedMobContent.SKELETON.get()) return EntityType.SKELETON;
         if (type == BlightedMobContent.DROWNED.get()) return EntityType.DROWNED;
@@ -37,6 +38,7 @@ public final class BlightedMobConversions {
 
     private static EntityType<? extends Mob> target(Mob mob) {
         var type = mob.getType();
+        if (type == EntityType.SPIDER) return BlightedMobContent.SPIDER.get();
         if (type == EntityType.ZOMBIE) return BlightedMobContent.ZOMBIE.get();
         if (type == EntityType.SKELETON) return BlightedMobContent.SKELETON.get();
         if (type == EntityType.DROWNED) return BlightedMobContent.DROWNED.get();
@@ -86,13 +88,18 @@ public final class BlightedMobConversions {
             detachedGear.add(
                     new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.SADDLE));
         }
+        data.putInt("BlightedTraitsVersion", 1);
         next.load(data);
+        next.getAttribute(Attributes.MOVEMENT_SPEED)
+                .setBaseValue(
+                        original.getAttribute(Attributes.MOVEMENT_SPEED).getBaseValue()
+                                * BlightedMobRules.movementFactor(next));
         if (next instanceof BlightedPillager && next.getAttribute(Attributes.ATTACK_DAMAGE) != null)
             next.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(3.0);
         var attr = next.getAttribute(Attributes.MAX_HEALTH);
         var originalAttr = original.getAttribute(Attributes.MAX_HEALTH);
         attr.removeModifiers();
-        attr.setBaseValue(originalAttr.getBaseValue() * 2);
+        attr.setBaseValue(originalAttr.getBaseValue() * BlightedMobRules.healthFactor(next));
         for (var modifier : originalAttr.getModifiers())
             attr.addPermanentModifier(
                     new net.minecraft.world.entity.ai.attributes.AttributeModifier(
@@ -102,7 +109,7 @@ public final class BlightedMobConversions {
                                     * (modifier.getOperation()
                                                     == net.minecraft.world.entity.ai.attributes
                                                             .AttributeModifier.Operation.ADDITION
-                                            ? 2
+                                            ? BlightedMobRules.healthFactor(next)
                                             : 1),
                             modifier.getOperation()));
         next.setHealth(

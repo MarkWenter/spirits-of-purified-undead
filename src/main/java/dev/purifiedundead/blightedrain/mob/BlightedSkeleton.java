@@ -1,12 +1,24 @@
 package dev.purifiedundead.blightedrain.mob;
 
-import net.minecraft.world.entity.monster.Skeleton;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.monster.Skeleton;
 import net.minecraft.world.level.Level;
 
 public final class BlightedSkeleton extends Skeleton implements BlightedVariant {
     public BlightedSkeleton(EntityType<? extends Skeleton> type, Level level) {
         super(type, level);
+    }
+
+    @Override
+    public void addAdditionalSaveData(net.minecraft.nbt.CompoundTag data) {
+        super.addAdditionalSaveData(data);
+        data.putInt("BlightedTraitsVersion", 1);
+    }
+
+    @Override
+    public void readAdditionalSaveData(net.minecraft.nbt.CompoundTag data) {
+        super.readAdditionalSaveData(data);
+        BlightedMobRules.readLegacy(this, data);
     }
 
     @Override

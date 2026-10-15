@@ -1,8 +1,9 @@
 package dev.purifiedundead.blightedrain;
 
+import dev.purifiedundead.blightedrain.mob.*;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.TitleScreen;
-import dev.purifiedundead.blightedrain.mob.*;
 
 @net.minecraftforge.fml.common.Mod.EventBusSubscriber(
         modid = "purified_undead",
@@ -14,6 +15,7 @@ public final class BlightedMobClientSmoke {
     private static volatile int warningSounds;
     private static final java.util.Set<String> rendered = new java.util.HashSet<>();
     private static String[] names = {
+        "spider",
         "zombie",
         "skeleton",
         "drowned",
@@ -57,10 +59,12 @@ public final class BlightedMobClientSmoke {
         "horse:coat5",
         "horse:coat6",
     };
+
     static {
         if (Boolean.getBoolean("purified_undead.rainQuickReview"))
-            names = new String[] {"drowned", "villager", "pillager", "villager:librarian", "villager:baby"};
+            names = new String[] {"spider", "skeleton", "villager", "sheep", "spider:back"};
     }
+
     private static net.minecraft.world.entity.Mob current;
 
     @net.minecraftforge.eventbus.api.SubscribeEvent
@@ -87,7 +91,8 @@ public final class BlightedMobClientSmoke {
         if (!Boolean.getBoolean("purified_undead.rainClientSmoke")) return;
         var mc = Minecraft.getInstance();
         mc.options.pauseOnLostFocus = false;
-        if (mc.level != null && mc.screen instanceof net.minecraft.client.gui.screens.PauseScreen) mc.setScreen(null);
+        if (mc.level != null && mc.screen instanceof net.minecraft.client.gui.screens.PauseScreen)
+            mc.setScreen(null);
         try {
             if (!opened && mc.screen instanceof TitleScreen && mc.getOverlay() == null) {
                 opened = true;
@@ -199,7 +204,11 @@ public final class BlightedMobClientSmoke {
                                                                             .fromNamespaceAndPath(
                                                                                     "purified_undead",
                                                                                     "blighted_"
-                                                                                            + names[idx].split(":")[0]));
+                                                                                            + names[
+                                                                                                    idx]
+                                                                                                    .split(
+                                                                                                            ":")[
+                                                                                                    0]));
                                     current = type.create(level);
                                     current.setPos(44.5, 150, 44.5);
                                     current.setNoAi(true);
@@ -216,30 +225,58 @@ public final class BlightedMobClientSmoke {
                                     }
                                     String variant = names[idx];
                                     if (variant.endsWith(":baby")) {
-                                        if (current instanceof net.minecraft.world.entity.monster.Zombie baby) baby.setBaby(true);
+                                        if (current
+                                                instanceof
+                                                net.minecraft.world.entity.monster.Zombie baby)
+                                            baby.setBaby(true);
                                     }
                                     if (variant.endsWith(":back") || variant.endsWith(":side")) {
                                         float yaw = variant.endsWith(":back") ? 180 : 70;
-                                        current.setYRot(yaw); current.yBodyRot = yaw; current.yHeadRot = yaw;
+                                        current.setYRot(yaw);
+                                        current.yBodyRot = yaw;
+                                        current.yHeadRot = yaw;
                                     }
-                                    if (current instanceof net.minecraft.world.entity.animal.horse.Horse horse && variant.contains(":coat")) {
-                                        int coat = Integer.parseInt(variant.substring(variant.length()-1));
+                                    if (current
+                                                    instanceof
+                                                    net.minecraft.world.entity.animal.horse.Horse
+                                                                    horse
+                                            && variant.contains(":coat")) {
+                                        int coat =
+                                                Integer.parseInt(
+                                                        variant.substring(variant.length() - 1));
                                         var coatData = new net.minecraft.nbt.CompoundTag();
                                         horse.addAdditionalSaveData(coatData);
                                         coatData.putInt("Variant", coat | ((coat % 5) << 8));
                                         horse.readAdditionalSaveData(coatData);
                                     }
-                                    if (current instanceof net.minecraft.world.entity.monster.ZombieVillager villager) {
-                                        if (variant.endsWith(":farmer")) villager.setVillagerData(villager.getVillagerData().setProfession(net.minecraft.world.entity.npc.VillagerProfession.FARMER));
-                                        if (variant.endsWith(":librarian")) villager.setVillagerData(villager.getVillagerData().setProfession(net.minecraft.world.entity.npc.VillagerProfession.LIBRARIAN));
+                                    if (current
+                                            instanceof
+                                            net.minecraft.world.entity.monster.ZombieVillager
+                                                            villager) {
+                                        if (variant.endsWith(":farmer"))
+                                            villager.setVillagerData(
+                                                    villager.getVillagerData()
+                                                            .setProfession(
+                                                                    net.minecraft.world.entity.npc
+                                                                            .VillagerProfession
+                                                                            .FARMER));
+                                        if (variant.endsWith(":librarian"))
+                                            villager.setVillagerData(
+                                                    villager.getVillagerData()
+                                                            .setProfession(
+                                                                    net.minecraft.world.entity.npc
+                                                                            .VillagerProfession
+                                                                            .LIBRARIAN));
                                     }
                                     level.addFreshEntity(current);
                                     if (current
-                                            instanceof net.minecraft.world.entity.animal.Sheep s)
-                                        {
-                                            s.setColor(variant.endsWith(":red") ? net.minecraft.world.item.DyeColor.RED : net.minecraft.world.item.DyeColor.WHITE);
-                                            s.setSheared(variant.endsWith(":sheared"));
-                                        }
+                                            instanceof net.minecraft.world.entity.animal.Sheep s) {
+                                        s.setColor(
+                                                variant.endsWith(":red")
+                                                        ? net.minecraft.world.item.DyeColor.RED
+                                                        : net.minecraft.world.item.DyeColor.WHITE);
+                                        s.setSheared(variant.endsWith(":sheared"));
+                                    }
                                     if (idx == names.length - 1) {
                                         sunOK = current.getRemainingFireTicks() <= 0;
                                         level.setWeatherParameters(0, 24000, true, false);
@@ -261,28 +298,68 @@ public final class BlightedMobClientSmoke {
                                 + mc.gameRenderer.getMainCamera().getPosition());
             }
             if (ticks == names.length * 70 + 10) {
-                net.minecraft.world.item.CreativeModeTabs.tryRebuildTabContents(mc.level.enabledFeatures(), true, mc.level.registryAccess());
+                net.minecraft.world.item.CreativeModeTabs.tryRebuildTabContents(
+                        mc.level.enabledFeatures(), true, mc.level.registryAccess());
                 var tab = dev.purifiedundead.content.ModCreativeTabs.MAIN.get();
                 var entries = tab.getDisplayItems();
-                var iconModel=mc.getItemRenderer().getModel(tab.getIconItem(),mc.level,mc.player,0);
+                var iconModel =
+                        mc.getItemRenderer().getModel(tab.getIconItem(), mc.level, mc.player, 0);
                 if (iconModel.getParticleIcon().contents().name().getPath().equals("missingno"))
                     throw new IllegalStateException("missing creative tab icon sprite");
-                long eggs = entries.stream().filter(stack -> stack.getItem() instanceof net.minecraft.world.item.SpawnEggItem).count();
-                if (eggs != 17 || entries.stream().noneMatch(stack -> stack.is(dev.purifiedundead.content.ModItems.ANCIENT_CONTRACT.get())))
+                long eggs =
+                        entries.stream()
+                                .filter(
+                                        stack ->
+                                                stack.getItem()
+                                                        instanceof
+                                                        net.minecraft.world.item.SpawnEggItem)
+                                .count();
+                if (eggs != 18
+                        || entries.stream()
+                                .noneMatch(
+                                        stack ->
+                                                stack.is(
+                                                        dev.purifiedundead.content.ModItems
+                                                                .ANCIENT_CONTRACT
+                                                                .get())))
                     throw new IllegalStateException("creative catalogue missing items/eggs");
-                var tools = net.minecraft.core.registries.BuiltInRegistries.CREATIVE_MODE_TAB.get(net.minecraft.world.item.CreativeModeTabs.TOOLS_AND_UTILITIES);
-                if (tools.getDisplayItems().stream().anyMatch(stack -> net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(stack.getItem()).getNamespace().equals("purified_undead")))
+                var tools =
+                        net.minecraft.core.registries.BuiltInRegistries.CREATIVE_MODE_TAB.get(
+                                net.minecraft.world.item.CreativeModeTabs.TOOLS_AND_UTILITIES);
+                if (tools.getDisplayItems().stream()
+                        .anyMatch(
+                                stack ->
+                                        net.minecraft.core.registries.BuiltInRegistries.ITEM
+                                                .getKey(stack.getItem())
+                                                .getNamespace()
+                                                .equals("purified_undead")))
                     throw new IllegalStateException("mod item leaked into vanilla tools");
-                var screen = new net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen(mc.player, mc.level.enabledFeatures(), true);
+                var screen =
+                        new net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen(
+                                mc.player, mc.level.enabledFeatures(), true);
                 mc.setScreen(screen);
-                var select=screen.getClass().getDeclaredMethod("selectTab",net.minecraft.world.item.CreativeModeTab.class);
-                select.setAccessible(true);select.invoke(screen,tab);
+                var select =
+                        screen.getClass()
+                                .getDeclaredMethod(
+                                        "selectTab",
+                                        net.minecraft.world.item.CreativeModeTab.class);
+                select.setAccessible(true);
+                select.invoke(screen, tab);
                 // Reinitialization selects the page containing the static selected tab.
-                mc.setScreen(new net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen(mc.player, mc.level.enabledFeatures(), true));
-                System.out.println("RAIN_FIX_CLIENT_OK: dedicated tab, " + eggs + " eggs, vanilla tools clean");
+                mc.setScreen(
+                        new net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen(
+                                mc.player, mc.level.enabledFeatures(), true));
+                System.out.println(
+                        "RAIN_FIX_CLIENT_OK: dedicated tab, "
+                                + eggs
+                                + " eggs, vanilla tools clean");
             }
             if (ticks == names.length * 70 + 30)
-                net.minecraft.client.Screenshot.grab(mc.gameDirectory,"blighted-creative-tab.png",mc.getMainRenderTarget(),m -> {});
+                net.minecraft.client.Screenshot.grab(
+                        mc.gameDirectory,
+                        "blighted-creative-tab.png",
+                        mc.getMainRenderTarget(),
+                        m -> {});
             if (desired >= names.length && ticks >= names.length * 70 + 40 && !stopping) {
                 stopping = true;
                 for (String name : names)
@@ -294,7 +371,8 @@ public final class BlightedMobClientSmoke {
                 System.out.println(
                         "BLIGHTED_MOBS_CLIENT_OK: all "
                                 + names.length
-                                + " models rendered, layered native UV textures, no sun fire, one warning sound");
+                                + " models rendered, layered native UV textures, no sun fire, one"
+                                + " warning sound");
                 mc.stop();
             }
         } catch (Throwable t) {

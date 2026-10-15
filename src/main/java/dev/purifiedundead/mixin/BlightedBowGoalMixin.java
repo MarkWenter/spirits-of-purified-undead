@@ -27,8 +27,7 @@ public abstract class BlightedBowGoalMixin {
                             value = "INVOKE",
                             target = "Lnet/minecraft/world/entity/Mob;getTicksUsingItem()I"))
     private int draw(int original) {
-        return dev.purifiedundead.blightedrain.mob.BlightedMobRules.faster(purifiedUndead$mob())
-                ? original * 2
-                : original;
+        return dev.purifiedundead.blightedrain.mob.BlightedMobRules.drawTicks(
+                original, purifiedUndead$mob());
     }
 }

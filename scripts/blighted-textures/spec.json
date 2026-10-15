@@ -19,5 +19,6 @@
   "sheep_fur": "sheep/sheep_fur.png",
   "drowned_outer": "zombie/drowned_outer_layer.png",
   "stray_overlay": "skeleton/stray_overlay.png",
-  "bogged_overlay": "skeleton/bogged_overlay.png"
+  "bogged_overlay": "skeleton/bogged_overlay.png",
+  "spider": "spider/spider.png"
 }

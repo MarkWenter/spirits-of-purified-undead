@@ -1,12 +1,13 @@
 package dev.purifiedundead.blightedrain;
 
 import dev.purifiedundead.blightedrain.mob.*;
-import net.minecraft.world.entity.*;
-import net.minecraft.world.entity.monster.*;
-import net.minecraft.world.entity.ai.goal.*;
+
 import net.minecraft.server.level.*;
-import net.minecraft.world.item.*;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.*;
+import net.minecraft.world.entity.monster.*;
+import net.minecraft.world.item.*;
 
 /** Integration checks exercise loaded registries, real conversion/death hooks and injected AI. */
 public final class BlightedMobSmoke {
@@ -31,10 +32,12 @@ public final class BlightedMobSmoke {
 
     public static void run(net.minecraft.server.MinecraftServer server) throws Exception {
         RainFixSmoke.run(server);
+        BlightedTraitsSmoke.run(server);
         var level = server.overworld();
         var fixtures = new java.util.ArrayList<Entity>();
         try {
             EntityType<?>[] nativeTypes = {
+                EntityType.SPIDER,
                 EntityType.ZOMBIE,
                 EntityType.SKELETON,
                 EntityType.DROWNED,
@@ -104,9 +107,17 @@ public final class BlightedMobSmoke {
                         next != null && next instanceof BlightedVariant,
                         "registered conversion " + type);
                 fixtures.add(next);
-                check(Math.abs(next.getMaxHealth() - 2 * max) < .01, "double max health " + type);
                 check(
-                        Math.abs(next.getHealth() - (lethal ? 2 * max : max)) < .01,
+                        Math.abs(next.getMaxHealth() - BlightedMobRules.healthFactor(next) * max)
+                                < .01,
+                        "double max health " + type);
+                check(
+                        Math.abs(
+                                        next.getHealth()
+                                                - (lethal
+                                                        ? next.getMaxHealth()
+                                                        : next.getMaxHealth() / 2))
+                                < .01,
                         "double health/full revival " + type);
                 check(next.getCustomName() == null, "no generated name " + type);
                 check(
@@ -281,10 +292,14 @@ public final class BlightedMobSmoke {
                 var bow = new RangedBowAttackGoal<Skeleton>(archer, 1, 20, 15);
                 field(RangedBowAttackGoal.class, "seeTime").setInt(bow, 10);
                 bow.tick();
-                check(archer.isUsingItem() == (i == 0), "actual half bow draw");
+                check(archer.isUsingItem(), "both bows still drawing at tick ten");
+                field(LivingEntity.class, "useItemRemaining")
+                        .setInt(archer, archer.getUseItem().getUseDuration() - 29);
+                bow.tick();
+                check(!archer.isUsingItem(), "both bows release by tick 29");
                 if (i == 1)
                     check(
-                            field(RangedBowAttackGoal.class, "attackTime").getInt(bow) == 10,
+                            field(RangedBowAttackGoal.class, "attackTime").getInt(bow) == 29,
                             "actual bow interval");
                 var cross =
                         (Pillager)
@@ -382,8 +397,8 @@ public final class BlightedMobSmoke {
             var boostedNext = BlightedMobConversions.convert(boosted, level, false);
             fixtures.add(boostedNext);
             check(
-                    boostedNext.getMaxHealth() == boostedMax * 2
-                            && boostedNext.getHealth() == boostedMax,
+                    boostedNext.getMaxHealth() == boostedMax * 1.5
+                            && boostedNext.getHealth() == boostedMax * .75,
                     "modified health scales exactly once");
             var horse = spawn(EntityType.HORSE, level, 57);
             fixtures.add(horse);
@@ -502,7 +517,9 @@ public final class BlightedMobSmoke {
             System.out.println(
                     "BLIGHTED_MOBS_SERVER_OK: "
                             + nativeTypes.length
-                            + " variants, death conversions, native state, 2x health, equipment, riders, immunity, actual AI timing and independent fragment");
+                            + " variants, death conversions, native state, variant health,"
+                            + " equipment, riders, immunity, actual AI timing and independent"
+                            + " fragment");
         } finally {
             fixtures.forEach(Entity::discard);
         }
