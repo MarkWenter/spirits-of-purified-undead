@@ -11,6 +11,11 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 /** Thin loader adapter. All mutations execute on the logical server's thread. */
 public final class BlightedRainEvents {
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void rainItemDrops(net.minecraftforge.event.entity.living.LivingDropsEvent event) {
+        dev.purifiedundead.blightedrain.content.RainDrops.add(event);
+    }
+
     @SubscribeEvent
     public void traitDamage(LivingHurtEvent e) {
         e.setAmount(
@@ -34,6 +39,7 @@ public final class BlightedRainEvents {
     @SubscribeEvent
     public void entity(LivingEvent.LivingTickEvent event) {
         RainEffects.tick(event.getEntity());
+        dev.purifiedundead.blightedrain.content.RainEquipment.tick(event.getEntity());
     }
 
     @SubscribeEvent

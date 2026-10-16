@@ -8,6 +8,30 @@ public final class BlightedRainData extends SavedData {
     final BlightedRainModel model = new BlightedRainModel();
     private boolean weatherLocked = true, enabled = true;
     private boolean initialized;
+    boolean forced;
+    private int loadedPause = -1;
+    private final java.util.Set<Long> activeBeacons = new java.util.HashSet<>();
+
+    public boolean suppressed() {
+        return !activeBeacons.isEmpty();
+    }
+
+    public void setBeacon(net.minecraft.core.BlockPos pos, boolean active) {
+        boolean changed =
+                active ? activeBeacons.add(pos.asLong()) : activeBeacons.remove(pos.asLong());
+        if (changed) setDirty();
+    }
+
+    /** Never loads a chunk: an unloaded beacon retains its last authoritative state. */
+    void validateBeacons(ServerLevel level) {
+        for (long packed : java.util.Set.copyOf(activeBeacons)) {
+            var pos = net.minecraft.core.BlockPos.of(packed);
+            if (level.hasChunkAt(pos)
+                    && !dev.purifiedundead.blightedrain.content.StillRainBeaconBlock.isActive(
+                            level, pos)) setBeacon(pos, false);
+        }
+    }
+
     long lastProcessedTime = Long.MIN_VALUE;
 
     public boolean weatherLocked() {
@@ -43,6 +67,7 @@ public final class BlightedRainData extends SavedData {
                     result.loadedDeadline,
                     result.loadedDuration,
                     level.getGameTime());
+            result.model.restorePause(result.loadedPause);
             result.initialized = true;
         }
         return result;
@@ -58,6 +83,9 @@ public final class BlightedRainData extends SavedData {
         d.loadedPhase = tag.getInt("phase");
         d.loadedDeadline = tag.getLong("deadline");
         d.loadedDuration = tag.getInt("duration");
+        d.forced = tag.getBoolean("forced");
+        d.loadedPause = tag.contains("pausedCooldown") ? tag.getInt("pausedCooldown") : -1;
+        for (long pos : tag.getLongArray("activeBeacons")) d.activeBeacons.add(pos);
         return d;
     }
 
@@ -68,6 +96,10 @@ public final class BlightedRainData extends SavedData {
         tag.putInt("phase", model.phase().ordinal());
         tag.putLong("deadline", model.deadline());
         tag.putInt("duration", model.duration());
+        tag.putBoolean("forced", forced);
+        tag.putInt("pausedCooldown", model.pausedCooldown());
+        tag.putLongArray(
+                "activeBeacons", activeBeacons.stream().mapToLong(Long::longValue).toArray());
         return tag;
     }
 }

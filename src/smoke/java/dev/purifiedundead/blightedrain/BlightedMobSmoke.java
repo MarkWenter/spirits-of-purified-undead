@@ -33,6 +33,7 @@ public final class BlightedMobSmoke {
     public static void run(net.minecraft.server.MinecraftServer server) throws Exception {
         RainFixSmoke.run(server);
         BlightedTraitsSmoke.run(server);
+        RainPartThreeSmoke.run(server);
         var level = server.overworld();
         var fixtures = new java.util.ArrayList<Entity>();
         try {

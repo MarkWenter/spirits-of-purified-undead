@@ -1,13 +1,15 @@
 package dev.purifiedundead.blightedrain;
 
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import static net.minecraft.commands.Commands.*;
+
 import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
-import static net.minecraft.commands.Commands.*;
 
 /** Administrator test controls; start never silently changes clear weather or bypasses cooldown. */
 public final class BlightedRainCommands {
@@ -93,6 +95,7 @@ public final class BlightedRainCommands {
         var d = BlightedRainData.get(l);
         if (!l.getLevelData().isRaining()) throw error("clear_weather").create();
         if (!d.enabled()) throw error("disabled").create();
+        if (d.suppressed()) throw error("beacon_active").create();
         if (d.model.occupied()) throw error("already_active").create();
         if (d.model.phase() == BlightedRainModel.Phase.COOLDOWN) throw error("cooldown").create();
         int duration =

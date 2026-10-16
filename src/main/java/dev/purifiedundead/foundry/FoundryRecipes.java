@@ -1,14 +1,19 @@
 package dev.purifiedundead.foundry;
 
 import com.google.gson.*;
+
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.*;
-import java.nio.file.*;
+
 import java.nio.charset.StandardCharsets;
+import java.nio.file.*;
 import java.util.*;
 
-/** Validated server configuration, reloaded at server start. Invalid files never overwrite user edits. */
+/**
+ * Validated server configuration, reloaded at server start. Invalid files never overwrite user
+ * edits.
+ */
 public final class FoundryRecipes {
     public record Recipe(
             String top,
@@ -189,7 +194,11 @@ public final class FoundryRecipes {
                 var root = new JsonObject();
                 root.addProperty(
                         "_help",
-                        "A=top / 上槽; B=bottom / 下槽. consumeTop=false preserves A. Counts and fuels are per result batch unit; ticks=400 is 20 seconds. Use /purifiedundead config reload foundry after changes, or restart. IDs may come from any mod; invalid entries are skipped with a warning.");
+                        "A=top / 上槽; B=bottom / 下槽. consumeTop=false preserves A. Counts and fuels"
+                            + " are per result batch unit; ticks=400 is 20 seconds. Use"
+                            + " /purifiedundead config reload foundry after changes, or restart."
+                            + " IDs may come from any mod; invalid entries are skipped with a"
+                            + " warning.");
                 root.add("recipes", gson.toJsonTree(defaults()));
                 Files.writeString(path, gson.toJson(root), StandardCharsets.UTF_8);
             }
@@ -198,6 +207,33 @@ public final class FoundryRecipes {
             var root =
                     JsonParser.parseString(Files.readString(path, StandardCharsets.UTF_8))
                             .getAsJsonObject();
+            if (!root.has("blightedRainPart3")) {
+                var array = root.getAsJsonArray("recipes");
+                boolean present = false;
+                for (var entry : array) {
+                    var obj = entry.getAsJsonObject();
+                    if (obj.has("output")
+                            && obj.get("output")
+                                    .getAsString()
+                                    .equals("purified_undead:still_rain_beacon")) present = true;
+                }
+                if (!present)
+                    array.add(
+                            gson.toJsonTree(
+                                    new Recipe(
+                                            "purified_undead:shining_guardian_treasure",
+                                            1,
+                                            "minecraft:beacon",
+                                            1,
+                                            "purified_undead:still_rain_beacon",
+                                            1,
+                                            false,
+                                            1,
+                                            1,
+                                            400)));
+                root.addProperty("blightedRainPart3", true);
+                Files.writeString(path, gson.toJson(root), StandardCharsets.UTF_8);
+            }
             var loaded = new ArrayList<Recipe>();
             if (root.getAsJsonArray("recipes").size() > 4096)
                 throw new IllegalArgumentException("At most 4096 foundry recipes are supported");
@@ -224,7 +260,8 @@ public final class FoundryRecipes {
             recipes = List.of();
             com.mojang.logging.LogUtils.getLogger()
                     .error(
-                            "Foundry configuration could not load; processing disabled, inventory untouched: {}",
+                            "Foundry configuration could not load; processing disabled, inventory"
+                                + " untouched: {}",
                             path,
                             e);
         }

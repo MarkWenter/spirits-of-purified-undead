@@ -16,6 +16,7 @@ public final class BlightedRainModel {
 
     private Phase phase = Phase.READY;
     private long deadline;
+    private int pausedCooldown = -1;
     private int duration = MIN_DURATION;
 
     public Phase phase() {
@@ -31,7 +32,9 @@ public final class BlightedRainModel {
     }
 
     public int remaining(long now) {
-        return (int) Math.max(0, Math.min(Integer.MAX_VALUE, deadline - now));
+        return pausedCooldown >= 0 && phase == Phase.COOLDOWN
+                ? pausedCooldown
+                : (int) Math.max(0, Math.min(Integer.MAX_VALUE, deadline - now));
     }
 
     public boolean occupied() {
@@ -52,7 +55,7 @@ public final class BlightedRainModel {
     }
 
     public boolean advance(long now) {
-        if (phase == Phase.READY || now < deadline) return false;
+        if (pausedCooldown >= 0 || phase == Phase.READY || now < deadline) return false;
         if (phase == Phase.WARNING) {
             phase = Phase.ACTIVE;
             deadline = now + duration;
@@ -73,7 +76,30 @@ public final class BlightedRainModel {
         }
     }
 
+    public int pausedCooldown() {
+        return pausedCooldown;
+    }
+
+    public boolean pauseCooldown(long now) {
+        if (phase != Phase.COOLDOWN || pausedCooldown >= 0) return false;
+        pausedCooldown = remaining(now);
+        return true;
+    }
+
+    public boolean resumeCooldown(long now) {
+        if (pausedCooldown < 0) return false;
+        deadline = now + pausedCooldown;
+        pausedCooldown = -1;
+        return true;
+    }
+
+    public void restorePause(int ticks) {
+        pausedCooldown =
+                phase == Phase.COOLDOWN ? Math.max(-1, Math.min(COOLDOWN_TICKS, ticks)) : -1;
+    }
+
     public void reset() {
+        pausedCooldown = -1;
         phase = Phase.READY;
         deadline = 0;
     }

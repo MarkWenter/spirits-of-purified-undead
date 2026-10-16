@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "PDP",
+    "PRP",
+    " P "
+  ],
+  "key": {
+    "P": {
+      "tag": "minecraft:planks"
+    },
+    "D": {
+      "item": "purified_undead:grave_mire_dust"
+    },
+    "R": {
+      "item": "purified_undead:blighted_ruby"
+    }
+  },
+  "result": {
+    "item": "purified_undead:headless_knight",
+    "count": 1
+  }
+}

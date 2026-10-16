@@ -268,3 +268,8 @@ Forge 编译基线与加载最低要求改为 47.3.22。污秽铁傀儡、污秽
 
 
 **污秽独有特征补充（2026-10-16）：** 两版候选 `1.1.0-blighted-rain.3`，详见 [特征](blighted-rain-update/TRAITS.md) 与 [验证](blighted-rain-update/TRAITS_VALIDATION.md)。部分秽鬼生命改为原版 150%、移动减速，骷髅系攻击频率为原版 70%；新增纯净灵药治愈秽鬼村民、猪牛腐肉、剪毛红羊毛和秽鬼蜘蛛。已有生物通过 `BlightedTraitsVersion` 一次性迁移，NeoForge 属性字段为小写 `attributes`。新增 `BLIGHTED_TRAITS_SERVER_OK`。仅推污秽之雨分支。
+
+
+## 污秽之雨第三部分（2026-10-17）
+
+候选版 `1.1.0-blighted-rain.4`；见 [第三部分](blighted-rain-update/PART_3.md)。新增静雨信标持久化、强制雨纹章、材料食品、可恢复投掷物与盾牌。两版检查 `RAIN_PART3_SERVER_OK` / `RAIN_PART3_CLIENT_OK`。客户端和服务端 smoke 使用同一编译输出，必须先后运行，避免客户端缩减 source set 清除服务端测试类。白巫女手记不更新，Forge 仅推污秽之雨分支。

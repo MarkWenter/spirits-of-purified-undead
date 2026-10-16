@@ -329,5 +329,18 @@
   "item.purified_undead.blighted_golem_spawn_egg": "秽鬼傀儡刷怪蛋",
   "item.purified_undead.blighted_king_spawn_egg": "秽鬼国王刷怪蛋",
   "entity.purified_undead.blighted_spider": "秽鬼蜘蛛",
-  "item.purified_undead.blighted_spider_spawn_egg": "秽鬼蜘蛛刷怪蛋"
+  "item.purified_undead.blighted_spider_spawn_egg": "秽鬼蜘蛛刷怪蛋",
+  "block.purified_undead.still_rain_beacon": "静雨信标",
+  "item.purified_undead.blighted_rain_emblem": "秽雨纹章",
+  "item.purified_undead.grave_mire_dust": "墓穴泞尘",
+  "item.purified_undead.blighted_ruby": "污秽红宝石",
+  "item.purified_undead.blighted_meat": "污秽肉",
+  "item.purified_undead.cooked_blighted_meat": "熟污秽肉",
+  "item.purified_undead.cliff_village_youth": "悬崖村的少年",
+  "item.purified_undead.headless_knight": "无头的骑士",
+  "message.purified_undead.emblem.unavailable": "当前无法引发污秽之雨：请确认位于主世界、事件已启用且没有正在进行的污秽之雨。",
+  "command.purified_undead.rain.beacon_active": "静雨信标正在生效；可使用秽雨纹章强制引雨。",
+  "item.purified_undead.blighted_rain_emblem.desc": "长按 2 秒引发污秽之雨，无视冷却与静雨信标。消耗 1 耐久。",
+  "item.purified_undead.cliff_village_youth.desc": "每次投掷消耗 1 耐久；耗尽后保留，在物品栏中每 30 秒恢复 1 点。",
+  "item.purified_undead.headless_knight.desc": "主手或副手持有时提供 5 点护甲。"
 }

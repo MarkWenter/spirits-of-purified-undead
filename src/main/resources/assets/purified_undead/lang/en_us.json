@@ -329,5 +329,18 @@
   "item.purified_undead.blighted_golem_spawn_egg": "Blighted Golem Spawn Egg",
   "item.purified_undead.blighted_king_spawn_egg": "Blighted King Spawn Egg",
   "entity.purified_undead.blighted_spider": "Blighted Spider",
-  "item.purified_undead.blighted_spider_spawn_egg": "Blighted Spider Spawn Egg"
+  "item.purified_undead.blighted_spider_spawn_egg": "Blighted Spider Spawn Egg",
+  "block.purified_undead.still_rain_beacon": "Still Rain Beacon",
+  "item.purified_undead.blighted_rain_emblem": "Blighted Rain Emblem",
+  "item.purified_undead.grave_mire_dust": "Grave Mire Dust",
+  "item.purified_undead.blighted_ruby": "Blighted Ruby",
+  "item.purified_undead.blighted_meat": "Blighted Meat",
+  "item.purified_undead.cooked_blighted_meat": "Cooked Blighted Meat",
+  "item.purified_undead.cliff_village_youth": "Youth of the Cliff Village",
+  "item.purified_undead.headless_knight": "Headless Knight",
+  "message.purified_undead.emblem.unavailable": "Cannot invoke rain: overworld, enabled events, and no ongoing event required.",
+  "command.purified_undead.rain.beacon_active": "A Still Rain Beacon is active; an emblem can override it.",
+  "item.purified_undead.blighted_rain_emblem.desc": "Hold for 2 seconds to invoke blighted rain, ignoring cooldown and beacons. Costs 1 durability.",
+  "item.purified_undead.cliff_village_youth.desc": "Each throw costs 1 durability. Never breaks; recovers 1 every 30 seconds in inventory.",
+  "item.purified_undead.headless_knight.desc": "Grants 5 armor while held in either hand."
 }

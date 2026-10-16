@@ -21,6 +21,18 @@ public final class ClientModEvents {
         event.enqueueWork(WispDynamicLights::install);
         event.enqueueWork(
                 () ->
+                        net.minecraft.client.renderer.item.ItemProperties.register(
+                                dev.purifiedundead.blightedrain.content.RainItems.SHIELD.get(),
+                                net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(
+                                        "minecraft", "blocking"),
+                                (stack, level, entity, seed) ->
+                                        entity != null
+                                                        && entity.isUsingItem()
+                                                        && entity.getUseItem() == stack
+                                                ? 1
+                                                : 0));
+        event.enqueueWork(
+                () ->
                         net.minecraft.client.gui.screens.MenuScreens.register(
                                 dev.purifiedundead.foundry.FoundryContent.MENU.get(),
                                 PurificationFoundryScreen::new));
@@ -53,6 +65,9 @@ public final class ClientModEvents {
 
     @SubscribeEvent
     public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
+        event.registerEntityRenderer(
+                dev.purifiedundead.blightedrain.content.RainItems.YOUTH_PROJECTILE.get(),
+                CliffYouthRenderer::new);
         event.registerEntityRenderer(
                 dev.purifiedundead.blightedrain.mob.BlightedMobContent.ZOMBIE.get(),
                 net.minecraft.client.renderer.entity.ZombieRenderer::new);

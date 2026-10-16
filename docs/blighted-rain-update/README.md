@@ -13,3 +13,7 @@
 - [准备阶段项目现状](PROJECT_STATE.md)与[准备阶段验证](VALIDATION.md)
 
 Forge 1.20.1 根工程和 NeoForge 1.21.1 实际工程均已实现。Forge GitHub 使用独立分支 `污秽之雨更新`，不合并主分支。附属模组未修改；白巫女手记保持原样。后续世界创建选项、完整天气配置、解除仪式与更多实体变化仍待用户确认。
+
+## 第三部分
+
+[玩法与实现](PART_3.md) · [贴图](PART_3_ART.md) · [验证](PART_3_VALIDATION.md)

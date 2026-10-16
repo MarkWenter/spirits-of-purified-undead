@@ -262,7 +262,10 @@ public final class BlightedMobContent {
         e.put(
                 SPIDER.get(),
                 Spider.createAttributes()
-                        .add(net.minecraft.world.entity.ai.attributes.Attributes.MAX_HEALTH, 32)
+                        .add(
+                                net.minecraft.world.entity.ai.attributes.Attributes.MOVEMENT_SPEED,
+                                .24)
+                        .add(net.minecraft.world.entity.ai.attributes.Attributes.MAX_HEALTH, 24)
                         .build());
     }
 

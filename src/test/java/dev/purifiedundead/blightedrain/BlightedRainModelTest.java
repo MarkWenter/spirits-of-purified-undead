@@ -1,9 +1,28 @@
 package dev.purifiedundead.blightedrain;
 
-import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
+import org.junit.jupiter.api.Test;
+
 class BlightedRainModelTest {
+    @Test
+    void pausedCooldownSurvivesTimeAndRestoration() {
+        var s = new BlightedRainModel();
+        s.start(0, 20);
+        s.stop(300);
+        assertTrue(s.pauseCooldown(400));
+        assertEquals(17900, s.remaining(100000));
+        assertFalse(s.advance(100000));
+        var restored = new BlightedRainModel();
+        restored.restore(s.phase().ordinal(), s.deadline(), s.duration(), 100000);
+        restored.restorePause(s.pausedCooldown());
+        assertEquals(17900, restored.remaining(200000));
+        restored.resumeCooldown(200000);
+        assertFalse(restored.advance(217899));
+        assertTrue(restored.advance(217900));
+        assertTrue(restored.canRoll(true, true, 217900));
+    }
+
     @Test
     void warningAndEventDoNotConsumeCooldown() {
         var s = new BlightedRainModel();

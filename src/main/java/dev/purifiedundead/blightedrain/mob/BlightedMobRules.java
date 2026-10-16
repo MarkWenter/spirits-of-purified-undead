@@ -32,11 +32,13 @@ public final class BlightedMobRules {
     }
 
     public static double healthFactor(net.minecraft.world.entity.LivingEntity e) {
-        return adjusted(e) ? 1.5 : 2.0;
+        return adjusted(e) || e instanceof BlightedSpider ? 1.5 : 2.0;
     }
 
     public static double movementFactor(net.minecraft.world.entity.LivingEntity e) {
-        return e instanceof BlightedVillager ? .5 : adjusted(e) ? .7 : 1;
+        return e instanceof BlightedSpider
+                ? .8
+                : e instanceof BlightedVillager ? .5 : adjusted(e) ? .7 : 1;
     }
 
     public static int drawTicks(int ticks, net.minecraft.world.entity.LivingEntity e) {
@@ -56,6 +58,13 @@ public final class BlightedMobRules {
             net.minecraft.world.entity.LivingEntity target,
             net.minecraft.world.damagesource.DamageSource source,
             float amount) {
+        if (amount > 0
+                && !target.level().isClientSide
+                && source.getEntity() instanceof BlightedSpider spider
+                && spider.getRandom().nextFloat() < .1F)
+            target.addEffect(
+                    new net.minecraft.world.effect.MobEffectInstance(
+                            net.minecraft.world.effect.MobEffects.WEAKNESS, 200, 0));
         if (amount > 0
                 && !target.level().isClientSide
                 && source.getEntity() instanceof BlightedDrowned)

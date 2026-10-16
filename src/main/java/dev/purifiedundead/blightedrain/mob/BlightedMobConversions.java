@@ -89,6 +89,7 @@ public final class BlightedMobConversions {
                     new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.SADDLE));
         }
         data.putInt("BlightedTraitsVersion", 1);
+        data.putInt("BlightedSpiderTraits", 1);
         next.load(data);
         next.getAttribute(Attributes.MOVEMENT_SPEED)
                 .setBaseValue(

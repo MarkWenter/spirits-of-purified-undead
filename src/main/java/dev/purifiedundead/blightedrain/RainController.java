@@ -1,11 +1,12 @@
 package dev.purifiedundead.blightedrain;
 
+import dev.purifiedundead.network.BlightedRainPacket;
+
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.level.storage.ServerLevelData;
 import net.minecraft.world.level.Level;
-import net.minecraft.network.chat.Component;
-import dev.purifiedundead.network.BlightedRainPacket;
+import net.minecraft.world.level.storage.ServerLevelData;
 
 /** Coordinates weather policy, world-owned state and edge-triggered client notifications. */
 public final class RainController {
@@ -17,17 +18,28 @@ public final class RainController {
         long now = level.getGameTime();
         if (data.lastProcessedTime == now) return;
         data.lastProcessedTime = now;
-        if (data.weatherLocked()) ensureRain(level);
+        if (now % 20 == 0) data.validateBeacons(level);
+        if (data.suppressed() && data.model.occupied() && !data.forced) stop(level);
+        if (data.suppressed()) {
+            if (data.model.pauseCooldown(now)) data.setDirty();
+        } else if (data.model.resumeCooldown(now)) data.setDirty();
+        if ((data.weatherLocked() && !data.suppressed()) || (data.forced && data.model.occupied()))
+            ensureRain(level);
         var before = data.model.phase();
         if ((!data.enabled() || !level.getLevelData().isRaining()) && data.model.occupied())
             data.model.stop(now);
         else data.model.advance(now);
         if (before != data.model.phase()) {
+            if (!data.model.occupied()) {
+                data.forced = false;
+                if (data.suppressed()) data.model.pauseCooldown(now);
+            }
             data.setDirty();
             if (data.model.phase() == BlightedRainModel.Phase.COOLDOWN) announce(level, "ended");
             syncAll(level);
         }
         if (data.enabled()
+                && !data.suppressed()
                 && data.model.canRoll(
                         level.getLevelData().isRaining(), !level.players().isEmpty(), now)
                 && level.random.nextDouble() < BlightedRainModel.CHANCE_PER_SECOND)
@@ -69,16 +81,42 @@ public final class RainController {
             throw new IllegalStateException("Rain required in the overworld");
         var data = BlightedRainData.get(level);
         if (!data.enabled()) throw new IllegalStateException("Rain events disabled");
+        if (data.suppressed()) throw new IllegalStateException("Still rain beacon active");
         data.model.start(level.getGameTime(), duration);
         data.setDirty();
         announce(level, "warning");
         syncAll(level);
     }
 
+    /**
+     * Item-only override: preserves an occupied event instead of spending another emblem charge.
+     */
+    public static boolean forceStart(ServerLevel level) {
+        if (level.dimension() != Level.OVERWORLD) return false;
+        var data = BlightedRainData.get(level);
+        if (!data.enabled() || data.model.occupied()) return false;
+        data.model.reset();
+        data.forced = true;
+        ensureRain(level);
+        data.model.start(
+                level.getGameTime(),
+                BlightedRainModel.MIN_DURATION
+                        + level.random.nextInt(
+                                BlightedRainModel.MAX_DURATION
+                                        - BlightedRainModel.MIN_DURATION
+                                        + 1));
+        data.setDirty();
+        announce(level, "warning");
+        syncAll(level);
+        return true;
+    }
+
     public static void stop(ServerLevel level) {
         var data = BlightedRainData.get(level);
         if (!data.model.occupied()) return;
         data.model.stop(level.getGameTime());
+        data.forced = false;
+        if (data.suppressed()) data.model.pauseCooldown(level.getGameTime());
         data.setDirty();
         announce(level, "ended");
         syncAll(level);
