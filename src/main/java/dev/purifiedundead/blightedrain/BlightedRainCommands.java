@@ -114,7 +114,7 @@ public final class BlightedRainCommands {
     private static int weather(CommandSourceStack source, boolean locked)
             throws com.mojang.brigadier.exceptions.CommandSyntaxException {
         var l = level(source);
-        BlightedRainData.get(l).setWeatherLocked(locked);
+        l.getGameRules().getRule(RainWorldOptions.ETERNAL_RAIN).set(locked, source.getServer());
         reply(source, "weather", locked);
         return 1;
     }

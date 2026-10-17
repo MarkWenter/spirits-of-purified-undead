@@ -342,5 +342,9 @@
   "command.purified_undead.rain.beacon_active": "静雨信标正在生效；可使用秽雨纹章强制引雨。",
   "item.purified_undead.blighted_rain_emblem.desc": "长按 2 秒引发污秽之雨，无视冷却与静雨信标。消耗 1 耐久。",
   "item.purified_undead.cliff_village_youth.desc": "每次投掷消耗 1 耐久；耗尽后保留，在物品栏中每 30 秒恢复 1 点。",
-  "item.purified_undead.headless_knight.desc": "主手或副手持有时提供 5 点护甲。"
+  "item.purified_undead.headless_knight.desc": "主手或副手持有时提供 5 点护甲。",
+  "gamerule.purifiedUndeadEternalRain": "是否启用永雨",
+  "gamerule.purifiedUndeadEternalRain.description": "关闭后使用正常天气；在此设置下创建的新世界中，每位玩家首次进入获得一个秽雨纹章。自然雨天仍可能出现污秽之雨。",
+  "block.purified_undead.white_lotus": "洁白莲花",
+  "block.purified_undead.scarlet_lotus": "猩红莲花"
 }

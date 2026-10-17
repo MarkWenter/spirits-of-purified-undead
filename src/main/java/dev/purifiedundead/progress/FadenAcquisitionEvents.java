@@ -11,7 +11,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import java.util.UUID;
 
-/** Attributes a completed zombie-villager cure to the vanilla conversion starter. */
+/** Attributes a completed vanilla or blighted zombie-villager cure to the vanilla conversion starter. */
 public final class FadenAcquisitionEvents {
     @SubscribeEvent
     public void onConversion(LivingConversionEvent.Post event) {

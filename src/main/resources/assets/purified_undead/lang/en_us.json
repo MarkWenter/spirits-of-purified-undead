@@ -342,5 +342,9 @@
   "command.purified_undead.rain.beacon_active": "A Still Rain Beacon is active; an emblem can override it.",
   "item.purified_undead.blighted_rain_emblem.desc": "Hold for 2 seconds to invoke blighted rain, ignoring cooldown and beacons. Costs 1 durability.",
   "item.purified_undead.cliff_village_youth.desc": "Each throw costs 1 durability. Never breaks; recovers 1 every 30 seconds in inventory.",
-  "item.purified_undead.headless_knight.desc": "Grants 5 armor while held in either hand."
+  "item.purified_undead.headless_knight.desc": "Grants 5 armor while held in either hand.",
+  "gamerule.purifiedUndeadEternalRain": "Enable eternal rain",
+  "gamerule.purifiedUndeadEternalRain.description": "Use normal weather when disabled. In newly created worlds with this option off, each player receives one rain emblem on first entry. Blighted rain can still occur during natural rain.",
+  "block.purified_undead.white_lotus": "White Lotus",
+  "block.purified_undead.scarlet_lotus": "Scarlet Lotus"
 }

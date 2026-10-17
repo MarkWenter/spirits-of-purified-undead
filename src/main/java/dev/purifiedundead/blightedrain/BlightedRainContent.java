@@ -10,6 +10,8 @@ public final class BlightedRainContent {
 
     public static void register(IEventBus modBus) {
         Objects.requireNonNull(modBus, "modBus");
+        RainWorldOptions.register();
+        dev.purifiedundead.purification.LotusBlocks.register(modBus);
         dev.purifiedundead.blightedrain.content.RainItems.register(modBus);
         dev.purifiedundead.blightedrain.mob.BlightedMobContent.register(modBus);
         net.minecraftforge.common.MinecraftForge.EVENT_BUS.register(new BlightedRainEvents());

@@ -14,6 +14,8 @@
 
 **污秽之雨第二部分补充（2026-10-15）：** 两版候选版本 `1.1.0-blighted-rain.2`、网络协议 12。新增预警音效与秽鬼生物：Forge 15 类、NeoForge 16 类；一般转化 200 刻，村民/鸡雨伤死亡转化，亡灵免雨伤但幻翼除外，全部秽鬼无日晒燃烧。新生物攻击时间钩子仅对新增派生类生效。实现与资源约定见 [第二部分](blighted-rain-update/PART_2.md)，核对 `BLIGHTED_MOBS_SERVER_OK` / `BLIGHTED_MOBS_CLIENT_OK` 以及原有完整回归结束标记。白巫女手记不改，Forge 仍仅推更新分支。
 
+**污秽之雨第四部分补充（2026-10-18）：** 两版 `1.1.0-blighted-rain.5`，盾牌实体收尖模型、三条获取条件更新、创建世界永雨游戏规则和首次赠送纹章、可放置莲花（原物品图标及食用保留）。见 [第四部分](blighted-rain-update/PART_4.md)、[配置](blighted-rain-update/PART_4_CONFIG.md)、[指令](blighted-rain-update/PART_4_COMMANDS.md)。运行核对 `RAIN_PART4_SERVER_OK`、`RAIN_PART4_CLIENT_OK`、`RAIN_PART4_WORLD_OPTION_OK`。白巫女手记未改。
+
 ## 1. 先找到正确的工程
 
 工作区根目录：`I:/spirits of purified undead`。文中没有特别注明的相对路径均以此为基准。

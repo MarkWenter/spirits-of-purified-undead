@@ -44,7 +44,10 @@ public final class BlightedRainEvents {
 
     @SubscribeEvent
     public void login(PlayerEvent.PlayerLoggedInEvent event) {
-        if (event.getEntity() instanceof ServerPlayer player) RainController.sync(player);
+        if (event.getEntity() instanceof ServerPlayer player) {
+            BlightedRainData.get(player.server.overworld()).welcome(player);
+            RainController.sync(player);
+        }
     }
 
     @SubscribeEvent

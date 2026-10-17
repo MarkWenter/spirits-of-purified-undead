@@ -9,6 +9,30 @@ public final class BlightedRainData extends SavedData {
     private boolean weatherLocked = true, enabled = true;
     private boolean initialized;
     boolean forced;
+    private boolean initialEmblemEligible;
+    private final java.util.Set<java.util.UUID> emblemRecipients = new java.util.HashSet<>();
+
+    private static BlightedRainData create(ServerLevel level) {
+        var data = new BlightedRainData();
+        data.weatherLocked = level.getGameRules().getBoolean(RainWorldOptions.ETERNAL_RAIN);
+        data.initialEmblemEligible = !data.weatherLocked;
+        data.setDirty();
+        return data;
+    }
+
+    /** World ledger survives player death and prevents repeat login gifts. */
+    public void welcome(net.minecraft.server.level.ServerPlayer player) {
+        if (!initialEmblemEligible || emblemRecipients.contains(player.getUUID())) return;
+        var gift =
+                new net.minecraft.world.item.ItemStack(
+                        dev.purifiedundead.blightedrain.content.RainItems.EMBLEM.get());
+        if (!player.getInventory().add(gift) && !gift.isEmpty()) {
+            if (player.drop(gift, false) == null) return;
+        }
+        emblemRecipients.add(player.getUUID());
+        setDirty();
+    }
+
     private int loadedPause = -1;
     private final java.util.Set<Long> activeBeacons = new java.util.HashSet<>();
 
@@ -59,7 +83,7 @@ public final class BlightedRainData extends SavedData {
                 level.getDataStorage()
                         .computeIfAbsent(
                                 BlightedRainData::load,
-                                BlightedRainData::new,
+                                () -> create(level),
                                 "purified_undead_blighted_rain");
         if (!result.initialized) {
             result.model.restore(
@@ -84,6 +108,13 @@ public final class BlightedRainData extends SavedData {
         d.loadedDeadline = tag.getLong("deadline");
         d.loadedDuration = tag.getInt("duration");
         d.forced = tag.getBoolean("forced");
+        d.initialEmblemEligible = tag.getBoolean("initialEmblemEligible");
+        for (var entry : tag.getList("emblemRecipients", 8)) {
+            try {
+                d.emblemRecipients.add(java.util.UUID.fromString(entry.getAsString()));
+            } catch (IllegalArgumentException ignored) {
+            }
+        }
         d.loadedPause = tag.contains("pausedCooldown") ? tag.getInt("pausedCooldown") : -1;
         for (long pos : tag.getLongArray("activeBeacons")) d.activeBeacons.add(pos);
         return d;
@@ -97,6 +128,11 @@ public final class BlightedRainData extends SavedData {
         tag.putLong("deadline", model.deadline());
         tag.putInt("duration", model.duration());
         tag.putBoolean("forced", forced);
+        tag.putBoolean("initialEmblemEligible", initialEmblemEligible);
+        var recipients = new net.minecraft.nbt.ListTag();
+        emblemRecipients.forEach(
+                id -> recipients.add(net.minecraft.nbt.StringTag.valueOf(id.toString())));
+        tag.put("emblemRecipients", recipients);
         tag.putInt("pausedCooldown", model.pausedCooldown());
         tag.putLongArray(
                 "activeBeacons", activeBeacons.stream().mapToLong(Long::longValue).toArray());
