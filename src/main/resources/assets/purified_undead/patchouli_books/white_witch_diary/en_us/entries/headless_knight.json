@@ -1,0 +1,23 @@
+{
+  "name": "The Headless Knight",
+  "icon": "purified_undead:headless_knight",
+  "category": "purified_undead:blighted_weapons",
+  "sortnum": 108,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "text": "A shield that grants an additional 5 armor while held.",
+      "item": "purified_undead:headless_knight",
+      "title": "The Headless Knight",
+      "link_recipe": true
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Try applying shield enchantments to it."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "purified_undead:headless_knight"
+    }
+  ]
+}

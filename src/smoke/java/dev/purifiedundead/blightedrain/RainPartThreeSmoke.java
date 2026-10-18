@@ -146,9 +146,12 @@ public final class RainPartThreeSmoke {
                             .getResult()
                             .consumesAction(),
                     "exhausted youth cannot throw");
-            for (int i = 0; i < 599; i++)
+            for (int i = 1; i < 600; i++) {
+                player.tickCount = i;
                 youth.getItem().inventoryTick(youth, level, player, 0, true);
+            }
             check(youth.getDamageValue() == 10 && youth.getCount() == 1, "exhausted item survives");
+            player.tickCount = 600;
             youth.getItem().inventoryTick(youth, level, player, 0, true);
             check(youth.getDamageValue() == 9, "thirty-second recovery");
             youth.getItem().use(level, player, net.minecraft.world.InteractionHand.MAIN_HAND);
@@ -262,7 +265,7 @@ public final class RainPartThreeSmoke {
             com.mojang.logging.LogUtils.getLogger()
                     .info(
                             "RAIN_PART3_SERVER_OK"
-                                + " beacon/persistence/pause/override/spider/shield/recovery/impact/drops/foundry");
+                                    + " beacon/persistence/pause/override/spider/shield/recovery/impact/drops/foundry");
         } finally {
             for (var entity : entities) entity.discard();
             for (var entry : states.entrySet())

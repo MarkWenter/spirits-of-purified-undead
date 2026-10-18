@@ -44,6 +44,10 @@ public final class RainEffects {
                         .getHolderOrThrow(DAMAGE));
     }
 
+    public static boolean affected(LivingEntity mob) {
+        return mob instanceof net.minecraft.world.entity.Mob || mob.getType().is(AFFECTED);
+    }
+
     public static boolean protectedMob(LivingEntity mob) {
         return mob.getType().is(IMMUNE)
                 || RainImmunity.contains(mob.getType())
@@ -88,7 +92,7 @@ public final class RainEffects {
                                 || (mob instanceof net.minecraft.world.entity.Mob m
                                         && dev.purifiedundead.blightedrain.mob
                                                 .BlightedMobConversions.candidate(m)))
-                        && mob.getType().is(AFFECTED);
+                        && affected(mob);
         var tag = mob.getPersistentData();
         int progress = convertible ? tag.getInt(PROGRESS) : 0;
         if (!active && progress == 0) return;
@@ -114,7 +118,7 @@ public final class RainEffects {
         }
         if (exposed
                 && !damageImmune(mob)
-                && mob.getType().is(AFFECTED)
+                && affected(mob)
                 && mob.tickCount % BlightedRainModel.DAMAGE_INTERVAL == 0)
             mob.hurt(damage(level), 1F);
     }

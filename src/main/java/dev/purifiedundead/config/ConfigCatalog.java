@@ -28,10 +28,21 @@ public final class ConfigCatalog {
 
     public static Map<String, ForgeConfigSpec.ConfigValue<?>> values(String file) {
         return switch (file) {
-            case "common" -> COMMON;
-            case "slate" -> SLATE;
-            default -> throw new IllegalArgumentException("Use common or slate");
+            case "common" -> filtered(false);
+            case "accessories" -> filtered(true);
+            case "slate" -> {
+                var values = new TreeMap<>(SLATE);
+                values.keySet().removeIf(AccessoryConfigMigration::accessory);
+                yield Collections.unmodifiableMap(values);
+            }
+            default -> throw new IllegalArgumentException("Use common, accessories or slate");
         };
+    }
+
+    private static Map<String, ForgeConfigSpec.ConfigValue<?>> filtered(boolean accessories) {
+        var result = new TreeMap<>(COMMON);
+        result.keySet().removeIf(key -> AccessoryConfigMigration.accessory(key) != accessories);
+        return Collections.unmodifiableMap(result);
     }
 
     public static Object value(String file, String key) {

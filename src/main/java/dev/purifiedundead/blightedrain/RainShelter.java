@@ -12,6 +12,7 @@ import net.minecraft.world.entity.schedule.Activity;
 
 /** Maintain vanilla HIDE activity without creating a raid or simulating a bell. */
 public final class RainShelter {
+    private static final String RETRY = "purified_undead:rain_shelter_retry";
     private static final String KEY = "purified_undead:rain_shelter";
 
     private RainShelter() {}
@@ -34,12 +35,27 @@ public final class RainShelter {
                     brain.updateActivityFromSchedule(level.getDayTime(), level.getGameTime());
                 }
                 tag.remove(KEY);
+                tag.remove(RETRY);
             }
             return;
         }
         if (brain.isActive(Activity.RAID) || brain.isActive(Activity.PANIC)) return;
         BlockPos target = tag.contains(KEY) ? BlockPos.of(tag.getLong(KEY)) : null;
-        if (target == null || !safe(level, target)) {
+        if (target == null
+                || !safe(level, target)
+                || (villager.tickCount % 100 == 0 && !reachable(villager, target))) {
+            if (level.getGameTime() < tag.getLong(RETRY)) return;
+            tag.putLong(RETRY, level.getGameTime() + 100);
+            if (target != null) {
+                var previous = target;
+                if (brain.getMemory(MemoryModuleType.HIDING_PLACE)
+                        .map(p -> p.pos().equals(previous))
+                        .orElse(false)) brain.eraseMemory(MemoryModuleType.HIDING_PLACE);
+                if (brain.getMemory(MemoryModuleType.WALK_TARGET)
+                        .map(w -> w.getTarget().currentBlockPosition().equals(previous))
+                        .orElse(false)) brain.eraseMemory(MemoryModuleType.WALK_TARGET);
+            }
+            tag.remove(KEY);
             if (safe(level, villager.blockPosition())) target = villager.blockPosition();
             else
                 target =
@@ -47,7 +63,8 @@ public final class RainShelter {
                                 .filter(
                                         p ->
                                                 p.dimension() == level.dimension()
-                                                        && safe(level, p.pos()))
+                                                        && safe(level, p.pos())
+                                                        && reachable(villager, p.pos()))
                                 .map(GlobalPos::pos)
                                 .orElse(null);
             if (target == null)
@@ -63,7 +80,7 @@ public final class RainShelter {
                                         java.util.Comparator.comparingDouble(
                                                 p -> p.distSqr(villager.blockPosition())))
                                 .limit(4)
-                                .filter(p -> villager.getNavigation().createPath(p, 1) != null)
+                                .filter(p -> reachable(villager, p))
                                 .findFirst()
                                 .orElse(null);
             if (target == null) return;
@@ -77,6 +94,12 @@ public final class RainShelter {
             brain.eraseMemory(MemoryModuleType.WALK_TARGET);
             villager.getNavigation().stop();
         }
+    }
+
+    private static boolean reachable(Villager villager, BlockPos pos) {
+        if (pos.closerToCenterThan(villager.position(), 1.5)) return true;
+        var path = villager.getNavigation().createPath(pos, 1);
+        return path != null && path.canReach();
     }
 
     private static boolean safe(ServerLevel level, BlockPos pos) {

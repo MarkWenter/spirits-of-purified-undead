@@ -69,9 +69,13 @@ public final class CliffYouthItem extends Item {
     @Override
     public void inventoryTick(
             ItemStack stack, Level level, Entity owner, int slot, boolean selected) {
-        if (level.isClientSide || !(owner instanceof Player) || !stack.isDamaged()) return;
+        // Batch carried-time accounting to once per second, avoiding per-tick stack sync.
+        if (level.isClientSide
+                || !(owner instanceof Player)
+                || !stack.isDamaged()
+                || Math.floorMod(owner.tickCount + slot, 20) != 0) return;
         var tag = stack.getOrCreateTag();
-        int ticks = tag.getInt("YouthRecoveryTicks") + 1;
+        int ticks = Math.max(0, Math.min(599, tag.getInt("YouthRecoveryTicks"))) + 20;
         if (ticks >= 600) {
             stack.setDamageValue(Math.max(0, stack.getDamageValue() - 1));
             ticks = 0;

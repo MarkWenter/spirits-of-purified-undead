@@ -1,0 +1,19 @@
+{
+  "name": "熟污秽肉",
+  "icon": "purified_undead:cooked_blighted_meat",
+  "category": "purified_undead:contract_path",
+  "sortnum": 105,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "text": "烤制的污秽肉，虽然看上去还是很恶心，但或许能勉强吃下去……？",
+      "item": "purified_undead:cooked_blighted_meat",
+      "title": "熟污秽肉",
+      "link_recipe": true
+    },
+    {
+      "type": "patchouli:text",
+      "text": "熟辣！再不吃就老辣！"
+    }
+  ]
+}

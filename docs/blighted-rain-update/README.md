@@ -1,7 +1,9 @@
 # 污秽之雨更新
 
-两版主模组基线为 1.0。当前候选版本 **1.1.0-blighted-rain.3**：第一部分天气事件与第二部分预警音效/秽鬼生物均已实现，更新整体尚未定稿。
+两版主模组基线为 1.0。当前候选版本 **1.1.0-blighted-rain.6**：第一部分天气事件与第二部分预警音效/秽鬼生物均已实现，更新整体尚未定稿。
 
+- [第四部分补充：信标、饰品配置、按键、手记和兼容审查](PART_4_SUPPLEMENT.md) · [配置](PART_4_SUPPLEMENT_CONFIG.md) · [验证](PART_4_SUPPLEMENT_VALIDATION.md)
+- [第四部分](PART_4.md) · [指令](PART_4_COMMANDS.md)
 - [独有特征、净化与秽鬼蜘蛛](TRAITS.md)及[验证](TRAITS_VALIDATION.md)
 - [测试问题修正与刷怪蛋/创造栏位](FIXES_2_2.md)
 - [新增秽鬼贴图重绘](TEXTURE_REPAINT.md)与[验证](TEXTURE_REPAINT_VALIDATION.md)
@@ -12,7 +14,7 @@
 - [架构与接入约定](ARCHITECTURE.md)
 - [准备阶段项目现状](PROJECT_STATE.md)与[准备阶段验证](VALIDATION.md)
 
-Forge 1.20.1 根工程和 NeoForge 1.21.1 实际工程均已实现。Forge GitHub 使用独立分支 `污秽之雨更新`，不合并主分支。附属模组未修改；白巫女手记保持原样。后续世界创建选项、完整天气配置、解除仪式与更多实体变化仍待用户确认。
+Forge 1.20.1 根工程和 NeoForge 1.21.1 实际工程均已实现。Forge GitHub 使用独立分支 `污秽之雨更新`，不合并主分支。附属模组未修改；白巫女手记已按手记3更新，创建世界永雨选项已实现。其他后续内容依用户要求继续。
 
 ## 第三部分
 

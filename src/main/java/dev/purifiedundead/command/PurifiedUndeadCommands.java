@@ -199,7 +199,7 @@ public final class PurifiedUndeadCommands {
                                                                     return players.size();
                                                                 }))));
         var config = literal("config").requires(s -> s.hasPermission(2));
-        for (String file : new String[] {"common", "slate"}) {
+        for (String file : new String[] {"common", "accessories", "slate"}) {
             config.then(
                     literal(file)
                             .executes(

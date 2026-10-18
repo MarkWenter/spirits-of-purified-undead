@@ -346,5 +346,12 @@
   "gamerule.purifiedUndeadEternalRain": "Enable eternal rain",
   "gamerule.purifiedUndeadEternalRain.description": "Use normal weather when disabled. In newly created worlds with this option off, each player receives one rain emblem on first entry. Blighted rain can still occur during natural rain.",
   "block.purified_undead.white_lotus": "White Lotus",
-  "block.purified_undead.scarlet_lotus": "Scarlet Lotus"
+  "block.purified_undead.scarlet_lotus": "Scarlet Lotus",
+  "key.categories.purified_undead": "Spirits of Purified Undead",
+  "key.purified_undead.toggle_ferin": "Toggle Ferin Assist",
+  "key.purified_undead.toggle_guardian_movement": "Toggle Double Jump and Air Dash",
+  "message.purified_undead.ferin.enabled": "Ferin assist enabled",
+  "message.purified_undead.ferin.disabled": "Ferin assist disabled",
+  "message.purified_undead.guardian_movement.enabled": "Double jump and air dash enabled",
+  "message.purified_undead.guardian_movement.disabled": "Double jump and air dash disabled"
 }

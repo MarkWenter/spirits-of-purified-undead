@@ -35,6 +35,7 @@ public final class BlightedMobSmoke {
         BlightedTraitsSmoke.run(server);
         RainPartThreeSmoke.run(server);
         RainPartFourSmoke.run(server);
+        RainSixSmoke.run(server);
         var level = server.overworld();
         var fixtures = new java.util.ArrayList<Entity>();
         try {

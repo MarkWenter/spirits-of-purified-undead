@@ -1,0 +1,23 @@
+{
+  "name": "无头的骑士",
+  "icon": "purified_undead:headless_knight",
+  "category": "purified_undead:blighted_weapons",
+  "sortnum": 108,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "text": "盾牌，持有时可以额外获得5点护甲。",
+      "item": "purified_undead:headless_knight",
+      "title": "无头的骑士",
+      "link_recipe": true
+    },
+    {
+      "type": "patchouli:text",
+      "text": "可以尝试为其打上盾牌类的附魔。"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "purified_undead:headless_knight"
+    }
+  ]
+}

@@ -25,6 +25,11 @@ public final class GuardianMovementService {
     public static void perform(ServerPlayer player, GuardianActionPacket.Action action) {
         if (!REQUESTS.computeIfAbsent(player.getUUID(), ignored -> new MovementRequestBudget())
                 .allow(player.server.getTickCount())) return;
+        if (action == GuardianActionPacket.Action.TOGGLE_FERIN
+                || action == GuardianActionPacket.Action.TOGGLE_GUARDIAN_MOVEMENT) {
+            AbilityPreferences.toggle(player, action == GuardianActionPacket.Action.TOGGLE_FERIN);
+            return;
+        }
         if (action == GuardianActionPacket.Action.WALL_JUMP) {
             if (!dev.purifiedundead.slate.WallGrip.jump(player)) rejectPrediction(player);
             return;
@@ -124,6 +129,7 @@ public final class GuardianMovementService {
     }
 
     private static void syncMotion(ServerPlayer player) {
+        AbilityPreferences.sync(player);
         var packet =
                 new dev.purifiedundead.network.GuardianMotionSettingsPacket(
                         PurifiedUndeadConfig.get(
@@ -154,7 +160,13 @@ public final class GuardianMovementService {
         }
     }
 
+    @SubscribeEvent
+    public void onClone(PlayerEvent.Clone event) {
+        AbilityPreferences.copy(event.getOriginal(), event.getEntity());
+    }
+
     private static boolean isEquipped(ServerPlayer player) {
+        if (!AbilityPreferences.movement(player)) return false;
         return CuriosApi.getCuriosInventory(player)
                 .map(
                         handler ->

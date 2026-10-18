@@ -34,6 +34,7 @@ public final class BlightedRainClient {
     }
 
     public static float intensity() {
+        if (phase != 1 && phase != 2) return 0;
         var mc = Minecraft.getInstance();
         var level = mc.level;
         if (level == null

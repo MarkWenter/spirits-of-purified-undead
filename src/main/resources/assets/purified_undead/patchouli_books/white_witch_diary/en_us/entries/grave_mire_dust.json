@@ -1,0 +1,19 @@
+{
+  "name": "Grave Mire Dust",
+  "icon": "purified_undead:grave_mire_dust",
+  "category": "purified_undead:contract_path",
+  "sortnum": 101,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "text": "A special drop from blighted spiders. Why would a common surface-dwelling spider carry dust from a grave…?",
+      "item": "purified_undead:grave_mire_dust",
+      "title": "Grave Mire Dust",
+      "link_recipe": true
+    },
+    {
+      "type": "patchouli:text",
+      "text": "A crafting material for certain blighted weapons."
+    }
+  ]
+}

@@ -95,7 +95,7 @@ public final class GuardianInputEvents {
             jumpedThisAir = false;
             dashedThisAir = false;
             jumpReleasedThisAir = false;
-        } else if (!wallJump && hasGuardians(player)) {
+        } else if (!wallJump && AbilityKeys.movementEnabled && hasGuardians(player)) {
             if (!jumpDown) {
                 jumpReleasedThisAir = true;
             }

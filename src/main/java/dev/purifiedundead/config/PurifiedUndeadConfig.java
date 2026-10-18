@@ -5,11 +5,14 @@ import net.minecraftforge.common.ForgeConfigSpec;
 /** Server-authoritative common configuration. Defaults preserve the confirmed first-release rules. */
 public final class PurifiedUndeadConfig {
     public static final ForgeConfigSpec SPEC;
+    public static final ForgeConfigSpec ACCESSORIES_SPEC;
     public static final Values VALUES;
 
     static {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
-        VALUES = new Values(builder);
+        ForgeConfigSpec.Builder accessories = new ForgeConfigSpec.Builder();
+        VALUES = new Values(builder, accessories);
+        ACCESSORIES_SPEC = accessories.build();
         SPEC = builder.build();
     }
 
@@ -30,8 +33,6 @@ public final class PurifiedUndeadConfig {
         if (revision >= 2) return;
         if (revision < 1) {
             if (VALUES.fragmentDropChance.get() == 0.125D) VALUES.fragmentDropChance.set(0.25D);
-            if (VALUES.hoenirNegativeEffectsRequired.get() == 5)
-                VALUES.hoenirNegativeEffectsRequired.set(3);
         }
         if (VALUES.fragmentDropChance.get() == 0.25D) VALUES.fragmentDropChance.set(0.35D);
         VALUES.balanceRevision.set(2);
@@ -39,6 +40,30 @@ public final class PurifiedUndeadConfig {
     }
 
     public static final class Values {
+        public final ForgeConfigSpec.DoubleValue shiningGuardianHealthBonus;
+        public final ForgeConfigSpec.DoubleValue relicFingerDamage;
+        public final ForgeConfigSpec.DoubleValue relicClawDamage;
+        public final ForgeConfigSpec.DoubleValue relicNecklaceHealing;
+        public final ForgeConfigSpec.DoubleValue relicRibbonExperience;
+        public final ForgeConfigSpec.DoubleValue relicRosaryHealth;
+        public final ForgeConfigSpec.DoubleValue relicBadgeHealth;
+        public final ForgeConfigSpec.DoubleValue lilyCriticalPerType;
+        public final ForgeConfigSpec.DoubleValue lilyLuckPerType;
+        public final ForgeConfigSpec.IntValue statueCooldown;
+        public final ForgeConfigSpec.IntValue earringsCooldown;
+        public final ForgeConfigSpec.DoubleValue statueRescueHealth;
+        public final ForgeConfigSpec.IntValue statueRegenerationTicks;
+        public final ForgeConfigSpec.IntValue statueRegenerationAmplifier;
+        public final ForgeConfigSpec.IntValue statueAbsorptionTicks;
+        public final ForgeConfigSpec.IntValue statueAbsorptionAmplifier;
+        public final ForgeConfigSpec.IntValue statueFireResistanceTicks;
+        public final ForgeConfigSpec.DoubleValue earringsRescueHealth;
+        public final ForgeConfigSpec.IntValue earringsRegenerationTicks;
+        public final ForgeConfigSpec.IntValue earringsRegenerationAmplifier;
+        public final ForgeConfigSpec.IntValue earringsAbsorptionTicks;
+        public final ForgeConfigSpec.IntValue earringsAbsorptionAmplifier;
+        public final ForgeConfigSpec.IntValue earringsFireResistanceTicks;
+
         public final ForgeConfigSpec.BooleanValue guardianMalumSoulHarvest;
         public final ForgeConfigSpec.IntValue balanceRevision;
         public final ForgeConfigSpec.DoubleValue juliusMeleeDamagePenalty;
@@ -126,7 +151,8 @@ public final class PurifiedUndeadConfig {
         public final ForgeConfigSpec.DoubleValue whiteWitchRelicEffectScale;
         public final ForgeConfigSpec.DoubleValue whiteWitchRelicCooldownScale;
 
-        private Values(ForgeConfigSpec.Builder builder) {
+        private Values(ForgeConfigSpec.Builder common, ForgeConfigSpec.Builder accessories) {
+            var builder = common;
             balanceRevision = builder.defineInRange("balanceRevision", 0, 0, 100);
             builder.comment("契约、饰品槽与材料掉落；槽位数量修改后重启游戏／服务器。").push("contract");
             warriorSlots =
@@ -181,6 +207,7 @@ public final class PurifiedUndeadConfig {
             ulvMinimumSleepTicks = builder.defineInRange("ulvMinimumSleepTicks", 100, 1, 12000);
             builder.pop();
 
+            builder = accessories;
             builder.comment("护身符等级与成长；怨念污秽消耗数量同时决定纯净结晶产量。").push("talisman");
             talismanMaxLevel = builder.defineInRange("maxLevel", 15, 0, 100);
             spiritsPerTalismanLevel = builder.defineInRange("blightedSpiritsPerLevel", 4, 1, 64);
@@ -298,6 +325,7 @@ public final class PurifiedUndeadConfig {
             fadenFortuneLootingBonus = builder.defineInRange("fortuneAndLootingBonus", 1, 0, 255);
             builder.pop();
 
+            builder = common;
             builder.comment("可选模组兼容；关闭不会卸载任何模组。").push("compatibility");
             guardianMalumSoulHarvest =
                     builder.comment(
@@ -305,6 +333,7 @@ public final class PurifiedUndeadConfig {
                             .define("guardianMalumSoulHarvest", true);
             builder.pop();
 
+            builder = accessories;
             builder.comment("白巫女遗物：重复佩戴、效果倍率和冷却。").push("whiteWitchRelics");
             whiteWitchRelicsEnabled =
                     builder.comment("Master switch for White Witch Relic equipment effects.")
@@ -314,6 +343,63 @@ public final class PurifiedUndeadConfig {
                     builder.defineInRange("globalEffectScale", 1.0D, 0.0D, 100.0D);
             whiteWitchRelicCooldownScale =
                     builder.defineInRange("globalCooldownScale", 1.0D, 0.01D, 100.0D);
+            builder.pop();
+
+            builder.comment("独立饰品数值；比例以 1.0 表示 100%，时间单位为游戏刻。修改后重启。 ").push("individual");
+            shiningGuardianHealthBonus =
+                    builder.defineInRange(
+                            "shining_guardian_treasure.maxHealthBonus", 1.0D, 0.0D, 10.0D);
+            relicFingerDamage =
+                    builder.defineInRange("blighted_finger.damageBonus", 0.25D, 0.0D, 10.0D);
+            relicClawDamage =
+                    builder.defineInRange(
+                            "ancient_dragon_claw.projectileDamageBonus", 1.35D, 0.0D, 20.0D);
+            relicNecklaceHealing =
+                    builder.defineInRange(
+                            "weathered_warrior_necklace.missingHealthHealingRatio",
+                            0.35D,
+                            0.0D,
+                            1.0D);
+            relicRibbonExperience =
+                    builder.defineInRange(
+                            "bloodstained_ribbon.experienceBonus", 0.25D, 0.0D, 20.0D);
+            relicRosaryHealth =
+                    builder.defineInRange(
+                            "soiled_silver_rosary.maxHealthBonus", 0.05D, 0.0D, 10.0D);
+            relicBadgeHealth =
+                    builder.defineInRange("kings_shield_badge.maxHealthBonus", 0.25D, 0.0D, 10.0D);
+            lilyCriticalPerType =
+                    builder.defineInRange(
+                            "lily_diary.criticalChancePerUndeadType", 0.03D, 0.0D, 1.0D);
+            lilyLuckPerType =
+                    builder.defineInRange("lily_diary.luckPerUndeadType", 0.5D, 0.0D, 100.0D);
+            statueCooldown =
+                    builder.defineInRange("white_priestess_statue.cooldownTicks", 2400, 1, 720000);
+            earringsCooldown =
+                    builder.defineInRange(
+                            "white_priestess_earrings.cooldownTicks", 12000, 1, 720000);
+            statueRescueHealth = builder.defineInRange("statue.RescueHealth", 1.0D, 0.0D, 2048.0D);
+            statueRegenerationTicks =
+                    builder.defineInRange("statue.RegenerationTicks", 900, 0, 720000);
+            statueRegenerationAmplifier =
+                    builder.defineInRange("statue.RegenerationAmplifier", 1, 0, 255);
+            statueAbsorptionTicks = builder.defineInRange("statue.AbsorptionTicks", 100, 0, 720000);
+            statueAbsorptionAmplifier =
+                    builder.defineInRange("statue.AbsorptionAmplifier", 1, 0, 255);
+            statueFireResistanceTicks =
+                    builder.defineInRange("statue.FireResistanceTicks", 800, 0, 720000);
+            earringsRescueHealth =
+                    builder.defineInRange("earrings.RescueHealth", 1.0D, 0.0D, 2048.0D);
+            earringsRegenerationTicks =
+                    builder.defineInRange("earrings.RegenerationTicks", 900, 0, 720000);
+            earringsRegenerationAmplifier =
+                    builder.defineInRange("earrings.RegenerationAmplifier", 1, 0, 255);
+            earringsAbsorptionTicks =
+                    builder.defineInRange("earrings.AbsorptionTicks", 100, 0, 720000);
+            earringsAbsorptionAmplifier =
+                    builder.defineInRange("earrings.AbsorptionAmplifier", 1, 0, 255);
+            earringsFireResistanceTicks =
+                    builder.defineInRange("earrings.FireResistanceTicks", 800, 0, 720000);
             builder.pop();
         }
     }

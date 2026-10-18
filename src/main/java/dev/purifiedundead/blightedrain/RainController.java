@@ -19,6 +19,9 @@ public final class RainController {
         if (data.lastProcessedTime == now) return;
         data.lastProcessedTime = now;
         if (now % 20 == 0) data.validateBeacons(level);
+        if (data.suppressed() && !data.wasSuppressed && !data.forced)
+            level.setWeatherParameters(12000, 0, false, false);
+        data.wasSuppressed = data.suppressed();
         if (data.suppressed() && data.model.occupied() && !data.forced) stop(level);
         if (data.suppressed()) {
             if (data.model.pauseCooldown(now)) data.setDirty();
@@ -31,6 +34,8 @@ public final class RainController {
         else data.model.advance(now);
         if (before != data.model.phase()) {
             if (!data.model.occupied()) {
+                if (data.forced && (data.suppressed() || !data.weatherLocked()))
+                    level.setWeatherParameters(12000, 0, false, false);
                 data.forced = false;
                 if (data.suppressed()) data.model.pauseCooldown(now);
             }
@@ -115,6 +120,8 @@ public final class RainController {
         var data = BlightedRainData.get(level);
         if (!data.model.occupied()) return;
         data.model.stop(level.getGameTime());
+        if (data.forced && (data.suppressed() || !data.weatherLocked()))
+            level.setWeatherParameters(12000, 0, false, false);
         data.forced = false;
         if (data.suppressed()) data.model.pauseCooldown(level.getGameTime());
         data.setDirty();

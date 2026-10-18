@@ -31,6 +31,32 @@ public final class BlightedRainClientSmoke {
                 return;
             }
             if (mc.level == null || mc.player == null || mc.getOverlay() != null) return;
+            mc.options.pauseOnLostFocus = false;
+            if (mc.screen instanceof net.minecraft.client.gui.screens.PauseScreen)
+                mc.setScreen(null);
+            if (ticks == 40 || ticks == 90) {
+                sendToggle(dev.purifiedundead.network.GuardianActionPacket.Action.TOGGLE_FERIN);
+                sendToggle(
+                        dev.purifiedundead.network.GuardianActionPacket.Action
+                                .TOGGLE_GUARDIAN_MOVEMENT);
+            }
+            if (ticks == 70
+                    && (dev.purifiedundead.client.AbilityKeys.ferinEnabled
+                            || dev.purifiedundead.client.AbilityKeys.movementEnabled))
+                throw new IllegalStateException("Toggle off did not synchronize");
+            if (ticks == 120) {
+                if (!dev.purifiedundead.client.AbilityKeys.ferinEnabled
+                        || !dev.purifiedundead.client.AbilityKeys.movementEnabled)
+                    throw new IllegalStateException("Toggle on did not synchronize");
+                System.out.println(
+                        "RAIN6_TOGGLE_NETWORK_OK both server preferences synchronize off and on");
+            }
+            if (ticks >= 330 && ticks <= 350 && ticks % 5 == 0)
+                net.minecraft.client.Screenshot.grab(
+                        mc.gameDirectory,
+                        "rain6-snow-" + ticks + ".png",
+                        mc.getMainRenderTarget(),
+                        m -> {});
             if (++ticks > 2000) throw new IllegalStateException("Client rain smoke timeout");
             if (!started) {
                 started = true;
@@ -79,6 +105,7 @@ public final class BlightedRainClientSmoke {
                                                 home, Blocks.RED_BED.defaultBlockState());
                                         var villager = EntityType.VILLAGER.create(level);
                                         villager.setPos(44.5, 4, 46.5);
+                                        villager.setOnGround(true);
                                         level.addFreshEntity(villager);
                                         villager.refreshBrain(level);
                                         villager.getBrain()
@@ -173,5 +200,10 @@ public final class BlightedRainClientSmoke {
             failure.printStackTrace();
             mc.stop();
         }
+    }
+
+    private static void sendToggle(dev.purifiedundead.network.GuardianActionPacket.Action action) {
+        dev.purifiedundead.network.ModNetwork.CHANNEL.sendToServer(
+                new dev.purifiedundead.network.GuardianActionPacket(action));
     }
 }

@@ -1,0 +1,19 @@
+{
+  "name": "Still Rain Beacon",
+  "icon": "purified_undead:still_rain_beacon",
+  "category": "purified_undead:purified_items",
+  "sortnum": 106,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "text": "Forge a beacon with the Shining Guardian Treasure in a Purification Foundry. Drawing on an amethyst block beneath it, the Still Rain Beacon can stop the endless downpour when activated by redstone.",
+      "item": "purified_undead:still_rain_beacon",
+      "title": "Still Rain Beacon",
+      "link_recipe": true
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Although the beacon can halt natural Blighted Rain, it is powerless against blight deliberately invoked…"
+    }
+  ]
+}

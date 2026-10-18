@@ -1,0 +1,15 @@
+{
+  "name": "秽雨纹章",
+  "icon": "purified_undead:blighted_rain_emblem",
+  "category": "purified_undead:contract_path",
+  "sortnum": 102,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "text": "秽鬼僵尸，或秽鬼骷髅的特殊掉落物。上面镌刻着凝而不散的煞气怨念，似乎可以通过引动这股怨念而呼唤污秽之雨。手持使用后，会主动引发一场污秽之雨事件。",
+      "item": "purified_undead:blighted_rain_emblem",
+      "title": "秽雨纹章",
+      "link_recipe": true
+    }
+  ]
+}

@@ -62,6 +62,13 @@ public final class PurifiedUndead {
     private static final Logger LOGGER = LogUtils.getLogger();
 
     public PurifiedUndead(FMLJavaModLoadingContext context) {
+        dev.purifiedundead.config.AccessoryConfigMigration.prepare(
+                net.minecraftforge.fml.loading.FMLPaths.CONFIGDIR.get());
+        ModLoadingContext.get()
+                .registerConfig(
+                        ModConfig.Type.COMMON,
+                        PurifiedUndeadConfig.ACCESSORIES_SPEC,
+                        "purified_undead-accessories.toml");
         ModLoadingContext.get()
                 .registerConfig(
                         ModConfig.Type.COMMON,
@@ -128,7 +135,7 @@ public final class PurifiedUndead {
                 });
         LOGGER.info(
                 "Purified Undead environment ready: Curios={}, GeckoLib={}, Attributes={},"
-                    + " Placebo={}",
+                        + " Placebo={}",
                 ModList.get().isLoaded("curios"),
                 ModList.get().isLoaded("geckolib"),
                 ModList.get().isLoaded("attributeslib"),
@@ -253,16 +260,16 @@ public final class PurifiedUndead {
                         == ModPotions.BLIGHT_ELIXIR.get();
         LOGGER.info(
                 "Purified Undead server validation: Ancient Contract registered={}, contract slot"
-                    + " loaded={}, Ferin Warrior registered={}, Ferin entity registered={}, warrior"
-                    + " slot loaded={}, white witch relic slot loaded={}, eight curses"
-                    + " registered={}, Groth registered={}, blighted golem registered={}, stun"
-                    + " registered={}, Julius registered={}, Guardians registered={}, Ulv"
-                    + " registered={}, Eleine registered={}, Eleine orb registered={}, Hoenir"
-                    + " registered={}, Faden registered={}, blight elixir recipe loaded={}, Ferin"
-                    + " damage type loaded={}, Ulv damage types loaded={}, Eleine damage type"
-                    + " loaded={}, snow flower recipe loaded={}, tired heart recipe loaded={},"
-                    + " slash particle registered={}, Hoenir mark particle registered={}, Faden"
-                    + " fortune modifier registered={}",
+                        + " loaded={}, Ferin Warrior registered={}, Ferin entity registered={}, warrior"
+                        + " slot loaded={}, white witch relic slot loaded={}, eight curses"
+                        + " registered={}, Groth registered={}, blighted golem registered={}, stun"
+                        + " registered={}, Julius registered={}, Guardians registered={}, Ulv"
+                        + " registered={}, Eleine registered={}, Eleine orb registered={}, Hoenir"
+                        + " registered={}, Faden registered={}, blight elixir recipe loaded={}, Ferin"
+                        + " damage type loaded={}, Ulv damage types loaded={}, Eleine damage type"
+                        + " loaded={}, snow flower recipe loaded={}, tired heart recipe loaded={},"
+                        + " slash particle registered={}, Hoenir mark particle registered={}, Faden"
+                        + " fortune modifier registered={}",
                 ModItems.ANCIENT_CONTRACT.isPresent(),
                 contractSlotLoaded,
                 ModItems.FERIN_WARRIOR.isPresent(),

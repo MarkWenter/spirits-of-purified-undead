@@ -28,6 +28,7 @@ public final class FerinInputEvents {
         boolean down = mc.options.keyAttack.isDown();
         if (cooldown > 0) cooldown--;
         if (down
+                && AbilityKeys.ferinEnabled
                 && (!wasDown || cooldown == 0)
                 && CuriosApi.getCuriosInventory(mc.player)
                         .map(h -> h.isEquipped(ModItems.ANCIENT_CONTRACT.get()))

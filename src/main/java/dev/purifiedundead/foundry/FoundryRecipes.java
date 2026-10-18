@@ -195,10 +195,10 @@ public final class FoundryRecipes {
                 root.addProperty(
                         "_help",
                         "A=top / 上槽; B=bottom / 下槽. consumeTop=false preserves A. Counts and fuels"
-                            + " are per result batch unit; ticks=400 is 20 seconds. Use"
-                            + " /purifiedundead config reload foundry after changes, or restart."
-                            + " IDs may come from any mod; invalid entries are skipped with a"
-                            + " warning.");
+                                + " are per result batch unit; ticks=400 is 20 seconds. Use"
+                                + " /purifiedundead config reload foundry after changes, or restart."
+                                + " IDs may come from any mod; invalid entries are skipped with a"
+                                + " warning.");
                 root.add("recipes", gson.toJsonTree(defaults()));
                 Files.writeString(path, gson.toJson(root), StandardCharsets.UTF_8);
             }
@@ -207,7 +207,9 @@ public final class FoundryRecipes {
             var root =
                     JsonParser.parseString(Files.readString(path, StandardCharsets.UTF_8))
                             .getAsJsonObject();
-            if (!root.has("blightedRainPart3")) {
+            boolean migrated = !root.has("blightedRainPart3");
+            boolean invalidEntry = false;
+            if (migrated) {
                 var array = root.getAsJsonArray("recipes");
                 boolean present = false;
                 for (var entry : array) {
@@ -232,7 +234,6 @@ public final class FoundryRecipes {
                                             1,
                                             400)));
                 root.addProperty("blightedRainPart3", true);
-                Files.writeString(path, gson.toJson(root), StandardCharsets.UTF_8);
             }
             var loaded = new ArrayList<Recipe>();
             if (root.getAsJsonArray("recipes").size() > 4096)
@@ -249,19 +250,38 @@ public final class FoundryRecipes {
                     validate(recipe);
                     loaded.add(recipe);
                 } catch (RuntimeException bad) {
+                    invalidEntry = true;
                     com.mojang.logging.LogUtils.getLogger()
                             .warn("Invalid foundry recipe skipped: {}", bad.getMessage());
                 }
             if (loaded.size() > 4096)
                 throw new IllegalArgumentException("At most 4096 foundry recipes are supported");
             validateSync(loaded);
+            if (migrated && !invalidEntry) {
+                Path temporary = Files.createTempFile(path.getParent(), "foundry-", ".tmp");
+                try {
+                    Files.writeString(temporary, gson.toJson(root), StandardCharsets.UTF_8);
+                    try {
+                        Files.move(
+                                temporary,
+                                path,
+                                java.nio.file.StandardCopyOption.ATOMIC_MOVE,
+                                java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+                    } catch (java.nio.file.AtomicMoveNotSupportedException unsupported) {
+                        Files.move(
+                                temporary, path, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+                    }
+                } finally {
+                    Files.deleteIfExists(temporary);
+                }
+            }
             recipes = List.copyOf(loaded);
         } catch (Exception e) {
             recipes = List.of();
             com.mojang.logging.LogUtils.getLogger()
                     .error(
                             "Foundry configuration could not load; processing disabled, inventory"
-                                + " untouched: {}",
+                                    + " untouched: {}",
                             path,
                             e);
         }

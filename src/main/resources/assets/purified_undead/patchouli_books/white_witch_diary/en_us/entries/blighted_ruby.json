@@ -1,0 +1,19 @@
+{
+  "name": "Blighted Ruby",
+  "icon": "purified_undead:blighted_ruby",
+  "category": "purified_undead:contract_path",
+  "sortnum": 103,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "text": "A special drop from blighted illagers. Once clear green gemstones have turned crimson and impure under the blight.",
+      "item": "purified_undead:blighted_ruby",
+      "title": "Blighted Ruby",
+      "link_recipe": true
+    },
+    {
+      "type": "patchouli:text",
+      "text": "A crafting material for certain blighted weapons."
+    }
+  ]
+}

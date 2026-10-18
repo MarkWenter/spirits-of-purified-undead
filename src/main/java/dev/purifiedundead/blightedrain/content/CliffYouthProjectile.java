@@ -90,7 +90,11 @@ public final class CliffYouthProjectile extends ThrowableProjectile {
     @Override
     protected void readAdditionalSaveData(CompoundTag tag) {
         super.readAdditionalSaveData(tag);
-        damage = tag.contains("ImpactDamage") ? Math.max(0, tag.getFloat("ImpactDamage")) : 7;
+        float savedDamage = tag.getFloat("ImpactDamage");
+        damage =
+                tag.contains("ImpactDamage") && Float.isFinite(savedDamage)
+                        ? Math.max(0, Math.min(2048, savedDamage))
+                        : 7;
         punch = Math.max(0, Math.min(255, tag.getInt("Punch")));
         flame = tag.getBoolean("Flame");
     }

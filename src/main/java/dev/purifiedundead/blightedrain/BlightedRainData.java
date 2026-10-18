@@ -9,6 +9,7 @@ public final class BlightedRainData extends SavedData {
     private boolean weatherLocked = true, enabled = true;
     private boolean initialized;
     boolean forced;
+    boolean wasSuppressed;
     private boolean initialEmblemEligible;
     private final java.util.Set<java.util.UUID> emblemRecipients = new java.util.HashSet<>();
 
@@ -48,11 +49,15 @@ public final class BlightedRainData extends SavedData {
 
     /** Never loads a chunk: an unloaded beacon retains its last authoritative state. */
     void validateBeacons(ServerLevel level) {
-        for (long packed : java.util.Set.copyOf(activeBeacons)) {
+        for (var iterator = activeBeacons.iterator(); iterator.hasNext(); ) {
+            long packed = iterator.next();
             var pos = net.minecraft.core.BlockPos.of(packed);
             if (level.hasChunkAt(pos)
                     && !dev.purifiedundead.blightedrain.content.StillRainBeaconBlock.isActive(
-                            level, pos)) setBeacon(pos, false);
+                            level, pos)) {
+                iterator.remove();
+                setDirty();
+            }
         }
     }
 

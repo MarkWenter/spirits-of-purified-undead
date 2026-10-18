@@ -1,0 +1,23 @@
+{
+  "name": "悬崖村的少年",
+  "icon": "purified_undead:cliff_village_youth",
+  "category": "purified_undead:blighted_weapons",
+  "sortnum": 107,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "text": "投掷类武器，会在落点处造成7点，范围半径2格的范围伤害，并造成3s眩晕。初始拥有10点耐久，在耐久耗尽后不会损坏，也会随时间逐渐恢复耐久。",
+      "item": "purified_undead:cliff_village_youth",
+      "title": "悬崖村的少年",
+      "link_recipe": true
+    },
+    {
+      "type": "patchouli:text",
+      "text": "可以尝试为其打上弓箭类的附魔。"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "purified_undead:cliff_village_youth"
+    }
+  ]
+}

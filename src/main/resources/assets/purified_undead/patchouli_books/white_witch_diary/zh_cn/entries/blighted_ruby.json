@@ -1,0 +1,19 @@
+{
+  "name": "污秽红宝石",
+  "icon": "purified_undead:blighted_ruby",
+  "category": "purified_undead:contract_path",
+  "sortnum": 103,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "text": "秽鬼灾厄村民们的特殊掉落物。原本澄澈碧绿的宝石也因为污秽的浸染而变得猩红污浊。",
+      "item": "purified_undead:blighted_ruby",
+      "title": "污秽红宝石",
+      "link_recipe": true
+    },
+    {
+      "type": "patchouli:text",
+      "text": "材料物品，可用于合成部分秽鬼武器。"
+    }
+  ]
+}

@@ -9,7 +9,11 @@ public final class SmokeConfigIsolation {
             throws java.io.IOException {
         if (!Boolean.getBoolean("purified_undead.purificationSmoke")) return;
         for (String file :
-                new String[] {"purified_undead-common.toml", "purified_undead-slate.toml"})
+                new String[] {
+                    "purified_undead-common.toml",
+                    "purified_undead-slate.toml",
+                    "purified_undead-accessories.toml"
+                })
             com.electronwill.nightconfig.core.file.FileWatcher.defaultInstance()
                     .removeWatch(
                             net.minecraftforge.fml.loading.FMLPaths.CONFIGDIR.get().resolve(file));

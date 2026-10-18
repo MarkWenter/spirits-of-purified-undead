@@ -13,7 +13,9 @@ public record GuardianActionPacket(Action action) {
         AIR_DASH,
         GRIP_HELD,
         GRIP_RELEASED,
-        WALL_JUMP
+        WALL_JUMP,
+        TOGGLE_FERIN,
+        TOGGLE_GUARDIAN_MOVEMENT
     }
 
     static void encode(GuardianActionPacket packet, FriendlyByteBuf buffer) {

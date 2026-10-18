@@ -1,0 +1,19 @@
+{
+  "name": "静雨信标",
+  "icon": "purified_undead:still_rain_beacon",
+  "category": "purified_undead:purified_items",
+  "sortnum": 106,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "text": "使用闪耀的守护宝具，在纯化铸造器上铸造信标得来。在汲取紫水晶的力量后，使用红石信号激活，静雨信标就可以停下永无止境的暴雨。",
+      "item": "purified_undead:still_rain_beacon",
+      "title": "静雨信标",
+      "link_recipe": true
+    },
+    {
+      "type": "patchouli:text",
+      "text": "虽然静雨信标可以止住天然的污秽之雨，但在遭受人为引动的污秽时，静雨信标依然无能为力……"
+    }
+  ]
+}

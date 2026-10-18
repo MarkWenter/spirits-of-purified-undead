@@ -6,7 +6,7 @@
   "pages": [
     {
       "type": "patchouli:spotlight",
-      "text": "承受至少三种负面效果时击杀一只僵尸后获得。可反转深渊守卫的污秽的效果。",
+      "text": "承受至少三种负面效果时击杀任意一种秽鬼生物后获得。可反转深渊守卫的污秽的效果。",
       "item": "purified_undead:hoenir_warrior",
       "title": "海尼尔",
       "link_recipe": true

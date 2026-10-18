@@ -346,5 +346,12 @@
   "gamerule.purifiedUndeadEternalRain": "是否启用永雨",
   "gamerule.purifiedUndeadEternalRain.description": "关闭后使用正常天气；在此设置下创建的新世界中，每位玩家首次进入获得一个秽雨纹章。自然雨天仍可能出现污秽之雨。",
   "block.purified_undead.white_lotus": "洁白莲花",
-  "block.purified_undead.scarlet_lotus": "猩红莲花"
+  "block.purified_undead.scarlet_lotus": "猩红莲花",
+  "key.categories.purified_undead": "涤净亡魂",
+  "key.purified_undead.toggle_ferin": "开关费林协同攻击",
+  "key.purified_undead.toggle_guardian_movement": "开关二段跳与空中冲刺",
+  "message.purified_undead.ferin.enabled": "费林协同攻击已开启",
+  "message.purified_undead.ferin.disabled": "费林协同攻击已关闭",
+  "message.purified_undead.guardian_movement.enabled": "二段跳与空中冲刺已开启",
+  "message.purified_undead.guardian_movement.disabled": "二段跳与空中冲刺已关闭"
 }

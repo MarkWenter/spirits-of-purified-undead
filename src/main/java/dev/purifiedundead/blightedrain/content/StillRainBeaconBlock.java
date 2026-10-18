@@ -12,8 +12,23 @@ import net.minecraft.world.level.block.state.BlockState;
 
 /** World-saved activation survives chunk unload without chunk tickets. */
 public final class StillRainBeaconBlock extends Block {
+    public static final net.minecraft.world.level.block.state.properties.BooleanProperty ACTIVE =
+            net.minecraft.world.level.block.state.properties.BooleanProperty.create("active");
+
+    @Override
+    protected void createBlockStateDefinition(
+            net.minecraft.world.level.block.state.StateDefinition.Builder<Block, BlockState>
+                    builder) {
+        builder.add(ACTIVE);
+    }
+
     public StillRainBeaconBlock() {
-        super(Properties.of().strength(3).noOcclusion().lightLevel(s -> 12));
+        super(
+                Properties.of()
+                        .strength(3)
+                        .noOcclusion()
+                        .lightLevel(s -> s.getValue(ACTIVE) ? 15 : 4));
+        registerDefaultState(stateDefinition.any().setValue(ACTIVE, false));
     }
 
     public static boolean isActive(ServerLevel level, BlockPos pos) {
@@ -24,7 +39,12 @@ public final class StillRainBeaconBlock extends Block {
 
     private void update(Level level, BlockPos pos) {
         if (level instanceof ServerLevel server && server.dimension() == Level.OVERWORLD) {
-            BlightedRainData.get(server).setBeacon(pos, isActive(server, pos));
+            boolean active = isActive(server, pos);
+            var state = server.getBlockState(pos);
+            if (!state.is(this)) return;
+            if (state.getValue(ACTIVE) != active)
+                server.setBlock(pos, state.setValue(ACTIVE, active), Block.UPDATE_ALL);
+            BlightedRainData.get(server).setBeacon(pos, active);
             server.scheduleTick(pos, this, 20);
         }
     }
