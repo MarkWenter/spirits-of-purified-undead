@@ -1,123 +1,131 @@
 # Spirits of Purified Undead · 涤净亡魂
 
-基于 **Minecraft 1.20.1 / Forge** 的《ENDER LILIES》非官方同人模组。与古老民族缔结契约，净化八组不死战士的污秽，获得加护并成长。
+**《ENDER LILIES》非官方同人模组 · An unofficial ENDER LILIES fan mod**
 
-**正式版本：1.1 · 污秽之雨更新**。支持 Minecraft 1.20.1 Forge 与 1.21.1 NeoForge，完整更新报告见 [v1.1](docs/RELEASE_V110.md)。客户端与服务端须同时更新（网络协议 13）。
+[中文介绍](#中文介绍) · [English](#english)
 
-最新[第四部分补充](docs/blighted-rain-update/PART_4_SUPPLEMENT.md)：信标修复、独立饰品配置、技能开关、手记3、污秽之雪与模组生物兼容。
+## 中文介绍
 
-新增[秽鬼独有特征、村民净化与秽鬼蜘蛛](docs/blighted-rain-update/TRAITS.md)。
+与古老民族缔结契约，净化不死战士的污秽，继承他们的加护。在探索、战斗与成长中收集白巫女的遗物，并迎接污秽之雨带来的变化。
 
-最新[贴图重绘](docs/blighted-rain-update/TEXTURE_REPAINT.md)以原版 UV 为基础，使用 imagegen 与逐像素校准完成。
+**当前正式版本：1.1「污秽之雨」**
 
-## 安装
+支持 **Minecraft 1.20.1 / Forge** 与 **Minecraft 1.21.1 / NeoForge**。
 
-安装完整构建成品 `purified_undead-1.1.jar`（勿使用 slim），放入游戏实例的 `mods` 文件夹。客户端和服务器均需安装。
+### 1.0 · 契约与净化
 
-| 组件 | 已验证版本 | 说明 |
+1.0 建立了围绕契约、不死战士与白巫女遗物的完整成长体系。
+
+- **古老民族之契与八组不死战士**：寻找费林、格洛特、尤里乌斯、西丽亚与西丽德、狼、伊莱恩、海尼尔和法腾，完成各自的获取与净化条件，获得战斗和探索能力。
+- **协同战斗与移动能力**：费林的连续协同斩击、姐妹的二段跳与空中冲刺，以及各位战士的独特加护。
+- **护身符与白巫女遗物**：提升护身符等级，收集提供属性加成、恢复和保命效果的饰品。
+- **净化装备与消耗品**：制作纯净灵药、纯净禁果、无垢护甲与秽鬼之守护，探索污秽与净化之间的联系。
+- **纯化铸造器与追忆**：铸造材料和装备，将不死战士的追忆装入莉莉手记，进一步强化能力。
+- **游戏内指引**：白巫女手记介绍物品、配方和成长路线；莉莉手记作为饰品，记录不同种类亡灵的击杀并提供加成。
+
+### 1.1 · 污秽之雨
+
+1.1 将污秽扩展到天气、生物与世界环境，并带来新的装备和控制方式。
+
+- **污秽之雨与污秽之雪**：主世界出现带有预警音效的天气事件。露天生物可能受伤或转化，村民会寻找避雨地点，屋顶可以提供保护。
+- **秽鬼生物**：新增僵尸、骷髅、溺尸、尸壳、流浪者、村民、灾厄村民、女巫、家畜与蜘蛛等秽鬼变体，配有红眼与侵蚀纹路，并具有各自的战斗或掉落特征。1.21.1 额外包含秽鬼沼骸。
+- **净化秽鬼村民**：使用普通瓶装纯净灵药，使敌对的秽鬼村民逐渐恢复为普通村民。
+- **掌控天气**：静雨信标在紫水晶块上接通红石后，可抑制自然污秽之雨；秽雨纹章则能主动召来污秽之雨。创建世界时也可选择是否启用永雨。
+- **材料、食物与装备**：加入墓穴泞尘、污秽红宝石、污秽肉及熟污秽肉，可恢复耐久的投掷物「悬崖村的少年」，以及持有时提供护甲的盾牌「无头的骑士」。
+- **种植与收集**：洁白莲花和猩红莲花可以放置为植物；新增秽鬼刷怪蛋与独立创造模式物品栏。
+- **饰品与操作设置**：更新伊莱恩、法腾和海尼尔的获取条件，提供独立饰品数值配置，以及费林协同攻击、二段跳与空中冲刺的开关键。两个按键默认未绑定，能力默认开启。
+- **手记与配方**：扩充白巫女手记，并提供新物品的合成、烹饪、铸造配方与 JEI 展示。
+
+完整变更见 [1.1 更新报告](docs/RELEASE_V110.md)。
+
+### 安装
+
+请选择与游戏版本和加载器对应的模组文件：
+
+| 游戏版本 | 加载器 | Java |
 | --- | --- | --- |
-| Minecraft | 1.20.1 | 游戏版本 |
-| Forge | 47.3.22 | 最低支持版本，47.x 系列 |
-| Java | 17 | 构建与测试环境 |
-| Curios API | 5.14.1+1.20.1 | 必需，提供饰品栏 |
-| Patchouli | 1.20.1-85-FORGE | 必需，提供白巫女手记 |
-| GeckoLib | 4.8.4 | 必需 |
-| Apothic Attributes | 1.20.1-1.3.7 | 建议安装，支持完整暴击属性效果 |
-| Placebo | 1.20.1-8.6.3 | Apothic Attributes 前置 |
+| Minecraft 1.20.1 | Forge 47.3.22 或更高的 47.x 版本 | 17 |
+| Minecraft 1.21.1 | NeoForge 21.1.248 | 21 |
 
-上表前置模组需另行安装。Forge 本体另内嵌 MIT 许可的 MixinExtras 0.5.3 基础库，无需玩家手动安装。
+**必需前置：** Curios API、GeckoLib、Patchouli。
 
-## 初版内容
+**建议搭配：** Apothic Attributes 及其前置 Placebo，以获得完整属性效果。JEI 可用于查询配方。
 
-0.56.0 完成[代码规范与兼容性审查](docs/COMPATIBILITY_AUDIT_056.md)，改用可串联注入并加固输入、反射桥接和扩展通知边界；玩法及存档格式不变。
-
-0.55.0 增加[配置管理与管理员指令](docs/COMMANDS_AND_CONFIG.md)以及[扩展模组 API v1](docs/ADDON_API.md)。
-
-0.54.0 为白巫女手记增加石板强化章节和14个条目，补充秽鬼之守护、莉莉手记的说明，将其他内容目录移到最后。
-
-0.53.0 按编辑表调整物品文字，增加莉莉手记当前加值显示，净化产出与配置消耗保持等量。
-
-0.52.0 增强追忆、将剑气射程提升至 15 格，并增加海尼尔击杀条件与星月刻蚀板专项兼容。
-
-0.51.0 修复整合包清空 Malum 收魂名单后秽鬼之守护无法掉落精魂的问题，支持剑刃、剑气和费林补刀。
-
-0.46.2 修复莉莉手记在 JEI 中的锻造成品显示和来源查询。
-
-0.46.0 扩展 [可选亡灵联动](docs/UNDEAD_COMPATIBILITY.md)：共享亡灵名单、污秽碎片掉落与移植版标准类型识别，不增加必选前置。
-
-0.45.1 修正铸造余料合并与启动条件，恢复第二部分原始生成图标，新增 JEI 配方展示，并补齐 NeoForge 创造栏物品。
-
-0.45.1 新增 19 件石板更新物品、可配置批量铸造、莉莉手记八槽追忆界面及八种追忆效果。详见 [石板更新第二部分](docs/slate-update/PART_2.md)。白巫女手记保持原样。
-
-0.44.2 调整纯化铸造器：右手略微下移，中空剑身从上向下填白，外部改为嵌剑石砖。白巫女手记保持原样。
-
-0.44.1 优化纯化铸造器：16×16 方块贴图、剑尖向下的进度条、贴近法腾与伊莱恩衣袖参考的低分辨率手臂。玩法与白巫女手记保持原样。
-
-0.44.0 新增纯化铸造器及四槽界面、定向漏斗交互、石中剑外观。本阶段不提供加工配方或燃料规则，放入物品仅存储。详见 [石板更新](docs/slate-update/README.md)，白巫女手记保持原样。
-
-- 古老民族之契、八种污秽与对应战士饰品。
-- 费林、格洛特、尤里乌斯、西丽亚与西丽德、狼、伊莱恩、海尼尔和法腾的获取与加护。
-- 白巫女护身符成长，默认最高 15 级。
-- 八件白巫女饰品：经验、远程/通用伤害、击杀回血、生命上限和独立冷却复活；六种配方与遗迹宝箱掉落。
-- 费林最多五段协同斩击，红蓝紫刀光及对应伤害范围。
-- 姐妹二段跳、空中冲刺和摔落减伤；伊莱恩黑红魔弹与带状拖尾。
-- 对应饰品获得及护身符升级音效；契约说明随战士佩戴状态变化。
-- 饰品死亡保留、背包满时奖励补发、可配置规则。
+将本体及对应版本的前置放入游戏实例的 `mods` 文件夹。多人游戏的客户端和服务器应安装相同版本。升级时替换旧本体，不要同时安装多个版本，并提前备份存档与配置。
 
 ### 开始游玩
 
-1. 击败指定亡灵收集污秽碎片，四枚碎片合成为怨念污秽。
-2. 用怨念污秽与粗制的药水酿造秽鬼灵药。
-3. 饮用后在“秽鬼化”期间死亡并复活，获得古老民族之契。
-4. 将契约放入专用饰品栏，按物品提示寻找其他战士。
-5. 装备契约后，手持怨念污秽持续使用，默认每四个提升一级护身符；5 级、10 级分别解锁费林第四、第五段。
+首次进入世界时获得的**白巫女手记**是主要指引，也可用一个污秽碎片与一本书无序合成。
 
-契约在生存模式下不可卸下。极限模式中，秽鬼化期间遭遇致命伤害会消耗该状态，触发不死图腾式保命并获得古老民族之契，无需携带图腾。手持图腾或本模组遗物先触发保命时，也会完成契约获取；契约仅发放一次，满背包时等待补发。配置文件为 `config/purified_undead-common.toml`，修改后重启游戏或服务器。
+收集污秽碎片，合成怨念污秽并酿造秽鬼灵药。在秽鬼化状态下经历死亡与重生，即可踏上与古老民族缔结契约的道路；极限模式提供对应的一次性保命获取机制。随后按照手记和物品提示寻找战士、净化污秽并提升护身符。
 
-## 开发与构建
+古老民族之契在生存模式下不可卸下。饰品数值可在 `config/purified_undead-accessories.toml` 中调整，其他通用规则位于 `config/purified_undead-common.toml`；修改 TOML 配置后请重启游戏或服务器。
 
-后续开发对话请先阅读 [开发交接与模组说明](docs/MOD_DEVELOPMENT_GUIDE.md)；自动读取入口为根目录 `AGENTS.md`。
+### 反馈与致谢
 
-安装 JDK 17 并设置 `JAVA_HOME`，在项目根目录运行：
+欢迎通过本仓库的 [Issues](https://github.com/MarkWenter/spirits-of-purified-undead/issues) 反馈问题。请提供游戏版本、加载器、模组版本、复现步骤与相关日志，并移除日志中的私人信息。
 
-```powershell
-.\gradlew.bat build
-```
+本项目为非官方同人作品，与 ENDER LILIES 的官方开发者及发行商无隶属关系。素材来源与许可信息见 [NOTICE](NOTICE.md)。
 
-Linux/macOS 使用 `./gradlew build`。初次构建需要联网下载依赖。产物位于 `build/libs/`。
+---
 
-开发客户端：`gradlew runClient`；开发服务器：`gradlew runServer`；运行测试：`gradlew test`。
+## English
 
-在 VS Code 中打开本目录即可作为 Java/Gradle 工程开发。`scripts/setup-java.ps1` 与 `scripts/gradle.ps1` 提供可选的项目内 Windows 构建环境。
+Form a pact with the Ancients, purify the blight of fallen warriors, and inherit their blessings. Collect the White Witch's relics as you explore and grow stronger, then face a world changed by Blighted Rain.
 
-## 当前范围
+**Current release: 1.1 — Blighted Rain**
 
-费林原方案为角色模型持剑劈砍；模型动作尚未完成验收，后续暂时封存并简化为独立刀光，当前不显示角色与剑模型。完整演变及恢复资料入口见 [开发交接指南](docs/MOD_DEVELOPMENT_GUIDE.md)。127 项自动化测试通过，刀光优化做过 405 个采样对比；尚未完成长期多人压力测试或所有第三方模组兼容测试。
+Available for **Minecraft 1.20.1 / Forge** and **Minecraft 1.21.1 / NeoForge**.
 
-问题反馈请附游戏版本、模组版本、前置列表、复现步骤和相关日志；提交日志前请去除账号、令牌等私人信息。
+### 1.0 — Contracts and Purification
 
-新增秽鬼专属黑红纹路及红眼；秽鬼傀儡最大生命值 200，秽鬼国王最大生命值 100，尖刺施法间隔减半。
+Version 1.0 introduces a progression system built around contracts, undead warriors, and the White Witch's relics.
 
-详见 [本次更新说明](docs/RELEASE_V032.md)、[初版发布说明](docs/RELEASE_V031.md) 与 [素材及许可说明](NOTICE.md)。
+- **The Ancient Contract and eight warrior groups:** discover Ferin, Groth, Julius, the guardian sisters, Ulv, Eleine, Hoenir, and Faden. Fulfill their acquisition and purification requirements to gain combat and exploration abilities.
+- **Cooperative combat and movement:** fight alongside Ferin's chained assist slashes, use the sisters' double jump and air dash, and combine the warriors' unique blessings.
+- **Talismans and White Witch relics:** level up your talisman and collect accessories that improve attributes, restore health, or protect you from death.
+- **Purified equipment and consumables:** craft Pure Elixirs, Pure Forbidden Fruit, armor, and weapons as you explore the connection between blight and purification.
+- **The Purification Foundry and memories:** forge materials and equipment, then equip warrior memories in Lily's Diary to strengthen your abilities.
+- **In-game guidance:** the White Witch's Diary explains items, recipes, and progression. Lily's Diary is an accessory that records distinct undead types slain and grants bonuses.
 
-## 白巫女手记与莉莉手记
+### 1.1 — Blighted Rain
 
-Patchouli 现为必要前置。玩家首次登录获赠一本白巫女手记，也可用 **一个污秽碎片 + 一本书** 无序合成。手记包含 5 个目录、39 个条目、93 页，使用旧日记外观与页角血迹装饰。
+Version 1.1 extends the blight to weather, creatures, and the world, with new equipment and controls.
 
-白巫女手记与任意纯净灵药可在锻造台制成莉莉手记，模板栏留空。莉莉手记是流浪日志槽饰品，佩戴时累计击杀的不同亡灵类型，每种增加 3% 暴击率与 0.5 幸运；不可翻阅。
+- **Blighted Rain and Blighted Snow:** Overworld weather events arrive with an audible warning. Exposed mobs may take damage or transform, villagers seek shelter, and roofs offer protection.
+- **Blighted creatures:** new variants of Zombies, Skeletons, Drowned, Husks, Strays, Villagers, Illagers, Witches, livestock, and Spiders feature red eyes, blight markings, and distinct combat or loot traits. Minecraft 1.21.1 also includes the Blighted Bogged.
+- **Cure Blighted Villagers:** use a regular bottled Pure Elixir to begin restoring a hostile Blighted Villager to an ordinary Villager.
+- **Control the weather:** power a Still Rain Beacon on an Amethyst Block to suppress naturally triggered Blighted Rain, or use a Blighted Rain Emblem to summon it yourself. Eternal Rain can also be toggled during world creation.
+- **Materials, food, and equipment:** discover Grave Mire Dust, Blighted Rubies, Blighted Meat and its cooked form, the durability-recovering throwable Youth of the Cliff Village, and the Headless Knight shield, which grants armor while held.
+- **Plants and collections:** place White and Scarlet Lotuses as plants, use Blighted spawn eggs, and browse the mod's dedicated creative inventory tab.
+- **Accessory settings and controls:** revised acquisition requirements for Eleine, Faden, and Hoenir; a separate accessory configuration file; and toggles for Ferin's assist attacks and the sisters' double jump and air dash. Both keys are unbound by default, while the abilities remain enabled.
+- **Guidebook and recipes:** expanded White Witch's Diary entries, new crafting, cooking, and foundry recipes, and JEI recipe displays.
 
-Forge 使用 Patchouli 1.20.1-85-FORGE；NeoForge 使用 Patchouli 1.21.1-93-NEOFORGE。本地安装依赖包包含对应 JAR；只下载 GitHub 模组成品时请另行安装。
+### Installation
 
-可选动态光源与光影兼容、性能边界见 [兼容说明](docs/WISP_COMPATIBILITY.md)。这些客户端扩展不属于强制前置。
+Choose the file matching your Minecraft version and mod loader:
 
-净化更新详见 [独立记录](docs/purification-update/README.md) 与 [第三部分](docs/purification-update/PART_3.md)。
+| Minecraft version | Mod loader | Java |
+| --- | --- | --- |
+| Minecraft 1.20.1 | Forge 47.3.22 or a later 47.x version | 17 |
+| Minecraft 1.21.1 | NeoForge 21.1.248 | 21 |
 
-## 0.43.0 进度
+**Required dependencies:** Curios API, GeckoLib, and Patchouli.
 
-新增 12 项进度、旧玩家一次性补发及秽鬼化图标。条件与补发范围见 [进度说明](docs/ADVANCEMENTS_043.md)。
+**Recommended:** Apothic Attributes and its dependency Placebo for full attribute functionality. JEI can be used to look up recipes.
 
-## 0.52.1 启动修复
+Place the mod and the matching dependencies in your instance's `mods` folder. Multiplayer clients and servers should use the same version. Replace the old mod JAR when upgrading, avoid installing multiple versions together, and back up your worlds and configuration first.
 
-修复 Forge 0.52.0 正式安装包无法启动的问题，两版发布 JAR 已验证进入主菜单。请替换旧本体 JAR；详见 [发布说明](docs/RELEASE_V0521.md)。
+### Getting Started
 
-污秽之雨测试修正：溺尸眼周、村民暗褐红皮肤、掠夺者弩拾取与空手近战、秽鬼刷怪蛋、独立创造栏位。见 [修正说明](docs/blighted-rain-update/FIXES_2_2.md)。
+The **White Witch's Diary**, given to you when you first enter a world, is your main guide. You can also craft it using one Blighted Fragment and one Book in a shapeless recipe.
+
+Collect fragments, craft Blighted Spirits, and brew a Blighted Elixir. Dying and respawning while blighted begins your journey toward the Ancient Contract; Hardcore mode provides a corresponding one-time rescue mechanism. Follow the diary and item descriptions to find warriors, purify their blight, and strengthen your talisman.
+
+The Ancient Contract cannot be unequipped in Survival mode. Accessory values can be adjusted in `config/purified_undead-accessories.toml`, with general settings in `config/purified_undead-common.toml`. Restart the game or server after changing TOML configuration files.
+
+### Feedback and Credits
+
+Report problems through this repository's [Issues](https://github.com/MarkWenter/spirits-of-purified-undead/issues). Include your Minecraft version, loader, mod version, reproduction steps, and relevant logs. Remove private information before sharing logs.
+
+This is an unofficial fan project and is not affiliated with the developers or publishers of ENDER LILIES. See [NOTICE](NOTICE.md) for asset credits and licensing information.
