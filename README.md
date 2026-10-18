@@ -2,7 +2,7 @@
 
 基于 **Minecraft 1.20.1 / Forge** 的《ENDER LILIES》非官方同人模组。与古老民族缔结契约，净化八组不死战士的污秽，获得加护并成长。
 
-**本分支预览版本：1.1.0-blighted-rain.6（Minecraft 1.20.1 Forge）**。已实现[污秽之雨第一部分](docs/blighted-rain-update/PART_1.md)与[第二部分](docs/blighted-rain-update/PART_2.md)，整体更新尚未定稿，独立分支不合并主分支。原正式版说明见 [v1.0](docs/RELEASE_V100.md)。客户端与服务端必须同时更新（网络协议 13）。
+**正式版本：1.1 · 污秽之雨更新**。支持 Minecraft 1.20.1 Forge 与 1.21.1 NeoForge，完整更新报告见 [v1.1](docs/RELEASE_V110.md)。客户端与服务端须同时更新（网络协议 13）。
 
 最新[第四部分补充](docs/blighted-rain-update/PART_4_SUPPLEMENT.md)：信标修复、独立饰品配置、技能开关、手记3、污秽之雪与模组生物兼容。
 
@@ -12,7 +12,7 @@
 
 ## 安装
 
-安装完整构建成品 `purified_undead-1.1.0-blighted-rain.6.jar`（勿使用 slim），放入游戏实例的 `mods` 文件夹。客户端和服务器均需安装。
+安装完整构建成品 `purified_undead-1.1.jar`（勿使用 slim），放入游戏实例的 `mods` 文件夹。客户端和服务器均需安装。
 
 | 组件 | 已验证版本 | 说明 |
 | --- | --- | --- |
