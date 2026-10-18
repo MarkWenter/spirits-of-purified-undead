@@ -8,12 +8,14 @@ import net.minecraft.world.entity.monster.Zombie;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-/** Grants Hoenir when a player suffering three distinct harmful effects kills a zombie. */
+/** Grants Hoenir when a player suffering three distinct harmful effects kills a tagged blighted creature. */
 public final class HoenirAcquisitionEvents {
     @SubscribeEvent
     public void onLivingDeath(LivingDeathEvent event) {
         if (!PurifiedUndeadConfig.get(PurifiedUndeadConfig.VALUES.hoenirAcquisitionEnabled)
-                || !(event.getEntity() instanceof Zombie)
+                || !event.getEntity()
+                        .getType()
+                        .is(dev.purifiedundead.blightedrain.mob.BlightedMobRules.BLIGHTED)
                 || !(event.getSource().getEntity() instanceof ServerPlayer player)) {
             return;
         }

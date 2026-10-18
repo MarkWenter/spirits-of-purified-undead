@@ -35,22 +35,11 @@ public final class JuliusAcquisitionEvents {
             return;
         }
 
-        BlightedKingEntity king = convert(evoker, level);
-        if (king == null || !level.addFreshEntity(king)) return;
-        evoker.discard();
+        var king = BlightedConversions.convert(evoker, level);
+        if (king == null) return;
         if (!player.getAbilities().instabuild) {
             event.getItemStack().shrink(1);
         }
-        level.sendParticles(
-                ParticleTypes.SOUL,
-                king.getX(),
-                king.getY() + 1.0D,
-                king.getZ(),
-                24,
-                0.55D,
-                0.8D,
-                0.55D,
-                0.035D);
         player.displayClientMessage(
                 Component.translatable("message.purified_undead.julius.transformed"), false);
         event.setCancellationResult(InteractionResult.SUCCESS);
@@ -71,7 +60,7 @@ public final class JuliusAcquisitionEvents {
         if (king != null && level.addFreshEntity(king)) evoker.discard();
     }
 
-    private static BlightedKingEntity convert(Evoker original, ServerLevel level) {
+    static BlightedKingEntity convert(Evoker original, ServerLevel level) {
         BlightedKingEntity king = ModEntities.BLIGHTED_KING.get().create(level);
         if (king == null) return null;
         float previousHealth = original.getHealth(), previousMaximum = original.getMaxHealth();
@@ -83,10 +72,7 @@ public final class JuliusAcquisitionEvents {
                 BlightedHealth.rescale(previousHealth, previousMaximum, king.getMaxHealth()));
         king.getPersistentData().putBoolean(BLIGHTED_KING_KEY, true);
         king.setPersistenceRequired();
-        if (!king.hasCustomName()) {
-            king.setCustomName(Component.translatable("entity.purified_undead.blighted_king"));
-            king.setCustomNameVisible(true);
-        }
+
         return king;
     }
 

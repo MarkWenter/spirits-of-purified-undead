@@ -9,10 +9,24 @@
     "MemoryTagPredicateAccessor",
     "MemoryLootCriteriaMixin",
     "MemoryKillCriteriaMixin",
-    "CelestialEtchingLootMixin"
+    "CelestialEtchingLootMixin",
+    "RainFoxAccessor",
+    "RainPlayerDamageMixin",
+    "BlightedMeleeGoalMixin",
+    "BlightedRangedGoalMixin",
+    "BlightedBowGoalMixin",
+    "BlightedCrossbowGoalMixin",
+    "BlightedCrossbowReleaseMixin"
   ],
   "injectors": {
     "defaultRequire": 1
   },
-  "minVersion": "0.8"
+  "minVersion": "0.8",
+  "client": [
+    "BlightedRainVisualMixin",
+    "BlightedRainCloudMixin",
+    "BlightedRainParticleMixin",
+    "BlightedSkinMixin",
+    "BlightedLayerSkinMixin"
+  ]
 }

@@ -1,0 +1,21 @@
+# 污秽之雨更新
+
+当前正式版本 **1.1**，完整更新报告见 [1.1 正式发布](../RELEASE_V110.md)。以下阶段记录保留开发历史，当前发布状态以正式报告为准。
+
+- [第四部分补充：信标、饰品配置、按键、手记和兼容审查](PART_4_SUPPLEMENT.md) · [配置](PART_4_SUPPLEMENT_CONFIG.md) · [验证](PART_4_SUPPLEMENT_VALIDATION.md)
+- [第四部分](PART_4.md) · [指令](PART_4_COMMANDS.md)
+- [独有特征、净化与秽鬼蜘蛛](TRAITS.md)及[验证](TRAITS_VALIDATION.md)
+- [测试问题修正与刷怪蛋/创造栏位](FIXES_2_2.md)
+- [新增秽鬼贴图重绘](TEXTURE_REPAINT.md)与[验证](TEXTURE_REPAINT_VALIDATION.md)
+- [第二部分实现](PART_2.md)与[第二部分验证](PART_2_VALIDATION.md)
+- [第一部分实现与指令](PART_1.md)
+- [第一部分验证记录](PART_1_VALIDATION.md)
+- [第一部分实施依据](PART_1_PLAN.md)
+- [架构与接入约定](ARCHITECTURE.md)
+- [准备阶段项目现状](PROJECT_STATE.md)与[准备阶段验证](VALIDATION.md)
+
+Forge 1.20.1 根工程和 NeoForge 1.21.1 实际工程均已实现。Forge GitHub 将 `污秽之雨更新` 合并主分支，保留更新分支。附属模组未修改；白巫女手记已按手记3更新，创建世界永雨选项已实现。其他后续内容依用户要求继续。
+
+## 第三部分
+
+[玩法与实现](PART_3.md) · [贴图](PART_3_ART.md) · [验证](PART_3_VALIDATION.md)

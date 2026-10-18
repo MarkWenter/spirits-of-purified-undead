@@ -53,8 +53,7 @@ public final class SlateConfig {
                         .defineInRange("revision", 0, 0, 100);
         ferinBonus = b.defineInRange("ferinStageDamageBonus", 1.5, 0, 10);
         healthBonus =
-                b.comment("Multiplicative total maximum-health bonus; 1.0 doubles maximum health.")
-                        .defineInRange("shiningGuardianHealthBonus", 1.0, 0, 10);
+                dev.purifiedundead.config.PurifiedUndeadConfig.VALUES.shiningGuardianHealthBonus;
         b.pop();
         SPEC = b.build();
     }

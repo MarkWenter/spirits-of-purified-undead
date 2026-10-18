@@ -1,0 +1,23 @@
+{
+  "name": "Blighted Rain",
+  "icon": "purified_undead:blighted_rain_emblem",
+  "category": "purified_undead:contract_path",
+  "sortnum": 100,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "text": "Rain born of accumulated resentment and blight. Its drops are not pure blue, but a tainted grey-red. For those without a priestess's blood, this rain is deadly.",
+      "item": "purified_undead:blighted_rain_emblem",
+      "title": "Blighted Rain",
+      "link_recipe": true
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Some creatures transform into their blighted counterparts after prolonged exposure. Blighted creatures may drop unique materials, and their attacks become stronger. Face them with caution…"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Blight has infected the world. Even when the Blighted Rain subsides, the curtain of rain goes on without end."
+    }
+  ]
+}

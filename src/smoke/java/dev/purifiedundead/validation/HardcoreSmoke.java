@@ -105,7 +105,9 @@ public final class HardcoreSmoke {
                     "vanilla totem buffs");
             check(!HardcoreBlightRescue.rescue(fresh), "cannot repeat without another dose");
             blight(fresh);
-            HardcoreBlightRescue.rescue(fresh);
+            check(
+                    !HardcoreBlightRescue.rescue(fresh),
+                    "second dose cannot restore one-time rescue");
             check(contracts(fresh) == 1, "contract never duplicates");
             var held = player(server);
             held.setItemInHand(

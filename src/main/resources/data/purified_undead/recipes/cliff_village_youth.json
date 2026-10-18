@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "MFM",
+    "MDM",
+    " D "
+  ],
+  "key": {
+    "M": {
+      "item": "purified_undead:blighted_meat"
+    },
+    "F": {
+      "item": "purified_undead:blight_fragment"
+    },
+    "D": {
+      "item": "purified_undead:grave_mire_dust"
+    }
+  },
+  "result": {
+    "item": "purified_undead:cliff_village_youth",
+    "count": 1
+  }
+}

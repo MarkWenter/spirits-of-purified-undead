@@ -21,6 +21,22 @@ public final class BlightedKingEntity extends Evoker {
     }
 
     @Override
+    public void readAdditionalSaveData(net.minecraft.nbt.CompoundTag tag) {
+        super.readAdditionalSaveData(tag);
+        if (net.minecraft.network.chat.Component.translatable(
+                        "entity.purified_undead.blighted_king")
+                .equals(getCustomName())) {
+            setCustomName(null);
+            setCustomNameVisible(false);
+        }
+    }
+
+    @Override
+    public net.minecraft.world.entity.MobType getMobType() {
+        return net.minecraft.world.entity.MobType.UNDEAD;
+    }
+
+    @Override
     protected void registerGoals() {
         super.registerGoals();
         // Vanilla 1.20.1 puts its fang spell at priority 5, summon at 4 and wololo at 6.

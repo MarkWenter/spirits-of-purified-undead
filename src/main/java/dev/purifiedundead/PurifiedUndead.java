@@ -1,56 +1,59 @@
 package dev.purifiedundead;
 
 import com.mojang.logging.LogUtils;
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.ModLoadingContext;
+
+import dev.purifiedundead.combat.ContractCurseIntegrityEvents;
+import dev.purifiedundead.combat.ContractProtectionEvents;
+import dev.purifiedundead.combat.EleineCombatEvents;
+import dev.purifiedundead.combat.FadenCombatEvents;
+import dev.purifiedundead.combat.FerinCombatEvents;
+import dev.purifiedundead.combat.GrothCombatEvents;
+import dev.purifiedundead.combat.GuardianArmorEvents;
+import dev.purifiedundead.combat.GuardianMovementService;
+import dev.purifiedundead.combat.HoenirCombatEvents;
+import dev.purifiedundead.combat.JuliusCombatEvents;
+import dev.purifiedundead.combat.ModDamageTypes;
+import dev.purifiedundead.combat.UlvCombatEvents;
 import dev.purifiedundead.config.PurifiedUndeadConfig;
-import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.server.ServerStartedEvent;
-import net.minecraft.world.item.CreativeModeTabs;
-import dev.purifiedundead.content.ModItems;
-import dev.purifiedundead.content.ModEntities;
-import dev.purifiedundead.content.ModParticles;
-import dev.purifiedundead.content.ModEnchantments;
 import dev.purifiedundead.content.ModEffects;
+import dev.purifiedundead.content.ModEnchantments;
+import dev.purifiedundead.content.ModEntities;
+import dev.purifiedundead.content.ModItems;
+import dev.purifiedundead.content.ModLootModifiers;
+import dev.purifiedundead.content.ModParticles;
 import dev.purifiedundead.content.ModPotions;
 import dev.purifiedundead.content.item.AncientContractItem;
 import dev.purifiedundead.content.item.FerinWarriorItem;
-import dev.purifiedundead.combat.FerinCombatEvents;
-import dev.purifiedundead.combat.ModDamageTypes;
-import dev.purifiedundead.combat.ContractProtectionEvents;
-import dev.purifiedundead.combat.ContractCurseIntegrityEvents;
-import dev.purifiedundead.combat.GrothCombatEvents;
-import dev.purifiedundead.combat.JuliusCombatEvents;
-import dev.purifiedundead.progress.ContractProgressEvents;
-import dev.purifiedundead.progress.AccessoryDeathRetentionEvents;
-import dev.purifiedundead.progress.BlightMaterialDropEvents;
-import dev.purifiedundead.progress.GrothAcquisitionEvents;
-import dev.purifiedundead.progress.JuliusAcquisitionEvents;
-import dev.purifiedundead.progress.GuardianAcquisitionEvents;
-import dev.purifiedundead.combat.GuardianArmorEvents;
-import dev.purifiedundead.combat.GuardianMovementService;
-import dev.purifiedundead.combat.UlvCombatEvents;
-import dev.purifiedundead.progress.UlvAcquisitionEvents;
-import dev.purifiedundead.progress.EleineAcquisitionEvents;
-import dev.purifiedundead.combat.EleineCombatEvents;
-import dev.purifiedundead.progress.HoenirAcquisitionEvents;
-import dev.purifiedundead.combat.HoenirCombatEvents;
-import dev.purifiedundead.progress.FadenAcquisitionEvents;
-import dev.purifiedundead.combat.FadenCombatEvents;
-import dev.purifiedundead.content.ModLootModifiers;
 import dev.purifiedundead.network.ModNetwork;
-import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
-import net.minecraft.world.entity.animal.IronGolem;
-import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
+import dev.purifiedundead.progress.AccessoryDeathRetentionEvents;
 import dev.purifiedundead.progress.BlightElixirBrewingRecipe;
+import dev.purifiedundead.progress.BlightMaterialDropEvents;
+import dev.purifiedundead.progress.ContractProgressEvents;
+import dev.purifiedundead.progress.EleineAcquisitionEvents;
+import dev.purifiedundead.progress.FadenAcquisitionEvents;
+import dev.purifiedundead.progress.GrothAcquisitionEvents;
+import dev.purifiedundead.progress.GuardianAcquisitionEvents;
+import dev.purifiedundead.progress.HoenirAcquisitionEvents;
+import dev.purifiedundead.progress.JuliusAcquisitionEvents;
+import dev.purifiedundead.progress.UlvAcquisitionEvents;
+
 import net.minecraft.core.registries.Registries;
-import top.theillusivec4.curios.api.CuriosApi;
+import net.minecraft.world.entity.animal.IronGolem;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
+import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
+import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
+import net.minecraftforge.event.server.ServerStartedEvent;
+import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+
 import org.slf4j.Logger;
+
+import top.theillusivec4.curios.api.CuriosApi;
 
 /** Environment bootstrap only; gameplay is introduced in subsequent milestones. */
 @Mod(PurifiedUndead.MOD_ID)
@@ -59,6 +62,13 @@ public final class PurifiedUndead {
     private static final Logger LOGGER = LogUtils.getLogger();
 
     public PurifiedUndead(FMLJavaModLoadingContext context) {
+        dev.purifiedundead.config.AccessoryConfigMigration.prepare(
+                net.minecraftforge.fml.loading.FMLPaths.CONFIGDIR.get());
+        ModLoadingContext.get()
+                .registerConfig(
+                        ModConfig.Type.COMMON,
+                        PurifiedUndeadConfig.ACCESSORIES_SPEC,
+                        "purified_undead-accessories.toml");
         ModLoadingContext.get()
                 .registerConfig(
                         ModConfig.Type.COMMON,
@@ -77,7 +87,9 @@ public final class PurifiedUndead {
                 });
         dev.purifiedundead.slate.SlateContent.register(modBus);
         dev.purifiedundead.foundry.FoundryContent.register(modBus);
+        dev.purifiedundead.blightedrain.BlightedRainContent.register(modBus);
         ModItems.register(modBus);
+        dev.purifiedundead.content.ModCreativeTabs.register(modBus);
         ModEntities.register(modBus);
         ModParticles.register(modBus);
         ModEnchantments.register(modBus);
@@ -122,7 +134,8 @@ public final class PurifiedUndead {
                             BrewingRecipeRegistry::addRecipe);
                 });
         LOGGER.info(
-                "Purified Undead environment ready: Curios={}, GeckoLib={}, Attributes={}, Placebo={}",
+                "Purified Undead environment ready: Curios={}, GeckoLib={}, Attributes={},"
+                        + " Placebo={}",
                 ModList.get().isLoaded("curios"),
                 ModList.get().isLoaded("geckolib"),
                 ModList.get().isLoaded("attributeslib"),
@@ -130,11 +143,13 @@ public final class PurifiedUndead {
     }
 
     private void addCreativeTabItems(final BuildCreativeModeTabContentsEvent event) {
-        if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
+        if (event.getTab() == dev.purifiedundead.content.ModCreativeTabs.MAIN.get()) {
+            dev.purifiedundead.content.BlightedSpawnEggs.creative(event::accept);
             dev.purifiedundead.slate.SlateContent.creative(event::accept);
             event.accept(dev.purifiedundead.foundry.FoundryContent.ITEM.get());
             event.accept(ModItems.ANCIENT_CONTRACT);
             event.accept(ModItems.FERIN_WARRIOR);
+            dev.purifiedundead.blightedrain.content.RainItems.creative(event::accept);
             event.accept(ModItems.BLIGHT_FRAGMENT);
             event.accept(ModItems.BLIGHTED_SPIRIT);
             event.accept(ModItems.PURE_CRYSTAL.get());
@@ -244,14 +259,17 @@ public final class PurifiedUndead {
                 net.minecraft.world.item.alchemy.PotionUtils.getPotion(elixirOutput)
                         == ModPotions.BLIGHT_ELIXIR.get();
         LOGGER.info(
-                "Purified Undead server validation: Ancient Contract registered={}, contract slot loaded={}, "
-                        + "Ferin Warrior registered={}, Ferin entity registered={}, warrior slot loaded={}, "
-                        + "white witch relic slot loaded={}, eight curses registered={}, "
-                        + "Groth registered={}, blighted golem registered={}, stun registered={}, Julius registered={}, "
-                        + "Guardians registered={}, Ulv registered={}, Eleine registered={}, Eleine orb registered={}, Hoenir registered={}, Faden registered={}, blight elixir recipe loaded={}, "
-                        + "Ferin damage type loaded={}, Ulv damage types loaded={}, Eleine damage type loaded={}, "
-                        + "snow flower recipe loaded={}, tired heart recipe loaded={}, "
-                        + "slash particle registered={}, Hoenir mark particle registered={}, Faden fortune modifier registered={}",
+                "Purified Undead server validation: Ancient Contract registered={}, contract slot"
+                        + " loaded={}, Ferin Warrior registered={}, Ferin entity registered={}, warrior"
+                        + " slot loaded={}, white witch relic slot loaded={}, eight curses"
+                        + " registered={}, Groth registered={}, blighted golem registered={}, stun"
+                        + " registered={}, Julius registered={}, Guardians registered={}, Ulv"
+                        + " registered={}, Eleine registered={}, Eleine orb registered={}, Hoenir"
+                        + " registered={}, Faden registered={}, blight elixir recipe loaded={}, Ferin"
+                        + " damage type loaded={}, Ulv damage types loaded={}, Eleine damage type"
+                        + " loaded={}, snow flower recipe loaded={}, tired heart recipe loaded={},"
+                        + " slash particle registered={}, Hoenir mark particle registered={}, Faden"
+                        + " fortune modifier registered={}",
                 ModItems.ANCIENT_CONTRACT.isPresent(),
                 contractSlotLoaded,
                 ModItems.FERIN_WARRIOR.isPresent(),

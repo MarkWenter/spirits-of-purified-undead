@@ -56,11 +56,11 @@ public final class DiaryClientSmoke {
                                             .invoke(contents));
                 Map<?, ?> entries =
                         (Map<?, ?>) contents.getClass().getField("entries").get(contents);
-                if (entries.size() != 53)
+                if (entries.size() != 62)
                     throw new IllegalStateException("entry count=" + entries.size());
                 Map<?, ?> categories =
                         (Map<?, ?>) contents.getClass().getField("categories").get(contents);
-                if (categories.size() != 6)
+                if (categories.size() != 7)
                     throw new IllegalStateException("category count=" + categories.size());
                 List ordered = new ArrayList(categories.values());
                 Collections.sort(ordered);
@@ -71,7 +71,7 @@ public final class DiaryClientSmoke {
                         .toString()
                         .equals("purified_undead:future"))
                     throw new IllegalStateException("Other content must be last");
-                System.out.println("DIARY_CATEGORY_ORDER_OK: six categories, Other content last");
+                System.out.println("DIARY_CATEGORY_ORDER_OK: seven categories, Other content last");
                 var stack =
                         (net.minecraft.world.item.ItemStack)
                                 book.getClass().getMethod("getBookItem").invoke(book);
@@ -90,6 +90,7 @@ public final class DiaryClientSmoke {
                 }
                 System.out.println(
                         "DIARY_CONTENTS_OK: entries=" + entries.size() + " pages=" + pages);
+                RainSixClientChecks.check(mc);
                 ready = true;
                 delay = 0;
                 show(mc);
@@ -111,7 +112,7 @@ public final class DiaryClientSmoke {
                             .replace('/', '-');
             net.minecraft.client.Screenshot.grab(
                     mc.gameDirectory,
-                    "diary-v054-" + name + "-" + pair[1] + ".png",
+                    "diary-rain6-" + name + "-" + pair[1] + ".png",
                     mc.getMainRenderTarget(),
                     m -> {});
             if (++step == spreads.size()) {

@@ -1,0 +1,15 @@
+{
+  "name": "Blighted Rain Emblem",
+  "icon": "purified_undead:blighted_rain_emblem",
+  "category": "purified_undead:contract_path",
+  "sortnum": 102,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "text": "A special drop from blighted zombies or skeletons. Lingering resentment is etched into it; stirring that resentment seems to summon Blighted Rain. Hold and use it to begin a Blighted Rain event.",
+      "item": "purified_undead:blighted_rain_emblem",
+      "title": "Blighted Rain Emblem",
+      "link_recipe": true
+    }
+  ]
+}

@@ -19,6 +19,55 @@
     "dev/purifiedundead/mixin/MemoryKillCriteriaMixin": {
       "matches(Lnet/minecraft/server/level/ServerPlayer;Lnet/minecraft/world/level/storage/loot/LootContext;Lnet/minecraft/world/damagesource/DamageSource;)Z": "m_48130_(Lnet/minecraft/server/level/ServerPlayer;Lnet/minecraft/world/level/storage/loot/LootContext;Lnet/minecraft/world/damagesource/DamageSource;)Z",
       "Lnet/minecraft/advancements/critereon/DamageSourcePredicate;matches(Lnet/minecraft/server/level/ServerPlayer;Lnet/minecraft/world/damagesource/DamageSource;)Z": "Lnet/minecraft/advancements/critereon/DamageSourcePredicate;m_25448_(Lnet/minecraft/server/level/ServerPlayer;Lnet/minecraft/world/damagesource/DamageSource;)Z"
+    },
+    "dev/purifiedundead/mixin/RainFoxAccessor": {
+      "getTrustedUUIDs": "m_28566_()Ljava/util/List;"
+    },
+    "dev/purifiedundead/mixin/BlightedRainVisualMixin": {
+      "renderSnowAndRain": "m_109703_(Lnet/minecraft/client/renderer/LightTexture;FDDD)V",
+      "Lcom/mojang/blaze3d/vertex/VertexConsumer;color(FFFF)Lcom/mojang/blaze3d/vertex/VertexConsumer;": "Lcom/mojang/blaze3d/vertex/VertexConsumer;m_85950_(FFFF)Lcom/mojang/blaze3d/vertex/VertexConsumer;"
+    },
+    "dev/purifiedundead/mixin/BlightedRainCloudMixin": {
+      "getCloudColor": "m_104808_(F)Lnet/minecraft/world/phys/Vec3;"
+    },
+    "dev/purifiedundead/mixin/BlightedRainParticleMixin": {
+      "tick": "m_5989_()V"
+    },
+    "dev/purifiedundead/mixin/RainPlayerDamageMixin": {
+      "hurt": "m_6469_(Lnet/minecraft/world/damagesource/DamageSource;F)Z",
+      "Lnet/minecraft/world/entity/LivingEntity;actuallyHurt(Lnet/minecraft/world/damagesource/DamageSource;F)V": "Lnet/minecraft/world/entity/LivingEntity;m_6475_(Lnet/minecraft/world/damagesource/DamageSource;F)V"
+    },
+    "dev/purifiedundead/mixin/BlightedMeleeGoalMixin": {
+      "getAttackInterval": "m_25566_()I",
+      "mob": "f_25540_:Lnet/minecraft/world/entity/PathfinderMob;"
+    },
+    "dev/purifiedundead/mixin/BlightedRangedGoalMixin": {
+      "tick": "m_8037_()V",
+      "mob": "f_25757_:Lnet/minecraft/world/entity/Mob;",
+      "Lnet/minecraft/world/entity/ai/goal/RangedAttackGoal;attackIntervalMin:I": "Lnet/minecraft/world/entity/ai/goal/RangedAttackGoal;f_25763_:I",
+      "Lnet/minecraft/world/entity/ai/goal/RangedAttackGoal;attackIntervalMax:I": "Lnet/minecraft/world/entity/ai/goal/RangedAttackGoal;f_25764_:I"
+    },
+    "dev/purifiedundead/mixin/BlightedBowGoalMixin": {
+      "tick": "m_8037_()V",
+      "mob": "f_25782_:Lnet/minecraft/world/entity/Mob;",
+      "Lnet/minecraft/world/entity/ai/goal/RangedBowAttackGoal;attackIntervalMin:I": "Lnet/minecraft/world/entity/ai/goal/RangedBowAttackGoal;f_25784_:I",
+      "Lnet/minecraft/world/entity/Mob;getTicksUsingItem()I": "Lnet/minecraft/world/entity/Mob;m_21252_()I"
+    },
+    "dev/purifiedundead/mixin/BlightedCrossbowGoalMixin": {
+      "tick": "m_8037_()V",
+      "mob": "f_25805_:Lnet/minecraft/world/entity/monster/Monster;",
+      "Lnet/minecraft/world/entity/monster/Monster;getTicksUsingItem()I": "Lnet/minecraft/world/entity/monster/Monster;m_21252_()I"
+    },
+    "dev/purifiedundead/mixin/BlightedSkinMixin": {
+      "getRenderType": "m_7225_(Lnet/minecraft/world/entity/LivingEntity;ZZZ)Lnet/minecraft/client/renderer/RenderType;",
+      "Lnet/minecraft/client/renderer/entity/LivingEntityRenderer;getTextureLocation(Lnet/minecraft/world/entity/Entity;)Lnet/minecraft/resources/ResourceLocation;": "Lnet/minecraft/client/renderer/entity/LivingEntityRenderer;m_5478_(Lnet/minecraft/world/entity/Entity;)Lnet/minecraft/resources/ResourceLocation;"
+    },
+    "dev/purifiedundead/mixin/BlightedLayerSkinMixin": {
+      "coloredCutoutModelCopyLayerRender": "m_117359_(Lnet/minecraft/client/model/EntityModel;Lnet/minecraft/client/model/EntityModel;Lnet/minecraft/resources/ResourceLocation;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;ILnet/minecraft/world/entity/LivingEntity;FFFFFFFFF)V"
+    },
+    "dev/purifiedundead/mixin/BlightedCrossbowReleaseMixin": {
+      "releaseUsingItem": "m_21253_()V",
+      "Lnet/minecraft/world/item/ItemStack;releaseUsing(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/entity/LivingEntity;I)V": "Lnet/minecraft/world/item/ItemStack;m_41674_(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/entity/LivingEntity;I)V"
     }
   },
   "data": {
@@ -42,6 +91,55 @@
       "dev/purifiedundead/mixin/MemoryKillCriteriaMixin": {
         "matches(Lnet/minecraft/server/level/ServerPlayer;Lnet/minecraft/world/level/storage/loot/LootContext;Lnet/minecraft/world/damagesource/DamageSource;)Z": "m_48130_(Lnet/minecraft/server/level/ServerPlayer;Lnet/minecraft/world/level/storage/loot/LootContext;Lnet/minecraft/world/damagesource/DamageSource;)Z",
         "Lnet/minecraft/advancements/critereon/DamageSourcePredicate;matches(Lnet/minecraft/server/level/ServerPlayer;Lnet/minecraft/world/damagesource/DamageSource;)Z": "Lnet/minecraft/advancements/critereon/DamageSourcePredicate;m_25448_(Lnet/minecraft/server/level/ServerPlayer;Lnet/minecraft/world/damagesource/DamageSource;)Z"
+      },
+      "dev/purifiedundead/mixin/RainFoxAccessor": {
+        "getTrustedUUIDs": "m_28566_()Ljava/util/List;"
+      },
+      "dev/purifiedundead/mixin/BlightedRainVisualMixin": {
+        "renderSnowAndRain": "m_109703_(Lnet/minecraft/client/renderer/LightTexture;FDDD)V",
+        "Lcom/mojang/blaze3d/vertex/VertexConsumer;color(FFFF)Lcom/mojang/blaze3d/vertex/VertexConsumer;": "Lcom/mojang/blaze3d/vertex/VertexConsumer;m_85950_(FFFF)Lcom/mojang/blaze3d/vertex/VertexConsumer;"
+      },
+      "dev/purifiedundead/mixin/BlightedRainCloudMixin": {
+        "getCloudColor": "m_104808_(F)Lnet/minecraft/world/phys/Vec3;"
+      },
+      "dev/purifiedundead/mixin/BlightedRainParticleMixin": {
+        "tick": "m_5989_()V"
+      },
+      "dev/purifiedundead/mixin/RainPlayerDamageMixin": {
+        "hurt": "m_6469_(Lnet/minecraft/world/damagesource/DamageSource;F)Z",
+        "Lnet/minecraft/world/entity/LivingEntity;actuallyHurt(Lnet/minecraft/world/damagesource/DamageSource;F)V": "Lnet/minecraft/world/entity/LivingEntity;m_6475_(Lnet/minecraft/world/damagesource/DamageSource;F)V"
+      },
+      "dev/purifiedundead/mixin/BlightedMeleeGoalMixin": {
+        "getAttackInterval": "m_25566_()I",
+        "mob": "f_25540_:Lnet/minecraft/world/entity/PathfinderMob;"
+      },
+      "dev/purifiedundead/mixin/BlightedRangedGoalMixin": {
+        "tick": "m_8037_()V",
+        "mob": "f_25757_:Lnet/minecraft/world/entity/Mob;",
+        "Lnet/minecraft/world/entity/ai/goal/RangedAttackGoal;attackIntervalMin:I": "Lnet/minecraft/world/entity/ai/goal/RangedAttackGoal;f_25763_:I",
+        "Lnet/minecraft/world/entity/ai/goal/RangedAttackGoal;attackIntervalMax:I": "Lnet/minecraft/world/entity/ai/goal/RangedAttackGoal;f_25764_:I"
+      },
+      "dev/purifiedundead/mixin/BlightedBowGoalMixin": {
+        "tick": "m_8037_()V",
+        "mob": "f_25782_:Lnet/minecraft/world/entity/Mob;",
+        "Lnet/minecraft/world/entity/ai/goal/RangedBowAttackGoal;attackIntervalMin:I": "Lnet/minecraft/world/entity/ai/goal/RangedBowAttackGoal;f_25784_:I",
+        "Lnet/minecraft/world/entity/Mob;getTicksUsingItem()I": "Lnet/minecraft/world/entity/Mob;m_21252_()I"
+      },
+      "dev/purifiedundead/mixin/BlightedCrossbowGoalMixin": {
+        "tick": "m_8037_()V",
+        "mob": "f_25805_:Lnet/minecraft/world/entity/monster/Monster;",
+        "Lnet/minecraft/world/entity/monster/Monster;getTicksUsingItem()I": "Lnet/minecraft/world/entity/monster/Monster;m_21252_()I"
+      },
+      "dev/purifiedundead/mixin/BlightedSkinMixin": {
+        "getRenderType": "m_7225_(Lnet/minecraft/world/entity/LivingEntity;ZZZ)Lnet/minecraft/client/renderer/RenderType;",
+        "Lnet/minecraft/client/renderer/entity/LivingEntityRenderer;getTextureLocation(Lnet/minecraft/world/entity/Entity;)Lnet/minecraft/resources/ResourceLocation;": "Lnet/minecraft/client/renderer/entity/LivingEntityRenderer;m_5478_(Lnet/minecraft/world/entity/Entity;)Lnet/minecraft/resources/ResourceLocation;"
+      },
+      "dev/purifiedundead/mixin/BlightedLayerSkinMixin": {
+        "coloredCutoutModelCopyLayerRender": "m_117359_(Lnet/minecraft/client/model/EntityModel;Lnet/minecraft/client/model/EntityModel;Lnet/minecraft/resources/ResourceLocation;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;ILnet/minecraft/world/entity/LivingEntity;FFFFFFFFF)V"
+      },
+      "dev/purifiedundead/mixin/BlightedCrossbowReleaseMixin": {
+        "releaseUsingItem": "m_21253_()V",
+        "Lnet/minecraft/world/item/ItemStack;releaseUsing(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/entity/LivingEntity;I)V": "Lnet/minecraft/world/item/ItemStack;m_41674_(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/entity/LivingEntity;I)V"
       }
     }
   }

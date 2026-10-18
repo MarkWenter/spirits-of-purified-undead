@@ -7,7 +7,7 @@ import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
 
 public final class ModNetwork {
-    private static final String PROTOCOL = "10";
+    private static final String PROTOCOL = "13";
     public static final SimpleChannel CHANNEL =
             NetworkRegistry.ChannelBuilder.named(
                             ResourceLocation.fromNamespaceAndPath(PurifiedUndead.MOD_ID, "main"))
@@ -19,6 +19,16 @@ public final class ModNetwork {
     private ModNetwork() {}
 
     public static void register() {
+        CHANNEL.messageBuilder(AbilitySettingsPacket.class, 6, NetworkDirection.PLAY_TO_CLIENT)
+                .encoder(AbilitySettingsPacket::encode)
+                .decoder(AbilitySettingsPacket::decode)
+                .consumerMainThread(AbilitySettingsPacket::handle)
+                .add();
+        CHANNEL.messageBuilder(BlightedRainPacket.class, 5, NetworkDirection.PLAY_TO_CLIENT)
+                .encoder(BlightedRainPacket::encode)
+                .decoder(BlightedRainPacket::decode)
+                .consumerMainThread(BlightedRainPacket::handle)
+                .add();
         CHANNEL.messageBuilder(GuardianWavePacket.class, 4, NetworkDirection.PLAY_TO_SERVER)
                 .encoder(GuardianWavePacket::encode)
                 .decoder(GuardianWavePacket::decode)

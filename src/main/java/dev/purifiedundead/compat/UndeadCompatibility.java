@@ -21,6 +21,13 @@ public final class UndeadCompatibility {
     public static boolean fragmentSource(LivingEntity entity) {
         if (entity.getType().is(EXCLUSIONS)) return false;
         if (entity.getType().is(ModEntityTypeTags.BLIGHT_FRAGMENT_SOURCES)) return true;
+        if (entity instanceof dev.purifiedundead.entity.BlightedKingEntity)
+            return EntityType.EVOKER.is(ModEntityTypeTags.BLIGHT_FRAGMENT_SOURCES);
+        if (entity instanceof dev.purifiedundead.blightedrain.mob.BlightedVariant) {
+            return dev.purifiedundead.blightedrain.mob.BlightedMobConversions.nativeType(
+                            entity.getType())
+                    .is(ModEntityTypeTags.BLIGHT_FRAGMENT_SOURCES);
+        }
         return PurifiedUndeadConfig.get(PurifiedUndeadConfig.VALUES.autoDetectModdedUndeadDrops)
                 && !BuiltInRegistries.ENTITY_TYPE
                         .getKey(entity.getType())

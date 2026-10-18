@@ -88,6 +88,7 @@ public final class PurifiedUndeadCommands {
             warrior.then(literal(action).then(target));
         }
         root.then(warrior);
+        root.then(dev.purifiedundead.blightedrain.BlightedRainCommands.tree());
         root.then(
                 literal("contract")
                         .requires(s -> s.hasPermission(2))
@@ -198,7 +199,7 @@ public final class PurifiedUndeadCommands {
                                                                     return players.size();
                                                                 }))));
         var config = literal("config").requires(s -> s.hasPermission(2));
-        for (String file : new String[] {"common", "slate"}) {
+        for (String file : new String[] {"common", "accessories", "slate"}) {
             config.then(
                     literal(file)
                             .executes(

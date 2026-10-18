@@ -28,47 +28,11 @@ public final class GrothAcquisitionEvents {
             return;
         }
 
-        BlightedGolemEntity converted = ModEntities.BLIGHTED_GOLEM.get().create(level);
-        if (converted == null) {
-            return;
-        }
-        converted.moveTo(
-                original.getX(),
-                original.getY(),
-                original.getZ(),
-                original.getYRot(),
-                original.getXRot());
-        converted.setHealth(
-                dev.purifiedundead.entity.BlightedHealth.rescale(
-                        original.getHealth(), original.getMaxHealth(), converted.getMaxHealth()));
-        converted.setPlayerCreated(original.isPlayerCreated());
-        converted.setNoAi(original.isNoAi());
-        converted.setInvulnerable(original.isInvulnerable());
-        if (original.hasCustomName()) {
-            converted.setCustomName(original.getCustomName());
-            converted.setCustomNameVisible(original.isCustomNameVisible());
-        } else {
-            converted.setCustomName(
-                    Component.translatable("entity.purified_undead.blighted_golem"));
-        }
-
-        if (!level.addFreshEntity(converted)) {
-            return;
-        }
-        original.discard();
+        var converted = BlightedConversions.convert(original, level);
+        if (converted == null) return;
         if (!player.getAbilities().instabuild) {
             event.getItemStack().shrink(1);
         }
-        level.sendParticles(
-                ParticleTypes.SOUL,
-                converted.getX(),
-                converted.getY() + 1.3D,
-                converted.getZ(),
-                32,
-                0.7D,
-                1.1D,
-                0.7D,
-                0.04D);
         player.displayClientMessage(
                 Component.translatable("message.purified_undead.groth.transformed"), false);
         event.setCancellationResult(InteractionResult.SUCCESS);

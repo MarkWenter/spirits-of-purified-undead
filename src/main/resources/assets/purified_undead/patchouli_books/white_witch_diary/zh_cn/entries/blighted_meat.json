@@ -1,0 +1,19 @@
+{
+  "name": "污秽肉",
+  "icon": "purified_undead:blighted_meat",
+  "category": "purified_undead:contract_path",
+  "sortnum": 104,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "text": "秽鬼生物可能掉落的特殊肉类，完全不建议食用。",
+      "item": "purified_undead:blighted_meat",
+      "title": "污秽肉",
+      "link_recipe": true
+    },
+    {
+      "type": "patchouli:text",
+      "text": "或许做熟就能吃了……？"
+    }
+  ]
+}

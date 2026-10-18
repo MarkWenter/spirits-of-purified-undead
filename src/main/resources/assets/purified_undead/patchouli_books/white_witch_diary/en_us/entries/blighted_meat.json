@@ -1,0 +1,19 @@
+{
+  "name": "Blighted Meat",
+  "icon": "purified_undead:blighted_meat",
+  "category": "purified_undead:contract_path",
+  "sortnum": 104,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "text": "Strange meat sometimes dropped by blighted creatures. Eating it is strongly discouraged.",
+      "item": "purified_undead:blighted_meat",
+      "title": "Blighted Meat",
+      "link_recipe": true
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Perhaps it would be edible once cooked…?"
+    }
+  ]
+}

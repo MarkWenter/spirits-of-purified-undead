@@ -1,0 +1,19 @@
+{
+  "name": "墓穴泞尘",
+  "icon": "purified_undead:grave_mire_dust",
+  "category": "purified_undead:contract_path",
+  "sortnum": 101,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "text": "秽鬼蜘蛛的特殊掉落物。明明是地表上常见的蜘蛛，为什么会带有墓穴中的尘埃呢……",
+      "item": "purified_undead:grave_mire_dust",
+      "title": "墓穴泞尘",
+      "link_recipe": true
+    },
+    {
+      "type": "patchouli:text",
+      "text": "材料物品，可用于合成一些秽鬼武器。"
+    }
+  ]
+}

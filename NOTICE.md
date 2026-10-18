@@ -2,7 +2,7 @@
 
 本项目是《ENDER LILIES: Quietus of the Knights》的非官方同人模组，与原作权利方无隶属关系。原作名称、角色设定及相关素材的权利归各自权利人所有。
 
-模组包含项目制作的模型、像素图标与特效，以及项目作者提供的八段获得/升级音效；音效以 Ogg Vorbis 格式随模组分发。公开源码不代表这些素材可任意再分发或商用。
+模组包含项目制作的模型、像素图标与特效，以及项目作者提供的八段获得/升级音效和污秽之雨预警音效；音效以 Ogg Vorbis 格式随模组分发。公开源码不代表这些素材可任意再分发或商用。
 
 新增八件白巫女饰品图标根据项目作者提供的原作截图，以内置图片生成工具制作像素图，再整理为 64×64 透明贴图。
 
@@ -13,3 +13,5 @@
 Forge 开发模板的 LICENSE 和 CREDITS 保留于 `docs/licenses/`；Gradle Wrapper 保留原许可声明。Curios、GeckoLib、Apothic Attributes、Placebo 等依赖通过构建工具获取，不打包进本模组。
 
 Forge 0.56.0 起在本体内以 Jar-in-Jar 附带官方 MixinExtras 0.5.3 基础库（MIT），未修改其代码，许可见 `docs/licenses/MIXINEXTRAS_LICENSE.txt`。NeoForge 使用加载器自带版本。该库不属于本项目原创内容。
+
+污秽之雨新增秽鬼纹理基于 Minecraft 原版实体贴图使用内置 imagegen 重绘，再提取纹路并逐像素校准，保留原版模型与图集坐标；Minecraft 原版素材归 Mojang/Microsoft 所有。项目作者提供的参考画集页面未随公开源码分发。

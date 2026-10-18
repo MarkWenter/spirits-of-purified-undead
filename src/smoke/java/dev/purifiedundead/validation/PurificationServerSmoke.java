@@ -261,6 +261,12 @@ public final class PurificationServerSmoke {
                 costConfig.set(oldCost);
                 player.getInventory().clearContent();
             }
+            try {
+                dev.purifiedundead.blightedrain.BlightedRainSmoke.run(server);
+                dev.purifiedundead.blightedrain.BlightedMobSmoke.run(server);
+            } catch (Exception rainFailure) {
+                throw new RuntimeException(rainFailure);
+            }
             FoundryServerSmoke.run(server);
             FerinLargeMobSmoke.run(server);
             PurificationPartTwoSmoke.run(server);

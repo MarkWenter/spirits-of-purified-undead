@@ -6,7 +6,7 @@
   "pages": [
     {
       "type": "patchouli:spotlight",
-      "text": "治疗一只僵尸村民后获得。可反转异端者的污秽的效果。",
+      "text": "治疗一只僵尸村民或秽鬼村民后获得。可反转异端者的污秽的效果。",
       "item": "purified_undead:faden_warrior",
       "title": "法腾",
       "link_recipe": true

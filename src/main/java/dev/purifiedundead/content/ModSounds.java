@@ -25,7 +25,8 @@ public final class ModSounds {
                     "ulv",
                     "eleine",
                     "faden",
-                    "talisman_max"
+                    "talisman_max",
+                    "blighted_rain_warning"
                 }) {
             EVENTS.put(
                     name,

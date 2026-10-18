@@ -6,7 +6,7 @@
   "pages": [
     {
       "type": "patchouli:spotlight",
-      "text": "承受至少三种负面效果时击杀一只僵尸后获得。可反转深渊守卫的污秽的效果。",
+      "text": "Obtained by killing any blighted creature while suffering at least three harmful effects. Reverses the blight of the Abyss Guardian.",
       "item": "purified_undead:hoenir_warrior",
       "title": "海尼尔",
       "link_recipe": true

@@ -7,12 +7,15 @@ import net.minecraft.world.entity.monster.Drowned;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-/** Tracks three player-owned drowned kills while the Tired Heart is held in the offhand. */
+/** Tracks three player-owned drowned or blighted-witch kills while the Tired Heart is held in the offhand. */
 public final class EleineAcquisitionEvents {
     @SubscribeEvent
     public void onLivingDeath(LivingDeathEvent event) {
         if (!PurifiedUndeadConfig.get(PurifiedUndeadConfig.VALUES.eleineAcquisitionEnabled)
-                || !(event.getEntity() instanceof Drowned)
+                || !(event.getEntity() instanceof Drowned
+                        || event.getEntity().getType()
+                                == dev.purifiedundead.blightedrain.mob.BlightedMobContent.WITCH
+                                        .get())
                 || !(event.getSource().getEntity() instanceof ServerPlayer player)
                 || !player.getOffhandItem().is(ModItems.TIRED_HEART.get())) {
             return;

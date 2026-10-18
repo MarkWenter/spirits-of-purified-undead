@@ -144,24 +144,60 @@ public final class RelicEvents {
             }
         }
         if (selected == null) return;
-        int seconds = selected == RelicKind.WHITE_PRIESTESS_STATUE ? 120 : 600;
+        var cfg = PurifiedUndeadConfig.VALUES;
+        boolean statue = selected == RelicKind.WHITE_PRIESTESS_STATUE;
+        int ticks = PurifiedUndeadConfig.get(statue ? cfg.statueCooldown : cfg.earringsCooldown);
         long cooldown =
                 Math.max(
                         1,
                         Math.round(
-                                seconds
-                                        * 20.0
+                                ticks
+                                        * 1.0
                                         * PurifiedUndeadConfig.get(
                                                 PurifiedUndeadConfig.VALUES
                                                         .whiteWitchRelicCooldownScale)));
         state.putLong(selected.id, now + cooldown);
         event.setCanceled(true);
-        player.setHealth(1.0F);
+        player.setHealth(
+                (float)
+                        Math.min(
+                                player.getMaxHealth(),
+                                Math.max(
+                                        0.1,
+                                        PurifiedUndeadConfig.get(
+                                                statue
+                                                        ? cfg.statueRescueHealth
+                                                        : cfg.earringsRescueHealth))));
         dev.purifiedundead.progress.HardcoreBlightRescue.onSaved(player);
         player.removeAllEffects();
-        player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 900, 1));
-        player.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 100, 1));
-        player.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 800, 0));
+        player.addEffect(
+                new MobEffectInstance(
+                        MobEffects.REGENERATION,
+                        PurifiedUndeadConfig.get(
+                                statue
+                                        ? cfg.statueRegenerationTicks
+                                        : cfg.earringsRegenerationTicks),
+                        PurifiedUndeadConfig.get(
+                                statue
+                                        ? cfg.statueRegenerationAmplifier
+                                        : cfg.earringsRegenerationAmplifier)));
+        player.addEffect(
+                new MobEffectInstance(
+                        MobEffects.ABSORPTION,
+                        PurifiedUndeadConfig.get(
+                                statue ? cfg.statueAbsorptionTicks : cfg.earringsAbsorptionTicks),
+                        PurifiedUndeadConfig.get(
+                                statue
+                                        ? cfg.statueAbsorptionAmplifier
+                                        : cfg.earringsAbsorptionAmplifier)));
+        player.addEffect(
+                new MobEffectInstance(
+                        MobEffects.FIRE_RESISTANCE,
+                        PurifiedUndeadConfig.get(
+                                statue
+                                        ? cfg.statueFireResistanceTicks
+                                        : cfg.earringsFireResistanceTicks),
+                        0));
         player.level().broadcastEntityEvent(player, (byte) 35);
         player.displayClientMessage(
                 net.minecraft.network.chat.Component.translatable(

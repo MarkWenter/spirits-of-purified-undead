@@ -1,0 +1,23 @@
+{
+  "name": "污秽之雨",
+  "icon": "purified_undead:blighted_rain_emblem",
+  "category": "purified_undead:contract_path",
+  "sortnum": 100,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "text": "因怨念污秽堆积而诞生的雨，雨滴的颜色并不是纯净的蓝色，而是污浊的灰红色。对没有巫女血脉的人来说，这样的雨是致命的。",
+      "item": "purified_undead:blighted_rain_emblem",
+      "title": "污秽之雨",
+      "link_recipe": true
+    },
+    {
+      "type": "patchouli:text",
+      "text": "有些生物长时间被污秽之雨淋到后，会被转变成对应的秽鬼生物。秽鬼生物有可能掉落一些独特的掉落物，其攻击能力也会得到强化，需要谨慎对敌……"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "污秽感染了世界，即使污秽之雨暂时停歇，雨幕也会无穷无尽。"
+    }
+  ]
+}

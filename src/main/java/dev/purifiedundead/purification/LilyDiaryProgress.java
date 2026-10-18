@@ -57,8 +57,19 @@ public final class LilyDiaryProgress {
         var critical =
                 net.minecraftforge.registries.ForgeRegistries.ATTRIBUTES.getValue(
                         ResourceLocation.fromNamespaceAndPath("attributeslib", "crit_chance"));
-        if (critical != null) update(p.getAttribute(critical), count * .03);
-        update(p.getAttribute(Attributes.LUCK), count * .5);
+        if (critical != null)
+            update(
+                    p.getAttribute(critical),
+                    count
+                            * dev.purifiedundead.config.PurifiedUndeadConfig.get(
+                                    dev.purifiedundead.config.PurifiedUndeadConfig.VALUES
+                                            .lilyCriticalPerType));
+        update(
+                p.getAttribute(Attributes.LUCK),
+                count
+                        * dev.purifiedundead.config.PurifiedUndeadConfig.get(
+                                dev.purifiedundead.config.PurifiedUndeadConfig.VALUES
+                                        .lilyLuckPerType));
     }
 
     private static void update(AttributeInstance a, double amount) {

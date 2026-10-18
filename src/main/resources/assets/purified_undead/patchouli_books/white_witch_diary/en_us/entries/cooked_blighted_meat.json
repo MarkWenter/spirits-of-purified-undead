@@ -1,0 +1,19 @@
+{
+  "name": "Cooked Blighted Meat",
+  "icon": "purified_undead:cooked_blighted_meat",
+  "category": "purified_undead:contract_path",
+  "sortnum": 105,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "text": "Cooked blighted meat. It still looks revolting, but perhaps one could stomach it…?",
+      "item": "purified_undead:cooked_blighted_meat",
+      "title": "Cooked Blighted Meat",
+      "link_recipe": true
+    },
+    {
+      "type": "patchouli:text",
+      "text": "It’s done! Eat up before it gets tough!"
+    }
+  ]
+}

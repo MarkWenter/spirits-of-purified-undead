@@ -17,7 +17,7 @@ class ProductionRefmapTest {
                             .getAsJsonObject();
             var mappings = root.getAsJsonObject("mappings");
             assertEquals(mappings, root.getAsJsonObject("data").getAsJsonObject("searge"));
-            assertEquals(5, mappings.size());
+            assertEquals(17, mappings.size());
             for (String key : mappings.keySet()) {
                 assertTrue(key.startsWith("dev/purifiedundead/mixin/"), key);
                 assertFalse(key.contains("."), key);

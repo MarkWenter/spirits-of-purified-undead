@@ -1,0 +1,23 @@
+{
+  "name": "The Cliff Village Youth",
+  "icon": "purified_undead:cliff_village_youth",
+  "category": "purified_undead:blighted_weapons",
+  "sortnum": 107,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "text": "A thrown weapon that deals 7 damage within a 2-block radius of its impact and stuns for 3 seconds. It starts with 10 durability, does not break when depleted, and gradually restores durability over time.",
+      "item": "purified_undead:cliff_village_youth",
+      "title": "The Cliff Village Youth",
+      "link_recipe": true
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Try applying bow enchantments to it."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "purified_undead:cliff_village_youth"
+    }
+  ]
+}

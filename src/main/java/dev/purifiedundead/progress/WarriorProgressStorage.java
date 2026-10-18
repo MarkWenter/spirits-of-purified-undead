@@ -28,6 +28,9 @@ final class WarriorProgressStorage {
         CompoundTag root = original.getPersistentData();
         replacement
                 .getPersistentData()
+                .putBoolean(HardcoreBlightRescue.USED, root.getBoolean(HardcoreBlightRescue.USED));
+        replacement
+                .getPersistentData()
                 .putBoolean(ModAdvancements.MIGRATION, root.getBoolean(ModAdvancements.MIGRATION));
         if (root.contains(DATA_KEY, Tag.TAG_COMPOUND)) {
             replacement.getPersistentData().put(DATA_KEY, root.getCompound(DATA_KEY).copy());

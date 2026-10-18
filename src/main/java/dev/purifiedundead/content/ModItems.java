@@ -120,16 +120,14 @@ public final class ModItems {
             ITEMS.register(
                     "white_lotus",
                     () ->
-                            new dev.purifiedundead.purification.PurificationConsumable(
-                                    dev.purifiedundead.purification.PurificationConsumable.Kind
-                                            .WHITE));
+                            new dev.purifiedundead.purification.LotusItem(
+                                    dev.purifiedundead.purification.LotusItem.Kind.WHITE));
     public static final RegistryObject<Item> SCARLET_LOTUS =
             ITEMS.register(
                     "scarlet_lotus",
                     () ->
-                            new dev.purifiedundead.purification.PurificationConsumable(
-                                    dev.purifiedundead.purification.PurificationConsumable.Kind
-                                            .SCARLET));
+                            new dev.purifiedundead.purification.LotusItem(
+                                    dev.purifiedundead.purification.LotusItem.Kind.SCARLET));
     public static final RegistryObject<Item> PURE_FORBIDDEN_FRUIT =
             ITEMS.register(
                     "pure_forbidden_fruit",

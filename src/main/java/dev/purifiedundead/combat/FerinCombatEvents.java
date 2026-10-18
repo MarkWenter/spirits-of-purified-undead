@@ -64,6 +64,7 @@ public final class FerinCombatEvents {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onMeleeAttempt(net.minecraftforge.event.entity.player.AttackEntityEvent event) {
         if (!(event.getEntity() instanceof ServerPlayer player)
+                || !AbilityPreferences.ferin(player)
                 || !FerinEquipment.read(player).contract()) return;
         net.minecraft.world.entity.Entity attacked = event.getTarget();
         net.minecraft.world.entity.Entity parent =
@@ -199,6 +200,7 @@ public final class FerinCombatEvents {
     }
 
     private void triggerCombo(ServerPlayer player, Vec3 aim, PendingHit pending) {
+        if (!AbilityPreferences.ferin(player)) return;
         FerinPlayerState runtime = stateFor(player);
         if (!runtime.attackTickGate.accept(pending.gameTick)) {
             FerinPlayerStateStorage.save(player, runtime);
@@ -261,6 +263,7 @@ public final class FerinCombatEvents {
         if (now - runtime.combo.stageStartedAt() >= timings().comboWindow()
                 || runtime.lastContinuationTick == now
                 || runtime.attackTickGate.lastAcceptedTick() == now
+                || !AbilityPreferences.ferin(player)
                 || !FerinEquipment.read(player).contract()) return;
         runtime.lastContinuationTick = now;
         if (runtime.continuation.pending(runtime.combo.stage(), runtime.combo.stageStartedAt()))
@@ -294,6 +297,7 @@ public final class FerinCombatEvents {
             }
             if (!player.isAlive()
                     || player.isSpectator()
+                    || !AbilityPreferences.ferin(player)
                     || !FerinEquipment.read(player).contract()) {
                 runtime.cancelActive();
                 removeFerinEntity(player);
