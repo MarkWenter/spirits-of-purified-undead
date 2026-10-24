@@ -285,3 +285,6 @@ Forge 编译基线与加载最低要求改为 47.3.22。污秽铁傀儡、污秽
 
 
 **1.1.1-hotfix.2 后续候选：** 同一hotfix分支保留既有故障隔离；两版增加满背包无变化快速路径，保留记录原位逐条提交，NeoForge静默解码失败结果，失败同步20至1200刻退避，清理二次失败时继续其余恢复并明确失败。新增实际标记`HOTFIX_COST_BOUNDARIES_OK`，与`FAILURE_BOUNDARIES_OK`及全套回归共同核对；测试复制计数与清理故障Mixin不得进入生产JAR。详见[稳定性候选](STABILITY_HOTFIX_111.md)末节，本轮本地验证目录`outputs/hotfix-cost-2026-10-25/`。
+
+
+**1.1.1-hotfix.3 问题1候选：** 仅自定义天气shader资源独立顶点阶段、内联对应版本的原版雾公式、局部变量更名，保留hotfix.2全部稳定性及性能保护。两版fog_distance语义不同，严禁机械共用1.20.1公式。运行必须核对shader实际注册，不能把静默回退当作兼容成功；AMD实机待回测，详见[问题1候选](AMD_SHADER_HOTFIX_111.md)。

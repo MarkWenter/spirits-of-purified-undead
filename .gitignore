@@ -141,3 +141,5 @@ scripts/*
 !scripts/blighted-textures/
 
 !docs/STABILITY_HOTFIX_111.md
+
+!docs/AMD_SHADER_HOTFIX_111.md
