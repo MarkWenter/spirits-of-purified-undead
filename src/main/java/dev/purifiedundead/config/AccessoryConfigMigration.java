@@ -54,8 +54,17 @@ public final class AccessoryConfigMigration {
             String out = new com.electronwill.nightconfig.toml.TomlWriter().writeToString(migrated);
             Path backup = directory.resolve("purified_undead-common.before-accessories.toml");
             if (!Files.exists(backup)) Files.copy(old, backup);
-            Files.writeString(next, out, StandardOpenOption.CREATE_NEW);
-        } catch (IOException failure) {
+            Path temporary =
+                    Files.createTempFile(directory, "purified-undead-accessories-", ".tmp");
+            try {
+                Files.writeString(temporary, out);
+                Files.move(
+                        temporary,
+                        next); // No replacement: preserve a concurrently created user file.
+            } finally {
+                Files.deleteIfExists(temporary);
+            }
+        } catch (IOException | RuntimeException failure) {
             throw new IllegalStateException(
                     "Cannot safely migrate accessory config: " + next, failure);
         }

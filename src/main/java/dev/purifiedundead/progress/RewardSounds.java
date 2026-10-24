@@ -49,7 +49,19 @@ public final class RewardSounds {
         player.getPersistentData().put(QUEUE, queue);
     }
 
+    private static final String SYNC = "purified_undead:reward_inventory_sync";
+
+    public static void requestSync(ServerPlayer player) {
+        player.getPersistentData().putBoolean(SYNC, true);
+    }
+
     public static void tick(ServerPlayer player) {
+        if (player.isAlive()
+                && player.connection != null
+                && player.getPersistentData().getBoolean(SYNC)
+                && dev.purifiedundead.util.FailureIsolation.run(
+                        "reward inventory sync", player.inventoryMenu::broadcastChanges))
+            player.getPersistentData().remove(SYNC);
         if (!player.isAlive()
                 || player.connection == null
                 || !player.getPersistentData().contains(QUEUE, Tag.TAG_LIST)) return;
@@ -58,7 +70,10 @@ public final class RewardSounds {
         player.getPersistentData().remove(QUEUE);
         for (int i = 0; i < queue.size(); i++) {
             SoundEvent sound = ModSounds.find(queue.getString(i));
-            if (sound != null) player.playNotifySound(sound, SoundSource.PLAYERS, 1.0F, 1.0F);
+            if (sound != null)
+                dev.purifiedundead.util.FailureIsolation.run(
+                        "reward audio",
+                        () -> player.playNotifySound(sound, SoundSource.PLAYERS, 1.0F, 1.0F));
         }
     }
 

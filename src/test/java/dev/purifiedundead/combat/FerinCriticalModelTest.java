@@ -32,4 +32,16 @@ class FerinCriticalModelTest {
         assertThrows(
                 IllegalArgumentException.class, () -> FerinCriticalModel.roll(0.1, 0.9, () -> 0.0));
     }
+
+    @Test
+    void externalAttributesCannotBreakCombatOrProduceInfiniteMultipliers() {
+        assertEquals(1F, FerinCriticalModel.rollExternal(Double.NaN, 2, () -> 0).multiplier());
+        assertEquals(
+                1F,
+                FerinCriticalModel.rollExternal(1, Double.POSITIVE_INFINITY, () -> 0).multiplier());
+        assertEquals(1F, FerinCriticalModel.rollExternal(-1, 2, () -> 0).multiplier());
+        assertEquals(1F, FerinCriticalModel.rollExternal(1, .5, () -> 0).multiplier());
+        assertEquals(1F, FerinCriticalModel.rollExternal(64, 1024, () -> .25).multiplier());
+        assertEquals(3.4F, FerinCriticalModel.rollExternal(1.25, 2, () -> .1).multiplier(), .0001F);
+    }
 }

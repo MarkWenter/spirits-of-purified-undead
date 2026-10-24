@@ -153,6 +153,7 @@ public final class FerinCombatEvents {
         DamageSource source = event.getSource();
         if (source.getEntity() instanceof ServerPlayer player
                 && isDirectPlayerMelee(source, player)
+                && Float.isFinite(event.getAmount())
                 && event.getAmount() > 0.0F) {
             pendingHits.put(
                     new CombatHitKey(event.getEntity().getUUID(), player.getUUID()),
@@ -584,12 +585,19 @@ public final class FerinCombatEvents {
                         1
                                 + dev.purifiedundead.slate.SlateConfig.get(
                                         dev.purifiedundead.slate.SlateConfig.ferinBonus);
+            if (!Float.isFinite(amount) || amount < 0) continue;
             boolean hoenirMarked = HoenirCombatEvents.hasMark(owner, target);
             amount = HoenirModel.ferinDamage(amount, hoenirMarked);
+            if (!Float.isFinite(amount) || amount < 0) continue;
             int previousInvulnerableTime = target.invulnerableTime;
             target.invulnerableTime = 0;
-            boolean damaged = target.hurt(ModDamageTypes.ferinAssist(level, owner), amount);
-            target.invulnerableTime = Math.max(previousInvulnerableTime, target.invulnerableTime);
+            boolean damaged;
+            try {
+                damaged = target.hurt(ModDamageTypes.ferinAssist(level, owner), amount);
+            } finally {
+                target.invulnerableTime =
+                        Math.max(previousInvulnerableTime, target.invulnerableTime);
+            }
             if (damaged && hoenirMarked) {
                 HoenirCombatEvents.consumeMark(owner, target);
             }
@@ -641,7 +649,7 @@ public final class FerinCombatEvents {
                 || player.getAttribute(damage) == null) {
             return new FerinCriticalModel.Result(1.0F, false);
         }
-        return FerinCriticalModel.roll(
+        return FerinCriticalModel.rollExternal(
                 player.getAttributeValue(chance),
                 player.getAttributeValue(damage),
                 () -> player.getRandom().nextFloat());

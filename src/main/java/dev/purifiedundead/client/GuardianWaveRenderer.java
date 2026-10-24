@@ -28,19 +28,22 @@ public final class GuardianWaveRenderer extends EntityRenderer<GuardianWaveEntit
             int light) {
         if (GuardianWavePrediction.suppress(e)) return;
         poses.pushPose();
-        poses.scale(1.25F, 1.25F, 1.25F);
-        poses.mulPose(com.mojang.math.Axis.YP.rotationDegrees(-e.getYRot()));
-        poses.mulPose(com.mojang.math.Axis.XP.rotationDegrees(e.getXRot()));
-        poses.mulPose(com.mojang.math.Axis.ZP.rotationDegrees(e.roll()));
-        var out = buffers.getBuffer(RenderType.entityTranslucentEmissive(TEXTURE));
-        var m = poses.last().pose();
-        for (var q : MESH) {
-            v(out, m, q.a());
-            v(out, m, q.b());
-            v(out, m, q.c());
-            v(out, m, q.d());
+        try {
+            poses.scale(1.25F, 1.25F, 1.25F);
+            poses.mulPose(com.mojang.math.Axis.YP.rotationDegrees(-e.getYRot()));
+            poses.mulPose(com.mojang.math.Axis.XP.rotationDegrees(e.getXRot()));
+            poses.mulPose(com.mojang.math.Axis.ZP.rotationDegrees(e.roll()));
+            var out = buffers.getBuffer(RenderType.entityTranslucentEmissive(TEXTURE));
+            var m = poses.last().pose();
+            for (var q : MESH) {
+                v(out, m, q.a());
+                v(out, m, q.b());
+                v(out, m, q.c());
+                v(out, m, q.d());
+            }
+        } finally {
+            poses.popPose();
         }
-        poses.popPose();
     }
 
     private static void v(VertexConsumer out, Matrix4f m, FerinSlashMesh.Vertex v) {

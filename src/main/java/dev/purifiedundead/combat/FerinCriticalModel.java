@@ -19,9 +19,21 @@ public final class FerinCriticalModel {
         while (random.getAsDouble() <= remainingChance && currentDamage > 1.0) {
             remainingChance -= 1.0;
             multiplier *= (float) currentDamage;
+            if (!Float.isFinite(multiplier)) return new Result(1.0F, false);
             currentDamage *= 0.85;
         }
         return new Result(multiplier, multiplier > 1.0F);
+    }
+
+    public static Result rollExternal(double chance, double damage, DoubleSupplier random) {
+        if (!Double.isFinite(chance) || chance < 0 || !Double.isFinite(damage) || damage < 1) {
+            dev.purifiedundead.util.FailureIsolation.report(
+                    "invalid external critical attributes",
+                    new IllegalArgumentException(
+                            "Critical attributes must be finite and in range"));
+            return new Result(1.0F, false);
+        }
+        return roll(chance, damage, random);
     }
 
     public record Result(float multiplier, boolean critical) {}

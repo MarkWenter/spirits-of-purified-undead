@@ -139,3 +139,5 @@ scripts/*
 !docs/blighted-rain-update/
 
 !scripts/blighted-textures/
+
+!docs/STABILITY_HOTFIX_111.md

@@ -7,7 +7,23 @@ import net.minecraft.core.registries.BuiltInRegistries;
 
 /** Probe normal reference weapons, preserving each enchantment's own category and exclusivity rules. */
 public final class GuardianEnchantments {
+    private static final ThreadLocal<Boolean> PROBING = ThreadLocal.withInitial(() -> false);
+
     public static boolean accepts(Enchantment e) {
+        if (PROBING.get()) return false;
+        PROBING.set(true);
+        try {
+            return acceptsNative(e);
+        } catch (RuntimeException | LinkageError failure) {
+            dev.purifiedundead.util.FailureIsolation.report(
+                    "optional guardian enchantment probe", failure);
+            return false;
+        } finally {
+            PROBING.remove();
+        }
+    }
+
+    private static boolean acceptsNative(Enchantment e) {
         if (e.isCurse()) return false;
         var id = BuiltInRegistries.ENCHANTMENT.getKey(e);
         if (id == null) return false;

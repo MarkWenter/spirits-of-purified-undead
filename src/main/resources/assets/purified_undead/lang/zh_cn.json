@@ -353,5 +353,6 @@
   "message.purified_undead.ferin.enabled": "费林协同攻击已开启",
   "message.purified_undead.ferin.disabled": "费林协同攻击已关闭",
   "message.purified_undead.guardian_movement.enabled": "二段跳与空中冲刺已开启",
-  "message.purified_undead.guardian_movement.disabled": "二段跳与空中冲刺已关闭"
+  "message.purified_undead.guardian_movement.disabled": "二段跳与空中冲刺已关闭",
+  "command.purified_undead.reload_sync_pending": "配方已生效；仍有 %s 位玩家等待同步，将自动重试。"
 }

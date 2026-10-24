@@ -280,3 +280,5 @@ Forge 编译基线与加载最低要求改为 47.3.22。污秽铁傀儡、污秽
 
 
 **1.1 正式发布：** 用户已授权将污秽之雨更新合并主干；两版正式版本为1.1，协议13。阶段文档中的“仅推分支/不合并”是历史发布范围，正式发布说明见 [1.1](RELEASE_V110.md)。
+
+**1.1.1-hotfix.1 稳定性候选：** 用户将AMD/Oculus编译报告定义为问题1、稳定性扫描定义为问题2。本候选只修问题2，Forge在`1.1hotfix`分支，不合并main；两版协议13。视觉Mixin拆到`purified_undead.visual.mixins.json`，Forge清单及开发参数、NeoForge元数据均须加载两份配置。新故障注入回归标记`FAILURE_BOUNDARIES_OK`，与完整回归一起使用`audit-server.gradle`和兼容两版的`audit-chain.gradle`；测试Mixin不得进入发布包。处理范围与安全停止策略见[稳定性候选](STABILITY_HOTFIX_111.md)。

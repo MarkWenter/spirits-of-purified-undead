@@ -26,15 +26,18 @@ public final class CliffYouthRenderer
             net.minecraft.client.renderer.MultiBufferSource buffers,
             int light) {
         pose.pushPose();
-        pose.scale(.5F, .5F, .5F);
-        pose.translate(-.5, 0, -.5);
-        blocks.renderSingleBlock(
-                net.minecraft.world.level.block.Blocks.STONE.defaultBlockState(),
-                pose,
-                buffers,
-                light,
-                net.minecraft.client.renderer.texture.OverlayTexture.NO_OVERLAY);
-        pose.popPose();
+        try {
+            pose.scale(.5F, .5F, .5F);
+            pose.translate(-.5, 0, -.5);
+            blocks.renderSingleBlock(
+                    net.minecraft.world.level.block.Blocks.STONE.defaultBlockState(),
+                    pose,
+                    buffers,
+                    light,
+                    net.minecraft.client.renderer.texture.OverlayTexture.NO_OVERLAY);
+        } finally {
+            pose.popPose();
+        }
         super.render(entity, yaw, partial, pose, buffers, light);
     }
 }

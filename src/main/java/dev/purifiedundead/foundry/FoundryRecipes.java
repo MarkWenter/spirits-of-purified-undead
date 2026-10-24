@@ -320,11 +320,47 @@ public final class FoundryRecipes {
         // Commit only after every entry validates. Invalid reloads leave the running recipes
         // intact.
         recipes = List.copyOf(loaded);
-        var packet = new dev.purifiedundead.network.FoundryRecipesPacket(recipes);
+        lastSyncFailures = 0;
         for (var player : server.getPlayerList().getPlayers())
-            dev.purifiedundead.network.ModNetwork.CHANNEL.send(
-                    net.minecraftforge.network.PacketDistributor.PLAYER.with(() -> player), packet);
+            if (!sync(player)) lastSyncFailures++;
         return recipes.size();
+    }
+
+    private static final java.util.Set<java.util.UUID> PENDING_SYNC = new java.util.HashSet<>();
+    private static int lastSyncFailures;
+
+    public static int lastSyncFailures() {
+        return lastSyncFailures;
+    }
+
+    public static boolean sync(net.minecraft.server.level.ServerPlayer player) {
+        boolean sent =
+                dev.purifiedundead.util.FailureIsolation.run(
+                        "foundry recipe sync",
+                        () -> {
+                            var packet =
+                                    new dev.purifiedundead.network.FoundryRecipesPacket(recipes);
+                            dev.purifiedundead.network.ModNetwork.CHANNEL.send(
+                                    net.minecraftforge.network.PacketDistributor.PLAYER.with(
+                                            () -> player),
+                                    packet);
+                        });
+        if (sent) PENDING_SYNC.remove(player.getUUID());
+        else PENDING_SYNC.add(player.getUUID());
+        return sent;
+    }
+
+    public static void retrySync(net.minecraft.server.MinecraftServer server) {
+        for (var id : java.util.List.copyOf(PENDING_SYNC)) {
+            var player = server.getPlayerList().getPlayer(id);
+            if (player == null) PENDING_SYNC.remove(id);
+            else sync(player);
+        }
+    }
+
+    public static void clearSync() {
+        PENDING_SYNC.clear();
+        lastSyncFailures = 0;
     }
 
     /** Structural checks are registry-independent and safe on the network decoding thread. */

@@ -1,0 +1,17 @@
+{
+  "required": false,
+  "package": "dev.purifiedundead.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "purified_undead.refmap.json",
+  "minVersion": "0.8",
+  "client": [
+    "BlightedRainVisualMixin",
+    "BlightedRainCloudMixin",
+    "BlightedRainParticleMixin",
+    "BlightedSkinMixin",
+    "BlightedLayerSkinMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 0
+  }
+}

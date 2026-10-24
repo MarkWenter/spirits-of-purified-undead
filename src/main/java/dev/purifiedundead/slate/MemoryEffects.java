@@ -240,13 +240,8 @@ public final class MemoryEffects {
 
     @SubscribeEvent
     public static void login(PlayerEvent.PlayerLoggedInEvent e) {
-        if (e.getEntity() instanceof ServerPlayer p) {
-            var packet =
-                    new dev.purifiedundead.network.FoundryRecipesPacket(
-                            dev.purifiedundead.foundry.FoundryRecipes.all());
-            dev.purifiedundead.network.ModNetwork.CHANNEL.send(
-                    net.minecraftforge.network.PacketDistributor.PLAYER.with(() -> p), packet);
-        }
+        if (e.getEntity() instanceof ServerPlayer p)
+            dev.purifiedundead.foundry.FoundryRecipes.sync(p);
     }
 
     @SubscribeEvent
