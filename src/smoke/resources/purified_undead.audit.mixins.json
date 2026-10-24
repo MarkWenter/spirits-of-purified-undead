@@ -7,7 +7,8 @@
     "CompatibilityChainMixin",
     "PresentationFaultMixin",
     "RecoveryCostFaultMixin",
-    "InventoryCopyCounterMixin"
+    "InventoryCopyCounterMixin",
+    "DecodeMutationFaultMixin"
   ],
   "injectors": {
     "defaultRequire": 1

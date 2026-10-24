@@ -51,12 +51,14 @@ public final class EleineCombatEvents {
             amount =
                     EleineModel.incomingMagicDamage(
                             amount, targetEquipment.contract, targetEquipment.eleine);
+            if (!finiteAdjustedDamage(amount)) return;
         }
         if (event.getSource().getEntity() instanceof ServerPlayer attacker) {
             Equipment attackerEquipment = readEquipment(attacker);
             amount =
                     EleineModel.outgoingMagicDamage(
                             amount, attackerEquipment.contract, attackerEquipment.eleine);
+            if (!finiteAdjustedDamage(amount)) return;
         }
         event.setAmount(amount);
     }
@@ -113,6 +115,8 @@ public final class EleineCombatEvents {
                                         * dev.purifiedundead.slate.SlateConfig.get(
                                                 dev.purifiedundead.slate.SlateConfig.orbDamage))
                         : EleineModel.orbDamage(pending.preDefenseDamage);
+        // Do not publish an invalid orb when an extreme external melee value overflows its ratio.
+        if (!finiteAdjustedDamage(damage)) return;
         EleineMagicOrbEntity orb = ModEntities.ELEINE_MAGIC_ORB.get().create(player.serverLevel());
         if (orb != null && damage > 0.0F) {
             orb.configure(player, event.getEntity(), damage);
@@ -206,6 +210,14 @@ public final class EleineCombatEvents {
                             amount,
                             AttributeModifier.Operation.MULTIPLY_TOTAL));
         }
+    }
+
+    private static boolean finiteAdjustedDamage(float amount) {
+        if (Float.isFinite(amount) && amount >= 0.0F) return true;
+        dev.purifiedundead.util.FailureIsolation.report(
+                "Eleine damage multiplication overflow; adjustment skipped",
+                new IllegalArgumentException("Adjusted Eleine damage must remain finite"));
+        return false;
     }
 
     private static Equipment readEquipment(LivingEntity entity) {

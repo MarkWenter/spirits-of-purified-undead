@@ -44,7 +44,9 @@ public final class ConversionCommit {
                     "entity conversion rolled back", failure);
             return false;
         } finally {
-            if (!committed) {
+            // Once the source is removed, the published replacement/drops are its surviving state.
+            // A removal listener may throw after marking it removed; never erase that state.
+            if (!committed && !original.isRemoved()) {
                 Throwable rollbackFailure = null;
                 for (var drop : drops) {
                     if (captured != null)

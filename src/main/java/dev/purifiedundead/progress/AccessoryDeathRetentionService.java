@@ -63,7 +63,9 @@ final class AccessoryDeathRetentionService {
                 index < entries.size() && examined++ < RetainedAccessoryBuffer.MAX_ENTRIES; ) {
             CompoundTag serialized = entries.getCompound(index);
             try {
-                ItemStack stack = ItemStack.of(serialized);
+                // Load/capability callbacks may mutate their input even when decoding fails.
+                // Copy only this entry, never the whole retained buffer.
+                ItemStack stack = ItemStack.of(serialized.copy());
                 if (stack.isEmpty()) {
                     index++;
                     continue;

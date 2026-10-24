@@ -242,13 +242,14 @@ public final class FailureBoundarySmoke {
         }
         System.out.println(
                 "HOTFIX_COST_BOUNDARIES_OK: zero full-inventory copies, unchanged 128-entry"
-                    + " backlog, quiet unknown decoding, retry delay, cleanup second-failure"
-                    + " restoration");
+                        + " backlog, quiet unknown decoding, retry delay, cleanup second-failure"
+                        + " restoration");
         check(
                 dev.purifiedundead.combat.FerinCriticalModel.rollExternal(Double.NaN, 2, () -> .1)
                                 .multiplier()
                         == 1,
                 "invalid external attributes");
+        HotfixBoundarySmoke.run(server);
         System.out.println(
                 "FAILURE_BOUNDARIES_OK: rollback, unknown payload, reward sync fault, cancelled and"
                         + " normal conversion, numeric boundary");
