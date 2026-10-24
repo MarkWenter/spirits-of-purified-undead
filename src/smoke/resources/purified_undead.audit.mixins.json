@@ -5,7 +5,9 @@
   "package": "dev.purifiedundead.validation.mixin",
   "mixins": [
     "CompatibilityChainMixin",
-    "PresentationFaultMixin"
+    "PresentationFaultMixin",
+    "RecoveryCostFaultMixin",
+    "InventoryCopyCounterMixin"
   ],
   "injectors": {
     "defaultRequire": 1

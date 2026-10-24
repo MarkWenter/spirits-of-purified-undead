@@ -37,9 +37,8 @@ public final class WarriorRewardService {
     }
 
     private static void retryPendingRewards(ServerPlayer player, WarriorProgress progress) {
-        boolean changed = false;
         if (progress.contractPending() && insert(player, ModItems.ANCIENT_CONTRACT.get())) {
-            changed |= progress.resolvePendingContract(true);
+            progress.resolvePendingContract(true);
             WarriorProgressStorage.save(player, progress);
             message(
                     player,
@@ -48,7 +47,7 @@ public final class WarriorRewardService {
                     false);
         }
         if (progress.ferinPending() && insert(player, ModItems.FERIN_WARRIOR.get())) {
-            changed |= progress.resolvePendingFerin(true);
+            progress.resolvePendingFerin(true);
             WarriorProgressStorage.save(player, progress);
             message(
                     player,
@@ -57,7 +56,7 @@ public final class WarriorRewardService {
                     false);
         }
         if (progress.grothPending() && insert(player, ModItems.GROTH_WARRIOR.get())) {
-            changed |= progress.resolvePendingGroth(true);
+            progress.resolvePendingGroth(true);
             WarriorProgressStorage.save(player, progress);
             message(
                     player,
@@ -66,7 +65,7 @@ public final class WarriorRewardService {
                     false);
         }
         if (progress.juliusPending() && insert(player, ModItems.JULIUS_WARRIOR.get())) {
-            changed |= progress.resolvePendingJulius(true);
+            progress.resolvePendingJulius(true);
             WarriorProgressStorage.save(player, progress);
             message(
                     player,
@@ -75,7 +74,7 @@ public final class WarriorRewardService {
                     false);
         }
         if (progress.guardiansPending() && insert(player, ModItems.GUARDIAN_WARRIORS.get())) {
-            changed |= progress.resolvePendingGuardians(true);
+            progress.resolvePendingGuardians(true);
             WarriorProgressStorage.save(player, progress);
             message(
                     player,
@@ -84,7 +83,7 @@ public final class WarriorRewardService {
                     false);
         }
         if (progress.ulvPending() && insert(player, ModItems.ULV_WARRIOR.get())) {
-            changed |= progress.resolvePendingUlv(true);
+            progress.resolvePendingUlv(true);
             WarriorProgressStorage.save(player, progress);
             message(
                     player,
@@ -92,7 +91,7 @@ public final class WarriorRewardService {
                     false);
         }
         if (progress.eleinePending() && insert(player, ModItems.ELEINE_WARRIOR.get())) {
-            changed |= progress.resolvePendingEleine(true);
+            progress.resolvePendingEleine(true);
             WarriorProgressStorage.save(player, progress);
             message(
                     player,
@@ -101,7 +100,7 @@ public final class WarriorRewardService {
                     false);
         }
         if (progress.hoenirPending() && insert(player, ModItems.HOENIR_WARRIOR.get())) {
-            changed |= progress.resolvePendingHoenir(true);
+            progress.resolvePendingHoenir(true);
             WarriorProgressStorage.save(player, progress);
             message(
                     player,
@@ -110,16 +109,13 @@ public final class WarriorRewardService {
                     false);
         }
         if (progress.fadenPending() && insert(player, ModItems.FADEN_WARRIOR.get())) {
-            changed |= progress.resolvePendingFaden(true);
+            progress.resolvePendingFaden(true);
             WarriorProgressStorage.save(player, progress);
             message(
                     player,
                     Component.translatable(
                             "message.purified_undead.faden_reward.delivered_pending"),
                     false);
-        }
-        if (changed) {
-            WarriorProgressStorage.save(player, progress);
         }
     }
 

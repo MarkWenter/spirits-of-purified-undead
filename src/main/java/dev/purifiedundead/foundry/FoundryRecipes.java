@@ -326,7 +326,8 @@ public final class FoundryRecipes {
         return recipes.size();
     }
 
-    private static final java.util.Set<java.util.UUID> PENDING_SYNC = new java.util.HashSet<>();
+    private static final java.util.Map<java.util.UUID, dev.purifiedundead.util.RetryBackoff>
+            PENDING_SYNC = new java.util.HashMap<>();
     private static int lastSyncFailures;
 
     public static int lastSyncFailures() {
@@ -346,15 +347,19 @@ public final class FoundryRecipes {
                                     packet);
                         });
         if (sent) PENDING_SYNC.remove(player.getUUID());
-        else PENDING_SYNC.add(player.getUUID());
+        else
+            PENDING_SYNC
+                    .computeIfAbsent(
+                            player.getUUID(), ignored -> new dev.purifiedundead.util.RetryBackoff())
+                    .failed(player.server.overworld().getGameTime());
         return sent;
     }
 
     public static void retrySync(net.minecraft.server.MinecraftServer server) {
-        for (var id : java.util.List.copyOf(PENDING_SYNC)) {
+        for (var id : java.util.List.copyOf(PENDING_SYNC.keySet())) {
             var player = server.getPlayerList().getPlayer(id);
             if (player == null) PENDING_SYNC.remove(id);
-            else sync(player);
+            else if (PENDING_SYNC.get(id).ready(server.overworld().getGameTime())) sync(player);
         }
     }
 

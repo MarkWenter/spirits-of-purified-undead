@@ -21,7 +21,7 @@ final class AccessoryDeathRetentionService {
 
     static int retain(ServerPlayer player, List<ItemStack> stacks) {
         var root = player.getPersistentData();
-        CompoundTag retained = root.getCompound(DATA_KEY).copy();
+        CompoundTag retained = root.getCompound(DATA_KEY);
         var entries = retained.getList("stacks", Tag.TAG_COMPOUND);
         int count = 0;
         for (ItemStack stack : stacks) {
@@ -30,7 +30,7 @@ final class AccessoryDeathRetentionService {
                 CompoundTag serialized = stack.save(new CompoundTag());
                 entries.add(serialized);
                 retained.put("stacks", entries);
-                root.put(DATA_KEY, retained.copy());
+                root.put(DATA_KEY, retained);
                 count++;
             } catch (RuntimeException | LinkageError failure) {
                 dev.purifiedundead.util.FailureIsolation.report(
@@ -55,8 +55,9 @@ final class AccessoryDeathRetentionService {
         if (!player.isAlive()) return;
         var root = player.getPersistentData();
         if (!root.contains(DATA_KEY, Tag.TAG_COMPOUND)) return;
-        CompoundTag retained = root.getCompound(DATA_KEY).copy();
+        CompoundTag retained = root.getCompound(DATA_KEY);
         var entries = retained.getList("stacks", Tag.TAG_COMPOUND);
+        boolean changed = false;
         int examined = 0;
         for (int index = 0;
                 index < entries.size() && examined++ < RetainedAccessoryBuffer.MAX_ENTRIES; ) {
@@ -68,16 +69,19 @@ final class AccessoryDeathRetentionService {
                     continue;
                 }
                 final int slot = index;
+                final int beforeCount = stack.getCount();
                 InventoryTransfer.insert(
                         player.getInventory(),
                         stack,
                         () -> {
+                            if (stack.getCount() == beforeCount) return;
                             if (stack.isEmpty()) entries.remove(slot);
                             else entries.set(slot, stack.save(new CompoundTag()));
                             retained.put("stacks", entries);
                             if (entries.isEmpty()) root.remove(DATA_KEY);
-                            else root.put(DATA_KEY, retained.copy());
+                            else root.put(DATA_KEY, retained);
                         });
+                changed |= stack.getCount() != beforeCount;
                 if (!stack.isEmpty()) index++;
             } catch (RuntimeException | LinkageError failure) {
                 dev.purifiedundead.util.FailureIsolation.report(
@@ -85,8 +89,7 @@ final class AccessoryDeathRetentionService {
                 index++;
             }
         }
-        dev.purifiedundead.util.FailureIsolation.run(
-                "retained accessory inventory sync", player.inventoryMenu::broadcastChanges);
+        if (changed) RewardSounds.requestSync(player);
     }
 
     private static RetainedAccessoryBuffer load(ServerPlayer player) {

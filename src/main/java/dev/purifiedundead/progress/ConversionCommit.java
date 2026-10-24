@@ -45,28 +45,57 @@ public final class ConversionCommit {
             return false;
         } finally {
             if (!committed) {
+                Throwable rollbackFailure = null;
                 for (var drop : drops) {
-                    if (captured != null) captured.remove(drop);
-                    drop.discard();
+                    if (captured != null)
+                        rollbackFailure = rollback(rollbackFailure, () -> captured.remove(drop));
+                    rollbackFailure = rollback(rollbackFailure, drop::discard);
                 }
-                replacement.discard();
-                // Restore only slots changed by this transaction.
-                try {
-                    if (gearChanged)
-                        for (var entry : gear.entrySet())
-                            original.setItemSlot(entry.getKey(), entry.getValue());
-                    if (mountsChanged) {
-                        if (vehicle != null && original.getVehicle() == null)
-                            original.startRiding(vehicle);
-                        for (var passenger : passengers)
-                            if (passenger.getVehicle() == null && !passenger.startRiding(original))
-                                throw new IllegalStateException("Passenger rollback rejected");
-                    }
-                } catch (RuntimeException | LinkageError failure) {
-                    throw new AssertionError("Cannot safely roll back entity conversion", failure);
+                rollbackFailure = rollback(rollbackFailure, replacement::discard);
+                if (gearChanged)
+                    for (var entry : gear.entrySet())
+                        rollbackFailure =
+                                rollback(
+                                        rollbackFailure,
+                                        () ->
+                                                original.setItemSlot(
+                                                        entry.getKey(), entry.getValue()));
+                if (mountsChanged) {
+                    if (vehicle != null && original.getVehicle() == null)
+                        rollbackFailure =
+                                rollback(
+                                        rollbackFailure,
+                                        () -> {
+                                            if (!original.startRiding(vehicle))
+                                                throw new IllegalStateException(
+                                                        "Vehicle rollback rejected");
+                                        });
+                    for (var passenger : passengers)
+                        if (passenger.getVehicle() == null)
+                            rollbackFailure =
+                                    rollback(
+                                            rollbackFailure,
+                                            () -> {
+                                                if (!passenger.startRiding(original))
+                                                    throw new IllegalStateException(
+                                                            "Passenger rollback rejected");
+                                            });
                 }
+                if (rollbackFailure != null)
+                    throw new AssertionError(
+                            "Cannot safely roll back entity conversion", rollbackFailure);
             }
         }
+    }
+
+    private static Throwable rollback(Throwable previous, Runnable action) {
+        try {
+            action.run();
+        } catch (RuntimeException | LinkageError failure) {
+            if (previous == null) return failure;
+            if (previous != failure) previous.addSuppressed(failure);
+        }
+        return previous;
     }
 
     private static void drop(

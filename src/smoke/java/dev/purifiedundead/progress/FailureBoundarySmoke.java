@@ -11,6 +11,26 @@ import net.minecraft.world.item.*;
 public final class FailureBoundarySmoke {
     public static Object badMenu;
     public static int syncFaults;
+    public static Object badDiscard;
+    public static boolean countCopies;
+    public static int itemCopies;
+
+    private static final class FaultZombie extends net.minecraft.world.entity.monster.Zombie {
+        boolean failClear;
+
+        FaultZombie(net.minecraft.server.level.ServerLevel level) {
+            super(EntityType.ZOMBIE, level);
+        }
+
+        @Override
+        public void setItemSlot(EquipmentSlot slot, ItemStack stack) {
+            super.setItemSlot(slot, stack);
+            if (failClear && slot == EquipmentSlot.MAINHAND && stack.isEmpty()) {
+                failClear = false;
+                throw new IllegalStateException("expected gear clear failure");
+            }
+        }
+    }
 
     private static void check(boolean ok, String message) {
         if (!ok) throw new IllegalStateException("FAILURE_BOUNDARIES_FAILED: " + message);
@@ -69,12 +89,66 @@ public final class FailureBoundarySmoke {
         check(
                 remaining.size() == 1 && remaining.getCompound(0).equals(unknown),
                 "unknown payload preserved");
+        // A full inventory must not copy capability-heavy unrelated stacks or rewrite raw records.
+        player.getInventory().clearContent();
+        player.getAbilities().instabuild = false;
+        for (int i = 0; i < 36; i++)
+            player.getInventory().setItem(i, new ItemStack(Items.STONE, 64));
+        itemCopies = 0;
+        countCopies = true;
+        try {
+            check(
+                    !InventoryTransfer.insert(
+                            player.getInventory(),
+                            new ItemStack(Items.DIAMOND),
+                            () -> {
+                                throw new AssertionError("full inventory committed");
+                            }),
+                    "full no-op");
+        } finally {
+            countCopies = false;
+        }
+        check(itemCopies == 0, "full inventory must not snapshot");
+        var backlog = new ListTag();
+        for (int i = 0; i < 128; i++) backlog.add(remaining.getCompound(0).copy());
+        var fullTag = new CompoundTag();
+        fullTag.put("stacks", backlog);
+        player.getPersistentData().put(key, fullTag);
+        for (int i = 0; i < 40; i++) AccessoryDeathRetentionService.restore(player);
+        check(
+                player.getPersistentData().getCompound(key) == fullTag
+                        && fullTag.getList("stacks", Tag.TAG_COMPOUND) == backlog
+                        && backlog.size() == 128,
+                "unknown backlog remains unchanged");
+        var validBacklog = new ListTag();
+        for (int i = 0; i < 128; i++) validBacklog.add(valid.save(new CompoundTag()));
+        fullTag.put("stacks", validBacklog);
+        itemCopies = 0;
+        countCopies = true;
+        try {
+            for (int i = 0; i < 3; i++) AccessoryDeathRetentionService.restore(player);
+        } finally {
+            countCopies = false;
+        }
+        check(
+                itemCopies == 0 && validBacklog.size() == 128,
+                "valid full backlog must not snapshot or rewrite");
+        player.getInventory().setItem(0, ItemStack.EMPTY);
+        AccessoryDeathRetentionService.restore(player);
+        check(
+                count(player, valid.getItem()) == 1 && validBacklog.size() == 127,
+                "recovery resumes when a slot becomes available");
+        player.getPersistentData().remove(key);
+        player.getInventory().clearContent();
         // Inventory presentation can fail after delivery without making the reward pending again.
         badMenu = player.inventoryMenu;
         try {
             check(WarriorRewardService.grantContract(player), "first contract delivery");
             RewardSounds.tick(player);
             check(syncFaults > 0, "presentation fault injector ran");
+            int attempts = syncFaults;
+            for (int i = 0; i < 100; i++) RewardSounds.tick(player);
+            check(syncFaults == attempts, "sync retry must wait after failure");
             check(!WarriorRewardService.grantContract(player), "no repeat after sync fault");
             check(
                     count(player, dev.purifiedundead.content.ModItems.ANCIENT_CONTRACT.get()) == 1,
@@ -82,7 +156,16 @@ public final class FailureBoundarySmoke {
         } finally {
             badMenu = null;
         }
-        RewardSounds.tick(player);
+        long syncTime = server.overworld().getGameTime();
+        try {
+            server.getWorldData().overworldData().setGameTime(syncTime + 20);
+            RewardSounds.tick(player);
+            check(
+                    !player.getPersistentData().getBoolean("purified_undead:reward_inventory_sync"),
+                    "sync recovers at next retry after presentation fault clears");
+        } finally {
+            server.getWorldData().overworldData().setGameTime(syncTime);
+        }
         var level = server.overworld();
         var spawn = level.getSharedSpawnPos();
         level.getChunk(spawn);
@@ -131,6 +214,36 @@ public final class FailureBoundarySmoke {
                 "normal equipment dropped exactly once");
         drops.forEach(Entity::discard);
         accepted.discard();
+        // A second failure in cleanup must still restore source gear and escape optional wrappers.
+        var faultSource = new FaultZombie(level);
+        faultSource.moveTo(accepted.position());
+        faultSource.setNoAi(true);
+        faultSource.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.DIAMOND));
+        check(level.addFreshEntity(faultSource), "fault source spawn");
+        var faultReplacement = EntityType.ZOMBIE.create(level);
+        faultReplacement.moveTo(faultSource.position());
+        faultReplacement.setNoAi(true);
+        faultSource.failClear = true;
+        badDiscard = faultReplacement;
+        try {
+            ConversionCommit.replace(faultSource, faultReplacement, level, java.util.List.of());
+            throw new IllegalStateException("rollback failure was swallowed");
+        } catch (AssertionError expected) {
+            check(expected.getCause() != null, "rollback failure must have cause");
+            check(
+                    !faultSource.isRemoved() && faultSource.getMainHandItem().is(Items.DIAMOND),
+                    "gear restoration continues after cleanup failure");
+        } finally {
+            badDiscard = null;
+            faultReplacement.discard();
+            faultSource.discard();
+            level.getEntitiesOfClass(ItemEntity.class, faultSource.getBoundingBox().inflate(4))
+                    .forEach(Entity::discard);
+        }
+        System.out.println(
+                "HOTFIX_COST_BOUNDARIES_OK: zero full-inventory copies, unchanged 128-entry"
+                    + " backlog, quiet unknown decoding, retry delay, cleanup second-failure"
+                    + " restoration");
         check(
                 dev.purifiedundead.combat.FerinCriticalModel.rollExternal(Double.NaN, 2, () -> .1)
                                 .multiplier()
@@ -138,6 +251,6 @@ public final class FailureBoundarySmoke {
                 "invalid external attributes");
         System.out.println(
                 "FAILURE_BOUNDARIES_OK: rollback, unknown payload, reward sync fault, cancelled and"
-                    + " normal conversion, numeric boundary");
+                        + " normal conversion, numeric boundary");
     }
 }

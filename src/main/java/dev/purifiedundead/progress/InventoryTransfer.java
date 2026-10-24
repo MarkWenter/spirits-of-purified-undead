@@ -8,6 +8,12 @@ public final class InventoryTransfer {
     private InventoryTransfer() {}
 
     public static boolean insert(Inventory inventory, ItemStack stack, Runnable commit) {
+        // Avoid capability/NBT copies when vanilla insertion cannot change any slot.
+        // Creative insertion may consume a remainder even with a full inventory.
+        if (!inventory.player.getAbilities().instabuild
+                && inventory.getFreeSlot() < 0
+                && (stack.isDamaged() || inventory.getSlotWithRemainingSpace(stack) < 0))
+            return false;
         var before = new java.util.ArrayList<ItemStack>();
         for (int i = 0; i < inventory.getContainerSize(); i++)
             before.add(inventory.getItem(i).copy());
