@@ -143,3 +143,5 @@ scripts/*
 !docs/STABILITY_HOTFIX_111.md
 
 !docs/AMD_SHADER_HOTFIX_111.md
+
+!docs/RELEASE_V111_HOTFIX.md

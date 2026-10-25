@@ -8,7 +8,9 @@
 
 与古老民族缔结契约，净化不死战士的污秽，继承他们的加护。在探索、战斗与成长中收集白巫女的遗物，并迎接污秽之雨带来的变化。
 
-**当前正式版本：1.1「污秽之雨」**
+**当前正式版本：1.1.1hotfix（1.1「污秽之雨」兼容性与稳定性修复）**
+
+[本次修复说明](docs/RELEASE_V111_HOTFIX.md)
 
 支持 **Minecraft 1.20.1 / Forge** 与 **Minecraft 1.21.1 / NeoForge**。
 
@@ -73,7 +75,9 @@
 
 Form a pact with the Ancients, purify the blight of fallen warriors, and inherit their blessings. Collect the White Witch's relics as you explore and grow stronger, then face a world changed by Blighted Rain.
 
-**Current release: 1.1 — Blighted Rain**
+**Current release: 1.1.1hotfix — Blighted Rain stability and compatibility fixes**
+
+Includes weather shader isolation, safer item recovery and entity conversion, bounded failure retries, and finite damage checks. AMD + Oculus still requires testing on AMD hardware.
 
 Available for **Minecraft 1.20.1 / Forge** and **Minecraft 1.21.1 / NeoForge**.
 

@@ -291,3 +291,6 @@ Forge 编译基线与加载最低要求改为 47.3.22。污秽铁傀儡、污秽
 
 
 **1.1.1-hotfix.4 后续边界候选：** 修正转换源已移除后的错误回滚、两版逐条解码输入隔离、伊莱恩魔法倍率乘后溢出；正常数值和hotfix.3着色器资源不变。新增运行标记`HOTFIX_TRANSACTION_BOUNDARIES_OK`，应与原有完整回归及两个边界标记共同核对。新增加载故障Mixin只属于smoke。详细语义及性能取舍见[稳定性候选](STABILITY_HOTFIX_111.md)末节，本地验证目录`outputs/hotfix-boundaries-2026-10-25/`。
+
+
+**1.1.1hotfix 正式发布：** 用户授权复验通过后将1.1hotfix合并main。两版统一正式版本1.1.1hotfix，协议13，汇总hotfix.1至.4；此前仅推分支约定为历史范围。发布说明见[本次修复](RELEASE_V111_HOTFIX.md)，两版对应版本目录提供README-1.1.1hotfix.md与安装包，最终复验记录位于outputs/release-1.1.1hotfix-2026-10-25/。AMD实机仍待回测。
