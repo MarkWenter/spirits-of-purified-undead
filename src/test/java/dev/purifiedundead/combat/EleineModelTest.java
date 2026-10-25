@@ -27,4 +27,17 @@ class EleineModelTest {
         assertThrows(IllegalArgumentException.class, () -> EleineModel.rollOrb(1.0F));
         assertThrows(IllegalArgumentException.class, () -> EleineModel.orbDamage(Float.NaN));
     }
+
+    @Test
+    void strictModelStillRejectsInvalidInputs() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> EleineModel.incomingMagicDamage(Float.NaN, true, false));
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> EleineModel.outgoingMagicDamage(Float.POSITIVE_INFINITY, false, false));
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> EleineModel.incomingMagicDamage(-1, false, false));
+    }
 }

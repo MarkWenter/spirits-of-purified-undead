@@ -8,7 +8,7 @@ import net.minecraft.world.item.Items;
 
 /** Regression checks for the time spent on the death screen before respawning. */
 public final class ProjectAuditSmoke {
-    private static ServerPlayer player(MinecraftServer server) throws Exception {
+    static ServerPlayer player(MinecraftServer server) throws Exception {
         var p =
                 new ServerPlayer(
                         server,

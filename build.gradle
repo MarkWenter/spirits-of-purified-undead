@@ -16,7 +16,7 @@ minecraft {
         configureEach {
             workingDirectory project.file("run/${name}")
             property 'forge.logging.console.level', 'info'
-            args '-mixin.config', 'purified_undead.mixins.json'
+            args '-mixin.config', 'purified_undead.mixins.json', '-mixin.config', 'purified_undead.visual.mixins.json'
             // Curios' mixins use SRG names; development runs need the mapping file.
             property 'mixin.env.remapRefMap', 'true'
             property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
@@ -117,12 +117,12 @@ tasks.withType(AbstractArchiveTask).configureEach {
 }
 tasks.named('jar', Jar).configure {
     archiveClassifier = 'slim'
-    manifest { attributes 'Implementation-Version': mod_version, 'MixinConfigs': 'purified_undead.mixins.json' }
+    manifest { attributes 'Implementation-Version': mod_version, 'MixinConfigs': 'purified_undead.mixins.json,purified_undead.visual.mixins.json' }
     finalizedBy 'reobfJar'
 }
 tasks.named('jarJar', Jar).configure {
     archiveClassifier = ''
-    manifest { attributes 'Implementation-Version': mod_version, 'MixinConfigs': 'purified_undead.mixins.json' }
+    manifest { attributes 'Implementation-Version': mod_version, 'MixinConfigs': 'purified_undead.mixins.json,purified_undead.visual.mixins.json' }
     finalizedBy 'reobfJarJar'
 }
 

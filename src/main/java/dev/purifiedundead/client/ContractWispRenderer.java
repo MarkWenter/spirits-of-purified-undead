@@ -43,23 +43,26 @@ public final class ContractWispRenderer extends EntityRenderer<ContractWispEntit
         float strength = entity.visualLight() / 15F;
         float breath = 1F + .06F * (float) Math.sin((entity.visualAge() + partial) * .08);
         poses.pushPose();
-        poses.mulPose(entityRenderDispatcher.cameraOrientation());
-        VertexConsumer out = buffers.getBuffer(RenderType.entityTranslucentEmissive(WHITE));
-        Matrix4f matrix = poses.last().pose();
-        float size = (.75F + .25F * strength) * breath;
-        ring(out, matrix, 0, .055F * size, 239, 181, 173, (int) (150 + 105 * strength), 200);
-        ring(
-                out,
-                matrix,
-                .055F * size,
-                .16F * size,
-                178,
-                112,
-                115,
-                (int) (110 + 65 * strength),
-                36);
-        ring(out, matrix, .16F * size, .30F * size, 126, 103, 110, 36, 0);
-        poses.popPose();
+        try {
+            poses.mulPose(entityRenderDispatcher.cameraOrientation());
+            VertexConsumer out = buffers.getBuffer(RenderType.entityTranslucentEmissive(WHITE));
+            Matrix4f matrix = poses.last().pose();
+            float size = (.75F + .25F * strength) * breath;
+            ring(out, matrix, 0, .055F * size, 239, 181, 173, (int) (150 + 105 * strength), 200);
+            ring(
+                    out,
+                    matrix,
+                    .055F * size,
+                    .16F * size,
+                    178,
+                    112,
+                    115,
+                    (int) (110 + 65 * strength),
+                    36);
+            ring(out, matrix, .16F * size, .30F * size, 126, 103, 110, 36, 0);
+        } finally {
+            poses.popPose();
+        }
     }
 
     private static void ring(

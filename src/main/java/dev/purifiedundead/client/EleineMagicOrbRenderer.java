@@ -59,43 +59,46 @@ public final class EleineMagicOrbRenderer extends EntityRenderer<EleineMagicOrbE
             }
         }
         poses.pushPose();
-        poses.mulPose(entityRenderDispatcher.cameraOrientation());
-        matrix = poses.last().pose();
-        double pixel = 0.065;
-        for (int x = -3; x <= 3; x++) {
-            for (int y = -3; y <= 3; y++) {
-                int radius = x * x + y * y;
-                if (radius > 12) continue;
-                int seed = Math.floorMod(x * 17 + y * 31, 7);
-                int r, g, b;
-                if (radius >= 8) {
-                    r = 25 + seed * 5;
-                    g = 4;
-                    b = 12;
-                } else if (radius >= 3) {
-                    r = 130 + seed * 15;
-                    g = 12 + seed * 3;
-                    b = 24;
-                } else {
-                    r = 245;
-                    g = 60 + seed * 13;
-                    b = 35;
+        try {
+            poses.mulPose(entityRenderDispatcher.cameraOrientation());
+            matrix = poses.last().pose();
+            double pixel = 0.065;
+            for (int x = -3; x <= 3; x++) {
+                for (int y = -3; y <= 3; y++) {
+                    int radius = x * x + y * y;
+                    if (radius > 12) continue;
+                    int seed = Math.floorMod(x * 17 + y * 31, 7);
+                    int r, g, b;
+                    if (radius >= 8) {
+                        r = 25 + seed * 5;
+                        g = 4;
+                        b = 12;
+                    } else if (radius >= 3) {
+                        r = 130 + seed * 15;
+                        g = 12 + seed * 3;
+                        b = 24;
+                    } else {
+                        r = 245;
+                        g = 60 + seed * 13;
+                        b = 35;
+                    }
+                    double p = pixel * (1 + 0.035 * Math.sin((orb.tickCount + partialTick) * 1.4));
+                    quad(
+                            out,
+                            matrix,
+                            new Vec3(x * p, y * p, 0),
+                            new Vec3((x + 1) * p, y * p, 0),
+                            new Vec3((x + 1) * p, (y + 1) * p, 0),
+                            new Vec3(x * p, (y + 1) * p, 0),
+                            r,
+                            g,
+                            b,
+                            255);
                 }
-                double p = pixel * (1 + 0.035 * Math.sin((orb.tickCount + partialTick) * 1.4));
-                quad(
-                        out,
-                        matrix,
-                        new Vec3(x * p, y * p, 0),
-                        new Vec3((x + 1) * p, y * p, 0),
-                        new Vec3((x + 1) * p, (y + 1) * p, 0),
-                        new Vec3(x * p, (y + 1) * p, 0),
-                        r,
-                        g,
-                        b,
-                        255);
             }
+        } finally {
+            poses.popPose();
         }
-        poses.popPose();
     }
 
     private static void ribbon(

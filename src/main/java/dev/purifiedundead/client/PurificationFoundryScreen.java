@@ -46,11 +46,14 @@ public final class PurificationFoundryScreen
                 }) slot(g, x + s.x, y + s.y);
         // Native GUI pixels: no fractional scaling of the two transparent arm sprites.
         com.mojang.blaze3d.systems.RenderSystem.enableBlend();
-        g.blit(HANDS, x + 7, y + 48, 64, 52, 0, 0, 64, 52, 128, 52);
-        g.blit(HANDS, x + 129, y + 46, 64, 52, 64, 0, 64, 52, 128, 52);
-        swordBlade(g, x + 100, y + 65, menu.progressPixels(42));
-        g.blit(HILT, x + 84, y + 43, 32, 24, 0, 0, 32, 24, 32, 24);
-        com.mojang.blaze3d.systems.RenderSystem.disableBlend();
+        try {
+            g.blit(HANDS, x + 7, y + 48, 64, 52, 0, 0, 64, 52, 128, 52);
+            g.blit(HANDS, x + 129, y + 46, 64, 52, 64, 0, 64, 52, 128, 52);
+            swordBlade(g, x + 100, y + 65, menu.progressPixels(42));
+            g.blit(HILT, x + 84, y + 43, 32, 24, 0, 0, 32, 24, 32, 24);
+        } finally {
+            com.mojang.blaze3d.systems.RenderSystem.disableBlend();
+        }
         for (int row = 0; row < 3; row++)
             for (int col = 0; col < 9; col++) slot(g, x + 20 + col * 18, y + 150 + row * 18);
         for (int col = 0; col < 9; col++) slot(g, x + 20 + col * 18, y + 208);

@@ -31,10 +31,8 @@ import java.util.UUID;
 
 /** Abyss Guardian blight, Hoenir regeneration, and owner-scoped Ferin marks. */
 public final class HoenirCombatEvents {
-    private static final Field EFFECT_DURATION =
-            ObfuscationReflectionHelper.findField(MobEffectInstance.class, "f_19503_");
-    private static final Field EFFECT_AMPLIFIER =
-            ObfuscationReflectionHelper.findField(MobEffectInstance.class, "f_19504_");
+    private static Field effectDuration, effectAmplifier;
+    private static boolean effectsUnavailable;
     private static final Map<UUID, MarkedTarget> MARKS = new HashMap<>();
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
@@ -47,14 +45,31 @@ public final class HoenirCombatEvents {
             return;
         }
         Equipment equipment = readEquipment(player);
+        if (!equipment.contract || instance.getAmplifier() < 0 || instance.getDuration() < -1)
+            return;
         HoenirModel.EffectAdjustment adjusted =
                 HoenirModel.adjustNegativeEffect(
                         instance.getAmplifier(),
                         instance.getDuration(),
                         equipment.contract,
                         equipment.hoenir);
-        setInt(EFFECT_AMPLIFIER, instance, adjusted.amplifier());
-        setInt(EFFECT_DURATION, instance, adjusted.duration());
+        if (effectsUnavailable
+                || (instance.getAmplifier() == adjusted.amplifier()
+                        && instance.getDuration() == adjusted.duration())) return;
+        try {
+            if (effectDuration == null) {
+                effectDuration =
+                        ObfuscationReflectionHelper.findField(MobEffectInstance.class, "f_19503_");
+                effectAmplifier =
+                        ObfuscationReflectionHelper.findField(MobEffectInstance.class, "f_19504_");
+            }
+            // Resolve both fields before the first mutation.
+            setInt(effectAmplifier, instance, adjusted.amplifier());
+            setInt(effectDuration, instance, adjusted.duration());
+        } catch (RuntimeException | LinkageError failure) {
+            effectsUnavailable = true;
+            dev.purifiedundead.util.FailureIsolation.report("Hoenir effect field adapter", failure);
+        }
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)

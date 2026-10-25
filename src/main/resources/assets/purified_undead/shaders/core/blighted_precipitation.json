@@ -1,5 +1,5 @@
 {
-  "vertex": "minecraft:particle",
+  "vertex": "purified_undead:blighted_precipitation",
   "fragment": "purified_undead:blighted_precipitation",
   "samplers": [
     {

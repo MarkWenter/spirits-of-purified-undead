@@ -4,7 +4,11 @@
   "compatibilityLevel": "JAVA_17",
   "package": "dev.purifiedundead.validation.mixin",
   "mixins": [
-    "CompatibilityChainMixin"
+    "CompatibilityChainMixin",
+    "PresentationFaultMixin",
+    "RecoveryCostFaultMixin",
+    "InventoryCopyCounterMixin",
+    "DecodeMutationFaultMixin"
   ],
   "injectors": {
     "defaultRequire": 1

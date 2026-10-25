@@ -353,5 +353,6 @@
   "message.purified_undead.ferin.enabled": "Ferin assist enabled",
   "message.purified_undead.ferin.disabled": "Ferin assist disabled",
   "message.purified_undead.guardian_movement.enabled": "Double jump and air dash enabled",
-  "message.purified_undead.guardian_movement.disabled": "Double jump and air dash disabled"
+  "message.purified_undead.guardian_movement.disabled": "Double jump and air dash disabled",
+  "command.purified_undead.reload_sync_pending": "Recipes committed; %s player(s) await synchronization. Retrying automatically."
 }

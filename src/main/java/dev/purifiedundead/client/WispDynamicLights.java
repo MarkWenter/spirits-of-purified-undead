@@ -28,23 +28,39 @@ public final class WispDynamicLights {
                         Proxy.newProxyInstance(
                                 handler.getClassLoader(),
                                 new Class<?>[] {handler},
-                                (proxy, method, args) ->
-                                        switch (method.getName()) {
+                                (proxy, method, args) -> {
+                                    try {
+                                        return switch (method.getName()) {
                                             case "getLuminance" ->
-                                                    args[0] instanceof ContractWispEntity wisp
+                                                    args != null
+                                                                    && args.length > 0
+                                                                    && args[0]
+                                                                            instanceof
+                                                                            ContractWispEntity wisp
                                                             ? wisp.terrainLight()
                                                             : 0;
                                             case "isWaterSensitive" -> false;
                                             case "toString" -> "PurifiedUndeadWispLight";
                                             case "hashCode" -> System.identityHashCode(proxy);
-                                            case "equals" -> proxy == args[0];
+                                            case "equals" ->
+                                                    args != null
+                                                            && args.length > 0
+                                                            && proxy == args[0];
                                             default ->
                                                     method.isDefault()
                                                             ? java.lang.reflect.InvocationHandler
                                                                     .invokeDefault(
                                                                             proxy, method, args)
-                                                            : null;
-                                        });
+                                                            : defaultValue(method.getReturnType());
+                                        };
+                                    } catch (ReflectiveOperationException
+                                            | RuntimeException
+                                            | LinkageError failure) {
+                                        dev.purifiedundead.util.FailureIsolation.report(
+                                                "dynamic light callback", failure);
+                                        return defaultValue(method.getReturnType());
+                                    }
+                                });
                 registry.getMethod("registerDynamicLightHandler", EntityType.class, handler)
                         .invoke(null, ModEntities.CONTRACT_WISP.get(), adapter);
                 backend = namespace;
@@ -57,6 +73,18 @@ public final class WispDynamicLights {
                 return;
             }
         }
+    }
+
+    private static Object defaultValue(Class<?> type) {
+        if (type == boolean.class) return false;
+        if (type == byte.class) return (byte) 0;
+        if (type == short.class) return (short) 0;
+        if (type == int.class) return 0;
+        if (type == long.class) return 0L;
+        if (type == float.class) return 0F;
+        if (type == double.class) return 0D;
+        if (type == char.class) return (char) 0;
+        return null;
     }
 
     private WispDynamicLights() {}

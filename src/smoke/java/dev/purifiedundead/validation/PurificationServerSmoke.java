@@ -276,6 +276,7 @@ public final class PurificationServerSmoke {
                 AdministrationSmoke.run(server);
                 HardcoreSmoke.run(server);
                 dev.purifiedundead.progress.ProjectAuditSmoke.run(server);
+                dev.purifiedundead.progress.FailureBoundarySmoke.run(server);
             } catch (Exception failure) {
                 throw new RuntimeException(failure);
             }

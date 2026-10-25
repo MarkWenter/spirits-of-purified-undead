@@ -58,6 +58,18 @@ public final class BlightedMobConversions {
     }
 
     public static Mob convert(Mob original, ServerLevel level, boolean lethalRainConversion) {
+        try {
+            return convertPrepared(original, level, lethalRainConversion);
+        } catch (RuntimeException | LinkageError failure) {
+            if (original.isRemoved()) throw failure;
+            dev.purifiedundead.util.FailureIsolation.report(
+                    "entity conversion preparation", failure);
+            return null;
+        }
+    }
+
+    private static Mob convertPrepared(
+            Mob original, ServerLevel level, boolean lethalRainConversion) {
         if (original.isRemoved() || (!original.isAlive() && !lethalRainConversion)) return null;
         if (lethalRainConversion
                 && original.getType() != EntityType.VILLAGER
@@ -129,26 +141,22 @@ public final class BlightedMobConversions {
         next.getPersistentData().remove("purified_undead:rain_conversion");
         next.getPersistentData().remove("purified_undead:rain_conversion_time");
         next.getPersistentData().remove("purified_undead:rain_retry");
-        if (!level.addFreshEntity(next)) return null;
-        for (var slot : EquipmentSlot.values()) {
-            var stack = original.getItemBySlot(slot);
-            if (!stack.isEmpty()) original.spawnAtLocation(stack.copy());
-            original.setItemSlot(slot, net.minecraft.world.item.ItemStack.EMPTY);
-        }
-        for (var stack : detachedGear) original.spawnAtLocation(stack);
-        original.stopRiding();
-        original.ejectPassengers();
-        original.discard();
-        level.sendParticles(
-                net.minecraft.core.particles.ParticleTypes.SOUL,
-                next.getX(),
-                next.getY() + 1,
-                next.getZ(),
-                24,
-                .55,
-                .8,
-                .55,
-                .04);
+        if (!dev.purifiedundead.progress.ConversionCommit.replace(
+                original, next, level, detachedGear)) return null;
+        dev.purifiedundead.util.FailureIsolation.run(
+                "conversion particles",
+                () -> {
+                    level.sendParticles(
+                            net.minecraft.core.particles.ParticleTypes.SOUL,
+                            next.getX(),
+                            next.getY() + 1,
+                            next.getZ(),
+                            24,
+                            .55,
+                            .8,
+                            .55,
+                            .04);
+                });
         return next;
     }
 

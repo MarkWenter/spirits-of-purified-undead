@@ -13,6 +13,17 @@ public final class BlightedConversions {
     private BlightedConversions() {}
 
     public static LivingEntity convert(LivingEntity original, ServerLevel level) {
+        try {
+            return convertPrepared(original, level);
+        } catch (RuntimeException | LinkageError failure) {
+            if (original.isRemoved()) throw failure;
+            dev.purifiedundead.util.FailureIsolation.report(
+                    "entity conversion preparation", failure);
+            return null;
+        }
+    }
+
+    private static LivingEntity convertPrepared(LivingEntity original, ServerLevel level) {
         if (!original.isAlive() || original.isRemoved()) return null;
         LivingEntity converted;
         if (original instanceof IronGolem golem && !(original instanceof BlightedGolemEntity)) {
@@ -51,26 +62,22 @@ public final class BlightedConversions {
                                         dev.purifiedundead.blightedrain.RainEffects.PLAYER_HIT));
         for (var slot : net.minecraft.world.entity.EquipmentSlot.values())
             converted.setItemSlot(slot, net.minecraft.world.item.ItemStack.EMPTY);
-        if (!level.addFreshEntity(converted)) return null;
-        for (var slot : net.minecraft.world.entity.EquipmentSlot.values()) {
-            var stack = original.getItemBySlot(slot);
-            if (!stack.isEmpty()) original.spawnAtLocation(stack.copy());
-            original.setItemSlot(slot, net.minecraft.world.item.ItemStack.EMPTY);
-        }
-
-        original.stopRiding();
-        original.ejectPassengers();
-        original.discard();
-        level.sendParticles(
-                net.minecraft.core.particles.ParticleTypes.SOUL,
-                converted.getX(),
-                converted.getY() + 1,
-                converted.getZ(),
-                24,
-                .55,
-                .8,
-                .55,
-                .04);
+        if (!dev.purifiedundead.progress.ConversionCommit.replace(
+                original, converted, level, java.util.List.of())) return null;
+        dev.purifiedundead.util.FailureIsolation.run(
+                "conversion particles",
+                () -> {
+                    level.sendParticles(
+                            net.minecraft.core.particles.ParticleTypes.SOUL,
+                            converted.getX(),
+                            converted.getY() + 1,
+                            converted.getZ(),
+                            24,
+                            .55,
+                            .8,
+                            .55,
+                            .04);
+                });
         return converted;
     }
 }

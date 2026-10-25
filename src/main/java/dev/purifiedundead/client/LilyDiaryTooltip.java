@@ -34,6 +34,7 @@ public final class LilyDiaryTooltip {
     }
 
     private static String number(double value) {
+        if (!Double.isFinite(value)) return "0";
         return java.math.BigDecimal.valueOf(value)
                 .setScale(2, java.math.RoundingMode.HALF_UP)
                 .stripTrailingZeros()

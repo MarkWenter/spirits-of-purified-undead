@@ -36,4 +36,20 @@ class AccessoryConfigMigrationTest {
         assertFalse(ConfigCatalog.values("common").containsKey("ferin.lifestealRatio"));
         assertTrue(ConfigCatalog.values("common").containsKey("contract.warriorSlots"));
     }
+
+    @Test
+    void malformedLegacyFileCannotPublishPartialDefaults() throws Exception {
+        var legacy = dir.resolve("purified_undead-common.toml");
+        String broken = "[ferin\nnot valid toml";
+        Files.writeString(legacy, broken);
+        var error =
+                assertThrows(
+                        IllegalStateException.class, () -> AccessoryConfigMigration.prepare(dir));
+        assertTrue(error.getMessage().contains("Cannot safely migrate"));
+        assertEquals(broken, Files.readString(legacy));
+        assertFalse(Files.exists(dir.resolve("purified_undead-accessories.toml")));
+        try (var files = Files.list(dir)) {
+            assertFalse(files.anyMatch(p -> p.toString().endsWith(".tmp")));
+        }
+    }
 }

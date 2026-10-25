@@ -262,6 +262,15 @@ public final class PurifiedUndeadCommands {
                                                                                 c.getSource()
                                                                                         .getServer());
                                                         reply(c.getSource(), "reload", count);
+                                                        int pending =
+                                                                dev.purifiedundead.foundry
+                                                                        .FoundryRecipes
+                                                                        .lastSyncFailures();
+                                                        if (pending > 0)
+                                                            reply(
+                                                                    c.getSource(),
+                                                                    "reload_sync_pending",
+                                                                    pending);
                                                         return 1;
                                                     } catch (java.io.IOException
                                                             | RuntimeException e) {

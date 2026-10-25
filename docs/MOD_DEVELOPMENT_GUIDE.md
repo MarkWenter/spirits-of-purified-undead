@@ -280,3 +280,17 @@ Forge 编译基线与加载最低要求改为 47.3.22。污秽铁傀儡、污秽
 
 
 **1.1 正式发布：** 用户已授权将污秽之雨更新合并主干；两版正式版本为1.1，协议13。阶段文档中的“仅推分支/不合并”是历史发布范围，正式发布说明见 [1.1](RELEASE_V110.md)。
+
+**1.1.1-hotfix.1 稳定性候选：** 用户将AMD/Oculus编译报告定义为问题1、稳定性扫描定义为问题2。本候选只修问题2，Forge在`1.1hotfix`分支，不合并main；两版协议13。视觉Mixin拆到`purified_undead.visual.mixins.json`，Forge清单及开发参数、NeoForge元数据均须加载两份配置。新故障注入回归标记`FAILURE_BOUNDARIES_OK`，与完整回归一起使用`audit-server.gradle`和兼容两版的`audit-chain.gradle`；测试Mixin不得进入发布包。处理范围与安全停止策略见[稳定性候选](STABILITY_HOTFIX_111.md)。
+
+
+**1.1.1-hotfix.2 后续候选：** 同一hotfix分支保留既有故障隔离；两版增加满背包无变化快速路径，保留记录原位逐条提交，NeoForge静默解码失败结果，失败同步20至1200刻退避，清理二次失败时继续其余恢复并明确失败。新增实际标记`HOTFIX_COST_BOUNDARIES_OK`，与`FAILURE_BOUNDARIES_OK`及全套回归共同核对；测试复制计数与清理故障Mixin不得进入生产JAR。详见[稳定性候选](STABILITY_HOTFIX_111.md)末节，本轮本地验证目录`outputs/hotfix-cost-2026-10-25/`。
+
+
+**1.1.1-hotfix.3 问题1候选：** 仅自定义天气shader资源独立顶点阶段、内联对应版本的原版雾公式、局部变量更名，保留hotfix.2全部稳定性及性能保护。两版fog_distance语义不同，严禁机械共用1.20.1公式。运行必须核对shader实际注册，不能把静默回退当作兼容成功；AMD实机待回测，详见[问题1候选](AMD_SHADER_HOTFIX_111.md)。
+
+
+**1.1.1-hotfix.4 后续边界候选：** 修正转换源已移除后的错误回滚、两版逐条解码输入隔离、伊莱恩魔法倍率乘后溢出；正常数值和hotfix.3着色器资源不变。新增运行标记`HOTFIX_TRANSACTION_BOUNDARIES_OK`，应与原有完整回归及两个边界标记共同核对。新增加载故障Mixin只属于smoke。详细语义及性能取舍见[稳定性候选](STABILITY_HOTFIX_111.md)末节，本地验证目录`outputs/hotfix-boundaries-2026-10-25/`。
+
+
+**1.1.1hotfix 正式发布：** 用户授权复验通过后将1.1hotfix合并main。两版统一正式版本1.1.1hotfix，协议13，汇总hotfix.1至.4；此前仅推分支约定为历史范围。发布说明见[本次修复](RELEASE_V111_HOTFIX.md)，两版对应版本目录提供README-1.1.1hotfix.md与安装包，最终复验记录位于outputs/release-1.1.1hotfix-2026-10-25/。AMD实机仍待回测。

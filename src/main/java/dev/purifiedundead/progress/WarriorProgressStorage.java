@@ -20,7 +20,9 @@ final class WarriorProgressStorage {
     static void save(ServerPlayer player, WarriorProgress progress) {
         var before = ProgressManagement.snapshot(load(player));
         player.getPersistentData().put(DATA_KEY, progress.save());
-        ModAdvancements.progression(player, progress);
+        dev.purifiedundead.util.FailureIsolation.run(
+                "progress advancement notification",
+                () -> ModAdvancements.progression(player, progress));
         ProgressManagement.notifyChange(player, before, progress);
     }
 

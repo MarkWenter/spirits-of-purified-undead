@@ -20,17 +20,25 @@ final class AccessoryDeathRetentionService {
     }
 
     static int retain(ServerPlayer player, List<ItemStack> stacks) {
-        RetainedAccessoryBuffer buffer = load(player);
-        int retained = 0;
+        var root = player.getPersistentData();
+        CompoundTag retained = root.getCompound(DATA_KEY);
+        var entries = retained.getList("stacks", Tag.TAG_COMPOUND);
+        int count = 0;
         for (ItemStack stack : stacks) {
-            CompoundTag serialized = stack.save(new CompoundTag());
-            if (!buffer.add(serialized)) {
+            if (entries.size() >= RetainedAccessoryBuffer.MAX_ENTRIES) break;
+            try {
+                CompoundTag serialized = stack.save(new CompoundTag());
+                entries.add(serialized);
+                retained.put("stacks", entries);
+                root.put(DATA_KEY, retained);
+                count++;
+            } catch (RuntimeException | LinkageError failure) {
+                dev.purifiedundead.util.FailureIsolation.report(
+                        "accessory retention serialization", failure);
                 break;
             }
-            retained++;
         }
-        save(player, buffer);
-        return retained;
+        return count;
     }
 
     static void copyAndRestore(ServerPlayer original, ServerPlayer replacement) {
@@ -45,23 +53,45 @@ final class AccessoryDeathRetentionService {
         // The old player continues ticking on the death screen; its inventory is not copied on
         // respawn.
         if (!player.isAlive()) return;
-        RetainedAccessoryBuffer source = load(player);
-        if (source.isEmpty()) {
-            return;
-        }
-        RetainedAccessoryBuffer remaining = new RetainedAccessoryBuffer();
-        for (CompoundTag serialized : source.entries()) {
-            ItemStack stack = ItemStack.of(serialized);
-            if (stack.isEmpty()) {
-                continue;
+        var root = player.getPersistentData();
+        if (!root.contains(DATA_KEY, Tag.TAG_COMPOUND)) return;
+        CompoundTag retained = root.getCompound(DATA_KEY);
+        var entries = retained.getList("stacks", Tag.TAG_COMPOUND);
+        boolean changed = false;
+        int examined = 0;
+        for (int index = 0;
+                index < entries.size() && examined++ < RetainedAccessoryBuffer.MAX_ENTRIES; ) {
+            CompoundTag serialized = entries.getCompound(index);
+            try {
+                // Load/capability callbacks may mutate their input even when decoding fails.
+                // Copy only this entry, never the whole retained buffer.
+                ItemStack stack = ItemStack.of(serialized.copy());
+                if (stack.isEmpty()) {
+                    index++;
+                    continue;
+                }
+                final int slot = index;
+                final int beforeCount = stack.getCount();
+                InventoryTransfer.insert(
+                        player.getInventory(),
+                        stack,
+                        () -> {
+                            if (stack.getCount() == beforeCount) return;
+                            if (stack.isEmpty()) entries.remove(slot);
+                            else entries.set(slot, stack.save(new CompoundTag()));
+                            retained.put("stacks", entries);
+                            if (entries.isEmpty()) root.remove(DATA_KEY);
+                            else root.put(DATA_KEY, retained);
+                        });
+                changed |= stack.getCount() != beforeCount;
+                if (!stack.isEmpty()) index++;
+            } catch (RuntimeException | LinkageError failure) {
+                dev.purifiedundead.util.FailureIsolation.report(
+                        "retained accessory recovery; original entry retained", failure);
+                index++;
             }
-            player.getInventory().add(stack);
-            if (!stack.isEmpty()) {
-                remaining.add(stack.save(new CompoundTag()));
-            }
         }
-        save(player, remaining);
-        player.inventoryMenu.broadcastChanges();
+        if (changed) RewardSounds.requestSync(player);
     }
 
     private static RetainedAccessoryBuffer load(ServerPlayer player) {

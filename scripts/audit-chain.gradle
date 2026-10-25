@@ -1,7 +1,12 @@
-// Load an independent second injector only in the development smoke source set.
-gradle.projectsEvaluated {
- rootProject.minecraft.runs.server.args '-mixin.config','purified_undead.audit.mixins.json'
-}
+// Load independent fault/chain injectors only in development smoke runs.
+allprojects { afterEvaluate { p ->
+ if (p.plugins.hasPlugin('net.minecraftforge.gradle'))
+  p.minecraft.runs.server.args '-mixin.config', 'purified_undead.audit.mixins.json'
+ if (p.plugins.hasPlugin('net.neoforged.moddev')) p.neoForge.runs.server {
+  programArgument '-mixin.config'
+  programArgument 'purified_undead.audit.mixins.json'
+ }
+} }
 allprojects { tasks.withType(JavaExec).configureEach {
- systemProperty 'purified_undead.chainAudit','true'
+ systemProperty 'purified_undead.chainAudit', 'true'
 } }

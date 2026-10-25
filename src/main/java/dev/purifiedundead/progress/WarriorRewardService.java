@@ -23,7 +23,8 @@ public final class WarriorRewardService {
         boolean delivered = insertFerin(player);
         WarriorProgress.ClaimResult result = progress.claimFerin(delivered);
         WarriorProgressStorage.save(player, progress);
-        player.displayClientMessage(
+        message(
+                player,
                 Component.translatable(
                         result == WarriorProgress.ClaimResult.DELIVERED
                                 ? "message.purified_undead.ferin_reward.delivered"
@@ -36,71 +37,85 @@ public final class WarriorRewardService {
     }
 
     private static void retryPendingRewards(ServerPlayer player, WarriorProgress progress) {
-        boolean changed = false;
         if (progress.contractPending() && insert(player, ModItems.ANCIENT_CONTRACT.get())) {
-            changed |= progress.resolvePendingContract(true);
-            player.displayClientMessage(
+            progress.resolvePendingContract(true);
+            WarriorProgressStorage.save(player, progress);
+            message(
+                    player,
                     Component.translatable(
                             "message.purified_undead.contract_reward.delivered_pending"),
                     false);
         }
         if (progress.ferinPending() && insert(player, ModItems.FERIN_WARRIOR.get())) {
-            changed |= progress.resolvePendingFerin(true);
-            player.displayClientMessage(
+            progress.resolvePendingFerin(true);
+            WarriorProgressStorage.save(player, progress);
+            message(
+                    player,
                     Component.translatable(
                             "message.purified_undead.ferin_reward.delivered_pending"),
                     false);
         }
         if (progress.grothPending() && insert(player, ModItems.GROTH_WARRIOR.get())) {
-            changed |= progress.resolvePendingGroth(true);
-            player.displayClientMessage(
+            progress.resolvePendingGroth(true);
+            WarriorProgressStorage.save(player, progress);
+            message(
+                    player,
                     Component.translatable(
                             "message.purified_undead.groth_reward.delivered_pending"),
                     false);
         }
         if (progress.juliusPending() && insert(player, ModItems.JULIUS_WARRIOR.get())) {
-            changed |= progress.resolvePendingJulius(true);
-            player.displayClientMessage(
+            progress.resolvePendingJulius(true);
+            WarriorProgressStorage.save(player, progress);
+            message(
+                    player,
                     Component.translatable(
                             "message.purified_undead.julius_reward.delivered_pending"),
                     false);
         }
         if (progress.guardiansPending() && insert(player, ModItems.GUARDIAN_WARRIORS.get())) {
-            changed |= progress.resolvePendingGuardians(true);
-            player.displayClientMessage(
+            progress.resolvePendingGuardians(true);
+            WarriorProgressStorage.save(player, progress);
+            message(
+                    player,
                     Component.translatable(
                             "message.purified_undead.guardians_reward.delivered_pending"),
                     false);
         }
         if (progress.ulvPending() && insert(player, ModItems.ULV_WARRIOR.get())) {
-            changed |= progress.resolvePendingUlv(true);
-            player.displayClientMessage(
+            progress.resolvePendingUlv(true);
+            WarriorProgressStorage.save(player, progress);
+            message(
+                    player,
                     Component.translatable("message.purified_undead.ulv_reward.delivered_pending"),
                     false);
         }
         if (progress.eleinePending() && insert(player, ModItems.ELEINE_WARRIOR.get())) {
-            changed |= progress.resolvePendingEleine(true);
-            player.displayClientMessage(
+            progress.resolvePendingEleine(true);
+            WarriorProgressStorage.save(player, progress);
+            message(
+                    player,
                     Component.translatable(
                             "message.purified_undead.eleine_reward.delivered_pending"),
                     false);
         }
         if (progress.hoenirPending() && insert(player, ModItems.HOENIR_WARRIOR.get())) {
-            changed |= progress.resolvePendingHoenir(true);
-            player.displayClientMessage(
+            progress.resolvePendingHoenir(true);
+            WarriorProgressStorage.save(player, progress);
+            message(
+                    player,
                     Component.translatable(
                             "message.purified_undead.hoenir_reward.delivered_pending"),
                     false);
         }
         if (progress.fadenPending() && insert(player, ModItems.FADEN_WARRIOR.get())) {
-            changed |= progress.resolvePendingFaden(true);
-            player.displayClientMessage(
+            progress.resolvePendingFaden(true);
+            WarriorProgressStorage.save(player, progress);
+            message(
+                    player,
                     Component.translatable(
                             "message.purified_undead.faden_reward.delivered_pending"),
                     false);
-        }
-        if (changed) {
-            WarriorProgressStorage.save(player, progress);
         }
     }
 
@@ -112,7 +127,8 @@ public final class WarriorRewardService {
         boolean delivered = insert(player, ModItems.GROTH_WARRIOR.get());
         WarriorProgress.ClaimResult result = progress.claimGroth(delivered);
         WarriorProgressStorage.save(player, progress);
-        player.displayClientMessage(
+        message(
+                player,
                 Component.translatable(
                         result == WarriorProgress.ClaimResult.DELIVERED
                                 ? "message.purified_undead.groth_reward.delivered"
@@ -128,7 +144,8 @@ public final class WarriorRewardService {
         boolean delivered = insert(player, ModItems.JULIUS_WARRIOR.get());
         WarriorProgress.ClaimResult result = progress.claimJulius(delivered);
         WarriorProgressStorage.save(player, progress);
-        player.displayClientMessage(
+        message(
+                player,
                 Component.translatable(
                         result == WarriorProgress.ClaimResult.DELIVERED
                                 ? "message.purified_undead.julius_reward.delivered"
@@ -144,7 +161,8 @@ public final class WarriorRewardService {
         boolean delivered = insert(player, ModItems.GUARDIAN_WARRIORS.get());
         WarriorProgress.ClaimResult result = progress.claimGuardians(delivered);
         WarriorProgressStorage.save(player, progress);
-        player.displayClientMessage(
+        message(
+                player,
                 Component.translatable(
                         result == WarriorProgress.ClaimResult.DELIVERED
                                 ? "message.purified_undead.guardians_reward.delivered"
@@ -161,7 +179,8 @@ public final class WarriorRewardService {
         boolean delivered = insert(player, ModItems.ULV_WARRIOR.get());
         WarriorProgress.ClaimResult result = progress.claimUlv(delivered);
         WarriorProgressStorage.save(player, progress);
-        player.displayClientMessage(
+        message(
+                player,
                 Component.translatable(
                         result == WarriorProgress.ClaimResult.DELIVERED
                                 ? "message.purified_undead.ulv_reward.delivered"
@@ -180,7 +199,8 @@ public final class WarriorRewardService {
                 PurifiedUndeadConfig.get(PurifiedUndeadConfig.VALUES.eleineDrownedKillsRequired);
         if (kills < required) {
             WarriorProgressStorage.save(player, progress);
-            player.displayClientMessage(
+            message(
+                    player,
                     Component.translatable(
                             "message.purified_undead.eleine_reward.progress", kills, required),
                     false);
@@ -189,7 +209,8 @@ public final class WarriorRewardService {
         boolean delivered = insert(player, ModItems.ELEINE_WARRIOR.get());
         WarriorProgress.ClaimResult result = progress.claimEleine(delivered);
         WarriorProgressStorage.save(player, progress);
-        player.displayClientMessage(
+        message(
+                player,
                 Component.translatable(
                         result == WarriorProgress.ClaimResult.DELIVERED
                                 ? "message.purified_undead.eleine_reward.delivered"
@@ -206,7 +227,8 @@ public final class WarriorRewardService {
         boolean delivered = insert(player, ModItems.HOENIR_WARRIOR.get());
         WarriorProgress.ClaimResult result = progress.claimHoenir(delivered);
         WarriorProgressStorage.save(player, progress);
-        player.displayClientMessage(
+        message(
+                player,
                 Component.translatable(
                         result == WarriorProgress.ClaimResult.DELIVERED
                                 ? "message.purified_undead.hoenir_reward.delivered"
@@ -223,7 +245,8 @@ public final class WarriorRewardService {
         boolean delivered = insert(player, ModItems.FADEN_WARRIOR.get());
         WarriorProgress.ClaimResult result = progress.claimFaden(delivered);
         WarriorProgressStorage.save(player, progress);
-        player.displayClientMessage(
+        message(
+                player,
                 Component.translatable(
                         result == WarriorProgress.ClaimResult.DELIVERED
                                 ? "message.purified_undead.faden_reward.delivered"
@@ -240,7 +263,8 @@ public final class WarriorRewardService {
         boolean delivered = insert(player, ModItems.ANCIENT_CONTRACT.get());
         WarriorProgress.ClaimResult result = progress.claimContract(delivered);
         WarriorProgressStorage.save(player, progress);
-        player.displayClientMessage(
+        message(
+                player,
                 Component.translatable(
                         result == WarriorProgress.ClaimResult.DELIVERED
                                 ? "message.purified_undead.contract_reward.delivered"
@@ -254,6 +278,11 @@ public final class WarriorRewardService {
         RewardSounds.copy(original, replacement);
     }
 
+    private static void message(ServerPlayer player, Component text, boolean actionBar) {
+        dev.purifiedundead.util.FailureIsolation.run(
+                "reward message", () -> player.displayClientMessage(text, actionBar));
+    }
+
     private static boolean insertFerin(ServerPlayer player) {
         return insert(player, ModItems.FERIN_WARRIOR.get());
     }
@@ -262,10 +291,18 @@ public final class WarriorRewardService {
         // Preserve the pending flag until a live replacement player can receive the item.
         if (!player.isAlive()) return false;
         ItemStack reward = new ItemStack(item);
-        boolean inserted = player.getInventory().add(reward);
+        boolean inserted;
+        try {
+            inserted = InventoryTransfer.insert(player.getInventory(), reward, () -> {});
+        } catch (RuntimeException | LinkageError failure) {
+            dev.purifiedundead.util.FailureIsolation.report(
+                    "reward insertion rolled back; delivery pending", failure);
+            return false;
+        }
         if (inserted) {
-            player.inventoryMenu.broadcastChanges();
-            RewardSounds.onDelivered(player, item);
+            RewardSounds.requestSync(player);
+            dev.purifiedundead.util.FailureIsolation.run(
+                    "reward sound queue", () -> RewardSounds.onDelivered(player, item));
         }
         return inserted;
     }
