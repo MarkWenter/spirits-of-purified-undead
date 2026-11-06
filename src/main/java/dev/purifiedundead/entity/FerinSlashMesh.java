@@ -48,16 +48,29 @@ public final class FerinSlashMesh {
     private FerinSlashMesh() {}
 
     public static List<Quad> sample(int stage, double age) {
+        return sample(stage, age, false, 0);
+    }
+
+    public static List<Quad> flight(int stage, double age, int lifetime) {
+        if (lifetime <= 0 || age < 0 || age > lifetime + 1) return List.of();
+        double forming = Math.min(lifetime, FerinBladeTrajectory.sweepEnd(stage) - 1);
+        double visualAge =
+                1 + Math.min(age, forming) * (FerinBladeTrajectory.sweepEnd(stage) - 1) / forming;
+        return sample(stage, visualAge, true, Math.min(1, lifetime + 1 - age));
+    }
+
+    private static List<Quad> sample(int stage, double age, boolean flying, double flightFade) {
         if (stage < 1
                 || stage > 5
                 || !Double.isFinite(age)
                 || age <= 1
                 || age >= FerinBladeTrajectory.activeEnd(stage) + 1) return List.of();
         double progress = FerinBladeTrajectory.progress(stage, age);
-        double travel = FerinBladeTrajectory.travel(stage, age);
+        double travel = flying ? 0 : FerinBladeTrajectory.travel(stage, age);
         double fade =
                 Math.min(1, (age - 1) * 3)
                         * Math.min(1, FerinBladeTrajectory.activeEnd(stage) + 1 - age);
+        if (flying) fade *= flightFade;
         int segments = Math.max(4, (int) Math.ceil(progress * (stage >= 4 ? 144 : 80)));
         List<Quad> result = new ArrayList<>(segments * 23 + 18);
         Vertex[] leftFace = new Vertex[RADII.length], rightFace = new Vertex[RADII.length];

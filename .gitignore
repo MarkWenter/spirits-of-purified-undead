@@ -145,3 +145,6 @@ scripts/*
 !docs/AMD_SHADER_HOTFIX_111.md
 
 !docs/RELEASE_V111_HOTFIX.md
+
+# Ferin update preparation
+!docs/ferin-update/

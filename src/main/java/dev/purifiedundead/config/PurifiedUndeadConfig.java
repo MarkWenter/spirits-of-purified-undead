@@ -96,6 +96,9 @@ public final class PurifiedUndeadConfig {
         public final ForgeConfigSpec.ConfigValue<java.util.List<? extends Double>>
                 ferinStageDamageMultipliers;
         public final ForgeConfigSpec.IntValue ferinSummonCooldownTicks;
+        public final ForgeConfigSpec.DoubleValue ferinFlightMinimumSpeed;
+        public final ForgeConfigSpec.DoubleValue ferinFlightTurnDegrees;
+        public final ForgeConfigSpec.IntValue ferinFlightArrivalTicks;
         public final ForgeConfigSpec.IntValue ferinComboLockTicks;
         public final ForgeConfigSpec.IntValue ferinComboWindowTicks;
         public final ForgeConfigSpec.IntValue ferinFinalActionDurationTicks;
@@ -235,6 +238,16 @@ public final class PurifiedUndeadConfig {
                                                     && number >= 0.0D
                                                     && number <= 20.0D);
             ferinSummonCooldownTicks = builder.defineInRange("summonCooldownTicks", 40, 0, 12000);
+            ferinFlightMinimumSpeed =
+                    builder.comment("Cooperative slash minimum blocks per tick.")
+                            .defineInRange("flightMinimumSpeed", 1.0D, .25D, 64.0D);
+            ferinFlightArrivalTicks =
+                    builder.comment(
+                                    "Maximum nominal arrival ticks (0 means next tick); same for all five stages. Moving targets are not guaranteed hits.")
+                            .defineInRange("flightArrivalTicks", 60, 0, 60);
+            ferinFlightTurnDegrees =
+                    builder.comment("Maximum homing turn per tick; 0 disables homing.")
+                            .defineInRange("flightTurnDegrees", 6.0D, 0.0D, 30.0D);
             ferinComboLockTicks = builder.defineInRange("comboLockTicks", 10, 0, 12000);
             ferinComboWindowTicks = builder.defineInRange("comboWindowTicks", 24, 1, 12000);
             ferinFinalActionDurationTicks =

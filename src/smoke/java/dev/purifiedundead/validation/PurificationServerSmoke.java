@@ -269,6 +269,7 @@ public final class PurificationServerSmoke {
             }
             FoundryServerSmoke.run(server);
             FerinLargeMobSmoke.run(server);
+            dev.purifiedundead.combat.FerinFlightSmoke.run(server);
             PurificationPartTwoSmoke.run(server);
             LilyDiarySmoke.run(server);
             AdvancementSmoke.run(server);

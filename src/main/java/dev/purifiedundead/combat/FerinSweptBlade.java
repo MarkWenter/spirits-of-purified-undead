@@ -5,22 +5,52 @@ import net.minecraft.world.phys.Vec3;
 
 /** Server-authoritative swept blade geometry, independent of entity selection. */
 public final class FerinSweptBlade {
-    private static final int TIME_SAMPLES = 5;
-
     private FerinSweptBlade() {}
 
     public static boolean intersects(WorldPose previous, WorldPose current, AABB target) {
-        double thickness = Math.max(previous.thickness(), current.thickness());
-        AABB expanded = target.inflate(thickness);
-        for (int step = 0; step < TIME_SAMPLES; step++) {
-            double t = step / (double) (TIME_SAMPLES - 1);
-            Vec3 root = previous.root().lerp(current.root(), t);
-            Vec3 tip = previous.tip().lerp(current.tip(), t);
-            if (segmentIntersectsBox(root, tip, expanded)) {
-                return true;
-            }
-        }
-        return false;
+        AABB expanded = target.inflate(Math.max(previous.thickness(), current.thickness()));
+        // A continuous ruled blade, not five temporal samples: speed does not create holes.
+        return triangle(previous.root(), previous.tip(), current.tip(), expanded)
+                || triangle(previous.root(), current.tip(), current.root(), expanded);
+    }
+
+    private static boolean triangle(Vec3 a, Vec3 b, Vec3 c, AABB box) {
+        if (separated(a, b, c, box, 1, 0, 0)
+                || separated(a, b, c, box, 0, 1, 0)
+                || separated(a, b, c, box, 0, 0, 1)) return false;
+        double ux = b.x - a.x, uy = b.y - a.y, uz = b.z - a.z;
+        double vx = c.x - b.x, vy = c.y - b.y, vz = c.z - b.z;
+        if (separated(a, b, c, box, uy * vz - uz * vy, uz * vx - ux * vz, ux * vy - uy * vx))
+            return false;
+        return !edgeSeparated(a, b, c, box, ux, uy, uz)
+                && !edgeSeparated(a, b, c, box, vx, vy, vz)
+                && !edgeSeparated(a, b, c, box, a.x - c.x, a.y - c.y, a.z - c.z);
+    }
+
+    private static boolean edgeSeparated(
+            Vec3 a, Vec3 b, Vec3 c, AABB box, double x, double y, double z) {
+        return separated(a, b, c, box, 0, z, -y)
+                || separated(a, b, c, box, -z, 0, x)
+                || separated(a, b, c, box, y, -x, 0);
+    }
+
+    /** Allocation-free SAT axes; translated coordinates keep precision near world borders. */
+    private static boolean separated(
+            Vec3 a, Vec3 b, Vec3 c, AABB box, double x, double y, double z) {
+        if (x * x + y * y + z * z < 1e-18) return false;
+        double cx = (box.minX + box.maxX) * .5,
+                cy = (box.minY + box.maxY) * .5,
+                cz = (box.minZ + box.maxZ) * .5;
+        double radius =
+                (box.getXsize() * Math.abs(x)
+                                + box.getYsize() * Math.abs(y)
+                                + box.getZsize() * Math.abs(z))
+                        * .5;
+        double p = (a.x - cx) * x + (a.y - cy) * y + (a.z - cz) * z;
+        double q = (b.x - cx) * x + (b.y - cy) * y + (b.z - cz) * z;
+        double r = (c.x - cx) * x + (c.y - cy) * y + (c.z - cz) * z;
+        return Math.min(p, Math.min(q, r)) > radius + 1e-9
+                || Math.max(p, Math.max(q, r)) < -radius - 1e-9;
     }
 
     public static AABB bounds(WorldPose previous, WorldPose current) {
@@ -50,30 +80,6 @@ public final class FerinSweptBlade {
                         Math.max(previous.root().z, previous.tip().z),
                         Math.max(current.root().z, current.tip().z));
         return new AABB(minX, minY, minZ, maxX, maxY, maxZ).inflate(thickness);
-    }
-
-    private static boolean segmentIntersectsBox(Vec3 start, Vec3 end, AABB box) {
-        double[] range = {0.0, 1.0};
-        return clip(start.x, end.x - start.x, box.minX, box.maxX, range)
-                && clip(start.y, end.y - start.y, box.minY, box.maxY, range)
-                && clip(start.z, end.z - start.z, box.minZ, box.maxZ, range);
-    }
-
-    private static boolean clip(
-            double start, double direction, double min, double max, double[] range) {
-        if (Math.abs(direction) < 1.0E-9) {
-            return start >= min && start <= max;
-        }
-        double near = (min - start) / direction;
-        double far = (max - start) / direction;
-        if (near > far) {
-            double swap = near;
-            near = far;
-            far = swap;
-        }
-        range[0] = Math.max(range[0], near);
-        range[1] = Math.min(range[1], far);
-        return range[0] <= range[1];
     }
 
     public record WorldPose(Vec3 root, Vec3 tip, double thickness) {}

@@ -294,3 +294,11 @@ Forge 编译基线与加载最低要求改为 47.3.22。污秽铁傀儡、污秽
 
 
 **1.1.1hotfix 正式发布：** 用户授权复验通过后将1.1hotfix合并main。两版统一正式版本1.1.1hotfix，协议13，汇总hotfix.1至.4；此前仅推分支约定为历史范围。发布说明见[本次修复](RELEASE_V111_HOTFIX.md)，两版对应版本目录提供README-1.1.1hotfix.md与安装包，最终复验记录位于outputs/release-1.1.1hotfix-2026-10-25/。AMD实机仍待回测。
+
+
+## 费林更新预备（2026-11-06）
+
+两版以 1.1.1hotfix 为基线，在 `ferinupdate/FerinUpdateContent` 建立无状态的空注册边界，由本体构造器各调用一次。具体内容暂缓；现有费林战斗/刀光/奖励保持原调用链，版本、协议13与API v1不变。继续开发先读 [费林更新入口](ferin-update/README.md)、[架构](ferin-update/ARCHITECTURE.md)、[项目现状](ferin-update/PROJECT_STATE.md) 和 [本轮验证](ferin-update/VALIDATION.md)。模型仍为未完成封存状态，更新名称不代表恢复授权。附属当前0.2.0已有息金，并存在依赖本体雨内部实现的桥接；不是早期空框架。本次不改附属源码或正式安装包。
+
+
+**费林更新第一部分（2026-11-07）：** 两版候选1.2.0-ferin.1、协议14，普通协同剑气改为光点离散锚点发射、三维瞄准、动态射程、限定到达时间和有限追踪；独立每发上下文，连续扫掠命中额外0.20格容差。见[实现](ferin-update/PART_1.md)与[外部测试清单](ferin-update/TEST_PLAN_PART_1.md)。用户因硬件故障明确跳过本机测试：最终只构建、编译测试源码，不启动Minecraft；新增FERIN_FLIGHT_OK尚待外部执行。Forge仅推codex/ferin-update，不合并main；骑士寂夜与女仆内容未实现。

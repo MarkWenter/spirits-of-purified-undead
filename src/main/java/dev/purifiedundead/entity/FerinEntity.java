@@ -30,6 +30,78 @@ public final class FerinEntity extends Entity implements GeoEntity {
     private static final EntityDataAccessor<Long> STAGE_STARTED_AT =
             SynchedEntityData.defineId(FerinEntity.class, EntityDataSerializers.LONG);
 
+    private static final EntityDataAccessor<org.joml.Vector3f> FLIGHT_DIRECTION =
+            SynchedEntityData.defineId(FerinEntity.class, EntityDataSerializers.VECTOR3);
+    private static final EntityDataAccessor<Integer> FLIGHT_LIFETIME =
+            SynchedEntityData.defineId(FerinEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> FLIGHT_AGE =
+            SynchedEntityData.defineId(FerinEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<net.minecraft.core.BlockPos> FLIGHT_CELL =
+            SynchedEntityData.defineId(FerinEntity.class, EntityDataSerializers.BLOCK_POS);
+    private static final EntityDataAccessor<org.joml.Vector3f> FLIGHT_OFFSET =
+            SynchedEntityData.defineId(FerinEntity.class, EntityDataSerializers.VECTOR3);
+    private static final EntityDataAccessor<Float> FLIGHT_SPEED =
+            SynchedEntityData.defineId(FerinEntity.class, EntityDataSerializers.FLOAT);
+    private double lerpX, lerpY, lerpZ;
+    private int lerpSteps;
+
+    public net.minecraft.world.phys.Vec3 flightDirection() {
+        return new net.minecraft.world.phys.Vec3(entityData.get(FLIGHT_DIRECTION));
+    }
+
+    public int flightLifetime() {
+        return entityData.get(FLIGHT_LIFETIME);
+    }
+
+    public int flightAge() {
+        return entityData.get(FLIGHT_AGE);
+    }
+
+    public void syncFlight(
+            net.minecraft.world.phys.Vec3 position,
+            net.minecraft.world.phys.Vec3 direction,
+            int lifetime,
+            int age,
+            double speed) {
+        setPos(position);
+        var cell = net.minecraft.core.BlockPos.containing(position);
+        entityData.set(FLIGHT_CELL, cell);
+        entityData.set(
+                FLIGHT_OFFSET,
+                position.subtract(net.minecraft.world.phys.Vec3.atLowerCornerOf(cell))
+                        .toVector3f());
+        entityData.set(FLIGHT_SPEED, (float) speed);
+        entityData.set(FLIGHT_DIRECTION, direction.toVector3f());
+        entityData.set(FLIGHT_LIFETIME, lifetime);
+        entityData.set(FLIGHT_AGE, age);
+    }
+
+    /** Bounded presentation prediction only. Server state corrects it; it cannot create hits. */
+    public net.minecraft.world.phys.Vec3 predictedFlightPosition(float partialTick) {
+        var position =
+                net.minecraft.world.phys.Vec3.atLowerCornerOf(entityData.get(FLIGHT_CELL))
+                        .add(new net.minecraft.world.phys.Vec3(entityData.get(FLIGHT_OFFSET)));
+        double elapsed = level().getGameTime() - getStageStartedAt() + partialTick - flightAge();
+        double extrapolation =
+                Math.max(0, Math.min(2, Math.min(flightLifetime() - flightAge(), elapsed)));
+        return position.add(flightDirection().scale(entityData.get(FLIGHT_SPEED) * extrapolation));
+    }
+
+    @Override
+    public void lerpTo(
+            double x, double y, double z, float yaw, float pitch, int steps, boolean teleport) {
+        if (teleport
+                || position().distanceToSqr(new net.minecraft.world.phys.Vec3(x, y, z)) > 4096) {
+            setPos(x, y, z);
+            lerpSteps = 0;
+        } else {
+            lerpX = x;
+            lerpY = y;
+            lerpZ = z;
+            lerpSteps = 2;
+        }
+    }
+
     private final AnimatableInstanceCache animationCache = GeckoLibUtil.createInstanceCache(this);
     private long lastAnimatedStageStartedAt = Long.MIN_VALUE;
     private int lastAnimatedStage = -1;
@@ -51,6 +123,12 @@ public final class FerinEntity extends Entity implements GeoEntity {
         entityData.define(OWNER, Optional.empty());
         entityData.define(STAGE, 0);
         entityData.define(STAGE_STARTED_AT, 0L);
+        entityData.define(FLIGHT_DIRECTION, new org.joml.Vector3f(0, 0, 1));
+        entityData.define(FLIGHT_LIFETIME, 0);
+        entityData.define(FLIGHT_AGE, 0);
+        entityData.define(FLIGHT_CELL, net.minecraft.core.BlockPos.ZERO);
+        entityData.define(FLIGHT_OFFSET, new org.joml.Vector3f());
+        entityData.define(FLIGHT_SPEED, 0F);
     }
 
     public Optional<UUID> getOwnerUuid() {
@@ -84,6 +162,13 @@ public final class FerinEntity extends Entity implements GeoEntity {
     @Override
     public void tick() {
         super.tick();
+        if (level().isClientSide() && lerpSteps > 0) {
+            setPos(
+                    getX() + (lerpX - getX()) / lerpSteps,
+                    getY() + (lerpY - getY()) / lerpSteps,
+                    getZ() + (lerpZ - getZ()) / lerpSteps);
+            lerpSteps--;
+        }
         if (!level().isClientSide()
                 && (tickCount - lastOwnerRefreshTick > 100
                         || getOwnerUuid()

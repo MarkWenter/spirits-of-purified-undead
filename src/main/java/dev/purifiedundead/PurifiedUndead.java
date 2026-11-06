@@ -88,6 +88,7 @@ public final class PurifiedUndead {
         dev.purifiedundead.slate.SlateContent.register(modBus);
         dev.purifiedundead.foundry.FoundryContent.register(modBus);
         dev.purifiedundead.blightedrain.BlightedRainContent.register(modBus);
+        dev.purifiedundead.ferinupdate.FerinUpdateContent.register(modBus);
         ModItems.register(modBus);
         dev.purifiedundead.content.ModCreativeTabs.register(modBus);
         ModEntities.register(modBus);

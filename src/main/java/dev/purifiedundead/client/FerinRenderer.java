@@ -32,26 +32,57 @@ public final class FerinRenderer extends EntityRenderer<FerinEntity> {
             MultiBufferSource buffers,
             int packedLight) {
         double age = entity.level().getGameTime() - entity.getStageStartedAt() + partialTick;
-        // Undo the old GeckoLib +180-degree correction to match the captured combat basis.
-        double angle = Math.toRadians(entity.getYRot() - 180.0);
-        double cos = Math.cos(angle), sin = Math.sin(angle);
-        VertexConsumer vertices = buffers.getBuffer(RenderType.entityTranslucentEmissive(TEXTURE));
-        Matrix4f matrix = poses.last().pose();
-        for (FerinSlashMesh.Quad quad : FerinSlashMesh.sample(entity.getStage(), age)) {
-            vertex(vertices, matrix, quad.a(), cos, sin);
-            vertex(vertices, matrix, quad.b(), cos, sin);
-            vertex(vertices, matrix, quad.c(), cos, sin);
-            vertex(vertices, matrix, quad.d(), cos, sin);
+        var direction = entity.flightDirection();
+        var basis = dev.purifiedundead.combat.FerinFlightMotion.basis(direction);
+        poses.pushPose();
+        try {
+            if (entity.flightLifetime() > 0) {
+                var predicted = entity.predictedFlightPosition(partialTick);
+                double x = net.minecraft.util.Mth.lerp(partialTick, entity.xOld, entity.getX());
+                double y = net.minecraft.util.Mth.lerp(partialTick, entity.yOld, entity.getY());
+                double z = net.minecraft.util.Mth.lerp(partialTick, entity.zOld, entity.getZ());
+                poses.translate(predicted.x - x, predicted.y - y, predicted.z - z);
+            }
+            VertexConsumer vertices =
+                    buffers.getBuffer(RenderType.entityTranslucentEmissive(TEXTURE));
+            Matrix4f matrix = poses.last().pose();
+            for (FerinSlashMesh.Quad quad :
+                    entity.flightLifetime() > 0
+                            ? FerinSlashMesh.flight(
+                                    entity.getStage(),
+                                    Math.min(entity.flightAge() + 2 + partialTick, age),
+                                    entity.flightLifetime())
+                            : FerinSlashMesh.sample(entity.getStage(), age)) {
+                vertex(vertices, matrix, quad.a(), basis, entity.flightLifetime() > 0);
+                vertex(vertices, matrix, quad.b(), basis, entity.flightLifetime() > 0);
+                vertex(vertices, matrix, quad.c(), basis, entity.flightLifetime() > 0);
+                vertex(vertices, matrix, quad.d(), basis, entity.flightLifetime() > 0);
+            }
+        } finally {
+            poses.popPose();
         }
     }
 
     private static void vertex(
-            VertexConsumer out, Matrix4f matrix, FerinSlashMesh.Vertex v, double cos, double sin) {
-        out.vertex(
-                        matrix,
-                        (float) (-v.right() * cos - v.forward() * sin),
-                        (float) v.up(),
-                        (float) (-v.right() * sin + v.forward() * cos))
+            VertexConsumer out,
+            Matrix4f matrix,
+            FerinSlashMesh.Vertex v,
+            dev.purifiedundead.combat.FerinFlightMotion.Basis basis,
+            boolean flight) {
+        double up = v.up() - (flight ? 1.05 : 0);
+        double x =
+                basis.side().x * v.right()
+                        + basis.vertical().x * up
+                        + basis.forward().x * v.forward();
+        double y =
+                basis.side().y * v.right()
+                        + basis.vertical().y * up
+                        + basis.forward().y * v.forward();
+        double z =
+                basis.side().z * v.right()
+                        + basis.vertical().z * up
+                        + basis.forward().z * v.forward();
+        out.vertex(matrix, (float) x, (float) y, (float) z)
                 .color(v.red(), v.green(), v.blue(), v.alpha())
                 .uv(0.5F, 0.5F)
                 .overlayCoords(OverlayTexture.NO_OVERLAY)
@@ -63,7 +94,13 @@ public final class FerinRenderer extends EntityRenderer<FerinEntity> {
     @Override
     public boolean shouldRender(FerinEntity entity, Frustum frustum, double x, double y, double z) {
         return entity.shouldRender(x, y, z)
-                && frustum.isVisible(entity.getBoundingBox().inflate(12));
+                && frustum.isVisible(
+                        entity.getBoundingBox()
+                                .minmax(
+                                        new net.minecraft.world.phys.AABB(
+                                                entity.predictedFlightPosition(0),
+                                                entity.predictedFlightPosition(1)))
+                                .inflate(12));
     }
 
     @Override

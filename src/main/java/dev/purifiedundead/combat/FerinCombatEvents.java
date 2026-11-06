@@ -6,7 +6,6 @@ import dev.purifiedundead.content.ModEntities;
 import dev.purifiedundead.config.PurifiedUndeadConfig;
 import dev.purifiedundead.entity.FerinEntity;
 import dev.purifiedundead.progress.ContractProgressService;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -46,7 +45,8 @@ public final class FerinCombatEvents {
 
     private final Map<CombatHitKey, PendingHit> pendingHits = new HashMap<>();
     private final Map<UUID, FerinPlayerState> playerStates = new HashMap<>();
-    private final Map<UUID, UUID> ferinEntities = new HashMap<>();
+    private final Map<UUID, java.util.List<FerinSlashFlight>> ferinEntities = new HashMap<>();
+    private final Map<UUID, FerinWispAnchor> wispAnchors = new HashMap<>();
 
     // One short-lived observation per actual server melee attempt; no client packet can start a
     // combo.
@@ -83,7 +83,15 @@ public final class FerinCombatEvents {
         var box = attacked.getBoundingBox();
         // Aim at the contacted body/part, not the remote centre of a giant boss.
         Vec3 aim =
-                box.clip(eye, eye.add(player.getLookAngle().scale(64)))
+                box.clip(
+                                eye,
+                                eye.add(
+                                        player.getLookAngle()
+                                                .scale(
+                                                        Math.min(
+                                                                FerinFlightMotion.MAX_DISTANCE,
+                                                                eye.distanceTo(box.getCenter())
+                                                                        + 8))))
                         .orElseGet(
                                 () ->
                                         new Vec3(
@@ -125,6 +133,7 @@ public final class FerinCombatEvents {
                     triggerCombo(
                             hit.player,
                             hit.aim,
+                            hit.victim,
                             new PendingHit(hit.player.getUUID(), hit.tick, damage));
             }
         }
@@ -196,11 +205,12 @@ public final class FerinCombatEvents {
         Vec3 aim =
                 observed != null && observed.victim == event.getEntity()
                         ? observed.aim
-                        : event.getEntity().position();
-        triggerCombo(player, aim, pending);
+                        : hitPoint(player, event.getEntity());
+        triggerCombo(player, aim, event.getEntity(), pending);
     }
 
-    private void triggerCombo(ServerPlayer player, Vec3 aim, PendingHit pending) {
+    private void triggerCombo(
+            ServerPlayer player, Vec3 aim, LivingEntity victim, PendingHit pending) {
         if (!AbilityPreferences.ferin(player)) return;
         FerinPlayerState runtime = stateFor(player);
         if (!runtime.attackTickGate.accept(pending.gameTick)) {
@@ -221,6 +231,8 @@ public final class FerinCombatEvents {
                     player.getYRot(),
                     pending.preDefenseDamage,
                     criticalMultiplier);
+            runtime.lastTargetId = victim.getUUID();
+            launchFlight(player, runtime, aim, victim);
             player.displayClientMessage(
                     Component.translatable(
                             "message.purified_undead.ferin.stage",
@@ -238,6 +250,7 @@ public final class FerinCombatEvents {
             runtime.continuation.request(runtime.combo.stage(), runtime.combo.stageStartedAt());
             runtime.continuationDamage = pending.preDefenseDamage;
             runtime.continuationTarget = aim;
+            runtime.continuationTargetId = victim.getUUID();
         }
         FerinPlayerStateStorage.save(player, runtime);
     }
@@ -272,6 +285,7 @@ public final class FerinCombatEvents {
         runtime.continuation.request(runtime.combo.stage(), runtime.combo.stageStartedAt());
         runtime.continuationDamage = runtime.triggerPreDefenseDamage;
         runtime.continuationTarget = null;
+        runtime.continuationTargetId = null;
     }
 
     @SubscribeEvent
@@ -283,6 +297,11 @@ public final class FerinCombatEvents {
         finishMeleeObservations();
         pendingHits.values().removeIf(pending -> pending.gameTick < gameTick);
         for (ServerPlayer player : event.getServer().getPlayerList().getPlayers()) {
+            if (player.isAlive() && !player.isSpectator() && FerinEquipment.read(player).contract())
+                wispAnchors
+                        .computeIfAbsent(player.getUUID(), ignored -> new FerinWispAnchor())
+                        .update(player);
+            else wispAnchors.remove(player.getUUID());
             FerinPlayerState runtime = playerStates.get(player.getUUID());
             if (runtime == null && FerinPlayerStateStorage.has(player)) {
                 runtime = stateFor(player);
@@ -292,10 +311,9 @@ public final class FerinCombatEvents {
             }
             // An idle combo has no ticking state. Do not scan chunks or rebuild NBT forever
             // merely because this player summoned Ferin at some earlier point in the world.
-            if (runtime.combo.stage() == 0 && !runtime.combo.exiting()) {
-                if (ferinEntities.containsKey(player.getUUID())) removeFerinEntity(player);
-                continue;
-            }
+            if (runtime.combo.stage() == 0
+                    && !runtime.combo.exiting()
+                    && !ferinEntities.containsKey(player.getUUID())) continue;
             if (!player.isAlive()
                     || player.isSpectator()
                     || !AbilityPreferences.ferin(player)
@@ -327,6 +345,19 @@ public final class FerinCombatEvents {
                         == FerinComboState.Result.ADVANCED) {
                     float damage = activeState.continuationDamage;
                     Vec3 target = activeState.continuationTarget;
+                    UUID targetId =
+                            target == null
+                                    ? activeState.lastTargetId
+                                    : activeState.continuationTargetId;
+                    LivingEntity victim =
+                            targetId != null
+                                            && player.serverLevel().getEntity(targetId)
+                                                    instanceof LivingEntity living
+                                            && isLegalTarget(player, living)
+                                    ? living
+                                    : null;
+                    if (target == null && victim != null) target = hitPoint(player, victim);
+                    if (victim == null) target = null;
                     float critical = rollStageCritical(player).multiplier();
                     if (target == null)
                         activeState.captureStage(
@@ -334,6 +365,8 @@ public final class FerinCombatEvents {
                     else
                         activeState.captureStageTowards(
                                 player.position(), target, player.getYRot(), damage, critical);
+                    activeState.lastTargetId = victim == null ? null : victim.getUUID();
+                    launchFlight(player, activeState, target, victim);
                     player.displayClientMessage(
                             Component.translatable(
                                     "message.purified_undead.ferin.stage",
@@ -343,18 +376,7 @@ public final class FerinCombatEvents {
                             true);
                 }
             }
-            if (activeState.combo.stage() > 0 && !activeState.combo.exiting()) {
-                syncFerinEntity(player, activeState);
-                int age =
-                        Math.toIntExact(
-                                Math.min(
-                                        Integer.MAX_VALUE,
-                                        gameTick - activeState.combo.stageStartedAt()));
-                processBlade(player, activeState, age);
-            } else {
-                removeFerinEntity(player);
-                activeState.clearPreviousBlade();
-            }
+            tickFlights(player);
             FerinPlayerStateStorage.save(player, activeState);
         }
     }
@@ -401,6 +423,7 @@ public final class FerinCombatEvents {
                                         || entry.getKey().targetId().equals(playerId));
         FerinPlayerState runtime = playerStates.remove(event.getEntity().getUUID());
         if (runtime != null) {
+            runtime.cancelActive();
             FerinPlayerStateStorage.save(event.getEntity(), runtime);
         }
     }
@@ -411,6 +434,7 @@ public final class FerinCombatEvents {
         pendingHits.clear();
         playerStates.clear();
         ferinEntities.clear();
+        wispAnchors.clear();
     }
 
     private static boolean isDirectPlayerMelee(DamageSource source, Player player) {
@@ -463,116 +487,177 @@ public final class FerinCombatEvents {
                 PurifiedUndeadConfig.get(PurifiedUndeadConfig.VALUES.ferinExitDurationTicks));
     }
 
-    private void syncFerinEntity(ServerPlayer owner, FerinPlayerState runtime) {
-        ServerLevel level = owner.serverLevel();
-        FerinEntity entity = findFerinEntity(level, owner);
-        if (entity == null) {
-            entity = ModEntities.FERIN.get().create(level);
-            if (entity == null) {
-                return;
-            }
-            entity.setOwnerUuid(owner.getUUID());
-            if (!level.addFreshEntity(entity)) {
-                return;
-            }
-            ferinEntities.put(owner.getUUID(), entity.getUUID());
-        }
+    private static Vec3 hitPoint(ServerPlayer player, LivingEntity target) {
+        Vec3 eye = player.getEyePosition();
+        var box = target.getBoundingBox();
+        double ray = Math.min(FerinFlightMotion.MAX_DISTANCE, eye.distanceTo(box.getCenter()) + 8);
+        return box.clip(eye, eye.add(player.getLookAngle().scale(ray)))
+                .orElseGet(
+                        () ->
+                                new Vec3(
+                                        net.minecraft.util.Mth.clamp(eye.x, box.minX, box.maxX),
+                                        net.minecraft.util.Mth.clamp(eye.y, box.minY, box.maxY),
+                                        net.minecraft.util.Mth.clamp(eye.z, box.minZ, box.maxZ)));
+    }
 
-        entity.refreshOwnerLease();
-        Vec3 visualPosition = runtime.companionAnchor();
-        entity.setPos(visualPosition.x, visualPosition.y, visualPosition.z);
-        float visualYaw = runtime.ferinVisualYawDegrees();
-        entity.setYRot(visualYaw);
-        entity.yRotO = visualYaw;
-        if (entity.getStage() != runtime.combo.stage()
-                || entity.getStageStartedAt() != runtime.combo.stageStartedAt()) {
-            entity.syncStage(runtime.combo.stage(), runtime.combo.stageStartedAt());
+    private void launchFlight(
+            ServerPlayer owner, FerinPlayerState runtime, Vec3 aim, LivingEntity victim) {
+        Vec3 origin =
+                wispAnchors
+                        .computeIfAbsent(owner.getUUID(), ignored -> new FerinWispAnchor())
+                        .update(owner);
+        if (aim == null)
+            aim =
+                    origin.add(
+                            owner.getLookAngle()
+                                    .scale(FerinBladeTrajectory.reach(runtime.combo.stage())));
+        if (!FerinFlightMotion.finite(aim)
+                || origin.distanceTo(aim) > FerinFlightMotion.MAX_DISTANCE) return;
+        var flights =
+                ferinEntities.computeIfAbsent(
+                        owner.getUUID(), ignored -> new java.util.ArrayList<>());
+        // At most one release per tick and 76 flight ticks, even with custom cooldowns.
+        if (flights.size() >= 80) {
+            flights.remove(0).discard();
+        }
+        var flight =
+                new FerinSlashFlight(
+                        runtime,
+                        origin,
+                        aim,
+                        owner.getLookAngle(),
+                        victim,
+                        PurifiedUndeadConfig.get(
+                                PurifiedUndeadConfig.VALUES.ferinFlightMinimumSpeed),
+                        PurifiedUndeadConfig.get(
+                                PurifiedUndeadConfig.VALUES.ferinFlightArrivalTicks),
+                        PurifiedUndeadConfig.get(
+                                PurifiedUndeadConfig.VALUES.ferinFlightTurnDegrees));
+        flights.add(flight);
+        var visual = ModEntities.FERIN.get().create(owner.serverLevel());
+        if (visual != null) {
+            visual.setOwnerUuid(owner.getUUID());
+            visual.syncStage(flight.stage, flight.startedAt);
+            visual.syncFlight(
+                    origin,
+                    flight.motion.direction(),
+                    flight.motion.lifetime(),
+                    0,
+                    flight.motion.speed());
+            if (owner.serverLevel().addFreshEntity(visual)) flight.visual = visual;
         }
     }
 
-    private FerinEntity findFerinEntity(ServerLevel level, ServerPlayer owner) {
-        UUID entityUuid = ferinEntities.get(owner.getUUID());
-        if (entityUuid != null
-                && level.getEntity(entityUuid) instanceof FerinEntity entity
-                && entity.isAlive()) {
-            return entity;
-        }
-
-        FerinEntity found = null;
-        for (FerinEntity candidate :
-                level.getEntitiesOfClass(
-                        FerinEntity.class,
-                        owner.getBoundingBox().inflate(64.0D),
-                        entity -> entity.belongsTo(owner.getUUID()))) {
-            if (found == null) {
-                found = candidate;
-            } else {
-                candidate.discard();
+    private void tickFlights(ServerPlayer owner) {
+        var flights = ferinEntities.get(owner.getUUID());
+        if (flights == null) return;
+        var iterator = flights.iterator();
+        while (iterator.hasNext()) {
+            var flight = iterator.next();
+            if (flight.motion.finished()) {
+                flight.discard();
+                iterator.remove();
+                continue;
+            }
+            Vec3 previous = flight.motion.position(), previousDirection = flight.motion.direction();
+            Vec3 target = flight.targetPosition(owner.serverLevel());
+            flight.motion.step(target);
+            processFlight(owner, flight, previous, previousDirection);
+            if (flight.visual != null && !flight.visual.isRemoved()) {
+                flight.visual.refreshOwnerLease();
+                flight.visual.syncFlight(
+                        flight.motion.position(),
+                        flight.motion.direction(),
+                        flight.motion.lifetime(),
+                        flight.motion.age(),
+                        flight.motion.speed());
             }
         }
-        if (found != null) {
-            ferinEntities.put(owner.getUUID(), found.getUUID());
-        }
-        return found;
+        if (flights.isEmpty()) ferinEntities.remove(owner.getUUID());
     }
 
     private void removeFerinEntity(ServerPlayer owner) {
-        ServerLevel level = owner.serverLevel();
-        UUID entityUuid = ferinEntities.remove(owner.getUUID());
-        if (entityUuid == null) return;
-        // A portal may leave the tracked carrier in a different dimension.
-        for (ServerLevel candidateLevel : owner.server.getAllLevels()) {
-            if (candidateLevel.getEntity(entityUuid) instanceof FerinEntity entity)
-                entity.discard();
+        var flights = ferinEntities.remove(owner.getUUID());
+        if (flights != null) flights.forEach(FerinSlashFlight::discard);
+        wispAnchors.remove(owner.getUUID());
+    }
+
+    private static FerinSweptBlade.WorldPose flightPose(
+            int stage, double progress, Vec3 origin, FerinFlightMotion.Basis basis) {
+        var pose = FerinBladeTrajectory.blade(stage, progress, 0);
+        var a = pose.root();
+        var b = pose.tip();
+        return new FerinSweptBlade.WorldPose(
+                basis.point(origin, a.right(), a.up(), a.forward()),
+                basis.point(origin, b.right(), b.up(), b.forward()),
+                pose.thickness() + .20);
+    }
+
+    private static void processFlight(
+            ServerPlayer owner, FerinSlashFlight flight, Vec3 previous, Vec3 previousDirection) {
+        var sweeps = new java.util.ArrayList<WorldSweep>(181);
+        double progress =
+                FerinBladeTrajectory.progress(
+                        flight.stage,
+                        1
+                                + flight.motion.age()
+                                        * (FerinBladeTrajectory.sweepEnd(flight.stage) - 1.0)
+                                        / Math.min(
+                                                flight.motion.lifetime(),
+                                                FerinBladeTrajectory.sweepEnd(flight.stage) - 1));
+        var previousBasis = FerinFlightMotion.basis(previousDirection);
+        var currentBasis = FerinFlightMotion.basis(flight.motion.direction());
+        // Every radial slice of the fan/ring sweeps continuously across the entire tick.
+        for (int i = 0; i <= 180; i++) {
+            double p = progress * i / 180.0;
+            sweeps.add(
+                    new WorldSweep(
+                            flightPose(flight.stage, p, previous, previousBasis),
+                            flightPose(flight.stage, p, flight.motion.position(), currentBasis)));
         }
-        for (FerinEntity orphan :
-                level.getEntitiesOfClass(
-                        FerinEntity.class,
-                        owner.getBoundingBox().inflate(64.0D),
-                        entity -> entity.belongsTo(owner.getUUID()))) {
-            orphan.discard();
+        // Narrow broad-phase segments avoid the enormous cube of a long diagonal shot.
+        int sections =
+                Math.max(1, (int) Math.ceil(previous.distanceTo(flight.motion.position()) / 16));
+        var checked = new java.util.HashSet<UUID>();
+        for (int i = 0; i < sections; i++) {
+            Vec3 a = previous.lerp(flight.motion.position(), i / (double) sections);
+            Vec3 b = previous.lerp(flight.motion.position(), (i + 1.0) / sections);
+            var bounds =
+                    new net.minecraft.world.phys.AABB(a, b)
+                            .inflate(FerinBladeTrajectory.reach(flight.stage) + .55);
+            applyBladeHits(owner.serverLevel(), owner, flight.damage, sweeps, bounds, checked);
         }
     }
 
-    private static void processBlade(ServerPlayer owner, FerinPlayerState runtime, int age) {
-        ServerLevel level = owner.serverLevel();
-        var sweeps =
-                FerinBladeTrajectory.sweeps(runtime.combo.stage(), age).stream()
-                        .map(
-                                sweep ->
-                                        new WorldSweep(
-                                                runtime.toWorld(sweep.from()),
-                                                runtime.toWorld(sweep.to())))
-                        .toList();
-        if (sweeps.isEmpty()) return;
-        var bounds = FerinSweptBlade.bounds(sweeps.get(0).from(), sweeps.get(0).to());
-        for (WorldSweep sweep : sweeps) {
-            bounds = bounds.minmax(FerinSweptBlade.bounds(sweep.from(), sweep.to()));
+    private record WorldSweep(
+            FerinSweptBlade.WorldPose from,
+            FerinSweptBlade.WorldPose to,
+            net.minecraft.world.phys.AABB bounds) {
+        WorldSweep(FerinSweptBlade.WorldPose from, FerinSweptBlade.WorldPose to) {
+            this(from, to, FerinSweptBlade.bounds(from, to));
         }
-        applyBladeHits(level, owner, runtime, sweeps, bounds);
-        FerinBladeTrajectory.sample(runtime.combo.stage(), age)
-                .ifPresent(pose -> renderBlade(level, runtime.toWorld(pose)));
     }
-
-    private record WorldSweep(FerinSweptBlade.WorldPose from, FerinSweptBlade.WorldPose to) {}
 
     private static void applyBladeHits(
             ServerLevel level,
             ServerPlayer owner,
             FerinPlayerState runtime,
             java.util.List<WorldSweep> sweeps,
-            net.minecraft.world.phys.AABB bounds) {
+            net.minecraft.world.phys.AABB bounds,
+            java.util.Set<UUID> checked) {
         for (LivingEntity target :
                 level.getEntitiesOfClass(
                         LivingEntity.class, bounds, candidate -> isLegalTarget(owner, candidate))) {
-            if (runtime.hitTargets.contains(target.getUUID())
+            if (!checked.add(target.getUUID())
+                    || runtime.hitTargets.contains(target.getUUID())
                     || sweeps.stream()
                             .noneMatch(
                                     sweep ->
-                                            FerinSweptBlade.intersects(
-                                                    sweep.from(),
-                                                    sweep.to(),
-                                                    target.getBoundingBox()))) {
+                                            sweep.bounds().intersects(target.getBoundingBox())
+                                                    && FerinSweptBlade.intersects(
+                                                            sweep.from(),
+                                                            sweep.to(),
+                                                            target.getBoundingBox()))) {
                 continue;
             }
             runtime.hitTargets.add(target.getUUID());
@@ -616,26 +701,6 @@ public final class FerinCombatEvents {
         }
         return !(target instanceof OwnableEntity ownable
                 && owner.getUUID().equals(ownable.getOwnerUUID()));
-    }
-
-    private static void renderBlade(ServerLevel level, FerinSweptBlade.WorldPose pose) {
-        Vec3 root = pose.root();
-        Vec3 tip = pose.tip();
-        for (int sample = 0; sample <= 12; sample++) {
-            Vec3 point = root.lerp(tip, sample / 12.0);
-            if ((sample & 1) == 0) {
-                level.sendParticles(
-                        ParticleTypes.REVERSE_PORTAL,
-                        point.x,
-                        point.y,
-                        point.z,
-                        1,
-                        pose.thickness() * 0.35D,
-                        pose.thickness() * 0.35D,
-                        pose.thickness() * 0.35D,
-                        0.0D);
-            }
-        }
     }
 
     private record PendingHit(UUID playerId, long gameTick, float preDefenseDamage) {}
