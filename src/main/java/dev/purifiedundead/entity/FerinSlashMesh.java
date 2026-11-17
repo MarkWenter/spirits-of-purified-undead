@@ -160,7 +160,10 @@ public final class FerinSlashMesh {
         double wake = stage <= 2 ? directionalWeight(u) : 0.70 + 0.30 * u;
         double ripple = band < 6 ? 0.70 + 0.30 * Math.sin(u * 47 - age * 3 + band) : 1;
         int alpha = (int) Math.round(c[3] * fade * taper * wake * ripple);
-        return at(stage, progress * u, travel, radius, c[0], c[1], c[2], alpha);
+        // Anchor the tiled grain to the swept angle so it uncovers as the blade forms.
+        float texU = (float) (progress * u * (stage >= 4 ? 2 : 1));
+        float texV = (float) ((0.5 + 126 * RADII[band] / 1.025) / 128);
+        return at(stage, progress * u, travel, radius, c[0], c[1], c[2], alpha, texU, texV);
     }
 
     private static Vertex edge(
@@ -196,6 +199,12 @@ public final class FerinSlashMesh {
 
     private static Vertex at(
             int stage, double p, double travel, double radius, int r, int g, int b, int alpha) {
+        return at(stage, p, travel, radius, r, g, b, alpha, 0.5F, SOLID_V);
+    }
+
+    private static Vertex at(
+            int stage, double p, double travel, double radius, int r, int g, int b, int alpha,
+            float texU, float texV) {
         var pose = FerinBladeTrajectory.blade(stage, p, travel);
         var root = pose.root();
         var tip = pose.tip();
@@ -228,11 +237,22 @@ public final class FerinSlashMesh {
                 r,
                 g,
                 b,
-                alpha);
+                alpha, texU, texV);
     }
 
+    private static final float SOLID_V = 127.5F / 128;
+
     public record Vertex(
-            double right, double up, double forward, int red, int green, int blue, int alpha) {}
+            double right, double up, double forward, int red, int green, int blue, int alpha,
+            float texU, float texV) {
+        public Vertex(double right, double up, double forward, int red, int green, int blue, int alpha) {
+            this(right, up, forward, red, green, blue, alpha, 0.5F, SOLID_V);
+        }
+
+        public boolean texturedFace() {
+            return texV < SOLID_V;
+        }
+    }
 
     public record Quad(Vertex a, Vertex b, Vertex c, Vertex d) {}
 }

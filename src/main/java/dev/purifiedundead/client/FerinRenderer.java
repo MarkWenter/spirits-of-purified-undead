@@ -16,7 +16,7 @@ import org.joml.Matrix4f;
 /** Initial release: only the independent slash mesh is visible; the knight rig is archived. */
 public final class FerinRenderer extends EntityRenderer<FerinEntity> {
     private static final ResourceLocation TEXTURE =
-            new ResourceLocation("purified_undead", "textures/entity/ferin_slash_white.png");
+            new ResourceLocation("purified_undead", "textures/entity/ferin_slash_wake.png");
 
     public FerinRenderer(EntityRendererProvider.Context context) {
         super(context);
@@ -83,8 +83,9 @@ public final class FerinRenderer extends EntityRenderer<FerinEntity> {
                         + basis.vertical().z * up
                         + basis.forward().z * v.forward();
         out.vertex(matrix, (float) x, (float) y, (float) z)
-                .color(v.red(), v.green(), v.blue(), v.alpha())
-                .uv(0.5F, 0.5F)
+                .color(v.texturedFace() ? 255 : v.red(), v.texturedFace() ? 255 : v.green(),
+                        v.texturedFace() ? 255 : v.blue(), v.alpha())
+                .uv(v.texU(), v.texV())
                 .overlayCoords(OverlayTexture.NO_OVERLAY)
                 .uv2(15728880)
                 .normal(0, 1, 0)
