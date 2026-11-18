@@ -11,6 +11,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.NetworkHooks;
+
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager;
@@ -21,7 +22,9 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 import java.util.Optional;
 import java.util.UUID;
 
-/** Network-synchronized visual carrier for Ferin. Combat remains server-owned by FerinCombatEvents. */
+/**
+ * Network-synchronized visual carrier for Ferin. Combat remains server-owned by FerinCombatEvents.
+ */
 public final class FerinEntity extends Entity implements GeoEntity {
     private static final EntityDataAccessor<Optional<UUID>> OWNER =
             SynchedEntityData.defineId(FerinEntity.class, EntityDataSerializers.OPTIONAL_UUID);
@@ -42,6 +45,23 @@ public final class FerinEntity extends Entity implements GeoEntity {
             SynchedEntityData.defineId(FerinEntity.class, EntityDataSerializers.VECTOR3);
     private static final EntityDataAccessor<Float> FLIGHT_SPEED =
             SynchedEntityData.defineId(FerinEntity.class, EntityDataSerializers.FLOAT);
+    // Immutable release pose, retained while flight updates move the visual carrier.
+    private static final EntityDataAccessor<net.minecraft.core.BlockPos> RELEASE_CELL =
+            SynchedEntityData.defineId(FerinEntity.class, EntityDataSerializers.BLOCK_POS);
+    private static final EntityDataAccessor<org.joml.Vector3f> RELEASE_OFFSET =
+            SynchedEntityData.defineId(FerinEntity.class, EntityDataSerializers.VECTOR3);
+    private static final EntityDataAccessor<org.joml.Vector3f> RELEASE_DIRECTION =
+            SynchedEntityData.defineId(FerinEntity.class, EntityDataSerializers.VECTOR3);
+
+    public net.minecraft.world.phys.Vec3 releasePosition() {
+        return net.minecraft.world.phys.Vec3.atLowerCornerOf(entityData.get(RELEASE_CELL))
+                .add(new net.minecraft.world.phys.Vec3(entityData.get(RELEASE_OFFSET)));
+    }
+
+    public net.minecraft.world.phys.Vec3 releaseDirection() {
+        return new net.minecraft.world.phys.Vec3(entityData.get(RELEASE_DIRECTION));
+    }
+
     private double lerpX, lerpY, lerpZ;
     private int lerpSteps;
 
@@ -65,6 +85,14 @@ public final class FerinEntity extends Entity implements GeoEntity {
             double speed) {
         setPos(position);
         var cell = net.minecraft.core.BlockPos.containing(position);
+        if (age == 0) {
+            entityData.set(RELEASE_CELL, cell);
+            entityData.set(
+                    RELEASE_OFFSET,
+                    position.subtract(net.minecraft.world.phys.Vec3.atLowerCornerOf(cell))
+                            .toVector3f());
+            entityData.set(RELEASE_DIRECTION, direction.toVector3f());
+        }
         entityData.set(FLIGHT_CELL, cell);
         entityData.set(
                 FLIGHT_OFFSET,
@@ -129,6 +157,9 @@ public final class FerinEntity extends Entity implements GeoEntity {
         entityData.define(FLIGHT_CELL, net.minecraft.core.BlockPos.ZERO);
         entityData.define(FLIGHT_OFFSET, new org.joml.Vector3f());
         entityData.define(FLIGHT_SPEED, 0F);
+        entityData.define(RELEASE_CELL, net.minecraft.core.BlockPos.ZERO);
+        entityData.define(RELEASE_OFFSET, new org.joml.Vector3f());
+        entityData.define(RELEASE_DIRECTION, new org.joml.Vector3f(0, 0, 1));
     }
 
     public Optional<UUID> getOwnerUuid() {

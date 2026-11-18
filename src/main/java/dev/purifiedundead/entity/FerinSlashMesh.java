@@ -1,6 +1,7 @@
 package dev.purifiedundead.entity;
 
 import dev.purifiedundead.combat.FerinBladeTrajectory;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,14 +53,37 @@ public final class FerinSlashMesh {
     }
 
     public static List<Quad> flight(int stage, double age, int lifetime) {
-        if (lifetime <= 0 || age < 0 || age > lifetime + 1) return List.of();
+        if (stage < 1
+                || stage > 5
+                || lifetime <= 0
+                || !Double.isFinite(age)
+                || age < 0
+                || age >= lifetime + 1) return List.of();
         double forming = Math.min(lifetime, FerinBladeTrajectory.sweepEnd(stage) - 1);
         double visualAge =
                 1 + Math.min(age, forming) * (FerinBladeTrajectory.sweepEnd(stage) - 1) / forming;
-        return sample(stage, visualAge, true, Math.min(1, lifetime + 1 - age));
+        return sample(
+                stage,
+                visualAge,
+                true,
+                Math.min(1, (lifetime + 1 - age) / Math.min(3.0, lifetime)),
+                age);
+    }
+
+    /** Short stationary sweep at the server-confirmed release pose. */
+    public static List<Quad> launch(int stage, double age) {
+        if (stage < 1 || stage > 5 || !Double.isFinite(age) || age < 0) return List.of();
+        double end = FerinBladeTrajectory.sweepEnd(stage);
+        if (age >= end + 2) return List.of();
+        return sample(stage, Math.min(1 + age, end), true, Math.min(1, (end + 2 - age) / 2), age);
     }
 
     private static List<Quad> sample(int stage, double age, boolean flying, double flightFade) {
+        return sample(stage, age, flying, flightFade, 0);
+    }
+
+    private static List<Quad> sample(
+            int stage, double age, boolean flying, double flightFade, double effectAge) {
         if (stage < 1
                 || stage > 5
                 || !Double.isFinite(age)
@@ -76,13 +100,31 @@ public final class FerinSlashMesh {
         Vertex[] leftFace = new Vertex[RADII.length], rightFace = new Vertex[RADII.length];
         Vertex[] leftEdge = new Vertex[EDGE.length], rightEdge = new Vertex[EDGE.length];
         for (int band = 0; band < RADII.length; band++)
-            leftFace[band] = vertex(stage, progress, travel, 0, band, fade, age);
+            leftFace[band] =
+                    vertex(
+                            stage,
+                            progress,
+                            travel,
+                            0,
+                            band,
+                            fade,
+                            flying ? effectAge : age,
+                            flying);
         for (int band = 0; band < EDGE.length; band++)
             leftEdge[band] = edge(stage, progress, travel, 0, band, fade);
         for (int i = 0; i < segments; i++) {
             double a = i / (double) segments, b = (i + 1.0) / segments;
             for (int band = 0; band < RADII.length; band++)
-                rightFace[band] = vertex(stage, progress, travel, b, band, fade, age);
+                rightFace[band] =
+                        vertex(
+                                stage,
+                                progress,
+                                travel,
+                                b,
+                                band,
+                                fade,
+                                flying ? effectAge : age,
+                                flying);
             for (int band = 0; band < EDGE.length; band++)
                 rightEdge[band] = edge(stage, progress, travel, b, band, fade);
             for (int band = 0; band < RADII.length - 1; band++)
@@ -103,7 +145,10 @@ public final class FerinSlashMesh {
             // Two narrow, interrupted pink/violet filaments inside the broad wake.
             for (int streak = 0; streak < 4; streak++) {
                 if ((i + streak * 3) % 17 > 11) continue;
-                double r = 0.43 + streak * 0.13 + 0.035 * Math.sin(a * 27 + streak * 4);
+                double r =
+                        0.43
+                                + streak * 0.13
+                                + 0.035 * Math.sin(a * 27 + streak * 4 - effectAge * 0.8);
                 int alpha =
                         (int)
                                 (95
@@ -150,12 +195,19 @@ public final class FerinSlashMesh {
             double u,
             int band,
             double fade,
-            double age) {
+            double age,
+            boolean dynamic) {
         int[] c = COLORS[band];
         double taper = Math.pow(Math.max(0, Math.sin(Math.PI * u)), 0.28);
         // Preserve the full ring near closure; otherwise taper the two ends sharply.
         if (stage >= 4 && progress > 0.99) taper = 0.65 + 0.35 * taper;
-        double tooth = band < 7 ? 0.05 * Math.sin(u * 73 + band * 0.8) * Math.sin(u * 31) : 0;
+        double waveTime = dynamic ? age : 0;
+        double tooth =
+                band < 7
+                        ? 0.05
+                                * Math.sin(u * 73 + band * 0.8 - waveTime * 0.9)
+                                * Math.sin(u * 31 + waveTime * 0.55)
+                        : 0;
         double radius = 1 - (1 - RADII[band]) * taper + tooth * taper;
         double wake = stage <= 2 ? directionalWeight(u) : 0.70 + 0.30 * u;
         double ripple = band < 6 ? 0.70 + 0.30 * Math.sin(u * 47 - age * 3 + band) : 1;
@@ -203,8 +255,16 @@ public final class FerinSlashMesh {
     }
 
     private static Vertex at(
-            int stage, double p, double travel, double radius, int r, int g, int b, int alpha,
-            float texU, float texV) {
+            int stage,
+            double p,
+            double travel,
+            double radius,
+            int r,
+            int g,
+            int b,
+            int alpha,
+            float texU,
+            float texV) {
         var pose = FerinBladeTrajectory.blade(stage, p, travel);
         var root = pose.root();
         var tip = pose.tip();
@@ -237,15 +297,25 @@ public final class FerinSlashMesh {
                 r,
                 g,
                 b,
-                alpha, texU, texV);
+                alpha,
+                texU,
+                texV);
     }
 
     private static final float SOLID_V = 127.5F / 128;
 
     public record Vertex(
-            double right, double up, double forward, int red, int green, int blue, int alpha,
-            float texU, float texV) {
-        public Vertex(double right, double up, double forward, int red, int green, int blue, int alpha) {
+            double right,
+            double up,
+            double forward,
+            int red,
+            int green,
+            int blue,
+            int alpha,
+            float texU,
+            float texV) {
+        public Vertex(
+                double right, double up, double forward, int red, int green, int blue, int alpha) {
             this(right, up, forward, red, green, blue, alpha, 0.5F, SOLID_V);
         }
 

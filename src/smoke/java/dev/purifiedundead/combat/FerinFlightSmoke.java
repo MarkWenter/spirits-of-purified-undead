@@ -47,6 +47,16 @@ public final class FerinFlightSmoke {
             state.combo.onQualifyingHit(now, 5, new FerinComboTimings(40, 10, 40, 16, 4));
             state.captureStage(player.position(), 0, 10, 1);
             launch.invoke(events, player, state, target.getBoundingBox().getCenter(), target);
+            var visual = level.getEntitiesOfClass(
+                    dev.purifiedundead.entity.FerinEntity.class,
+                    player.getBoundingBox().inflate(32), e -> e.belongsTo(player.getUUID())).get(0);
+            Vec3 release = visual.releasePosition();
+            Vec3 releaseDirection = visual.releaseDirection();
+            tick.invoke(events, player);
+            check(visual.releasePosition().distanceTo(release) < 1e-6
+                    && visual.releaseDirection().distanceTo(releaseDirection) < 1e-6,
+                    "release pose remains fixed while flight advances");
+            check(visual.position().distanceTo(release) > .1, "flight separates from launch");
             // Change the current combo snapshot after launch: the in-flight wave must retain 10.
             state.triggerPreDefenseDamage = 500;
             float before = target.getHealth();

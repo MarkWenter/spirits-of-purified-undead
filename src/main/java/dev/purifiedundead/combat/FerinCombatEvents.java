@@ -555,6 +555,11 @@ public final class FerinCombatEvents {
         while (iterator.hasNext()) {
             var flight = iterator.next();
             if (flight.motion.finished()) {
+                if (flight.motion.lifetime() + flight.visualTailTicks++
+                        < FerinBladeTrajectory.sweepEnd(flight.stage) + 2) {
+                    if (flight.visual != null) flight.visual.refreshOwnerLease();
+                    continue;
+                }
                 flight.discard();
                 iterator.remove();
                 continue;

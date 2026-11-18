@@ -16,6 +16,7 @@ final class FerinSlashFlight {
     UUID target;
     final Vec3 targetOffset;
     FerinEntity visual;
+    int visualTailTicks;
 
     FerinSlashFlight(
             FerinPlayerState source,
