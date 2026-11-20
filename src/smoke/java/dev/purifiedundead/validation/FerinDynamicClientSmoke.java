@@ -59,16 +59,22 @@ public final class FerinDynamicClientSmoke {
             mc.options.hideGui = false;
             if (dev.purifiedundead.content.ModItems.KNIGHT_NOCTURNE != null) {
                 var stack = new net.minecraft.world.item.ItemStack(dev.purifiedundead.content.ModItems.KNIGHT_NOCTURNE.get());
-                if (stage == 6 && frame == 0) {
-                    mc.getSingleplayerServer().execute(() -> {
-                        var player = mc.getSingleplayerServer().getPlayerList().getPlayer(mc.player.getUUID());
-                        if (player != null) player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, stack.copy());
-                        mc.getSingleplayerServer().overworld().setDayTime(9000);
+                if ((stage == 6 || stage == 7) && frame == 0) {
+                    var server = mc.getSingleplayerServer();
+                    var uuid = mc.player.getUUID();
+                    var held = stage == 6 ? new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.FLINT_AND_STEEL) : stack;
+                    server.execute(() -> {
+                        var player = server.getPlayerList().getPlayer(uuid);
+                        if (player != null) player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, held);
+                        server.overworld().setDayTime(9000);
                     });
                 }
-                if (stage == 6 && frame < 22) return;
-                net.minecraft.client.Screenshot.grab(mc.gameDirectory, "knight-nocturne-hand.png",
-                        mc.getMainRenderTarget(), message -> {});
+                if (stage <= 7 && (frame == 20 || stage == 7 && frame == 29)) {
+                    String capture = stage == 6 ? "nocturne-flint" : "nocturne-wisps-" + frame;
+                    net.minecraft.client.Screenshot.grab(mc.gameDirectory, capture + ".png",
+                            mc.getMainRenderTarget(), message -> {});
+                }
+                if (stage <= 7) return;
                 var model = mc.getItemRenderer().getModel(stack,mc.level,mc.player,0);
                 var gui = model.applyTransform(net.minecraft.world.item.ItemDisplayContext.GUI,new com.mojang.blaze3d.vertex.PoseStack(),false);
                 var hand = model.applyTransform(net.minecraft.world.item.ItemDisplayContext.FIRST_PERSON_RIGHT_HAND,new com.mojang.blaze3d.vertex.PoseStack(),false);
