@@ -59,6 +59,16 @@ public final class FerinDynamicClientSmoke {
             mc.options.hideGui = false;
             if (dev.purifiedundead.content.ModItems.KNIGHT_NOCTURNE != null) {
                 var stack = new net.minecraft.world.item.ItemStack(dev.purifiedundead.content.ModItems.KNIGHT_NOCTURNE.get());
+                if (stage == 6 && frame == 0) {
+                    mc.getSingleplayerServer().execute(() -> {
+                        var player = mc.getSingleplayerServer().getPlayerList().getPlayer(mc.player.getUUID());
+                        if (player != null) player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, stack.copy());
+                        mc.getSingleplayerServer().overworld().setDayTime(9000);
+                    });
+                }
+                if (stage == 6 && frame < 22) return;
+                net.minecraft.client.Screenshot.grab(mc.gameDirectory, "knight-nocturne-hand.png",
+                        mc.getMainRenderTarget(), message -> {});
                 var model = mc.getItemRenderer().getModel(stack,mc.level,mc.player,0);
                 var gui = model.applyTransform(net.minecraft.world.item.ItemDisplayContext.GUI,new com.mojang.blaze3d.vertex.PoseStack(),false);
                 var hand = model.applyTransform(net.minecraft.world.item.ItemDisplayContext.FIRST_PERSON_RIGHT_HAND,new com.mojang.blaze3d.vertex.PoseStack(),false);
