@@ -70,22 +70,11 @@ public final class FerinBladeTrajectory {
             y = -Math.sin(angle) * scale;
             z = Math.cos(angle) * scale;
         } else if (stage == 4) {
-            if (p < 0.18) {
-                double t = p / 0.18;
-                // From below/front into the raised left edge of the tilted ring.
-                x = -0.94 * t;
-                y = -0.90 * (1 - t) + 0.342 * t;
-                z = 0.436 * (1 - t);
-                double length = Math.sqrt(x * x + y * y + z * z);
-                x /= length;
-                y /= length;
-                z /= length;
-            } else {
-                double angle = Math.toRadians(-90 - 270 * (p - 0.18) / 0.82);
-                x = Math.sin(angle) * Math.cos(Math.toRadians(20));
-                y = -Math.sin(angle) * Math.sin(Math.toRadians(20));
-                z = Math.cos(angle);
-            }
+            // One closed circle, swept in the original tilted plane.
+            double angle = -2 * Math.PI * p;
+            x = Math.sin(angle) * Math.cos(Math.toRadians(20));
+            y = -Math.sin(angle) * Math.sin(Math.toRadians(20));
+            z = Math.cos(angle);
         } else {
             reach(stage);
             // Front -> below -> behind -> above -> front -> below (450 degrees).

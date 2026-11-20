@@ -39,6 +39,7 @@ final class FerinSlashFlight {
     }
 
     Vec3 targetPosition(ServerLevel level) {
+        if (!damage.hitTargets.isEmpty()) target = null;
         if (target == null) return null;
         if (!(level.getEntity(target) instanceof LivingEntity living) || !living.isAlive()) {
             target = null; // Loss is terminal for this flight. Never acquire a different unit.

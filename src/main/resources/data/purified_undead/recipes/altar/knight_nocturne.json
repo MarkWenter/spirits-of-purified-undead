@@ -1,0 +1,39 @@
+{
+  "type": "touhou_little_maid:altar_crafting",
+  "output": {
+    "type": "minecraft:item",
+    "nbt": {
+      "Item": {
+        "id": "purified_undead:knight_nocturne",
+        "Count": 1
+      }
+    }
+  },
+  "power": 0.1,
+  "ingredients": [
+    {
+      "item": "purified_undead:pure_touch"
+    },
+    {
+      "item": "touhou_little_maid:shrine"
+    },
+    {
+      "item": "minecraft:netherite_ingot"
+    },
+    {
+      "item": "minecraft:diamond"
+    },
+    {
+      "item": "minecraft:gold_ingot"
+    },
+    {
+      "item": "minecraft:iron_ingot"
+    }
+  ],
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "touhou_little_maid"
+    }
+  ]
+}

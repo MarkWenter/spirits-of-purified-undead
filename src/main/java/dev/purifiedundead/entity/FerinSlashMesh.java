@@ -288,6 +288,7 @@ public final class FerinSlashMesh {
         double norm = Math.sqrt(nx * nx + ny * ny + nz * nz);
         double length = Math.sqrt(dx * dx + dy * dy + dz * dz);
         double angle = Math.toRadians(faceTiltDegrees(stage));
+        if (stage >= 4) radius = 1 - (1 - radius) * 0.42;
         double inward = (1 - radius) * Math.cos(angle);
         double bevel = norm < 1e-9 ? 0 : (1 - radius) * length * Math.sin(angle) / norm;
         return new Vertex(

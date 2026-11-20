@@ -75,8 +75,32 @@ public final class FerinFlightSmoke {
             before = target.getHealth();
             for (int i = 0; i < 80; i++) tick.invoke(events, player);
             check(before == target.getHealth(), "cancel removes pending damage");
+            // Intercept a new flight before its tracked target. Then move that target off-axis.
+            target.setPos(40, 80, 65);
+            var blocker = new Zombie(level);
+            blocker.setNoAi(true);
+            blocker.setPos(40, 80, 48);
+            level.addFreshEntity(blocker);
+            mobs.add(blocker);
+            launch.invoke(events, player, state, target.getBoundingBox().getCenter(), target);
+            var flightMap = FerinCombatEvents.class.getDeclaredField("ferinEntities");
+            flightMap.setAccessible(true);
+            var active = (java.util.Map<?, ?>) flightMap.get(events);
+            var flight = (FerinSlashFlight) ((java.util.List<?>) active.get(player.getUUID())).get(0);
+            while (!flight.motion.finished() && !flight.damage.hitTargets.contains(blocker.getUUID()))
+                tick.invoke(events, player);
+            check(!flight.motion.finished() && !flight.damage.hitTargets.contains(target.getUUID()),
+                    "intervening mob hit before tracked target");
+            Vec3 straight = flight.motion.direction();
+            target.setPos(50, 80, 65);
+            while (!flight.motion.finished()) {
+                tick.invoke(events, player);
+                check(flight.target == null && flight.motion.direction().distanceTo(straight) < 1e-9,
+                        "hit permanently ends steering");
+            }
+            remove.invoke(events, player);
             System.out.println(
-                    "FERIN_FLIGHT_OK: independent snapshot, distant real collision, deduplication, finite lifetime, cancellation");
+                    "FERIN_FLIGHT_OK: independent snapshot, distant real collision, deduplication, finite lifetime, cancellation, straight after interception");
         } catch (ReflectiveOperationException error) {
             throw new IllegalStateException("FERIN_FLIGHT_FAILED", error);
         } finally {

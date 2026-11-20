@@ -270,6 +270,8 @@ public final class PurificationServerSmoke {
             FoundryServerSmoke.run(server);
             FerinLargeMobSmoke.run(server);
             dev.purifiedundead.combat.FerinFlightSmoke.run(server);
+            if (dev.purifiedundead.content.ModItems.KNIGHT_NOCTURNE != null)
+                dev.purifiedundead.nocturne.NocturneSmoke.run(server,player);
             PurificationPartTwoSmoke.run(server);
             LilyDiarySmoke.run(server);
             AdvancementSmoke.run(server);

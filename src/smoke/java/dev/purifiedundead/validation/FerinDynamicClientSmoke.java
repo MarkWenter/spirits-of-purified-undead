@@ -57,6 +57,15 @@ public final class FerinDynamicClientSmoke {
         int frame = (ticks - 60) % 32;
         if (stage > 5) {
             mc.options.hideGui = false;
+            if (dev.purifiedundead.content.ModItems.KNIGHT_NOCTURNE != null) {
+                var stack = new net.minecraft.world.item.ItemStack(dev.purifiedundead.content.ModItems.KNIGHT_NOCTURNE.get());
+                var model = mc.getItemRenderer().getModel(stack,mc.level,mc.player,0);
+                var gui = model.applyTransform(net.minecraft.world.item.ItemDisplayContext.GUI,new com.mojang.blaze3d.vertex.PoseStack(),false);
+                var hand = model.applyTransform(net.minecraft.world.item.ItemDisplayContext.FIRST_PERSON_RIGHT_HAND,new com.mojang.blaze3d.vertex.PoseStack(),false);
+                if (gui == hand || hand.getQuads(null,null,net.minecraft.util.RandomSource.create()).isEmpty())
+                    throw new IllegalStateException("Knight Nocturne GUI or handheld model missing");
+                System.out.println("NOCTURNE_CLIENT_OK: distinct GUI and three-dimensional hand model");
+            }
             System.out.println("FERIN_DYNAMIC_CLIENT_OK: five timed launches and flights captured");
             mc.stop();
             return;

@@ -65,6 +65,7 @@ def attributeMods = [
     "dev.shadowsoffire:Placebo:${placebo_version}"
 ]
 dependencies {
+    compileOnly(providers.gradleProperty("maid_api_jar").isPresent() ? files(providers.gradleProperty("maid_api_jar").get()) : "maven.modrinth:touhou-little-maid:g1SKoGQJ")
     compileOnly 'io.github.llamalad7:mixinextras-common:0.5.3'
     implementation(jarJar('io.github.llamalad7:mixinextras-forge:0.5.3')) {
         jarJar.ranged(it, '[0.5.3,)')

@@ -21,6 +21,21 @@ public final class FerinRenderer extends EntityRenderer<FerinEntity> {
     private static final ResourceLocation TEXTURE =
             new ResourceLocation("purified_undead", "textures/entity/ferin_slash_dynamic.png");
 
+    // Capture once per tracked visual. Weak keys retire with the client entity.
+    private final java.util.Map<FerinEntity, net.minecraft.world.phys.Vec3> offsets =
+            new java.util.WeakHashMap<>();
+
+    private net.minecraft.world.phys.Vec3 launchOffset(FerinEntity entity, double age, float partial) {
+        if (age > 7) return net.minecraft.world.phys.Vec3.ZERO;
+        return offsets.computeIfAbsent(entity, key -> {
+            var owner = key.getOwnerUuid().map(key.level()::getPlayerByUUID).orElse(null);
+            var light = owner == null ? null : ContractWispClient.findFor(owner);
+            if (light == null || light.isRemoved() || age > 3) return net.minecraft.world.phys.Vec3.ZERO;
+            var offset = light.getPosition(partial).subtract(key.releasePosition());
+            return offset.lengthSqr() <= 64 ? offset : net.minecraft.world.phys.Vec3.ZERO;
+        });
+    }
+
     public FerinRenderer(EntityRendererProvider.Context context) {
         super(context);
         shadowRadius = 0.0F;
@@ -36,18 +51,19 @@ public final class FerinRenderer extends EntityRenderer<FerinEntity> {
             int packedLight) {
         double age = entity.level().getGameTime() - entity.getStageStartedAt() + partialTick;
         var direction = entity.flightDirection();
-        var basis = dev.purifiedundead.combat.FerinFlightMotion.basis(direction);
+        var basis = dev.purifiedundead.combat.FerinFlightMotion.basis(entity.visualHeading(partialTick));
         double x = net.minecraft.util.Mth.lerp(partialTick, entity.xOld, entity.getX());
         double y = net.minecraft.util.Mth.lerp(partialTick, entity.yOld, entity.getY());
         double z = net.minecraft.util.Mth.lerp(partialTick, entity.zOld, entity.getZ());
         VertexConsumer vertices = buffers.getBuffer(RenderType.entityTranslucentEmissive(TEXTURE));
         boolean flight = entity.flightLifetime() > 0;
+        var offset = flight ? launchOffset(entity, age, partialTick) : net.minecraft.world.phys.Vec3.ZERO;
         if (flight
                 && age >= 0
                 && age
                         < dev.purifiedundead.combat.FerinBladeTrajectory.sweepEnd(entity.getStage())
                                 + 2) {
-            var origin = entity.releasePosition();
+            var origin = entity.releasePosition().add(offset);
             poses.pushPose();
             try {
                 poses.translate(origin.x - x, origin.y - y, origin.z - z);
@@ -67,7 +83,24 @@ public final class FerinRenderer extends EntityRenderer<FerinEntity> {
         try {
             if (flight) {
                 var predicted = entity.predictedFlightPosition(partialTick);
+                double distance = predicted.distanceTo(entity.releasePosition());
+                double blend = 1 - Math.min(1, Math.max(distance / 5, age / 6));
+                predicted = predicted.add(offset.scale(Math.max(0, blend)));
+                // Change heading around the forward cutting tip. Its position is
+                // independent of the instantaneous rotation of the blade plane.
+                double reach = dev.purifiedundead.combat.FerinBladeTrajectory.reach(entity.getStage());
+                var pivotOffset = direction.subtract(basis.forward()).scale(reach);
+                predicted = predicted.add(pivotOffset);
                 poses.translate(predicted.x - x, predicted.y - y, predicted.z - z);
+                if (entity.getStage() >= 4) {
+                    // Spin within the sweep plane: the silhouette and forward reach stay fixed.
+                    var axis = entity.getStage() == 5 ? basis.side()
+                            : basis.side().scale(Math.sin(Math.toRadians(20)))
+                                    .add(basis.vertical().scale(Math.cos(Math.toRadians(20))));
+                    poses.mulPose(new org.joml.Quaternionf().rotationAxis(
+                            (float)(age * (entity.getStage() == 5 ? .40 : -.48)),
+                            (float)axis.x, (float)axis.y, (float)axis.z));
+                }
             }
             double flightAge = Math.min(entity.flightAge() + 2 + partialTick, age);
             if (flight) {
@@ -79,6 +112,11 @@ public final class FerinRenderer extends EntityRenderer<FerinEntity> {
                         basis,
                         true,
                         age);
+            }
+            if (flight && flightAge > 0 && flightAge < entity.flightLifetime() + 1) {
+                draw(vertices, poses.last().pose(),
+                        FerinCrystalModel.sample(entity.getStage(), flightAge, entity.flightLifetime()),
+                        basis, true, age);
             }
             draw(
                     vertices,
@@ -160,7 +198,7 @@ public final class FerinRenderer extends EntityRenderer<FerinEntity> {
                                 new net.minecraft.world.phys.AABB(
                                         entity.predictedFlightPosition(0),
                                         entity.predictedFlightPosition(1)))
-                        .inflate(12));
+                        .inflate(26));
     }
 
     @Override

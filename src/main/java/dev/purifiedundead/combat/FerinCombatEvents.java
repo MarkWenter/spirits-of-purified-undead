@@ -502,6 +502,7 @@ public final class FerinCombatEvents {
 
     private void launchFlight(
             ServerPlayer owner, FerinPlayerState runtime, Vec3 aim, LivingEntity victim) {
+        if (dev.purifiedundead.nocturne.NocturneEffect.sealed(owner)) return;
         Vec3 origin =
                 wispAnchors
                         .computeIfAbsent(owner.getUUID(), ignored -> new FerinWispAnchor())
@@ -669,7 +670,7 @@ public final class FerinCombatEvents {
             float amount =
                     FerinDamageModel.baseDamage(
                             runtime.combo.stage(), runtime.triggerPreDefenseDamage);
-            amount *= runtime.stageCriticalMultiplier;
+
             if (dev.purifiedundead.slate.MemoryEffects.active(owner, "ferin"))
                 amount *=
                         1
@@ -678,16 +679,19 @@ public final class FerinCombatEvents {
             if (!Float.isFinite(amount) || amount < 0) continue;
             boolean hoenirMarked = HoenirCombatEvents.hasMark(owner, target);
             amount = HoenirModel.ferinDamage(amount, hoenirMarked);
+            amount = dev.purifiedundead.nocturne.NocturneEffect.damage(owner, amount) * runtime.stageCriticalMultiplier;
             if (!Float.isFinite(amount) || amount < 0) continue;
             int previousInvulnerableTime = target.invulnerableTime;
             target.invulnerableTime = 0;
             boolean damaged;
             try {
-                damaged = target.hurt(ModDamageTypes.ferinAssist(level, owner), amount);
+                damaged = target.hurt(dev.purifiedundead.nocturne.NocturneEffect.source(owner, ModDamageTypes.ferinAssist(level, owner)), amount);
             } finally {
                 target.invulnerableTime =
                         Math.max(previousInvulnerableTime, target.invulnerableTime);
             }
+            if (damaged && target.isDeadOrDying() && target instanceof net.minecraft.world.entity.monster.Enemy)
+                dev.purifiedundead.nocturne.NocturneEffect.kill(owner);
             if (damaged && hoenirMarked) {
                 HoenirCombatEvents.consumeMark(owner, target);
             }

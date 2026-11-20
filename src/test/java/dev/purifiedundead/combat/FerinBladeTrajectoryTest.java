@@ -48,7 +48,10 @@ class FerinBladeTrajectoryTest {
         var four = FerinBladeTrajectory.blade(4, 1, 0).tip();
         assertEquals(0, four.right(), 1e-8);
         assertEquals(3, four.forward(), 1e-8);
-        assertTrue(FerinBladeTrajectory.blade(4, 0, 0).tip().up() < 1.05);
+        var start = FerinBladeTrajectory.blade(4, 0, 0).tip();
+        assertEquals(start.right(), four.right(), 1e-9);
+        assertEquals(start.up(), four.up(), 1e-9);
+        assertEquals(start.forward(), four.forward(), 1e-9);
         var five = FerinBladeTrajectory.blade(5, 1, 0).tip();
         assertEquals(-4.95, five.up(), 1e-8);
         assertEquals(0, five.forward(), 1e-8);

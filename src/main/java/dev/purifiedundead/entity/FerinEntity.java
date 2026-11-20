@@ -190,9 +190,18 @@ public final class FerinEntity extends Entity implements GeoEntity {
         entityData.set(STAGE_STARTED_AT, startedAt);
     }
 
+    private net.minecraft.world.phys.Vec3 visualHeading;
+
+    public net.minecraft.world.phys.Vec3 visualHeading(float partialTick) {
+        var heading = flightDirection();
+        if (visualHeading == null || visualHeading.dot(heading) <= 0) return heading;
+        return visualHeading.lerp(heading, partialTick).normalize();
+    }
+
     @Override
     public void tick() {
         super.tick();
+        if (level().isClientSide() && flightLifetime() > 0) visualHeading = visualHeading(.65F);
         if (level().isClientSide() && lerpSteps > 0) {
             setPos(
                     getX() + (lerpX - getX()) / lerpSteps,

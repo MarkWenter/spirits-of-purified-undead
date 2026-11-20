@@ -6,12 +6,20 @@ import net.minecraftforge.common.ForgeConfigSpec;
 public final class PurifiedUndeadConfig {
     public static final ForgeConfigSpec SPEC;
     public static final ForgeConfigSpec ACCESSORIES_SPEC;
+    public static final ForgeConfigSpec.IntValue NOCTURNE_INTERVAL;
+    public static final ForgeConfigSpec.BooleanValue NOCTURNE_MAID_DAMAGE;
     public static final Values VALUES;
 
     static {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
         ForgeConfigSpec.Builder accessories = new ForgeConfigSpec.Builder();
         VALUES = new Values(builder, accessories);
+        accessories.push("knightNocturne");
+        NOCTURNE_INTERVAL = accessories.comment("Ticks between maid attribute snapshots.")
+                .defineInRange("sampleTicks", 40, 10, 1200);
+        NOCTURNE_MAID_DAMAGE = accessories.comment("Experimental: adds the live maid as direct damage source. Maid mods may duplicate callbacks, damage or kill credit.")
+                .define("maidDamage", false);
+        accessories.pop();
         ACCESSORIES_SPEC = accessories.build();
         SPEC = builder.build();
     }

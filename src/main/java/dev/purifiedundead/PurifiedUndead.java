@@ -162,6 +162,7 @@ public final class PurifiedUndead {
             event.accept(ModItems.IMMACULATE_LEGGINGS.get());
             event.accept(ModItems.IMMACULATE_BOOTS.get());
             event.accept(ModItems.PURE_TOUCH.get());
+            if (ModItems.KNIGHT_NOCTURNE != null) event.accept(ModItems.KNIGHT_NOCTURNE.get());
             event.accept(ModItems.BLIGHTED_GUARDIAN.get());
             event.accept(ModItems.LILY_DIARY.get());
 

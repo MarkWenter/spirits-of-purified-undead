@@ -1,4 +1,11 @@
 {
+  "item.purified_undead.knight_nocturne": "Knight Nocturne",
+  "tooltip.purified_undead.knight_nocturne": "Call upon the knight’s power…",
+  "item.purified_undead.knight_nocturne.bound": "Bound Knight Nocturne",
+  "item.purified_undead.knight_nocturne.unbound": "Binding released",
+  "item.purified_undead.knight_nocturne.occupied": "Please do not betray your knight",
+  "item.purified_undead.knight_nocturne.foreign": "Bound to another player",
+  "item.purified_undead.knight_nocturne.none": "No active binding",
   "item.purified_undead.ancient_contract": "Ancient Contract",
   "item.purified_undead.ancient_contract.summary": "The ancient contract lets you contain blight, but also burdens you with resentment...",
   "item.purified_undead.ancient_contract.curse": "Curse of the contract: it cannot be removed, and even death cannot undo this eternal covenant.",

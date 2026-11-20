@@ -1,4 +1,11 @@
 {
+  "item.purified_undead.knight_nocturne": "骑士寂夜",
+  "tooltip.purified_undead.knight_nocturne": "可以调用骑士的力量为你所用……",
+  "item.purified_undead.knight_nocturne.bound": "已绑定骑士寂夜",
+  "item.purified_undead.knight_nocturne.unbound": "已解除绑定",
+  "item.purified_undead.knight_nocturne.occupied": "请不要背叛你的骑士",
+  "item.purified_undead.knight_nocturne.foreign": "骑士寂夜已绑定其他玩家",
+  "item.purified_undead.knight_nocturne.none": "尚未绑定骑士寂夜",
   "item.purified_undead.ancient_contract": "古老民族之契",
   "item.purified_undead.ancient_contract.summary": "古老的契约使你容纳污秽，但也会让你背负怨念……",
   "item.purified_undead.ancient_contract.curse": "契约的诅咒：契约无法取下，即使死亡也不会逆转这份永恒的约定。",
