@@ -70,6 +70,24 @@ public final class FerinSlashMesh {
                 age);
     }
 
+    public static final double OVERHEAD_LIFT_TICKS = 1.2;
+
+    /** Time on the existing third arc for the two-handed apparition. The blade
+     * lifts from the previous guard, then lands 35 degrees below horizontal. */
+    public static double overheadArcAge(double age) {
+        double duration = FerinBladeTrajectory.sweepEnd(3) - 1;
+        double t = Math.max(0, Math.min(1, (age - OVERHEAD_LIFT_TICKS) / (duration - OVERHEAD_LIFT_TICKS)));
+        double progress = (82 + 35) / 172.0 * t * (2 - t);
+        return duration * (1 - Math.sqrt(1 - progress));
+    }
+
+    public static List<Quad> overheadLaunch(double age) {
+        if (!Double.isFinite(age) || age < OVERHEAD_LIFT_TICKS || age >= FerinBladeTrajectory.sweepEnd(3) + 2)
+            return List.of();
+        return sample(3, 1 + overheadArcAge(age), true,
+                Math.min(1, (FerinBladeTrajectory.sweepEnd(3) + 2 - age) / 2), age);
+    }
+
     /** Short stationary sweep at the server-confirmed release pose. */
     public static List<Quad> launch(int stage, double age) {
         if (stage < 1 || stage > 5 || !Double.isFinite(age) || age < 0) return List.of();

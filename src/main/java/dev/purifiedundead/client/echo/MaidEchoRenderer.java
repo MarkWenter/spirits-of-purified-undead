@@ -39,7 +39,7 @@ public final class MaidEchoRenderer {
 
     public MaidEchoRenderer(EntityRendererProvider.Context context) { this.context = context; }
 
-    public void render(FerinEntity release, double age, float partial, Vec3 anchor,
+    public boolean render(FerinEntity release, double age, float partial, Vec3 anchor,
                        PoseStack parent, MultiBufferSource buffers) {
         var proxy = proxies.getIfPresent(release);
         // A private pose stack isolates even a broken skin renderer's unbalanced pushes.
@@ -53,7 +53,7 @@ public final class MaidEchoRenderer {
                 proxies.put(release, proxy);
                 var appearance = release.echoAppearance();
                 var mapped = appearance.getString("geckoEcho");
-                if (!mapped.isEmpty() && (proxy.stage == 1 || proxy.stage == 2) && appearance.contains("ysmModel")
+                if (!mapped.isEmpty() && (proxy.stage >= 1 && proxy.stage <= 3) && appearance.contains("ysmModel")
                         && PurifiedUndeadConfig.ECHO_SPECIAL_ANIMATIONS.get()) {
                     var info = CustomPackLoader.MAID_MODELS.getInfo(mapped).orElse(null);
                     if (info != null && info.isGeckoModel() && mapped.equals(info.getModelId().toString())) {
@@ -66,7 +66,7 @@ public final class MaidEchoRenderer {
                 }
                 proxy.loadAppearance(appearance);
             }
-            if (proxy.failed) return;
+            if (proxy.failed) return false;
             proxy.stage = release.getStage();
             proxy.age = (float)age;
             var direction = release.releaseDirection();
@@ -91,7 +91,7 @@ public final class MaidEchoRenderer {
             var info = models.getInfo(proxy.getModelId()).orElse(null);
             if (!proxy.isYsmModel() && info != null && info.isGeckoModel()) {
                 if (gecko == null) gecko = new EchoGeckoRenderer(context);
-                gecko.draw(proxy, info, yaw, partial, poses, buffers);
+                return gecko.draw(proxy, info, yaw, partial, poses, buffers);
             } else {
                 var model = proxy.isYsmModel() ? null : models.getModel(proxy.getModelId()).orElse(null);
                 var saved = new IdentityHashMap<BedrockPart, Quaternionf>();
@@ -115,6 +115,7 @@ public final class MaidEchoRenderer {
                 com.mojang.logging.LogUtils.getLogger().warn("Maid apparition unavailable for this release", ex);
             }
         }
+        return false;
     }
 
     private static void poseClassic(Map<String, BedrockPart> bones, Proxy proxy,

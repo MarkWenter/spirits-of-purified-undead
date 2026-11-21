@@ -9,6 +9,7 @@ import com.github.tartaricacid.touhoulittlemaid.geckolib3.core.util.Color;
 import com.github.tartaricacid.touhoulittlemaid.geckolib3.geo.animated.AnimatedGeoBone;
 import com.github.tartaricacid.touhoulittlemaid.geckolib3.util.RenderUtils;
 import dev.purifiedundead.combat.FerinBladeTrajectory;
+import dev.purifiedundead.entity.FerinSlashMesh;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.LightTexture;
@@ -26,17 +27,20 @@ import java.util.IdentityHashMap;
 final class EchoGeckoRenderer extends GeckoEntityMaidRenderer<MaidEchoRenderer.Proxy> {
     private final FerinComboCut firstCut;
     private final FerinComboCut secondCut;
+    private final FerinComboCut thirdCut;
 
     EchoGeckoRenderer(EntityRendererProvider.Context context) {
         super(context);
         firstCut = FerinComboCut.load(context.getResourceManager(), "combo_one");
         secondCut = FerinComboCut.load(context.getResourceManager(), "combo_two");
+        thirdCut = FerinComboCut.load(context.getResourceManager(), "combo_three");
     }
 
     private FerinComboCut clip(int stage) {
         return switch (stage) {
             case 1 -> firstCut;
             case 2 -> secondCut;
+            case 3 -> thirdCut;
             default -> null;
         };
     }
@@ -47,12 +51,12 @@ final class EchoGeckoRenderer extends GeckoEntityMaidRenderer<MaidEchoRenderer.P
         var candidate = new Animation(maid);
         candidate.setMaidInfo(info);
         if (!info.getModelId().equals(candidate.getModelLocation()) || !candidate.updateModel() || !candidate.supportsMappedArms()
-                || (maid.stage == 2 && !candidate.hasSupportingArm())) return false;
+                || (maid.stage >= 2 && !candidate.hasSupportingArm())) return false;
         maid.animation = candidate;
         return true;
     }
 
-    void draw(MaidEchoRenderer.Proxy maid, MaidModelInfo info, float yaw, float partial,
+    boolean draw(MaidEchoRenderer.Proxy maid, MaidModelInfo info, float yaw, float partial,
               PoseStack poses, MultiBufferSource buffers) {
         if (maid.animation == null) {
             maid.animation = new Animation(maid);
@@ -77,6 +81,7 @@ final class EchoGeckoRenderer extends GeckoEntityMaidRenderer<MaidEchoRenderer.P
                         -center.y * unit, (center.x * Math.sin(heading) + center.z * Math.cos(heading)) * unit);
             }
             geoRender(maid, yaw, partial, poses, buffers, LightTexture.FULL_BRIGHT);
+            return maid.playingCut;
         } finally {
             maid.animation.restore();
             maid.playingCut = false;
@@ -202,9 +207,17 @@ final class EchoGeckoRenderer extends GeckoEntityMaidRenderer<MaidEchoRenderer.P
             var matrix = local.last().pose();
             if (!(Math.abs(matrix.determinant3x3()) > 1.0e-6F)) return;
             int stage = getEntity().stage;
-            var blade = FerinBladeTrajectory.blade(stage, FerinBladeTrajectory.progress(stage, 1 + age), 0);
+            double arcAge = stage == 3 ? FerinSlashMesh.overheadArcAge(age) : age;
+            var blade = FerinBladeTrajectory.blade(stage, FerinBladeTrajectory.progress(stage, 1 + arcAge), 0);
             var ray = new Vector3f((float)blade.tip().right(), (float)(blade.tip().up() - blade.root().up()),
                     (float)-blade.tip().forward()).normalize();
+            if (stage == 3 && age < FerinSlashMesh.OVERHEAD_LIFT_TICKS) {
+                // Keep the wrist continuous from the previous two-handed guard to the overhead start.
+                var carry = FerinBladeTrajectory.blade(2, 1, 0);
+                float t = (float)(age / FerinSlashMesh.OVERHEAD_LIFT_TICKS);
+                ray = new Vector3f((float)carry.tip().right(), (float)(carry.tip().up() - carry.root().up()),
+                        (float)-carry.tip().forward()).normalize().lerp(ray, t * t * (3 - 2 * t)).normalize();
+            }
             var goal = new org.joml.Matrix4f(matrix).invert().transformDirection(new Vector3f(ray)).normalize();
             if (!goal.isFinite()) return;
             // Native item/handheld diagonal, after the maid's right-hand item transform.

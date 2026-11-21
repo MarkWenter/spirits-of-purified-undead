@@ -61,6 +61,7 @@ public final class FerinRenderer extends EntityRenderer<FerinEntity> {
         double z = net.minecraft.util.Mth.lerp(partialTick, entity.zOld, entity.getZ());
         boolean flight = entity.flightLifetime() > 0;
         var offset = flight ? launchOffset(entity, age, partialTick) : net.minecraft.world.phys.Vec3.ZERO;
+        boolean overheadCut = false;
         if (flight && age >= 0 && age < dev.purifiedundead.combat.FerinBladeTrajectory.sweepEnd(entity.getStage()) + 2
                 && !entity.echoAppearance().isEmpty() && dev.purifiedundead.content.ModItems.KNIGHT_NOCTURNE != null
                 && dev.purifiedundead.config.PurifiedUndeadConfig.SHOW_ECHO.get()) {
@@ -69,7 +70,8 @@ public final class FerinRenderer extends EntityRenderer<FerinEntity> {
             try {
                 poses.translate(origin.x - x, origin.y - y, origin.z - z);
                 if (echoes == null) echoes = new dev.purifiedundead.client.echo.MaidEchoRenderer(context);
-                echoes.render(entity, age, partialTick, origin, poses, buffers);
+                overheadCut = echoes.render(entity, age, partialTick, origin, poses, buffers)
+                        && entity.getStage() == 3;
             } finally {
                 poses.popPose();
             }
@@ -87,7 +89,7 @@ public final class FerinRenderer extends EntityRenderer<FerinEntity> {
                 draw(
                         vertices,
                         poses.last().pose(),
-                        FerinSlashMesh.launch(entity.getStage(), age),
+                        overheadCut ? FerinSlashMesh.overheadLaunch(age) : FerinSlashMesh.launch(entity.getStage(), age),
                         dev.purifiedundead.combat.FerinFlightMotion.basis(
                                 entity.releaseDirection()),
                         true,

@@ -6,6 +6,17 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class FerinSlashMeshTest {
     @Test
+    void overheadLaunchLiftsBeforeCuttingAndFinishesForward() {
+        assertTrue(FerinSlashMesh.overheadLaunch(FerinSlashMesh.OVERHEAD_LIFT_TICKS).isEmpty());
+        assertFalse(FerinSlashMesh.overheadLaunch(2).isEmpty());
+        double age = FerinSlashMesh.overheadArcAge(3);
+        var end = FerinBladeTrajectory.blade(3, FerinBladeTrajectory.progress(3, 1 + age), 0);
+        assertEquals(-35, Math.toDegrees(Math.atan2(end.tip().up() - end.root().up(), end.tip().forward())), 1e-6);
+        assertEquals(age, FerinSlashMesh.overheadArcAge(5));
+        assertTrue(FerinSlashMesh.overheadLaunch(6).isEmpty());
+    }
+
+    @Test
     void idleAndExpiredSlashesAreInvisible() {
         assertTrue(FerinSlashMesh.sample(0, 4).isEmpty());
         assertTrue(FerinSlashMesh.sample(6, 4).isEmpty());
