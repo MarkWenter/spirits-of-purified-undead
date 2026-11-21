@@ -65,6 +65,10 @@ public final class NocturneExtension implements ILittleMaid, IMaidBauble {
             s.putInt("favorability", maid.getFavorability());
             putText(s, "backpack", maid.getMaidBackpackType().getId().toString());
             putText(s, "backpackItem", net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(maid.getBackpackShowItem().getItem()).toString());
+            var displayed = EchoItemAppearance.capture(maid.getBackpackShowItem());
+            if (!displayed.isEmpty()) s.put("displayStack", displayed);
+            var head = EchoItemAppearance.capture(maid.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.HEAD));
+            if (!head.isEmpty()) s.put("headStack", head);
             s.putBoolean("showBackpack", maid.getConfigManager().isShowBackpack());
             s.putBoolean("showBackItem", maid.getConfigManager().isShowBackItem());
             s.putBoolean("leftHanded", maid.isLeftHanded());
@@ -81,6 +85,9 @@ public final class NocturneExtension implements ILittleMaid, IMaidBauble {
                 if (!variables.isEmpty()) s.put("variables", variables);
                 putText(s, "ysmModel", maid.getYsmModelId());
                 putText(s, "ysmTexture", maid.getYsmModelTexture());
+                if (maid.getYsmModelTexture() != null && maid.getYsmModelTexture().length() <= 256
+                        && (maid.roamingVars == null || variables.size() == maid.roamingVars.size()))
+                    WineFoxSkins.capture(s, r.getCompound("current"));
             }
             String model = maid.getModelId();
             if (model != null && model.length() <= 256) s.putString("model",model);

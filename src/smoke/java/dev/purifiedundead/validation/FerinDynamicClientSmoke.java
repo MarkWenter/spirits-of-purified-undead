@@ -3,6 +3,7 @@ package dev.purifiedundead.validation;
 import dev.purifiedundead.content.ModEntities;
 import dev.purifiedundead.entity.FerinEntity;
 
+import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.world.phys.Vec3;
@@ -22,15 +23,37 @@ public final class FerinDynamicClientSmoke {
                     return classic || dev.purifiedundead.client.echo.EchoAnimations.wineFoxGecko(rig);
                 }
                 public boolean sample(int stage, float age, dev.purifiedundead.client.echo.EchoAnimations.Rotations pose) {
-                    if (classic != (stage == 1 || stage == 4))
+                    if (classic != (stage == 4))
                         throw new AssertionError("Unexpected Wine Fox rig on stage " + stage);
-                    pose.rotate(classic ? "armRight" : "RightForeArm", .1F, 0, 0);
+                    if (stage != 1) pose.rotate(classic ? "armRight" : "RightForeArm", .1F, 0, 0);
                     echoStages |= 1 << stage;
                     return true;
                 }
             };
     private static int ticks;
     private static FerinEntity slash;
+    private static final Vec3 CLOSE_ANCHOR = new Vec3(.92, 226.23, 2.1);
+    private static final Vec3 CLOSE_HEADING = new Vec3(-.25, 0, -1).normalize();
+    private static final float[] CUT_AGES = {0, .15F, .45F, .78F, 1.15F, 2, 4, 9};
+
+    // Hold exact sub-tick poses for several displays so different GPU frame rates produce
+    // comparable screenshots of the guard, crossing and finishing poses.
+    @net.minecraftforge.eventbus.api.SubscribeEvent
+    public static void renderCut(RenderLevelStageEvent event) {
+        int frame = ticks - 60;
+        if (frame < 0 || frame >= 32 || slash == null
+                || event.getStage() != RenderLevelStageEvent.Stage.AFTER_ENTITIES) return;
+        var mc = Minecraft.getInstance();
+        float age = CUT_AGES[frame / 4];
+        int whole = (int)age;
+        slash.syncStage(1, mc.level.getGameTime() - whole);
+        var relative = CLOSE_ANCHOR.subtract(event.getCamera().getPosition());
+        var buffers = mc.renderBuffers().bufferSource();
+        mc.getEntityRenderDispatcher().render(slash, relative.x, relative.y, relative.z, 0,
+                age - whole, event.getPoseStack(), buffers, net.minecraft.client.renderer.LightTexture.FULL_BRIGHT);
+        buffers.endBatch();
+    }
+
 
     @net.minecraftforge.eventbus.api.SubscribeEvent
     public static void tick(net.minecraftforge.event.TickEvent.ClientTickEvent event) {
@@ -97,6 +120,7 @@ public final class FerinDynamicClientSmoke {
                 var hand = model.applyTransform(net.minecraft.world.item.ItemDisplayContext.FIRST_PERSON_RIGHT_HAND,new com.mojang.blaze3d.vertex.PoseStack(),false);
                 if (gui == hand || hand.getQuads(null,null,net.minecraft.util.RandomSource.create()).isEmpty())
                     throw new IllegalStateException("Knight Nocturne GUI or handheld model missing");
+                dev.purifiedundead.nocturne.WineFoxSkinClientSmoke.verify(mc.level);
                 int expectedStages = Boolean.getBoolean("purified_undead.ysmEchoSmoke") ? 46 : 62;
                 if (echoStages != expectedStages) throw new AssertionError("Maid echo stage mask " + echoStages);
                 System.out.println("NOCTURNE_ECHO_CLIENT_OK: matched live poses across classic, Gecko and alternate texture");
@@ -110,7 +134,7 @@ public final class FerinDynamicClientSmoke {
         mc.options.hideGui = true;
         mc.options.setCameraType(net.minecraft.client.CameraType.FIRST_PERSON);
         mc.player.setYRot(-25);
-        mc.player.setXRot(20);
+        mc.player.setXRot(stage == 1 ? 8 : 20);
         // A deterministic presentation fixture exercises the same renderer and synchronized data.
         // Server-side normal attack/flight behavior is covered separately by FerinFlightSmoke.
         if (frame == 0) {
@@ -118,18 +142,37 @@ public final class FerinDynamicClientSmoke {
             slash = new FerinEntity(ModEntities.FERIN.get(), mc.level);
             if (dev.purifiedundead.content.ModItems.KNIGHT_NOCTURNE != null) {
                 var appearance = new net.minecraft.nbt.CompoundTag();
-                appearance.putString("model", stage == 1 || stage == 4 ? "authors_and_credits:wine_fox_maid"
+                appearance.putString("model", stage == 4 ? "authors_and_credits:wine_fox_maid"
                         : stage == 3 ? "geckolib:winefox_blue" : "geckolib:winefox");
                 if (stage == 4 && Boolean.getBoolean("purified_undead.ysmEchoSmoke")) {
                     appearance.putString("ysmModel", "wine_fox/01_taisho_maid");
                     appearance.putString("ysmTexture", "skin_white");
                 }
+                if (stage == 1) {
+                    appearance.putString("model", "authors_and_credits:wine_fox_maid");
+                    appearance.putString("ysmModel", "wine_fox/01_taisho_maid");
+                    appearance.putString("ysmTexture", "skin_white");
+                    appearance.putString("geckoEcho", "geckolib:winefox_blue");
+                    var display = new net.minecraft.nbt.CompoundTag();
+                    display.putString("id", "minecraft:carved_pumpkin");
+                    appearance.put("displayStack", display);
+                    appearance.putBoolean("showBackItem", true);
+                    appearance.putBoolean("showBackpack", true);
+                    appearance.putString("backpack", "touhou_little_maid:big_backpack");
+                }
                 slash.setEchoAppearance(appearance);
             }
             slash.syncStage(stage, mc.level.getGameTime());
-            slash.syncFlight(new Vec3(7, 220, 10), new Vec3(0, 0, 1), 24, 0, .35);
-            mc.level.putNonPlayerEntity(slash.getId(), slash);
-        } else if (frame <= 24) {
+            if (stage == 1) {
+                slash.syncFlight(CLOSE_ANCHOR, CLOSE_HEADING, 24, 0, .35);
+                slash.xOld = CLOSE_ANCHOR.x;
+                slash.yOld = CLOSE_ANCHOR.y;
+                slash.zOld = CLOSE_ANCHOR.z;
+            } else {
+                slash.syncFlight(new Vec3(7, 220, 10), new Vec3(0, 0, 1), 24, 0, .35);
+                mc.level.putNonPlayerEntity(slash.getId(), slash);
+            }
+        } else if (stage != 1 && frame <= 24) {
             slash.syncFlight(new Vec3(7, 220, 10 + frame * .35), new Vec3(0, 0, 1), 24, frame, .35);
         }
         if (frame < 29)

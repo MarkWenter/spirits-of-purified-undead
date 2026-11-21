@@ -11,6 +11,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import dev.purifiedundead.combat.FerinBladeTrajectory;
 import dev.purifiedundead.config.PurifiedUndeadConfig;
 import dev.purifiedundead.entity.FerinEntity;
+import dev.purifiedundead.nocturne.EchoItemAppearance;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -32,7 +34,7 @@ public final class MaidEchoRenderer {
     private EchoGeckoRenderer gecko;
     private EntityMaidRenderer nativeRenderer;
     private final Cache<FerinEntity, Proxy> proxies = CacheBuilder.newBuilder()
-            .weakKeys().weakValues().maximumSize(128).build();
+            .weakKeys().maximumSize(128).build();
     private boolean warned;
 
     public MaidEchoRenderer(EntityRendererProvider.Context context) { this.context = context; }
@@ -48,7 +50,20 @@ public final class MaidEchoRenderer {
             if (proxy == null) {
                 proxy = new Proxy(release.level());
                 proxies.put(release, proxy);
-                proxy.loadAppearance(release.echoAppearance());
+                var appearance = release.echoAppearance();
+                var mapped = appearance.getString("geckoEcho");
+                if (!mapped.isEmpty() && release.getStage() == 1 && appearance.contains("ysmModel")
+                        && PurifiedUndeadConfig.ECHO_SPECIAL_ANIMATIONS.get()) {
+                    var info = CustomPackLoader.MAID_MODELS.getInfo(mapped).orElse(null);
+                    if (info != null && info.isGeckoModel() && mapped.equals(info.getModelId().toString())) {
+                        if (gecko == null) gecko = new EchoGeckoRenderer(context);
+                        if (gecko.canUseMappedSkin(proxy, info)) {
+                            proxy.setModelId(mapped);
+                            proxy.mappedSkin = true;
+                        }
+                    }
+                }
+                proxy.loadAppearance(appearance);
             }
             if (proxy.failed) return;
             proxy.stage = release.getStage();
@@ -117,7 +132,21 @@ public final class MaidEchoRenderer {
     }
 
     static final class Proxy extends EntityMaid {
+        private final net.minecraft.world.item.ItemStack ironSword = net.minecraft.world.item.Items.IRON_SWORD.getDefaultInstance();
+        boolean firstCut;
+        boolean mappedSkin;
+        private net.minecraft.world.item.ItemStack echoHead = net.minecraft.world.item.ItemStack.EMPTY;
+
+        @Override public net.minecraft.world.item.ItemStack getItemBySlot(EquipmentSlot slot) {
+            if (slot == EquipmentSlot.HEAD && echoHead != null && !echoHead.isEmpty()) return echoHead;
+            return super.getItemBySlot(slot);
+        }
         boolean failed;
+
+        @Override public net.minecraft.world.item.ItemStack getMainHandItem() {
+            return firstCut ? ironSword : super.getMainHandItem();
+        }
+
         int stage;
         float age;
         EchoGeckoRenderer.Animation animation;
@@ -136,9 +165,9 @@ public final class MaidEchoRenderer {
         @Override public boolean isInvisibleTo(Player viewer) { return false; }
 
         void loadAppearance(CompoundTag tag) {
-            if (ResourceLocation.tryParse(tag.getString("model")) != null && !tag.getString("model").isEmpty())
+            if (!mappedSkin && ResourceLocation.tryParse(tag.getString("model")) != null && !tag.getString("model").isEmpty())
                 setModelId(tag.getString("model"));
-            if (tag.contains("ysmModel")) {
+            if (!mappedSkin && tag.contains("ysmModel")) {
                 setYsmModel(tag.getString("ysmModel"), tag.getString("ysmTexture"), Component.empty());
                 setIsYsmModel(true);
                 var vars = tag.getCompound("variables");
@@ -148,7 +177,9 @@ public final class MaidEchoRenderer {
             var backpack = ResourceLocation.tryParse(tag.getString("backpack"));
             if (backpack != null) BackpackManager.findBackpack(backpack).ifPresent(this::setMaidBackpackType);
             var item = ResourceLocation.tryParse(tag.getString("backpackItem"));
-            if (item != null) BuiltInRegistries.ITEM.getOptional(item).ifPresent(i -> setBackpackShowItem(i.getDefaultInstance()));
+            if (tag.contains("displayStack")) setBackpackShowItem(EchoItemAppearance.restore(tag.getCompound("displayStack")));
+            else if (item != null) BuiltInRegistries.ITEM.getOptional(item).ifPresent(i -> setBackpackShowItem(i.getDefaultInstance()));
+            if (tag.contains("headStack")) echoHead = EchoItemAppearance.restore(tag.getCompound("headStack"));
             if (tag.contains("backpackFluid")) setBackpackFluid(tag.getString("backpackFluid"));
             if (tag.contains("showBackpack")) getConfigManager().setShowBackpack(tag.getBoolean("showBackpack"));
             if (tag.contains("showBackItem")) getConfigManager().setShowBackItem(tag.getBoolean("showBackItem"));

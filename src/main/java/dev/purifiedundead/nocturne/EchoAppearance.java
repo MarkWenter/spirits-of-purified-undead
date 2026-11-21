@@ -14,7 +14,7 @@ public final class EchoAppearance {
 
     public static CompoundTag fromSnapshot(CompoundTag source) {
         var out = new CompoundTag();
-        for (String key : new String[]{"model", "ysmModel", "ysmTexture", "backpack", "backpackItem", "backpackFluid"}) {
+        for (String key : new String[]{"model", "ysmModel", "ysmTexture", "geckoEcho", "backpack", "backpackItem", "backpackFluid"}) {
             String value = source.getString(key);
             if (!value.isEmpty() && value.length() <= 256) out.putString(key, value);
         }
@@ -22,6 +22,8 @@ public final class EchoAppearance {
         for (String key : new String[]{"leftHanded", "showBackpack", "showBackItem"}) {
             if (source.contains(key, Tag.TAG_BYTE)) out.putBoolean(key, source.getBoolean(key));
         }
+        EchoItemAppearance.project(source, out, "displayStack");
+        EchoItemAppearance.project(source, out, "headStack");
         var variables = new CompoundTag();
         var input = source.getCompound("variables");
         for (String key : input.getAllKeys()) {

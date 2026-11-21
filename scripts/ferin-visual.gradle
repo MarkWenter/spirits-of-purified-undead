@@ -1,6 +1,6 @@
 gradle.projectsEvaluated {
     rootProject.with {
-        sourceSets.smoke.java.include("**/FerinDynamicClientSmoke.java")
+        sourceSets.smoke.java.include("**/FerinDynamicClientSmoke.java", "**/WineFoxSkinClientSmoke.java")
         sourceSets.smoke.resources.setSrcDirs([])
         tasks.withType(JavaExec).configureEach {
             systemProperty "purified_undead.smoke", "false"

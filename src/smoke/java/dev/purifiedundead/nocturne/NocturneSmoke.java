@@ -26,12 +26,51 @@ public final class NocturneSmoke {
             maid.setModelId("geckolib:winefox_blue");
             maid.setBackpackShowItem(new ItemStack(net.minecraft.world.item.Items.DIAMOND));
             maid.getConfigManager().setShowBackpack(false);
+            maid.setYsmModel("wine_fox/01_taisho_maid", "skin_white", net.minecraft.network.chat.Component.empty());
+            maid.setIsYsmModel(true);
+            var helmet = new ItemStack(net.minecraft.world.item.Items.LEATHER_HELMET);
+            helmet.getOrCreateTag().putInt("CustomModelData", 81);
+            helmet.getOrCreateTag().putString("discardMe", "private");
+            maid.setItemSlot(net.minecraft.world.entity.EquipmentSlot.HEAD, helmet);
             slot.setByPlayer(stack);
             var appearance = NocturneEffect.appearance(player);
             if (!"geckolib:winefox_blue".equals(appearance.getString("model"))
                     || !"minecraft:diamond".equals(appearance.getString("backpackItem"))
                     || appearance.getBoolean("showBackpack") || appearance.contains("base"))
                 throw new AssertionError("incorrect appearance projection " + appearance);
+            if (!appearance.getString("geckoEcho").equals("geckolib:winefox_blue")
+                    || !appearance.getString("ysmTexture").equals("skin_white")
+                    || appearance.getCompound("headStack").getInt("model") != 81
+                    || appearance.getCompound("headStack").contains("discardMe")
+                    || !appearance.getCompound("displayStack").getString("id").equals("minecraft:diamond"))
+                throw new AssertionError("mapped skin or display equipment missing: " + appearance);
+            var restored = EchoItemAppearance.restore(appearance.getCompound("headStack"));
+            if (restored.getCount() != 1 || !restored.is(helmet.getItem()) || restored.getOrCreateTag().getInt("CustomModelData") != 81)
+                throw new AssertionError("head render stack round trip");
+            var banner = new ItemStack(net.minecraft.world.item.Items.WHITE_BANNER, 12);
+            var patterns = new net.minecraft.nbt.ListTag();
+            var layer = new net.minecraft.nbt.CompoundTag();
+            layer.putString("Pattern", "cr");
+            layer.putInt("Color", net.minecraft.world.item.DyeColor.RED.getId());
+            patterns.add(layer);
+            banner.getOrCreateTagElement("BlockEntityTag").put("Patterns", patterns);
+            var bannerView = EchoItemAppearance.capture(banner);
+            var renderedBanner = EchoItemAppearance.restore(bannerView);
+            if (renderedBanner.getCount() != 1 || !EchoItemAppearance.capture(renderedBanner).equals(bannerView)
+                    || bannerView.getList("patterns", 10).size() != 1)
+                throw new AssertionError("banner appearance round trip: " + bannerView);
+            var copy = appearance.copy();
+            copy.remove("geckoEcho");
+            copy.putString("ysmTexture", "custom");
+            WineFoxSkins.capture(copy, appearance);
+            if (!copy.getString("geckoEcho").isEmpty()) throw new AssertionError("unknown color borrowed old skin");
+            copy.putString("ysmTexture", "skin");
+            var vars = new net.minecraft.nbt.CompoundTag();
+            vars.putFloat("roaming.a", 1);
+            copy.put("variables", vars);
+            WineFoxSkins.capture(copy, appearance);
+            if (!copy.getString("geckoEcho").isEmpty()) throw new AssertionError("lost custom body form");
+            System.out.println("NOCTURNE_YSM_SNAPSHOT_OK: variant, head, display item and native fallback");
             appearance.remove("model");
             if (!NocturneEffect.appearance(player).contains("model")) throw new AssertionError("aliased stored snapshot");
             if (!(NocturneEffect.damage(player,10) > 10)) throw new AssertionError("missing snapshot");
