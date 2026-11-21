@@ -24,18 +24,30 @@ import java.util.IdentityHashMap;
 
 /** Uses TLM's own Gecko runtime (distinct from the mod's GeckoLib 4 dependency). */
 final class EchoGeckoRenderer extends GeckoEntityMaidRenderer<MaidEchoRenderer.Proxy> {
-    private final FirstComboCut firstCut;
+    private final FerinComboCut firstCut;
+    private final FerinComboCut secondCut;
 
     EchoGeckoRenderer(EntityRendererProvider.Context context) {
         super(context);
-        firstCut = FirstComboCut.load(context.getResourceManager());
+        firstCut = FerinComboCut.load(context.getResourceManager(), "combo_one");
+        secondCut = FerinComboCut.load(context.getResourceManager(), "combo_two");
+    }
+
+    private FerinComboCut clip(int stage) {
+        return switch (stage) {
+            case 1 -> firstCut;
+            case 2 -> secondCut;
+            default -> null;
+        };
     }
 
     boolean canUseMappedSkin(MaidEchoRenderer.Proxy maid, MaidModelInfo info) {
-        if (!firstCut.available()) return false;
-        var candidate = new Animation(maid, firstCut);
+        var cut = clip(maid.stage);
+        if (cut == null || !cut.available()) return false;
+        var candidate = new Animation(maid);
         candidate.setMaidInfo(info);
-        if (!info.getModelId().equals(candidate.getModelLocation()) || !candidate.updateModel() || !candidate.supportsMappedArms()) return false;
+        if (!info.getModelId().equals(candidate.getModelLocation()) || !candidate.updateModel() || !candidate.supportsMappedArms()
+                || (maid.stage == 2 && !candidate.hasSupportingArm())) return false;
         maid.animation = candidate;
         return true;
     }
@@ -43,15 +55,17 @@ final class EchoGeckoRenderer extends GeckoEntityMaidRenderer<MaidEchoRenderer.P
     void draw(MaidEchoRenderer.Proxy maid, MaidModelInfo info, float yaw, float partial,
               PoseStack poses, MultiBufferSource buffers) {
         if (maid.animation == null) {
-            maid.animation = new Animation(maid, firstCut);
+            maid.animation = new Animation(maid);
             maid.animation.setMaidInfo(info);
         }
         try {
-            maid.firstCut = maid.stage == 1 && firstCut.available()
+            var cut = clip(maid.stage);
+            maid.animation.cut = cut;
+            maid.playingCut = cut != null && cut.available()
                     && dev.purifiedundead.config.PurifiedUndeadConfig.ECHO_SPECIAL_ANIMATIONS.get()
                     && maid.animation.updateModel() && (maid.mappedSkin || EchoAnimations.wineFoxGecko(maid.animation.skeleton()))
                     && !maid.animation.getCurrentModel().rightHandBones().isEmpty();
-            if (maid.firstCut) {
+            if (maid.playingCut) {
                 // Aim the entire sweep plane around the launch point, including its vertical pitch.
                 poses.translate(0, maid.getBbHeight() * .52, 0);
                 double heading = Math.toRadians(yaw);
@@ -65,7 +79,7 @@ final class EchoGeckoRenderer extends GeckoEntityMaidRenderer<MaidEchoRenderer.P
             geoRender(maid, yaw, partial, poses, buffers, LightTexture.FULL_BRIGHT);
         } finally {
             maid.animation.restore();
-            maid.firstCut = false;
+            maid.playingCut = false;
         }
     }
 
@@ -85,14 +99,13 @@ final class EchoGeckoRenderer extends GeckoEntityMaidRenderer<MaidEchoRenderer.P
 
     static final class Animation extends GeckoMaidEntity<MaidEchoRenderer.Proxy> {
         private final IdentityHashMap<AnimatedGeoBone, Vector3d> saved = new IdentityHashMap<>();
-        private final FirstComboCut firstCut;
+        private FerinComboCut cut;
         private final Vector3f cutCenter = new Vector3f(0, 26.7F, 0);
         private AnimatedGeoBone translatedRoot;
         private Vector3d rootPosition;
 
-        Animation(MaidEchoRenderer.Proxy maid, FirstComboCut firstCut) {
+        Animation(MaidEchoRenderer.Proxy maid) {
             super(maid, maid);
-            this.firstCut = firstCut;
         }
 
         // Called once for an explicitly mapped built-in skin. Costume/size bones may sit
@@ -119,6 +132,15 @@ final class EchoGeckoRenderer extends GeckoEntityMaidRenderer<MaidEchoRenderer.P
             return false;
         }
 
+        boolean hasSupportingArm() {
+            int next = 0;
+            String[] joints = {"LeftArm", "LeftForeArm", "LeftHandLocator"};
+            for (var bone : getCurrentModel().leftHandBones()) {
+                if (bone.getName().equals(joints[next]) && ++next == joints.length) return true;
+            }
+            return false;
+        }
+
         EchoAnimations.Skeleton skeleton() {
             var bones = getCurrentModel().bones();
             return new EchoAnimations.Skeleton() {
@@ -136,12 +158,12 @@ final class EchoGeckoRenderer extends GeckoEntityMaidRenderer<MaidEchoRenderer.P
             boolean result = super.setCustomAnimations(context, event);
             if (getCurrentModel() == null) return result;
             var bones = getCurrentModel().bones();
-            if (getEntity().firstCut) {
+            if (getEntity().playingCut) {
                 // Own the arm chain for this draw. Native breathing/holding rotations on its helper
                 // parents would otherwise pull the grip off the left shoulder.
                 for (String name : REST_PARENTS) setFromRest(name, 0, 0, 0);
-                float age = FirstComboCut.ledAge(getEntity().age);
-                firstCut.sample(age, this::setFromRest);
+                float age = FerinComboCut.ledAge(getEntity().age);
+                cut.sample(age, this::setFromRest);
                 alignBlade(age);
             }
             if (!EchoAnimations.enabled()) return result;
@@ -163,6 +185,8 @@ final class EchoGeckoRenderer extends GeckoEntityMaidRenderer<MaidEchoRenderer.P
             var bone = getCurrentModel().bones().get(name);
             if (bone == null && name.equals("RightHand") && getEntity().mappedSkin)
                 bone = getCurrentModel().bones().get("RightHandLocator");
+            if (bone == null && name.equals("LeftHand") && getEntity().mappedSkin)
+                bone = getCurrentModel().bones().get("LeftHandLocator");
             if (bone == null) return;
             saved.computeIfAbsent(bone, AnimatedGeoBone::getRotation);
             var rest = bone.getInitialSnapshot();
@@ -177,7 +201,8 @@ final class EchoGeckoRenderer extends GeckoEntityMaidRenderer<MaidEchoRenderer.P
             if (RenderUtils.prepMatrixForLocator(local, chain)) return;
             var matrix = local.last().pose();
             if (!(Math.abs(matrix.determinant3x3()) > 1.0e-6F)) return;
-            var blade = FerinBladeTrajectory.blade(1, FerinBladeTrajectory.progress(1, 1 + age), 0);
+            int stage = getEntity().stage;
+            var blade = FerinBladeTrajectory.blade(stage, FerinBladeTrajectory.progress(stage, 1 + age), 0);
             var ray = new Vector3f((float)blade.tip().right(), (float)(blade.tip().up() - blade.root().up()),
                     (float)-blade.tip().forward()).normalize();
             var goal = new org.joml.Matrix4f(matrix).invert().transformDirection(new Vector3f(ray)).normalize();

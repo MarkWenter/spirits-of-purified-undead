@@ -11,18 +11,18 @@ import java.util.Comparator;
 import java.util.List;
 
 /** Rotation-only Bedrock clip exported from the articulated Wine Fox rig. */
-final class FirstComboCut {
+final class FerinComboCut {
     private record Key(float time, float x, float y, float z) {}
     private record Track(String name, List<Key> keys) {}
     private final List<Track> tracks;
 
-    private FirstComboCut(List<Track> tracks) { this.tracks = tracks; }
+    private FerinComboCut(List<Track> tracks) { this.tracks = tracks; }
 
-    static FirstComboCut load(ResourceManager resources) {
-        var path = ResourceLocation.tryParse("purified_undead:animations/ferin_combo_one.animation.json");
+    static FerinComboCut load(ResourceManager resources, String combo) {
+        var path = ResourceLocation.tryParse("purified_undead:animations/ferin_" + combo + ".animation.json");
         try (var reader = resources.openAsReader(path)) {
             var bones = JsonParser.parseReader(reader).getAsJsonObject().getAsJsonObject("animations")
-                    .getAsJsonObject("animation.ferin.combo_one").getAsJsonObject("bones");
+                    .getAsJsonObject("animation.ferin." + combo).getAsJsonObject("bones");
             List<Track> tracks = new ArrayList<>();
             for (var entry : bones.entrySet()) {
                 var keys = new ArrayList<Key>();
@@ -41,10 +41,10 @@ final class FirstComboCut {
                 if (keys.isEmpty()) throw new IllegalArgumentException("Missing keys on " + entry.getKey());
                 tracks.add(new Track(entry.getKey(), List.copyOf(keys)));
             }
-            return new FirstComboCut(List.copyOf(tracks));
+            return new FerinComboCut(List.copyOf(tracks));
         } catch (IOException | RuntimeException e) {
-            LogUtils.getLogger().warn("Could not read the Ferin first cut animation", e);
-            return new FirstComboCut(List.of());
+            LogUtils.getLogger().warn("Could not read Ferin animation {}", combo, e);
+            return new FerinComboCut(List.of());
         }
     }
 

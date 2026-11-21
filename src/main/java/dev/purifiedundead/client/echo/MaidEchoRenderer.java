@@ -49,10 +49,11 @@ public final class MaidEchoRenderer {
         try {
             if (proxy == null) {
                 proxy = new Proxy(release.level());
+                proxy.stage = release.getStage();
                 proxies.put(release, proxy);
                 var appearance = release.echoAppearance();
                 var mapped = appearance.getString("geckoEcho");
-                if (!mapped.isEmpty() && release.getStage() == 1 && appearance.contains("ysmModel")
+                if (!mapped.isEmpty() && (proxy.stage == 1 || proxy.stage == 2) && appearance.contains("ysmModel")
                         && PurifiedUndeadConfig.ECHO_SPECIAL_ANIMATIONS.get()) {
                     var info = CustomPackLoader.MAID_MODELS.getInfo(mapped).orElse(null);
                     if (info != null && info.isGeckoModel() && mapped.equals(info.getModelId().toString())) {
@@ -133,7 +134,7 @@ public final class MaidEchoRenderer {
 
     static final class Proxy extends EntityMaid {
         private final net.minecraft.world.item.ItemStack ironSword = net.minecraft.world.item.Items.IRON_SWORD.getDefaultInstance();
-        boolean firstCut;
+        boolean playingCut;
         boolean mappedSkin;
         private net.minecraft.world.item.ItemStack echoHead = net.minecraft.world.item.ItemStack.EMPTY;
 
@@ -144,7 +145,7 @@ public final class MaidEchoRenderer {
         boolean failed;
 
         @Override public net.minecraft.world.item.ItemStack getMainHandItem() {
-            return firstCut ? ironSword : super.getMainHandItem();
+            return playingCut ? ironSword : super.getMainHandItem();
         }
 
         int stage;

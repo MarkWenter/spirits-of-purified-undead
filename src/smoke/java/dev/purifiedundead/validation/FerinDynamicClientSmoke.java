@@ -25,7 +25,7 @@ public final class FerinDynamicClientSmoke {
                 public boolean sample(int stage, float age, dev.purifiedundead.client.echo.EchoAnimations.Rotations pose) {
                     if (classic != (stage == 4))
                         throw new AssertionError("Unexpected Wine Fox rig on stage " + stage);
-                    if (stage != 1) pose.rotate(classic ? "armRight" : "RightForeArm", .1F, 0, 0);
+                    if (stage > 2) pose.rotate(classic ? "armRight" : "RightForeArm", .1F, 0, 0);
                     echoStages |= 1 << stage;
                     return true;
                 }
@@ -33,6 +33,10 @@ public final class FerinDynamicClientSmoke {
     private static int ticks;
     private static FerinEntity slash;
     private static final Vec3 CLOSE_ANCHOR = new Vec3(.92, 226.23, 2.1);
+    private static final Vec3 WIDE_ANCHOR = new Vec3(3.55, 225.4, 7.6);
+    private static Vec3 anchor(int stage) {
+        return stage == 2 && !Boolean.getBoolean("purified_undead.ysmEchoSmoke") ? WIDE_ANCHOR : CLOSE_ANCHOR;
+    }
     private static final Vec3 CLOSE_HEADING = new Vec3(-.25, 0, -1).normalize();
     private static final float[] CUT_AGES = {0, .15F, .45F, .78F, 1.15F, 2, 4, 9};
 
@@ -41,13 +45,13 @@ public final class FerinDynamicClientSmoke {
     @net.minecraftforge.eventbus.api.SubscribeEvent
     public static void renderCut(RenderLevelStageEvent event) {
         int frame = ticks - 60;
-        if (frame < 0 || frame >= 32 || slash == null
+        if (frame < 0 || frame >= 64 || slash == null
                 || event.getStage() != RenderLevelStageEvent.Stage.AFTER_ENTITIES) return;
         var mc = Minecraft.getInstance();
-        float age = CUT_AGES[frame / 4];
+        float age = CUT_AGES[(frame % 32) / 4];
         int whole = (int)age;
-        slash.syncStage(1, mc.level.getGameTime() - whole);
-        var relative = CLOSE_ANCHOR.subtract(event.getCamera().getPosition());
+        slash.syncStage(1 + frame / 32, mc.level.getGameTime() - whole);
+        var relative = anchor(slash.getStage()).subtract(event.getCamera().getPosition());
         var buffers = mc.renderBuffers().bufferSource();
         mc.getEntityRenderDispatcher().render(slash, relative.x, relative.y, relative.z, 0,
                 age - whole, event.getPoseStack(), buffers, net.minecraft.client.renderer.LightTexture.FULL_BRIGHT);
@@ -134,7 +138,7 @@ public final class FerinDynamicClientSmoke {
         mc.options.hideGui = true;
         mc.options.setCameraType(net.minecraft.client.CameraType.FIRST_PERSON);
         mc.player.setYRot(-25);
-        mc.player.setXRot(stage == 1 ? 8 : 20);
+        mc.player.setXRot(stage <= 2 ? 8 : 20);
         // A deterministic presentation fixture exercises the same renderer and synchronized data.
         // Server-side normal attack/flight behavior is covered separately by FerinFlightSmoke.
         if (frame == 0) {
@@ -148,7 +152,7 @@ public final class FerinDynamicClientSmoke {
                     appearance.putString("ysmModel", "wine_fox/01_taisho_maid");
                     appearance.putString("ysmTexture", "skin_white");
                 }
-                if (stage == 1) {
+                if (stage == 1 || (stage == 2 && Boolean.getBoolean("purified_undead.ysmEchoSmoke"))) {
                     appearance.putString("model", "authors_and_credits:wine_fox_maid");
                     appearance.putString("ysmModel", "wine_fox/01_taisho_maid");
                     appearance.putString("ysmTexture", "skin_white");
@@ -163,16 +167,17 @@ public final class FerinDynamicClientSmoke {
                 slash.setEchoAppearance(appearance);
             }
             slash.syncStage(stage, mc.level.getGameTime());
-            if (stage == 1) {
-                slash.syncFlight(CLOSE_ANCHOR, CLOSE_HEADING, 24, 0, .35);
-                slash.xOld = CLOSE_ANCHOR.x;
-                slash.yOld = CLOSE_ANCHOR.y;
-                slash.zOld = CLOSE_ANCHOR.z;
+            if (stage <= 2) {
+                var origin = anchor(stage);
+                slash.syncFlight(origin, CLOSE_HEADING, 24, 0, .35);
+                slash.xOld = origin.x;
+                slash.yOld = origin.y;
+                slash.zOld = origin.z;
             } else {
                 slash.syncFlight(new Vec3(7, 220, 10), new Vec3(0, 0, 1), 24, 0, .35);
                 mc.level.putNonPlayerEntity(slash.getId(), slash);
             }
-        } else if (stage != 1 && frame <= 24) {
+        } else if (stage > 2 && frame <= 24) {
             slash.syncFlight(new Vec3(7, 220, 10 + frame * .35), new Vec3(0, 0, 1), 24, frame, .35);
         }
         if (frame < 29)
