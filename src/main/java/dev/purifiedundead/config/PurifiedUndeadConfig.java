@@ -8,6 +8,9 @@ public final class PurifiedUndeadConfig {
     public static final ForgeConfigSpec ACCESSORIES_SPEC;
     public static final ForgeConfigSpec.IntValue NOCTURNE_INTERVAL;
     public static final ForgeConfigSpec.BooleanValue NOCTURNE_MAID_DAMAGE;
+    public static final ForgeConfigSpec CLIENT_SPEC;
+    public static final ForgeConfigSpec.BooleanValue SHOW_ECHO, ECHO_SPECIAL_ANIMATIONS;
+    public static final ForgeConfigSpec.DoubleValue ECHO_SCALE;
     public static final Values VALUES;
 
     static {
@@ -20,6 +23,15 @@ public final class PurifiedUndeadConfig {
         NOCTURNE_MAID_DAMAGE = accessories.comment("Experimental: adds the live maid as direct damage source. Maid mods may duplicate callbacks, damage or kill credit.")
                 .define("maidDamage", false);
         accessories.pop();
+        ForgeConfigSpec.Builder client = new ForgeConfigSpec.Builder();
+        client.push("knightNocturne");
+        SHOW_ECHO = client.comment("Show bound maid apparitions during Ferin assists. The key binding changes this setting.")
+                .define("showEcho", true);
+        ECHO_SPECIAL_ANIMATIONS = client.comment("Allow registered skeleton-specific poses for the apparition.")
+                .define("specialAnimations", true);
+        ECHO_SCALE = client.defineInRange("echoScale", 0.85D, 0.25D, 2.0D);
+        client.pop();
+        CLIENT_SPEC = client.build();
         ACCESSORIES_SPEC = accessories.build();
         SPEC = builder.build();
     }

@@ -65,7 +65,20 @@ public final class NocturneExtension implements ILittleMaid, IMaidBauble {
             s.putInt("favorability", maid.getFavorability());
             putText(s, "backpack", maid.getMaidBackpackType().getId().toString());
             putText(s, "backpackItem", net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(maid.getBackpackShowItem().getItem()).toString());
+            s.putBoolean("showBackpack", maid.getConfigManager().isShowBackpack());
+            s.putBoolean("showBackItem", maid.getConfigManager().isShowBackItem());
+            s.putBoolean("leftHanded", maid.isLeftHanded());
+            putText(s, "backpackFluid", maid.getBackpackFluid());
             if (maid.isYsmModel()) {
+                var variables = new CompoundTag();
+                if (maid.roamingVars != null) {
+                    for (var entry : maid.roamingVars.object2FloatEntrySet()) {
+                        if (variables.size() == EchoAppearance.MAX_VARIABLES) break;
+                        if (EchoAppearance.validVariable(entry.getKey(), entry.getFloatValue()))
+                            variables.putFloat(entry.getKey(), entry.getFloatValue());
+                    }
+                }
+                if (!variables.isEmpty()) s.put("variables", variables);
                 putText(s, "ysmModel", maid.getYsmModelId());
                 putText(s, "ysmTexture", maid.getYsmModelTexture());
             }

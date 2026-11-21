@@ -10,6 +10,13 @@ public final class NocturneEffect {
     static CompoundTag record(ServerPlayer owner) {
         return NocturneLedger.get(owner.server).record(owner.getUUID());
     }
+    public static CompoundTag appearance(ServerPlayer owner) {
+        if (ModItems.KNIGHT_NOCTURNE == null) return new CompoundTag();
+        var binding = record(owner);
+        if (!binding.hasUUID("maid") || binding.getBoolean("dead")) return new CompoundTag();
+        return EchoAppearance.fromSnapshot(binding.getCompound("current"));
+    }
+
     public static boolean sealed(ServerPlayer owner) {
         return ModItems.KNIGHT_NOCTURNE != null && record(owner).getBoolean("dead");
     }

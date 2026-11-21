@@ -23,13 +23,24 @@ public final class NocturneSmoke {
             var recipe = server.getRecipeManager().byKey(new net.minecraft.resources.ResourceLocation("purified_undead","altar/knight_nocturne"));
             if (recipe.isEmpty()) throw new AssertionError("missing altar recipe");
             net.minecraft.world.inventory.Slot slot = new com.github.tartaricacid.touhoulittlemaid.inventory.container.backpack.BaubleContainer.BaubleSlot(maid,0,0,0);
+            maid.setModelId("geckolib:winefox_blue");
+            maid.setBackpackShowItem(new ItemStack(net.minecraft.world.item.Items.DIAMOND));
+            maid.getConfigManager().setShowBackpack(false);
             slot.setByPlayer(stack);
+            var appearance = NocturneEffect.appearance(player);
+            if (!"geckolib:winefox_blue".equals(appearance.getString("model"))
+                    || !"minecraft:diamond".equals(appearance.getString("backpackItem"))
+                    || appearance.getBoolean("showBackpack") || appearance.contains("base"))
+                throw new AssertionError("incorrect appearance projection " + appearance);
+            appearance.remove("model");
+            if (!NocturneEffect.appearance(player).contains("model")) throw new AssertionError("aliased stored snapshot");
             if (!(NocturneEffect.damage(player,10) > 10)) throw new AssertionError("missing snapshot");
             int before = maid.getFavorability();
             for (int i=0;i<20;i++) NocturneEffect.kill(player);
             bauble.onTick(maid,stack);
             if (maid.getFavorability()!=before+1) throw new AssertionError("favor");
             bauble.onDeath(maid,stack,maid.damageSources().generic());
+            if (!NocturneEffect.appearance(player).isEmpty()) throw new AssertionError("echo after death");
             if (!NocturneEffect.sealed(player)) throw new AssertionError("missing death lock");
             bauble.onTick(maid,stack);
             if (NocturneEffect.sealed(player)) throw new AssertionError("missing recovery");
@@ -40,6 +51,8 @@ public final class NocturneSmoke {
             NocturneItem.unbind(player);
             bauble.onTick(maid,stack);
             if (NocturneEffect.damage(player,10)!=10) throw new AssertionError("stale epoch");
+            if (!NocturneEffect.appearance(player).isEmpty()) throw new AssertionError("echo after revocation");
+            System.out.println("NOCTURNE_ECHO_SNAPSHOT_OK: appearance projection, independent copy, death and revocation");
             System.out.println("NOCTURNE_MAID_OK: registration, binding, snapshot, favor, removal, revocation");
         } finally {
             NocturneItem.unbind(player);

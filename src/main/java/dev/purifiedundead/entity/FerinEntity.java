@@ -53,6 +53,13 @@ public final class FerinEntity extends Entity implements GeoEntity {
     private static final EntityDataAccessor<org.joml.Vector3f> RELEASE_DIRECTION =
             SynchedEntityData.defineId(FerinEntity.class, EntityDataSerializers.VECTOR3);
 
+    private static final EntityDataAccessor<CompoundTag> ECHO =
+            SynchedEntityData.defineId(FerinEntity.class, EntityDataSerializers.COMPOUND_TAG);
+
+    public CompoundTag echoAppearance() { return entityData.get(ECHO); }
+
+    public void setEchoAppearance(CompoundTag appearance) { entityData.set(ECHO, appearance); }
+
     public net.minecraft.world.phys.Vec3 releasePosition() {
         return net.minecraft.world.phys.Vec3.atLowerCornerOf(entityData.get(RELEASE_CELL))
                 .add(new net.minecraft.world.phys.Vec3(entityData.get(RELEASE_OFFSET)));
@@ -149,6 +156,7 @@ public final class FerinEntity extends Entity implements GeoEntity {
     @Override
     protected void defineSynchedData() {
         entityData.define(OWNER, Optional.empty());
+        entityData.define(ECHO, new CompoundTag());
         entityData.define(STAGE, 0);
         entityData.define(STAGE_STARTED_AT, 0L);
         entityData.define(FLIGHT_DIRECTION, new org.joml.Vector3f(0, 0, 1));

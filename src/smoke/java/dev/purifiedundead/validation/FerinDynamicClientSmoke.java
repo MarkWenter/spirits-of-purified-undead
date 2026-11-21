@@ -13,6 +13,22 @@ import net.minecraft.world.phys.Vec3;
         value = net.minecraftforge.api.distmarker.Dist.CLIENT)
 public final class FerinDynamicClientSmoke {
     private static boolean loading;
+    private static int echoStages;
+    private static final dev.purifiedundead.client.echo.EchoAnimations.Motion PROBE =
+            new dev.purifiedundead.client.echo.EchoAnimations.Motion() {
+                private boolean classic;
+                public boolean matches(dev.purifiedundead.client.echo.EchoAnimations.Skeleton rig) {
+                    classic = dev.purifiedundead.client.echo.EchoAnimations.wineFoxClassic(rig);
+                    return classic || dev.purifiedundead.client.echo.EchoAnimations.wineFoxGecko(rig);
+                }
+                public boolean sample(int stage, float age, dev.purifiedundead.client.echo.EchoAnimations.Rotations pose) {
+                    if (classic != (stage == 1 || stage == 4))
+                        throw new AssertionError("Unexpected Wine Fox rig on stage " + stage);
+                    pose.rotate(classic ? "armRight" : "RightForeArm", .1F, 0, 0);
+                    echoStages |= 1 << stage;
+                    return true;
+                }
+            };
     private static int ticks;
     private static FerinEntity slash;
 
@@ -23,6 +39,7 @@ public final class FerinDynamicClientSmoke {
         var mc = Minecraft.getInstance();
         if (!loading && mc.screen instanceof TitleScreen && mc.getOverlay() == null) {
             loading = true;
+            dev.purifiedundead.client.echo.EchoAnimations.register(PROBE);
             mc.options.pauseOnLostFocus = false;
             mc.options.cloudStatus().set(net.minecraft.client.CloudStatus.OFF);
             mc.createWorldOpenFlows().loadLevel(mc.screen, "diary-validation");
@@ -80,6 +97,10 @@ public final class FerinDynamicClientSmoke {
                 var hand = model.applyTransform(net.minecraft.world.item.ItemDisplayContext.FIRST_PERSON_RIGHT_HAND,new com.mojang.blaze3d.vertex.PoseStack(),false);
                 if (gui == hand || hand.getQuads(null,null,net.minecraft.util.RandomSource.create()).isEmpty())
                     throw new IllegalStateException("Knight Nocturne GUI or handheld model missing");
+                int expectedStages = Boolean.getBoolean("purified_undead.ysmEchoSmoke") ? 46 : 62;
+                if (echoStages != expectedStages) throw new AssertionError("Maid echo stage mask " + echoStages);
+                System.out.println("NOCTURNE_ECHO_CLIENT_OK: matched live poses across classic, Gecko and alternate texture");
+                dev.purifiedundead.client.echo.EchoAnimations.unregister(PROBE);
                 System.out.println("NOCTURNE_CLIENT_OK: distinct GUI and three-dimensional hand model");
             }
             System.out.println("FERIN_DYNAMIC_CLIENT_OK: five timed launches and flights captured");
@@ -95,6 +116,16 @@ public final class FerinDynamicClientSmoke {
         if (frame == 0) {
             if (slash != null) slash.discard();
             slash = new FerinEntity(ModEntities.FERIN.get(), mc.level);
+            if (dev.purifiedundead.content.ModItems.KNIGHT_NOCTURNE != null) {
+                var appearance = new net.minecraft.nbt.CompoundTag();
+                appearance.putString("model", stage == 1 || stage == 4 ? "authors_and_credits:wine_fox_maid"
+                        : stage == 3 ? "geckolib:winefox_blue" : "geckolib:winefox");
+                if (stage == 4 && Boolean.getBoolean("purified_undead.ysmEchoSmoke")) {
+                    appearance.putString("ysmModel", "wine_fox/01_taisho_maid");
+                    appearance.putString("ysmTexture", "skin_white");
+                }
+                slash.setEchoAppearance(appearance);
+            }
             slash.syncStage(stage, mc.level.getGameTime());
             slash.syncFlight(new Vec3(7, 220, 10), new Vec3(0, 0, 1), 24, 0, .35);
             mc.level.putNonPlayerEntity(slash.getId(), slash);

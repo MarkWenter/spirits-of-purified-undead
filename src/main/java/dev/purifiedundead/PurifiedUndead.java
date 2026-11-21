@@ -65,6 +65,8 @@ public final class PurifiedUndead {
         dev.purifiedundead.config.AccessoryConfigMigration.prepare(
                 net.minecraftforge.fml.loading.FMLPaths.CONFIGDIR.get());
         ModLoadingContext.get()
+                .registerConfig(ModConfig.Type.CLIENT, PurifiedUndeadConfig.CLIENT_SPEC, "purified_undead-client.toml");
+        ModLoadingContext.get()
                 .registerConfig(
                         ModConfig.Type.COMMON,
                         PurifiedUndeadConfig.ACCESSORIES_SPEC,

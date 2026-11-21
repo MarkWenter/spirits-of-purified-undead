@@ -1,6 +1,6 @@
 # 费林更新
 
-当前候选：**1.2.0-ferin.2**，Forge 1.20.1 / NeoForge 1.21.1，协议15。增加光点处挥斩与持续变化的飞行剑气，详情见[动态刀光试作](DYNAMIC_SLASH.md)。
+当前候选为 **1.2.0-ferin.8**，适用于 Forge 1.20.1 与 NeoForge 1.21.1，协议 16。见[骑士寂夜女仆虚影与骨架接入](PART_3.md)、[饰品与绑定](PART_2.md)和[动态刀光](DYNAMIC_SLASH.md)。
 
 - [第一部分实现与边界](PART_1.md)
 - [外部测试步骤和回传模板](TEST_PLAN_PART_1.md)

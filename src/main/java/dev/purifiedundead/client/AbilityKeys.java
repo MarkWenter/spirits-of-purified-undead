@@ -13,6 +13,8 @@ public final class AbilityKeys {
                     "key.purified_undead.toggle_ferin",
                     InputConstants.UNKNOWN.getValue(),
                     "key.categories.purified_undead");
+    public static final KeyMapping ECHO = new KeyMapping("key.purified_undead.toggle_maid_echo",
+            InputConstants.UNKNOWN.getValue(), "key.categories.purified_undead");
     public static final KeyMapping MOVEMENT =
             new KeyMapping(
                     "key.purified_undead.toggle_guardian_movement",
@@ -34,11 +36,20 @@ public final class AbilityKeys {
         boolean ferin = false, movement = false;
         while (FERIN.consumeClick()) ferin = true;
         while (MOVEMENT.consumeClick()) movement = true;
+        boolean toggleEcho = false;
+        while (ECHO.consumeClick()) toggleEcho = !toggleEcho;
         if (mc.player == null) {
             set(true, true);
             return;
         }
         if (mc.screen != null || mc.isPaused()) return;
+        if (toggleEcho) {
+            var option = dev.purifiedundead.config.PurifiedUndeadConfig.SHOW_ECHO;
+            option.set(!option.get());
+            option.save();
+            mc.player.displayClientMessage(net.minecraft.network.chat.Component.translatable(
+                    option.get() ? "message.purified_undead.echo_on" : "message.purified_undead.echo_off"), true);
+        }
         if (ferin)
             dev.purifiedundead.network.ModNetwork.CHANNEL.sendToServer(
                     new GuardianActionPacket(GuardianActionPacket.Action.TOGGLE_FERIN));
@@ -56,6 +67,7 @@ public final class AbilityKeys {
         public static void register(
                 net.minecraftforge.client.event.RegisterKeyMappingsEvent event) {
             event.register(FERIN);
+            event.register(ECHO);
             event.register(MOVEMENT);
         }
     }

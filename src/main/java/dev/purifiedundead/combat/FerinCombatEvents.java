@@ -538,6 +538,7 @@ public final class FerinCombatEvents {
         var visual = ModEntities.FERIN.get().create(owner.serverLevel());
         if (visual != null) {
             visual.setOwnerUuid(owner.getUUID());
+            visual.setEchoAppearance(dev.purifiedundead.nocturne.NocturneEffect.appearance(owner));
             visual.syncStage(flight.stage, flight.startedAt);
             visual.syncFlight(
                     origin,
