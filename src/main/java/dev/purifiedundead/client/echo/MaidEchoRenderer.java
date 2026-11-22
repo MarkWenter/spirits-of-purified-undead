@@ -134,7 +134,6 @@ public final class MaidEchoRenderer {
     }
 
     static final class Proxy extends EntityMaid {
-        private final net.minecraft.world.item.ItemStack ironSword = net.minecraft.world.item.Items.IRON_SWORD.getDefaultInstance();
         boolean playingCut;
         boolean mappedSkin;
         private net.minecraft.world.item.ItemStack echoHead = net.minecraft.world.item.ItemStack.EMPTY;
@@ -144,16 +143,6 @@ public final class MaidEchoRenderer {
             return super.getItemBySlot(slot);
         }
         boolean failed;
-
-        @Override public net.minecraft.world.item.ItemStack getMainHandItem() {
-            if (!playingCut) return super.getMainHandItem();
-            return cutInLeftHand() ? net.minecraft.world.item.ItemStack.EMPTY : ironSword;
-        }
-
-        @Override public net.minecraft.world.item.ItemStack getOffhandItem() {
-            if (!playingCut) return super.getOffhandItem();
-            return cutInLeftHand() ? ironSword : net.minecraft.world.item.ItemStack.EMPTY;
-        }
 
         boolean cutInLeftHand() {
             return stage == 5 || stage == 4 && FerinComboCut.ledAge(age) >= dev.purifiedundead.entity.FerinSlashMesh.SPIN_HANDOFF;

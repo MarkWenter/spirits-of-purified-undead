@@ -33,6 +33,7 @@ final class EchoGeckoRenderer extends GeckoEntityMaidRenderer<MaidEchoRenderer.P
 
     EchoGeckoRenderer(EntityRendererProvider.Context context) {
         super(context);
+        addGeoLayerRenderer(new FerinSwordLayer(this, context.getResourceManager()));
         firstCut = FerinComboCut.load(context.getResourceManager(), "combo_one");
         secondCut = FerinComboCut.load(context.getResourceManager(), "combo_two");
         thirdCut = FerinComboCut.load(context.getResourceManager(), "combo_three");
@@ -112,6 +113,8 @@ final class EchoGeckoRenderer extends GeckoEntityMaidRenderer<MaidEchoRenderer.P
     static final class Animation extends GeckoMaidEntity<MaidEchoRenderer.Proxy> {
         private final IdentityHashMap<AnimatedGeoBone, Vector3d> saved = new IdentityHashMap<>();
         private FerinComboCut cut;
+        final Quaternionf swordFrame = new Quaternionf();
+        boolean swordReady;
         private final Vector3f cutCenter = new Vector3f(0, 26.7F, 0);
         private AnimatedGeoBone translatedRoot;
         private Vector3d rootPosition;
@@ -222,22 +225,21 @@ final class EchoGeckoRenderer extends GeckoEntityMaidRenderer<MaidEchoRenderer.P
                 case 5 -> FerinSlashMesh.flipProgress(age);
                 default -> FerinBladeTrajectory.progress(stage, 1 + arcAge);
             };
-            var blade = FerinBladeTrajectory.blade(stage, progress, 0);
-            var ray = new Vector3f((float)blade.tip().right(), (float)(blade.tip().up() - blade.root().up()),
-                    (float)-blade.tip().forward()).normalize();
+            var ray = FerinSwordFrame.ray(stage, progress);
+            var normal = FerinSwordFrame.normal(stage, progress);
             if (stage == 3 && age < FerinSlashMesh.OVERHEAD_LIFT_TICKS) {
                 // Keep the wrist continuous from the previous two-handed guard to the overhead start.
-                var carry = FerinBladeTrajectory.blade(2, 1, 0);
+                var carry = FerinSwordFrame.ray(2, 1);
                 float t = (float)(age / FerinSlashMesh.OVERHEAD_LIFT_TICKS);
-                ray = new Vector3f((float)carry.tip().right(), (float)(carry.tip().up() - carry.root().up()),
-                        (float)-carry.tip().forward()).normalize().lerp(ray, t * t * (3 - 2 * t)).normalize();
+                normal = FerinSwordFrame.normal(2, 1).lerp(normal, t * t * (3 - 2 * t));
+                ray = carry.lerp(ray, t * t * (3 - 2 * t)).normalize();
             }
             if (stage == 4 && age < FerinSlashMesh.SPIN_START) {
-                var end = FerinBladeTrajectory.blade(3,
-                        FerinBladeTrajectory.progress(3, 1 + FerinSlashMesh.overheadArcAge(3)), 0);
+                double endProgress =
+                        FerinBladeTrajectory.progress(3, 1 + FerinSlashMesh.overheadArcAge(3));
                 float t = (float)FerinSlashMesh.smoothPhase(age, FerinSlashMesh.SPIN_HANDOFF, FerinSlashMesh.SPIN_START);
-                ray = new Vector3f((float)end.tip().right(), (float)(end.tip().up() - end.root().up()),
-                        (float)-end.tip().forward()).normalize().lerp(ray, t).normalize();
+                normal = FerinSwordFrame.normal(3, endProgress).lerp(normal, t);
+                ray = FerinSwordFrame.ray(3, endProgress).lerp(ray, t).normalize();
             } else if (stage == 4 && age > FerinSlashMesh.SPIN_END) {
                 // Release the extended wrist only after the circle closes.
                 float t = (float)FerinSlashMesh.smoothPhase(age, FerinSlashMesh.SPIN_END,
@@ -246,36 +248,29 @@ final class EchoGeckoRenderer extends GeckoEntityMaidRenderer<MaidEchoRenderer.P
             }
             if (stage == 5 && age < FerinSlashMesh.FLIP_GATHER) {
                 float t = (float)FerinSlashMesh.smoothPhase(age, 0, FerinSlashMesh.FLIP_GATHER);
+                normal = FerinSwordFrame.normal(4, 1).lerp(normal, t);
                 ray = new Vector3f(-.90F, -.32F, -.23F).normalize().lerp(ray, t).normalize();
             }
-            var goal = new org.joml.Matrix4f(matrix).invert().transformDirection(new Vector3f(ray)).normalize();
-            if (!goal.isFinite()) return;
-            // Native item/handheld diagonal, after the maid's right-hand item transform.
-            var sword = new Vector3f(0, -.17364818F, -.98480775F);
-            var rotation = new Quaternionf().rotationZYX(grip.getRotationZ(), grip.getRotationY(), grip.getRotationX())
-                    .mul(new Quaternionf().rotationTo(sword, goal)).getEulerAnglesZYX(new Vector3f());
-            saved.computeIfAbsent(grip, AnimatedGeoBone::getRotation);
-            grip.setRotation(rotation.x, rotation.y, rotation.z);
-
-            // Project the actual blade center onto the launch ray. Moving the entire pose keeps
-            // the hand closed around the hilt even when a compatible skin has longer arms.
-            var root = chain.get(0);
-            var aimed = new PoseStack();
-            RenderUtils.prepMatrixForLocator(aimed, chain);
-            var radius = aimed.last().pose().transformPosition(new Vector3f(0, -.5F / 16, -5.6F / 16))
+            // The prop's +Y points to its tip and +X spans its double edge.
+            // Its orientation is absolute in maid-model space, independent of wrist roll.
+            FerinSwordFrame.orient(ray, normal, swordFrame);
+            var radius = matrix.getTranslation(new Vector3f())
                     .sub(cutCenter.x / 16, (cutCenter.y - lift) / 16, cutCenter.z / 16);
             var correction = new Vector3f(ray).mul(radius.dot(ray)).sub(radius).mul(16);
             // Bound translation for skins with exaggerated proportions.
             if (!correction.isFinite()) return;
             if (correction.lengthSquared() > 16) correction.normalize(4);
+            var root = chain.get(0);
             translatedRoot = root;
             rootPosition = root.getPosition();
             root.addPositionX(-correction.x);
             root.addPositionY(correction.y + lift);
             root.addPositionZ(correction.z);
+            swordReady = true;
         }
 
         void restore() {
+            swordReady = false;
             if (translatedRoot != null) {
                 translatedRoot.setPosition(rootPosition);
                 translatedRoot = null;
