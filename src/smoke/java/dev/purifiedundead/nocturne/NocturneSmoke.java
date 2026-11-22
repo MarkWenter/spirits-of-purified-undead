@@ -16,9 +16,18 @@ public final class NocturneSmoke {
         try {
             var bauble = BaubleManager.getBauble(stack);
             if (!(bauble instanceof NocturneExtension)) throw new AssertionError("missing maid bauble");
+            // Migrated or externally edited charm data must never initialize world-owned state.
+            var incidental = new net.minecraft.nbt.CompoundTag();
+            incidental.putInt("favor", 1);
+            incidental.putBoolean("dead", true);
+            stack.getOrCreateTag().put(NocturneItem.KEY, incidental);
             player.setShiftKeyDown(true);
             player.setItemInHand(InteractionHand.MAIN_HAND,stack);
             stack.use(server.overworld(),player,InteractionHand.MAIN_HAND);
+            var initial = NocturneEffect.record(player);
+            if (initial.size() != 3 || !initial.hasUUID("owner") || !initial.hasUUID("id") || !initial.hasUUID("epoch"))
+                throw new AssertionError("unexpected ledger fields before maid equip");
+            System.out.println("NOCTURNE_BINDING_BOUNDARY_OK");
             maid.setOwnerUUID(player.getUUID());
             var recipe = server.getRecipeManager().byKey(new net.minecraft.resources.ResourceLocation("purified_undead","altar/knight_nocturne"));
             if (recipe.isEmpty()) throw new AssertionError("missing altar recipe");

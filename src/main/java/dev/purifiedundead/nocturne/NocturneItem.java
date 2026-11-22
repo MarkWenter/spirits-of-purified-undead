@@ -53,7 +53,7 @@ public final class NocturneItem extends Item {
                 if (!charm.hasUUID("id")) charm.putUUID("id", java.util.UUID.randomUUID());
                 charm.putUUID("owner", player.getUUID());
                 charm.putUUID("epoch", java.util.UUID.randomUUID());
-                ledger.bind(player.getUUID(), charm.copy());
+                ledger.bind(player.getUUID(), charm.getUUID("id"), charm.getUUID("epoch"));
                 message = "bound";
             }
             data.put(KEY, charm);

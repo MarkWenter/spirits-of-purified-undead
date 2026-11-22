@@ -7,6 +7,11 @@ import top.theillusivec4.curios.api.CuriosApi;
 final class FerinEquipment {
     private FerinEquipment() {}
 
+    static boolean hasContract(LivingEntity entity) {
+        return CuriosApi.getCuriosInventory(entity)
+                .map(handler -> handler.isEquipped(ModItems.ANCIENT_CONTRACT.get())).orElse(false);
+    }
+
     static State read(LivingEntity entity) {
         return CuriosApi.getCuriosInventory(entity)
                 .map(

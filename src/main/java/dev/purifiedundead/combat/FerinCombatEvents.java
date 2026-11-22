@@ -297,7 +297,8 @@ public final class FerinCombatEvents {
         finishMeleeObservations();
         pendingHits.values().removeIf(pending -> pending.gameTick < gameTick);
         for (ServerPlayer player : event.getServer().getPlayerList().getPlayers()) {
-            if (player.isAlive() && !player.isSpectator() && FerinEquipment.read(player).contract())
+            boolean equipped = player.isAlive() && !player.isSpectator() && FerinEquipment.hasContract(player);
+            if (equipped)
                 wispAnchors
                         .computeIfAbsent(player.getUUID(), ignored -> new FerinWispAnchor())
                         .update(player);
@@ -314,34 +315,28 @@ public final class FerinCombatEvents {
             if (runtime.combo.stage() == 0
                     && !runtime.combo.exiting()
                     && !ferinEntities.containsKey(player.getUUID())) continue;
-            if (!player.isAlive()
-                    || player.isSpectator()
-                    || !AbilityPreferences.ferin(player)
-                    || !FerinEquipment.read(player).contract()) {
+            if (!equipped || !AbilityPreferences.ferin(player)) {
                 runtime.cancelActive();
                 removeFerinEntity(player);
                 FerinPlayerStateStorage.save(player, runtime);
                 continue;
             }
             final FerinPlayerState activeState = runtime;
-            activeState.combo.tick(
-                    gameTick, ContractProgressService.ferinMaxStages(player), timings());
+            var timing = timings();
+            int maxStages = ContractProgressService.ferinMaxStages(player);
+            activeState.combo.tick(gameTick, maxStages, timing);
             boolean canContinue =
-                    player.isAlive()
-                            && !player.isSpectator()
-                            && FerinEquipment.read(player).contract()
-                            && !activeState.combo.exiting()
+                    !activeState.combo.exiting()
                             && activeState.combo.stage() > 0
-                            && activeState.combo.stage()
-                                    < ContractProgressService.ferinMaxStages(player);
+                            && activeState.combo.stage() < maxStages;
             if (activeState.continuation.consume(
                     activeState.combo.stage(),
                     activeState.combo.stageStartedAt(),
                     gameTick,
-                    timings().comboLock(),
+                    timing.comboLock(),
                     canContinue)) {
                 if (activeState.combo.onQualifyingHit(
-                                gameTick, ContractProgressService.ferinMaxStages(player), timings())
+                                gameTick, maxStages, timing)
                         == FerinComboState.Result.ADVANCED) {
                     float damage = activeState.continuationDamage;
                     Vec3 target = activeState.continuationTarget;
@@ -507,11 +502,12 @@ public final class FerinCombatEvents {
                 wispAnchors
                         .computeIfAbsent(owner.getUUID(), ignored -> new FerinWispAnchor())
                         .update(owner);
+        Vec3 fallback = owner.getLookAngle();
+        if (origin == null || !FerinFlightMotion.finite(fallback)) return;
         if (aim == null)
             aim =
                     origin.add(
-                            owner.getLookAngle()
-                                    .scale(FerinBladeTrajectory.reach(runtime.combo.stage())));
+                            fallback.scale(FerinBladeTrajectory.reach(runtime.combo.stage())));
         if (!FerinFlightMotion.finite(aim)
                 || origin.distanceTo(aim) > FerinFlightMotion.MAX_DISTANCE) return;
         var flights =
@@ -526,7 +522,7 @@ public final class FerinCombatEvents {
                         runtime,
                         origin,
                         aim,
-                        owner.getLookAngle(),
+                        fallback,
                         victim,
                         PurifiedUndeadConfig.get(
                                 PurifiedUndeadConfig.VALUES.ferinFlightMinimumSpeed),
@@ -590,8 +586,7 @@ public final class FerinCombatEvents {
     }
 
     private static FerinSweptBlade.WorldPose flightPose(
-            int stage, double progress, Vec3 origin, FerinFlightMotion.Basis basis) {
-        var pose = FerinBladeTrajectory.blade(stage, progress, 0);
+            FerinBladeTrajectory.BladePose pose, Vec3 origin, FerinFlightMotion.Basis basis) {
         var a = pose.root();
         var b = pose.tip();
         return new FerinSweptBlade.WorldPose(
@@ -600,8 +595,8 @@ public final class FerinCombatEvents {
                 pose.thickness() + .20);
     }
 
-    private static void processFlight(
-            ServerPlayer owner, FerinSlashFlight flight, Vec3 previous, Vec3 previousDirection) {
+    private static java.util.List<WorldSweep> flightSweeps(
+            FerinSlashFlight flight, Vec3 previous, Vec3 previousDirection) {
         var sweeps = new java.util.ArrayList<WorldSweep>(181);
         double progress =
                 FerinBladeTrajectory.progress(
@@ -616,12 +611,18 @@ public final class FerinCombatEvents {
         var currentBasis = FerinFlightMotion.basis(flight.motion.direction());
         // Every radial slice of the fan/ring sweeps continuously across the entire tick.
         for (int i = 0; i <= 180; i++) {
-            double p = progress * i / 180.0;
+            var pose = FerinBladeTrajectory.blade(flight.stage, progress * i / 180.0, 0);
             sweeps.add(
                     new WorldSweep(
-                            flightPose(flight.stage, p, previous, previousBasis),
-                            flightPose(flight.stage, p, flight.motion.position(), currentBasis)));
+                            flightPose(pose, previous, previousBasis),
+                            flightPose(pose, flight.motion.position(), currentBasis)));
         }
+        return sweeps;
+    }
+
+    private static void processFlight(
+            ServerPlayer owner, FerinSlashFlight flight, Vec3 previous, Vec3 previousDirection) {
+        java.util.List<WorldSweep> sweeps = null;
         // Narrow broad-phase segments avoid the enormous cube of a long diagonal shot.
         int sections =
                 Math.max(1, (int) Math.ceil(previous.distanceTo(flight.motion.position()) / 16));
@@ -632,7 +633,11 @@ public final class FerinCombatEvents {
             var bounds =
                     new net.minecraft.world.phys.AABB(a, b)
                             .inflate(FerinBladeTrajectory.reach(flight.stage) + .55);
-            applyBladeHits(owner.serverLevel(), owner, flight.damage, sweeps, bounds, checked);
+            var candidates = owner.serverLevel().getEntitiesOfClass(LivingEntity.class, bounds,
+                    entity -> !flight.damage.hitTargets.contains(entity.getUUID()) && isLegalTarget(owner, entity));
+            if (candidates.isEmpty()) continue;
+            if (sweeps == null) sweeps = flightSweeps(flight, previous, previousDirection);
+            applyBladeHits(owner.serverLevel(), owner, flight.damage, sweeps, candidates, checked);
         }
     }
 
@@ -650,11 +655,9 @@ public final class FerinCombatEvents {
             ServerPlayer owner,
             FerinPlayerState runtime,
             java.util.List<WorldSweep> sweeps,
-            net.minecraft.world.phys.AABB bounds,
+            java.util.List<LivingEntity> candidates,
             java.util.Set<UUID> checked) {
-        for (LivingEntity target :
-                level.getEntitiesOfClass(
-                        LivingEntity.class, bounds, candidate -> isLegalTarget(owner, candidate))) {
+        for (LivingEntity target : candidates) {
             if (!checked.add(target.getUUID())
                     || runtime.hitTargets.contains(target.getUUID())
                     || sweeps.stream()
@@ -680,7 +683,9 @@ public final class FerinCombatEvents {
             if (!Float.isFinite(amount) || amount < 0) continue;
             boolean hoenirMarked = HoenirCombatEvents.hasMark(owner, target);
             amount = HoenirModel.ferinDamage(amount, hoenirMarked);
-            amount = dev.purifiedundead.nocturne.NocturneEffect.damage(owner, amount) * runtime.stageCriticalMultiplier;
+            amount = FerinDamageModel.withCritical(amount,
+                    dev.purifiedundead.nocturne.NocturneEffect.damage(owner, amount),
+                    runtime.stageCriticalMultiplier);
             if (!Float.isFinite(amount) || amount < 0) continue;
             int previousInvulnerableTime = target.invulnerableTime;
             target.invulnerableTime = 0;

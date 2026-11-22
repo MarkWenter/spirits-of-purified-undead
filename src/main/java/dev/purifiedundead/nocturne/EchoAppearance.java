@@ -26,8 +26,9 @@ public final class EchoAppearance {
         EchoItemAppearance.project(source, out, "headStack");
         var variables = new CompoundTag();
         var input = source.getCompound("variables");
+        int inspected = 0;
         for (String key : input.getAllKeys()) {
-            if (variables.size() == MAX_VARIABLES) break;
+            if (inspected++ == MAX_VARIABLES) break;
             float value = input.getFloat(key);
             if (input.contains(key, Tag.TAG_FLOAT) && validVariable(key, value)) variables.putFloat(key, value);
         }

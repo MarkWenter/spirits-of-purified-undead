@@ -8,6 +8,12 @@ public final class FerinDamageModel {
 
     private FerinDamageModel() {}
 
+    /** An overflowing optional bonus must not suppress an otherwise valid ordinary slash. */
+    static float withCritical(float ordinary, float augmented, float multiplier) {
+        float combined = augmented * multiplier;
+        return Float.isFinite(combined) && combined >= 0 ? combined : ordinary * multiplier;
+    }
+
     public static float baseDamage(int stage, float preDefenseSnapshot) {
         if (stage < 1 || stage > COEFFICIENTS.length) {
             throw new IllegalArgumentException("Ferin damage stage must be between one and five");

@@ -6,6 +6,16 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class FerinWispAnchorTest {
     @Test
+    void invalidSampleDoesNotPoisonTheNextRelease() {
+        var anchor = new FerinWispAnchor();
+        var owner = new Vec3(0, 70, 0);
+        anchor.update(owner, 0, 10, .5);
+        assertNull(anchor.update(owner, Float.NaN, 11, .5));
+        assertNull(anchor.update(new Vec3(Double.NaN, 70, 0), 0, 11, .5));
+        assertTrue(FerinFlightMotion.finite(anchor.update(owner, 90, 12, .5)));
+    }
+
+    @Test
     void repeatedAttackSamplesDuringSprintAndTurnMatchVisualSteps() {
         var anchor = new FerinWispAnchor();
         var owner = new Vec3(20.125, 75.375, -1.875);

@@ -39,6 +39,8 @@ public final class FerinRenderer extends EntityRenderer<FerinEntity> {
     private final EntityRendererProvider.Context context;
     private dev.purifiedundead.client.echo.MaidEchoRenderer echoes;
 
+    private boolean echoLinkageFailed;
+
     public FerinRenderer(EntityRendererProvider.Context context) {
         super(context);
         this.context = context;
@@ -63,7 +65,7 @@ public final class FerinRenderer extends EntityRenderer<FerinEntity> {
         var offset = flight ? launchOffset(entity, age, partialTick) : net.minecraft.world.phys.Vec3.ZERO;
         boolean authoredCut = false;
         if (flight && age >= 0 && age < dev.purifiedundead.combat.FerinBladeTrajectory.sweepEnd(entity.getStage()) + 2
-                && !entity.echoAppearance().isEmpty() && dev.purifiedundead.content.ModItems.KNIGHT_NOCTURNE != null
+                && !echoLinkageFailed && !entity.echoAppearance().isEmpty() && dev.purifiedundead.content.ModItems.KNIGHT_NOCTURNE != null
                 && dev.purifiedundead.config.PurifiedUndeadConfig.SHOW_ECHO.get()) {
             var origin = entity.releasePosition().add(offset);
             poses.pushPose();
@@ -71,6 +73,11 @@ public final class FerinRenderer extends EntityRenderer<FerinEntity> {
                 poses.translate(origin.x - x, origin.y - y, origin.z - z);
                 if (echoes == null) echoes = new dev.purifiedundead.client.echo.MaidEchoRenderer(context);
                 authoredCut = echoes.render(entity, age, partialTick, origin, poses, buffers);
+            } catch (LinkageError ex) {
+                // A mismatched optional maid API must not stop the ordinary slash renderer.
+                echoLinkageFailed = true;
+                echoes = null;
+                com.mojang.logging.LogUtils.getLogger().warn("Maid apparition API unavailable until renderer reload", ex);
             } finally {
                 poses.popPose();
             }

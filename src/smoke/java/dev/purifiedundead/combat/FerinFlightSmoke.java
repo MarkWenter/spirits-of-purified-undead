@@ -14,7 +14,12 @@ public final class FerinFlightSmoke {
                         level,
                         new com.mojang.authlib.GameProfile(
                                 java.util.UUID.randomUUID(), "FerinFlightSmoke"));
-        player.setPos(40, 80, 40);
+        // A FakePlayer has no player chunk tickets. Run entirely within the spawn region,
+        // high above other smoke fixtures, so level entity queries see each target.
+        var spawn = new net.minecraft.world.level.ChunkPos(level.getSharedSpawnPos());
+        int x = spawn.getMiddleBlockX(), z = spawn.getMinBlockZ() - 5;
+        int y = level.getMaxBuildHeight() - 40;
+        player.setPos(x, y, z);
         var events = new FerinCombatEvents();
         var mobs = new ArrayList<Zombie>();
         try {
@@ -36,11 +41,12 @@ public final class FerinFlightSmoke {
             remove.setAccessible(true);
             Zombie target = new Zombie(level);
             target.setNoAi(true);
-            target.setPos(40, 80, 53);
+            target.setPos(x, y, z + 13);
             target.getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.MAX_HEALTH)
                     .setBaseValue(1000);
             target.setHealth(1000);
-            level.addFreshEntity(target);
+            check(level.addFreshEntity(target) && level.getEntity(target.getUUID()) == target,
+                    "target in loaded spawn region");
             mobs.add(target);
             var state = new FerinPlayerState();
             long now = level.getGameTime();
@@ -52,6 +58,7 @@ public final class FerinFlightSmoke {
                     player.getBoundingBox().inflate(32), e -> e.belongsTo(player.getUUID())).get(0);
             Vec3 release = visual.releasePosition();
             Vec3 releaseDirection = visual.releaseDirection();
+            float before = target.getHealth();
             tick.invoke(events, player);
             check(visual.releasePosition().distanceTo(release) < 1e-6
                     && visual.releaseDirection().distanceTo(releaseDirection) < 1e-6,
@@ -59,10 +66,9 @@ public final class FerinFlightSmoke {
             check(visual.position().distanceTo(release) > .1, "flight separates from launch");
             // Change the current combo snapshot after launch: the in-flight wave must retain 10.
             state.triggerPreDefenseDamage = 500;
-            float before = target.getHealth();
             for (int i = 0; i < 80; i++) tick.invoke(events, player);
             float loss = before - target.getHealth();
-            check(loss > 0 && loss <= 7.51, "old flight snapshot and one-hit target set");
+            check(loss > 0 && loss <= 7.51, "old flight snapshot and one-hit target set, actual loss " + loss);
             check(
                     level.getEntitiesOfClass(
                                     dev.purifiedundead.entity.FerinEntity.class,
@@ -76,11 +82,12 @@ public final class FerinFlightSmoke {
             for (int i = 0; i < 80; i++) tick.invoke(events, player);
             check(before == target.getHealth(), "cancel removes pending damage");
             // Intercept a new flight before its tracked target. Then move that target off-axis.
-            target.setPos(40, 80, 65);
+            target.setPos(x, y, z + 25);
             var blocker = new Zombie(level);
             blocker.setNoAi(true);
-            blocker.setPos(40, 80, 48);
-            level.addFreshEntity(blocker);
+            blocker.setPos(x, y, z + 8);
+            check(level.addFreshEntity(blocker) && level.getEntity(blocker.getUUID()) == blocker,
+                    "blocker in loaded spawn region");
             mobs.add(blocker);
             launch.invoke(events, player, state, target.getBoundingBox().getCenter(), target);
             var flightMap = FerinCombatEvents.class.getDeclaredField("ferinEntities");
@@ -92,7 +99,7 @@ public final class FerinFlightSmoke {
             check(!flight.motion.finished() && !flight.damage.hitTargets.contains(target.getUUID()),
                     "intervening mob hit before tracked target");
             Vec3 straight = flight.motion.direction();
-            target.setPos(50, 80, 65);
+            target.setPos(x + 10, y, z + 25);
             while (!flight.motion.finished()) {
                 tick.invoke(events, player);
                 check(flight.target == null && flight.motion.direction().distanceTo(straight) < 1e-9,

@@ -22,22 +22,26 @@ final class FerinComboCut {
     static FerinComboCut load(ResourceManager resources, String combo) {
         var path = ResourceLocation.tryParse("purified_undead:animations/ferin_" + combo + ".animation.json");
         try (var reader = resources.openAsReader(path)) {
-            var bones = JsonParser.parseReader(reader).getAsJsonObject().getAsJsonObject("animations")
-                    .getAsJsonObject("animation.ferin." + combo).getAsJsonObject("bones");
-            List<Track> tracks = new ArrayList<>();
-            for (var entry : bones.entrySet()) {
-                var bone = entry.getValue().getAsJsonObject();
-                String name = entry.getKey();
-                boolean lift = name.equals("MRoot") && bone.has("position");
-                if (lift) tracks.add(readTrack(name, bone.getAsJsonObject("position"), true));
-                if (!lift || bone.has("rotation"))
-                    tracks.add(readTrack(name, bone.getAsJsonObject("rotation"), false));
-            }
-            return new FerinComboCut(List.copyOf(tracks));
+            return read(reader, combo);
         } catch (IOException | RuntimeException e) {
             LogUtils.getLogger().warn("Could not read Ferin animation {}", combo, e);
             return new FerinComboCut(List.of());
         }
+    }
+
+    static FerinComboCut read(java.io.Reader reader, String combo) {
+        var bones = JsonParser.parseReader(reader).getAsJsonObject().getAsJsonObject("animations")
+                .getAsJsonObject("animation.ferin." + combo).getAsJsonObject("bones");
+        List<Track> tracks = new ArrayList<>();
+        for (var entry : bones.entrySet()) {
+            var bone = entry.getValue().getAsJsonObject();
+            String name = entry.getKey();
+            boolean lift = name.equals("MRoot") && bone.has("position");
+            if (lift) tracks.add(readTrack(name, bone.getAsJsonObject("position"), true));
+            if (!lift || bone.has("rotation"))
+                tracks.add(readTrack(name, bone.getAsJsonObject("rotation"), false));
+        }
+        return new FerinComboCut(List.copyOf(tracks));
     }
 
     private static Track readTrack(String name, JsonObject frames, boolean rootHeight) {
@@ -80,7 +84,7 @@ final class FerinComboCut {
                 else high = mid;
             }
             Key a = keys.get(Math.max(0, low - 1)), b = keys.get(low);
-            float u = b.time > a.time ? Math.max(0, (seconds - a.time) / (b.time - a.time)) : 0;
+            float u = b.time > a.time ? Math.max(0, Math.min(1, (seconds - a.time) / (b.time - a.time))) : 0;
             float y = a.y + (b.y - a.y) * u;
             if (track.rootHeight) height = y;
             else pose.rotate(track.name, a.x + (b.x - a.x) * u, y, a.z + (b.z - a.z) * u);

@@ -18,7 +18,8 @@ public final class NocturneExtension implements ILittleMaid, IMaidBauble {
 
     private CompoundTag binding(EntityMaid maid, ItemStack stack) {
         if (maid.level().isClientSide || maid.getOwnerUUID() == null) return null;
-        var charm = stack.getOrCreateTag().getCompound(NocturneItem.KEY);
+        var charm = stack.getTagElement(NocturneItem.KEY);
+        if (charm == null) return null;
         var record = NocturneLedger.get(maid.getServer()).record(maid.getOwnerUUID());
         return charm.hasUUID("owner") && charm.getUUID("owner").equals(maid.getOwnerUUID())
                 && record.hasUUID("epoch") && charm.hasUUID("epoch")
@@ -76,8 +77,9 @@ public final class NocturneExtension implements ILittleMaid, IMaidBauble {
             if (maid.isYsmModel()) {
                 var variables = new CompoundTag();
                 if (maid.roamingVars != null) {
+                    int inspected = 0;
                     for (var entry : maid.roamingVars.object2FloatEntrySet()) {
-                        if (variables.size() == EchoAppearance.MAX_VARIABLES) break;
+                        if (inspected++ == EchoAppearance.MAX_VARIABLES) break;
                         if (EchoAppearance.validVariable(entry.getKey(), entry.getFloatValue()))
                             variables.putFloat(entry.getKey(), entry.getFloatValue());
                     }

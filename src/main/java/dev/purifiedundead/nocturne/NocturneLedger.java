@@ -24,8 +24,13 @@ final class NocturneLedger extends SavedData {
     }
 
     CompoundTag record(UUID id) { return records.getCompound(id.toString()); }
-    void bind(UUID id, CompoundTag binding) {
-        records.put(id.toString(), binding);
+    void bind(UUID owner, UUID charmId, UUID epoch) {
+        // Item data identifies a charm. Snapshots, death and credit belong exclusively to this ledger.
+        CompoundTag binding = new CompoundTag();
+        binding.putUUID("owner", owner);
+        binding.putUUID("id", charmId);
+        binding.putUUID("epoch", epoch);
+        records.put(owner.toString(), binding);
         setDirty();
     }
     boolean release(UUID id) {

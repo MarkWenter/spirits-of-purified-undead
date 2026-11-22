@@ -270,8 +270,7 @@ public final class PurificationServerSmoke {
             FoundryServerSmoke.run(server);
             FerinLargeMobSmoke.run(server);
             dev.purifiedundead.combat.FerinFlightSmoke.run(server);
-            if (dev.purifiedundead.content.ModItems.KNIGHT_NOCTURNE != null)
-                dev.purifiedundead.nocturne.NocturneSmoke.run(server,player);
+            checkNocturneIntegration(server, player);
             PurificationPartTwoSmoke.run(server);
             LilyDiarySmoke.run(server);
             AdvancementSmoke.run(server);
@@ -288,6 +287,27 @@ public final class PurificationServerSmoke {
         } finally {
             server.execute(() -> server.halt(false));
         }
+    }
+
+    private static void checkNocturneIntegration(net.minecraft.server.MinecraftServer server,
+                                                 net.minecraft.server.level.ServerPlayer player) {
+        boolean installed = net.minecraftforge.fml.ModList.get().isLoaded("touhou_little_maid");
+        var id = net.minecraft.resources.ResourceLocation.tryParse("purified_undead:knight_nocturne");
+        var recipe = net.minecraft.resources.ResourceLocation.tryParse("purified_undead:altar/knight_nocturne");
+        var root = server.getCommands().getDispatcher().getRoot().getChild("purifiedundead");
+        check(net.minecraft.core.registries.BuiltInRegistries.ITEM.getOptional(id).isPresent() == installed,
+                "Nocturne item follows optional mod presence");
+        check(server.getRecipeManager().byKey(recipe).isPresent() == installed, "conditional altar recipe");
+        check((root.getChild("knight_nocturne") != null) == installed, "conditional unbind command");
+        if (installed) {
+            dev.purifiedundead.nocturne.NocturneSmoke.run(server, player);
+        } else {
+            check(!dev.purifiedundead.nocturne.NocturneEffect.sealed(player)
+                            && dev.purifiedundead.nocturne.NocturneEffect.damage(player, 7) == 7
+                            && dev.purifiedundead.nocturne.NocturneEffect.appearance(player).isEmpty(),
+                    "base Ferin behavior without maid mod");
+        }
+        System.out.println("FERIN_OPTIONAL_INTEGRATION_OK maid=" + installed);
     }
 
     private static int crystals(net.minecraft.world.entity.player.Player player) {

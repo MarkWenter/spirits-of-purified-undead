@@ -16,6 +16,8 @@ final class FerinWispAnchor {
     }
 
     Vec3 update(Vec3 owner, float yaw, long tick, double phase) {
+        // Discard this sample before mutating filter history; recover on the next valid tick.
+        if (!FerinFlightMotion.finite(owner) || !Float.isFinite(yaw) || !Double.isFinite(phase)) return null;
         boolean teleported = previousOwner != null && previousOwner.distanceToSqr(owner) > 144;
         if (lastTick == tick && !teleported) return position;
         if (teleported || position == null || tick - lastTick > 2 || tick < lastTick) {
