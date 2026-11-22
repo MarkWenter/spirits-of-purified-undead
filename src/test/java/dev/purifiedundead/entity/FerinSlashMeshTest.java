@@ -17,6 +17,18 @@ class FerinSlashMeshTest {
     }
 
     @Test
+    void fourthCutCompletesOneLeftTurnAfterTheHandoff() {
+        assertTrue(FerinSlashMesh.spinLaunch(FerinSlashMesh.SPIN_START).isEmpty());
+        double mid = (FerinSlashMesh.SPIN_START + FerinSlashMesh.SPIN_END) / 2;
+        assertEquals(.5, FerinSlashMesh.spinProgress(mid), 1e-9);
+        assertTrue(FerinBladeTrajectory.blade(4, FerinSlashMesh.spinProgress(mid - .5), 0).tip().right() < 0);
+        assertTrue(FerinBladeTrajectory.blade(4, .5, 0).tip().forward() < 0);
+        assertEquals(1, FerinSlashMesh.spinProgress(FerinSlashMesh.SPIN_END));
+        assertFalse(FerinSlashMesh.spinLaunch(FerinSlashMesh.SPIN_END).isEmpty());
+        assertTrue(FerinSlashMesh.spinLaunch(7).isEmpty());
+    }
+
+    @Test
     void idleAndExpiredSlashesAreInvisible() {
         assertTrue(FerinSlashMesh.sample(0, 4).isEmpty());
         assertTrue(FerinSlashMesh.sample(6, 4).isEmpty());

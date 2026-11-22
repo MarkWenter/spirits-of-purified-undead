@@ -53,7 +53,7 @@ public final class MaidEchoRenderer {
                 proxies.put(release, proxy);
                 var appearance = release.echoAppearance();
                 var mapped = appearance.getString("geckoEcho");
-                if (!mapped.isEmpty() && (proxy.stage >= 1 && proxy.stage <= 3) && appearance.contains("ysmModel")
+                if (!mapped.isEmpty() && (proxy.stage >= 1 && proxy.stage <= 4) && appearance.contains("ysmModel")
                         && PurifiedUndeadConfig.ECHO_SPECIAL_ANIMATIONS.get()) {
                     var info = CustomPackLoader.MAID_MODELS.getInfo(mapped).orElse(null);
                     if (info != null && info.isGeckoModel() && mapped.equals(info.getModelId().toString())) {
@@ -146,7 +146,17 @@ public final class MaidEchoRenderer {
         boolean failed;
 
         @Override public net.minecraft.world.item.ItemStack getMainHandItem() {
-            return playingCut ? ironSword : super.getMainHandItem();
+            if (!playingCut) return super.getMainHandItem();
+            return spinInLeftHand() ? net.minecraft.world.item.ItemStack.EMPTY : ironSword;
+        }
+
+        @Override public net.minecraft.world.item.ItemStack getOffhandItem() {
+            if (!playingCut) return super.getOffhandItem();
+            return spinInLeftHand() ? ironSword : net.minecraft.world.item.ItemStack.EMPTY;
+        }
+
+        boolean spinInLeftHand() {
+            return stage == 4 && FerinComboCut.ledAge(age) >= dev.purifiedundead.entity.FerinSlashMesh.SPIN_HANDOFF;
         }
 
         int stage;

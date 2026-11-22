@@ -28,12 +28,14 @@ final class EchoGeckoRenderer extends GeckoEntityMaidRenderer<MaidEchoRenderer.P
     private final FerinComboCut firstCut;
     private final FerinComboCut secondCut;
     private final FerinComboCut thirdCut;
+    private final FerinComboCut fourthCut;
 
     EchoGeckoRenderer(EntityRendererProvider.Context context) {
         super(context);
         firstCut = FerinComboCut.load(context.getResourceManager(), "combo_one");
         secondCut = FerinComboCut.load(context.getResourceManager(), "combo_two");
         thirdCut = FerinComboCut.load(context.getResourceManager(), "combo_three");
+        fourthCut = FerinComboCut.load(context.getResourceManager(), "combo_four");
     }
 
     private FerinComboCut clip(int stage) {
@@ -41,6 +43,7 @@ final class EchoGeckoRenderer extends GeckoEntityMaidRenderer<MaidEchoRenderer.P
             case 1 -> firstCut;
             case 2 -> secondCut;
             case 3 -> thirdCut;
+            case 4 -> fourthCut;
             default -> null;
         };
     }
@@ -68,7 +71,8 @@ final class EchoGeckoRenderer extends GeckoEntityMaidRenderer<MaidEchoRenderer.P
             maid.playingCut = cut != null && cut.available()
                     && dev.purifiedundead.config.PurifiedUndeadConfig.ECHO_SPECIAL_ANIMATIONS.get()
                     && maid.animation.updateModel() && (maid.mappedSkin || EchoAnimations.wineFoxGecko(maid.animation.skeleton()))
-                    && !maid.animation.getCurrentModel().rightHandBones().isEmpty();
+                    && !maid.animation.getCurrentModel().rightHandBones().isEmpty()
+                    && (maid.stage != 4 || maid.animation.hasSupportingArm());
             if (maid.playingCut) {
                 // Aim the entire sweep plane around the launch point, including its vertical pitch.
                 poses.translate(0, maid.getBbHeight() * .52, 0);
@@ -168,6 +172,7 @@ final class EchoGeckoRenderer extends GeckoEntityMaidRenderer<MaidEchoRenderer.P
                 // parents would otherwise pull the grip off the left shoulder.
                 for (String name : REST_PARENTS) setFromRest(name, 0, 0, 0);
                 float age = FerinComboCut.ledAge(getEntity().age);
+                if (getEntity().stage == 4) setFromRest("LeftHandLocator", 0, 0, 0);
                 cut.sample(age, this::setFromRest);
                 alignBlade(age);
             }
@@ -199,16 +204,18 @@ final class EchoGeckoRenderer extends GeckoEntityMaidRenderer<MaidEchoRenderer.P
         }
 
         private void alignBlade(float age) {
-            var chain = getCurrentModel().rightHandBones();
+            boolean left = getEntity().spinInLeftHand();
+            var chain = left ? getCurrentModel().leftHandBones() : getCurrentModel().rightHandBones();
             var grip = chain.get(chain.size() - 1);
-            if (!"RightHandLocator".equals(grip.getName())) return;
+            if (!(left ? "LeftHandLocator" : "RightHandLocator").equals(grip.getName())) return;
             var local = new PoseStack();
             if (RenderUtils.prepMatrixForLocator(local, chain)) return;
             var matrix = local.last().pose();
             if (!(Math.abs(matrix.determinant3x3()) > 1.0e-6F)) return;
             int stage = getEntity().stage;
             double arcAge = stage == 3 ? FerinSlashMesh.overheadArcAge(age) : age;
-            var blade = FerinBladeTrajectory.blade(stage, FerinBladeTrajectory.progress(stage, 1 + arcAge), 0);
+            double progress = stage == 4 ? FerinSlashMesh.spinProgress(age) : FerinBladeTrajectory.progress(stage, 1 + arcAge);
+            var blade = FerinBladeTrajectory.blade(stage, progress, 0);
             var ray = new Vector3f((float)blade.tip().right(), (float)(blade.tip().up() - blade.root().up()),
                     (float)-blade.tip().forward()).normalize();
             if (stage == 3 && age < FerinSlashMesh.OVERHEAD_LIFT_TICKS) {
@@ -217,6 +224,18 @@ final class EchoGeckoRenderer extends GeckoEntityMaidRenderer<MaidEchoRenderer.P
                 float t = (float)(age / FerinSlashMesh.OVERHEAD_LIFT_TICKS);
                 ray = new Vector3f((float)carry.tip().right(), (float)(carry.tip().up() - carry.root().up()),
                         (float)-carry.tip().forward()).normalize().lerp(ray, t * t * (3 - 2 * t)).normalize();
+            }
+            if (stage == 4 && age < FerinSlashMesh.SPIN_START) {
+                var end = FerinBladeTrajectory.blade(3,
+                        FerinBladeTrajectory.progress(3, 1 + FerinSlashMesh.overheadArcAge(3)), 0);
+                float t = (float)FerinSlashMesh.smoothPhase(age, FerinSlashMesh.SPIN_HANDOFF, FerinSlashMesh.SPIN_START);
+                ray = new Vector3f((float)end.tip().right(), (float)(end.tip().up() - end.root().up()),
+                        (float)-end.tip().forward()).normalize().lerp(ray, t).normalize();
+            } else if (stage == 4 && age > FerinSlashMesh.SPIN_END) {
+                // Release the extended wrist only after the circle closes.
+                float t = (float)FerinSlashMesh.smoothPhase(age, FerinSlashMesh.SPIN_END,
+                        FerinSlashMesh.SPIN_END + FerinSlashMesh.SPIN_SETTLE);
+                ray.lerp(new Vector3f(-.90F, -.32F, -.23F).normalize(), t).normalize();
             }
             var goal = new org.joml.Matrix4f(matrix).invert().transformDirection(new Vector3f(ray)).normalize();
             if (!goal.isFinite()) return;
