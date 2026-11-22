@@ -29,6 +29,7 @@ final class EchoGeckoRenderer extends GeckoEntityMaidRenderer<MaidEchoRenderer.P
     private final FerinComboCut secondCut;
     private final FerinComboCut thirdCut;
     private final FerinComboCut fourthCut;
+    private final FerinComboCut fifthCut;
 
     EchoGeckoRenderer(EntityRendererProvider.Context context) {
         super(context);
@@ -36,6 +37,7 @@ final class EchoGeckoRenderer extends GeckoEntityMaidRenderer<MaidEchoRenderer.P
         secondCut = FerinComboCut.load(context.getResourceManager(), "combo_two");
         thirdCut = FerinComboCut.load(context.getResourceManager(), "combo_three");
         fourthCut = FerinComboCut.load(context.getResourceManager(), "combo_four");
+        fifthCut = FerinComboCut.load(context.getResourceManager(), "combo_five");
     }
 
     private FerinComboCut clip(int stage) {
@@ -44,6 +46,7 @@ final class EchoGeckoRenderer extends GeckoEntityMaidRenderer<MaidEchoRenderer.P
             case 2 -> secondCut;
             case 3 -> thirdCut;
             case 4 -> fourthCut;
+            case 5 -> fifthCut;
             default -> null;
         };
     }
@@ -72,7 +75,7 @@ final class EchoGeckoRenderer extends GeckoEntityMaidRenderer<MaidEchoRenderer.P
                     && dev.purifiedundead.config.PurifiedUndeadConfig.ECHO_SPECIAL_ANIMATIONS.get()
                     && maid.animation.updateModel() && (maid.mappedSkin || EchoAnimations.wineFoxGecko(maid.animation.skeleton()))
                     && !maid.animation.getCurrentModel().rightHandBones().isEmpty()
-                    && (maid.stage != 4 || maid.animation.hasSupportingArm());
+                    && (maid.stage < 4 || maid.animation.hasSupportingArm());
             if (maid.playingCut) {
                 // Aim the entire sweep plane around the launch point, including its vertical pitch.
                 poses.translate(0, maid.getBbHeight() * .52, 0);
@@ -172,9 +175,9 @@ final class EchoGeckoRenderer extends GeckoEntityMaidRenderer<MaidEchoRenderer.P
                 // parents would otherwise pull the grip off the left shoulder.
                 for (String name : REST_PARENTS) setFromRest(name, 0, 0, 0);
                 float age = FerinComboCut.ledAge(getEntity().age);
-                if (getEntity().stage == 4) setFromRest("LeftHandLocator", 0, 0, 0);
-                cut.sample(age, this::setFromRest);
-                alignBlade(age);
+                if (getEntity().stage >= 4) setFromRest("LeftHandLocator", 0, 0, 0);
+                float lift = cut.sample(age, this::setFromRest);
+                alignBlade(age, lift);
             }
             if (!EchoAnimations.enabled()) return result;
             EchoAnimations.sample(skeleton(), getEntity().stage, getEntity().age, (name, x, y, z) -> {
@@ -203,8 +206,8 @@ final class EchoGeckoRenderer extends GeckoEntityMaidRenderer<MaidEchoRenderer.P
             bone.setRotation(rest.rotationValueX + x, rest.rotationValueY + y, rest.rotationValueZ + z);
         }
 
-        private void alignBlade(float age) {
-            boolean left = getEntity().spinInLeftHand();
+        private void alignBlade(float age, float lift) {
+            boolean left = getEntity().cutInLeftHand();
             var chain = left ? getCurrentModel().leftHandBones() : getCurrentModel().rightHandBones();
             var grip = chain.get(chain.size() - 1);
             if (!(left ? "LeftHandLocator" : "RightHandLocator").equals(grip.getName())) return;
@@ -214,7 +217,11 @@ final class EchoGeckoRenderer extends GeckoEntityMaidRenderer<MaidEchoRenderer.P
             if (!(Math.abs(matrix.determinant3x3()) > 1.0e-6F)) return;
             int stage = getEntity().stage;
             double arcAge = stage == 3 ? FerinSlashMesh.overheadArcAge(age) : age;
-            double progress = stage == 4 ? FerinSlashMesh.spinProgress(age) : FerinBladeTrajectory.progress(stage, 1 + arcAge);
+            double progress = switch (stage) {
+                case 4 -> FerinSlashMesh.spinProgress(age);
+                case 5 -> FerinSlashMesh.flipProgress(age);
+                default -> FerinBladeTrajectory.progress(stage, 1 + arcAge);
+            };
             var blade = FerinBladeTrajectory.blade(stage, progress, 0);
             var ray = new Vector3f((float)blade.tip().right(), (float)(blade.tip().up() - blade.root().up()),
                     (float)-blade.tip().forward()).normalize();
@@ -237,6 +244,10 @@ final class EchoGeckoRenderer extends GeckoEntityMaidRenderer<MaidEchoRenderer.P
                         FerinSlashMesh.SPIN_END + FerinSlashMesh.SPIN_SETTLE);
                 ray.lerp(new Vector3f(-.90F, -.32F, -.23F).normalize(), t).normalize();
             }
+            if (stage == 5 && age < FerinSlashMesh.FLIP_GATHER) {
+                float t = (float)FerinSlashMesh.smoothPhase(age, 0, FerinSlashMesh.FLIP_GATHER);
+                ray = new Vector3f(-.90F, -.32F, -.23F).normalize().lerp(ray, t).normalize();
+            }
             var goal = new org.joml.Matrix4f(matrix).invert().transformDirection(new Vector3f(ray)).normalize();
             if (!goal.isFinite()) return;
             // Native item/handheld diagonal, after the maid's right-hand item transform.
@@ -252,7 +263,7 @@ final class EchoGeckoRenderer extends GeckoEntityMaidRenderer<MaidEchoRenderer.P
             var aimed = new PoseStack();
             RenderUtils.prepMatrixForLocator(aimed, chain);
             var radius = aimed.last().pose().transformPosition(new Vector3f(0, -.5F / 16, -5.6F / 16))
-                    .sub(cutCenter.x / 16, cutCenter.y / 16, cutCenter.z / 16);
+                    .sub(cutCenter.x / 16, (cutCenter.y - lift) / 16, cutCenter.z / 16);
             var correction = new Vector3f(ray).mul(radius.dot(ray)).sub(radius).mul(16);
             // Bound translation for skins with exaggerated proportions.
             if (!correction.isFinite()) return;
@@ -260,7 +271,7 @@ final class EchoGeckoRenderer extends GeckoEntityMaidRenderer<MaidEchoRenderer.P
             translatedRoot = root;
             rootPosition = root.getPosition();
             root.addPositionX(-correction.x);
-            root.addPositionY(correction.y);
+            root.addPositionY(correction.y + lift);
             root.addPositionZ(correction.z);
         }
 

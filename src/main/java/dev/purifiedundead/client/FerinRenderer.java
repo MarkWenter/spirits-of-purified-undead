@@ -91,6 +91,7 @@ public final class FerinRenderer extends EntityRenderer<FerinEntity> {
                         switch (authoredCut ? entity.getStage() : 0) {
                             case 3 -> FerinSlashMesh.overheadLaunch(age);
                             case 4 -> FerinSlashMesh.spinLaunch(age);
+                            case 5 -> FerinSlashMesh.flipLaunch(age);
                             default -> FerinSlashMesh.launch(entity.getStage(), age);
                         },
                         dev.purifiedundead.combat.FerinFlightMotion.basis(

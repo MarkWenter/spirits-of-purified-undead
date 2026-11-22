@@ -23,18 +23,24 @@ public final class FerinDynamicClientSmoke {
                     return classic || dev.purifiedundead.client.echo.EchoAnimations.wineFoxGecko(rig);
                 }
                 public boolean sample(int stage, float age, dev.purifiedundead.client.echo.EchoAnimations.Rotations pose) {
-                    if (classic != (stage == 5))
+                    if (classic != fallbackSkin)
                         throw new AssertionError("Unexpected Wine Fox rig on stage " + stage);
-                    if (stage > 4) pose.rotate(classic ? "armRight" : "RightForeArm", .1F, 0, 0);
+                    if (fallbackSkin) pose.rotate(classic ? "armRight" : "RightForeArm", .1F, 0, 0);
                     echoStages |= 1 << stage;
                     return true;
                 }
             };
+    private static final int FLIP_FRAME = 4 * 32;
+    private static final float[] FLIP_AGES = {0, .47F, .94F, 1.55F, 2.15F, 2.65F, 3.04F, 3.66F, 4.40F, 5.04F, 5.75F, 6.55F};
+    private static final int FALLBACK_FRAME = FLIP_AGES.length * 4;
+    private static final int CUT_FRAMES = FLIP_FRAME + FALLBACK_FRAME + 4;
+    private static boolean fallbackSkin;
     private static int ticks;
     private static FerinEntity slash;
     private static final Vec3 CLOSE_ANCHOR = new Vec3(.92, 226.23, 2.1);
     private static final Vec3 WIDE_ANCHOR = new Vec3(3.55, 225.4, 7.6);
     private static Vec3 anchor(int stage) {
+        if (stage == 5) return new Vec3(1.62, 225.72, 3.48);
         if (stage == 4) return new Vec3(1.95, 226, 4.15);
         if (stage == 3) return new Vec3(1.75, 226.1, 3.75);
         return stage >= 2 && !Boolean.getBoolean("purified_undead.ysmEchoSmoke") ? WIDE_ANCHOR : CLOSE_ANCHOR;
@@ -50,14 +56,15 @@ public final class FerinDynamicClientSmoke {
     @net.minecraftforge.eventbus.api.SubscribeEvent
     public static void renderCut(RenderLevelStageEvent event) {
         int frame = ticks - 60;
-        if (frame < 0 || frame >= 128 || slash == null
+        if (frame < 0 || frame >= CUT_FRAMES || slash == null
                 || event.getStage() != RenderLevelStageEvent.Stage.AFTER_ENTITIES) return;
         var mc = Minecraft.getInstance();
-        float age = (frame >= 96 ? SPIN_AGES : frame >= 64 ? OVERHEAD_AGES : CUT_AGES)[(frame % 32) / 4];
+        float age = frame >= FLIP_FRAME ? FLIP_AGES[Math.min((frame - FLIP_FRAME) / 4, FLIP_AGES.length - 1)]
+                : (frame >= 96 ? SPIN_AGES : frame >= 64 ? OVERHEAD_AGES : CUT_AGES)[(frame % 32) / 4];
         int whole = (int)age;
-        slash.syncStage(1 + frame / 32, mc.level.getGameTime() - whole);
+        slash.syncStage(Math.min(5, 1 + frame / 32), mc.level.getGameTime() - whole);
         var position = anchor(slash.getStage());
-        if (slash.getStage() == 4 && whole > 0) {
+        if (slash.getStage() >= 4 && whole > 0) {
             // Advance the projectile while the apparition stays at release, as it does in play.
             position = position.add(SPIN_HEADING.scale(whole * 2.5));
             slash.syncFlight(position, SPIN_HEADING, 24, whole, 2.5);
@@ -111,8 +118,9 @@ public final class FerinDynamicClientSmoke {
                             });
         }
         if (ticks < 60) return;
-        int stage = 1 + (ticks - 60) / 32;
-        int frame = (ticks - 60) % 32;
+        int elapsed = ticks - 60;
+        int stage = elapsed < CUT_FRAMES ? Math.min(5, 1 + elapsed / 32) : 6 + (elapsed - CUT_FRAMES) / 32;
+        int frame = stage == 5 ? elapsed - FLIP_FRAME : stage > 5 ? (elapsed - CUT_FRAMES) % 32 : elapsed % 32;
         if (stage > 5) {
             mc.options.hideGui = false;
             if (dev.purifiedundead.content.ModItems.KNIGHT_NOCTURNE != null) {
@@ -139,7 +147,7 @@ public final class FerinDynamicClientSmoke {
                 if (gui == hand || hand.getQuads(null,null,net.minecraft.util.RandomSource.create()).isEmpty())
                     throw new IllegalStateException("Knight Nocturne GUI or handheld model missing");
                 dev.purifiedundead.nocturne.WineFoxSkinClientSmoke.verify(mc.level);
-                int expectedStages = Boolean.getBoolean("purified_undead.ysmEchoSmoke") ? 30 : 62;
+                int expectedStages = 62;
                 if (echoStages != expectedStages) throw new AssertionError("Maid echo stage mask " + echoStages);
                 System.out.println("NOCTURNE_ECHO_CLIENT_OK: matched live poses across classic, Gecko and alternate texture");
                 dev.purifiedundead.client.echo.EchoAnimations.unregister(PROBE);
@@ -152,21 +160,22 @@ public final class FerinDynamicClientSmoke {
         mc.options.hideGui = true;
         mc.options.setCameraType(net.minecraft.client.CameraType.FIRST_PERSON);
         mc.player.setYRot(-25);
-        mc.player.setXRot(stage <= 4 ? 8 : 20);
+        mc.player.setXRot(8);
         // A deterministic presentation fixture exercises the same renderer and synchronized data.
         // Server-side normal attack/flight behavior is covered separately by FerinFlightSmoke.
-        if (frame == 0) {
+        fallbackSkin = stage == 5 && frame >= FALLBACK_FRAME;
+        if (frame == 0 || stage == 5 && frame == FALLBACK_FRAME) {
             if (slash != null) slash.discard();
             slash = new FerinEntity(ModEntities.FERIN.get(), mc.level);
             if (dev.purifiedundead.content.ModItems.KNIGHT_NOCTURNE != null) {
                 var appearance = new net.minecraft.nbt.CompoundTag();
-                appearance.putString("model", stage == 5 ? "authors_and_credits:wine_fox_maid"
+                appearance.putString("model", fallbackSkin ? "authors_and_credits:wine_fox_maid"
                         : stage == 3 ? "geckolib:winefox_blue" : "geckolib:winefox");
-                if (stage == 5 && Boolean.getBoolean("purified_undead.ysmEchoSmoke")) {
+                if (fallbackSkin && Boolean.getBoolean("purified_undead.ysmEchoSmoke")) {
                     appearance.putString("ysmModel", "wine_fox/01_taisho_maid");
                     appearance.putString("ysmTexture", "skin_white");
                 }
-                if (stage == 1 || (stage <= 4 && Boolean.getBoolean("purified_undead.ysmEchoSmoke"))) {
+                if (stage == 1 || (!fallbackSkin && Boolean.getBoolean("purified_undead.ysmEchoSmoke"))) {
                     appearance.putString("model", "authors_and_credits:wine_fox_maid");
                     appearance.putString("ysmModel", "wine_fox/01_taisho_maid");
                     appearance.putString("ysmTexture", "skin_white");
@@ -181,21 +190,14 @@ public final class FerinDynamicClientSmoke {
                 slash.setEchoAppearance(appearance);
             }
             slash.syncStage(stage, mc.level.getGameTime());
-            if (stage <= 4) {
-                var origin = anchor(stage);
-                var heading = stage == 4 ? SPIN_HEADING : stage == 3 ? new Vec3(-.9063, 0, .4226) : CLOSE_HEADING;
-                slash.syncFlight(origin, heading, 24, 0, .35);
-                slash.xOld = origin.x;
-                slash.yOld = origin.y;
-                slash.zOld = origin.z;
-            } else {
-                slash.syncFlight(new Vec3(7, 220, 10), new Vec3(0, 0, 1), 24, 0, .35);
-                mc.level.putNonPlayerEntity(slash.getId(), slash);
-            }
-        } else if (stage > 4 && frame <= 24) {
-            slash.syncFlight(new Vec3(7, 220, 10 + frame * .35), new Vec3(0, 0, 1), 24, frame, .35);
+            var origin = anchor(stage);
+            var heading = stage >= 4 ? SPIN_HEADING : stage == 3 ? new Vec3(-.9063, 0, .4226) : CLOSE_HEADING;
+            slash.syncFlight(origin, heading, 24, 0, .35);
+            slash.xOld = origin.x;
+            slash.yOld = origin.y;
+            slash.zOld = origin.z;
         }
-        if (frame < 29 || stage == 4)
+        if (frame < 29 || stage >= 4)
             net.minecraft.client.Screenshot.grab(
                     mc.gameDirectory,
                     "ferin-dynamic-" + stage + "-" + String.format("%02d", frame) + ".png",

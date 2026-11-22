@@ -104,10 +104,26 @@ public final class FerinSlashMesh {
 
     /** Match the stationary ring to the turning hips, including the short grip transfer. */
     public static List<Quad> spinLaunch(double age) {
-        if (!Double.isFinite(age) || age <= SPIN_START || age >= 7) return List.of();
-        double duration = FerinBladeTrajectory.sweepEnd(4) - 1;
-        double arcAge = duration * (1 - Math.sqrt(1 - spinProgress(age)));
-        return sample(4, 1 + arcAge, true, Math.min(1, (7 - age) / 2), age);
+        return timedLaunch(4, age, spinProgress(age));
+    }
+
+    public static final double FLIP_GATHER = .94;
+    public static final double FLIP_TAKEOFF = 1.1;
+    public static final double FLIP_LANDING = 5.9;
+
+    public static double flipProgress(double age) {
+        return smoothPhase(age, FLIP_TAKEOFF, FLIP_LANDING);
+    }
+
+    public static List<Quad> flipLaunch(double age) {
+        return timedLaunch(5, age, flipProgress(age));
+    }
+
+    private static List<Quad> timedLaunch(int stage, double age, double progress) {
+        int end = FerinBladeTrajectory.sweepEnd(stage);
+        if (!Double.isFinite(age) || progress <= 0 || age >= end + 2) return List.of();
+        double arcAge = (end - 1) * (1 - Math.sqrt(1 - progress));
+        return sample(stage, 1 + arcAge, true, Math.min(1, (end + 2 - age) / 2), age);
     }
 
     /** Short stationary sweep at the server-confirmed release pose. */

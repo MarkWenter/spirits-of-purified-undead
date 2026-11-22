@@ -1,5 +1,6 @@
 package dev.purifiedundead.client.echo;
 
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.logging.LogUtils;
 import net.minecraft.resources.ResourceLocation;
@@ -10,10 +11,10 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-/** Rotation-only Bedrock clip exported from the articulated Wine Fox rig. */
+/** Bedrock joint rotations and optional vertical root motion exported from the articulated Wine Fox rig. */
 final class FerinComboCut {
     private record Key(float time, float x, float y, float z) {}
-    private record Track(String name, List<Key> keys) {}
+    private record Track(String name, boolean rootHeight, List<Key> keys) {}
     private final List<Track> tracks;
 
     private FerinComboCut(List<Track> tracks) { this.tracks = tracks; }
@@ -25,27 +26,37 @@ final class FerinComboCut {
                     .getAsJsonObject("animation.ferin." + combo).getAsJsonObject("bones");
             List<Track> tracks = new ArrayList<>();
             for (var entry : bones.entrySet()) {
-                var keys = new ArrayList<Key>();
-                for (var frame : entry.getValue().getAsJsonObject().getAsJsonObject("rotation").entrySet()) {
-                    float time = Float.parseFloat(frame.getKey());
-                    var v = frame.getValue().getAsJsonArray();
-                    // TLM converts Bedrock degrees to local renderer radians by negating X and Y.
-                    var key = new Key(time, -radians(v.get(0).getAsFloat()), -radians(v.get(1).getAsFloat()),
-                            radians(v.get(2).getAsFloat()));
-                    if (!Float.isFinite(time) || time < 0 || !Float.isFinite(key.x)
-                            || !Float.isFinite(key.y) || !Float.isFinite(key.z))
-                        throw new IllegalArgumentException("Invalid rotation on " + entry.getKey());
-                    keys.add(key);
-                }
-                keys.sort(Comparator.comparingDouble(Key::time));
-                if (keys.isEmpty()) throw new IllegalArgumentException("Missing keys on " + entry.getKey());
-                tracks.add(new Track(entry.getKey(), List.copyOf(keys)));
+                var bone = entry.getValue().getAsJsonObject();
+                String name = entry.getKey();
+                boolean lift = name.equals("MRoot") && bone.has("position");
+                if (lift) tracks.add(readTrack(name, bone.getAsJsonObject("position"), true));
+                if (!lift || bone.has("rotation"))
+                    tracks.add(readTrack(name, bone.getAsJsonObject("rotation"), false));
             }
             return new FerinComboCut(List.copyOf(tracks));
         } catch (IOException | RuntimeException e) {
             LogUtils.getLogger().warn("Could not read Ferin animation {}", combo, e);
             return new FerinComboCut(List.of());
         }
+    }
+
+    private static Track readTrack(String name, JsonObject frames, boolean rootHeight) {
+        var keys = new ArrayList<Key>();
+        for (var frame : frames.entrySet()) {
+            float time = Float.parseFloat(frame.getKey());
+            var v = frame.getValue().getAsJsonArray();
+            // TLM converts Bedrock degrees to local renderer radians by negating X and Y.
+            var key = rootHeight ? new Key(time, 0, v.get(1).getAsFloat(), 0)
+                    : new Key(time, -radians(v.get(0).getAsFloat()), -radians(v.get(1).getAsFloat()),
+                    radians(v.get(2).getAsFloat()));
+            if (!Float.isFinite(time) || time < 0 || !Float.isFinite(key.x)
+                    || !Float.isFinite(key.y) || (rootHeight && Math.abs(key.y) > 64) || !Float.isFinite(key.z))
+                throw new IllegalArgumentException("Invalid key on " + name);
+            keys.add(key);
+        }
+        keys.sort(Comparator.comparingDouble(Key::time));
+        if (keys.isEmpty()) throw new IllegalArgumentException("Missing keys on " + name);
+        return new Track(name, rootHeight, List.copyOf(keys));
     }
 
     private static float radians(float degrees) { return (float)Math.toRadians(degrees); }
@@ -57,18 +68,23 @@ final class FerinComboCut {
         return releaseTicks + .16F * Math.min(1, releaseTicks / .35F);
     }
 
-    void sample(float ledTicks, EchoAnimations.Rotations pose) {
+    float sample(float ledTicks, EchoAnimations.Rotations pose) {
         float seconds = ledTicks / 20;
+        float height = 0;
         for (var track : tracks) {
             var keys = track.keys;
-            Key a = keys.get(0), b = a;
-            for (var next : keys) {
-                b = next;
-                if (b.time >= seconds) break;
-                a = b;
+            int low = 0, high = keys.size() - 1;
+            while (low < high) {
+                int mid = (low + high) >>> 1;
+                if (keys.get(mid).time < seconds) low = mid + 1;
+                else high = mid;
             }
+            Key a = keys.get(Math.max(0, low - 1)), b = keys.get(low);
             float u = b.time > a.time ? Math.max(0, (seconds - a.time) / (b.time - a.time)) : 0;
-            pose.rotate(track.name, a.x + (b.x - a.x) * u, a.y + (b.y - a.y) * u, a.z + (b.z - a.z) * u);
+            float y = a.y + (b.y - a.y) * u;
+            if (track.rootHeight) height = y;
+            else pose.rotate(track.name, a.x + (b.x - a.x) * u, y, a.z + (b.z - a.z) * u);
         }
+        return height;
     }
 }

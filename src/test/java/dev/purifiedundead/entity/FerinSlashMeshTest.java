@@ -29,6 +29,18 @@ class FerinSlashMeshTest {
     }
 
     @Test
+    void finisherPassesOverheadAtTheApexAndClosesBelowAtLanding() {
+        assertTrue(FerinSlashMesh.flipLaunch(FerinSlashMesh.FLIP_TAKEOFF).isEmpty());
+        double apex = FerinSlashMesh.flipProgress(3.822);
+        var high = FerinBladeTrajectory.blade(5, apex, 0);
+        assertEquals(6, high.tip().up() - high.root().up(), .01);
+        var end = FerinBladeTrajectory.blade(5, FerinSlashMesh.flipProgress(FerinSlashMesh.FLIP_LANDING), 0);
+        assertEquals(-6, end.tip().up() - end.root().up(), .001);
+        assertFalse(FerinSlashMesh.flipLaunch(FerinSlashMesh.FLIP_LANDING).isEmpty());
+        assertTrue(FerinSlashMesh.flipLaunch(7).isEmpty());
+    }
+
+    @Test
     void idleAndExpiredSlashesAreInvisible() {
         assertTrue(FerinSlashMesh.sample(0, 4).isEmpty());
         assertTrue(FerinSlashMesh.sample(6, 4).isEmpty());
