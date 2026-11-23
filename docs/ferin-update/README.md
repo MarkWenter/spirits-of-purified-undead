@@ -1,6 +1,8 @@
 # 费林更新
 
-当前候选为 **1.2.0-ferin.16**，适用于 Forge 1.20.1 与 NeoForge 1.21.1，协议 16。见[骑士寂夜女仆虚影与骨架接入](PART_3.md)、[饰品与绑定](PART_2.md)和[动态刀光](DYNAMIC_SLASH.md)。
+当前候选为 **1.2.0-ferin.19**，适用于 Forge 1.20.1 与 NeoForge 1.21.1，协议 16。ferin.17 重绘材料，ferin.18 重绘饰品与追忆，ferin.19 更新无垢护甲、纯化铸造器和秽鬼刷怪蛋。各批次图像见[旧贴图与重绘成品](../../旧贴图/README.md)。费林相关实现见[骑士寂夜女仆虚影与骨架接入](PART_3.md)、[饰品与绑定](PART_2.md)和[动态刀光](DYNAMIC_SLASH.md)。
+
+纯化铸造器的[正、侧、背三视图](purification_foundry_three_views.png)对应[可编辑的 GeckoLib Block 工程](purification_foundry.bbmodel)，模型内嵌待机图集。放置时使用 `geo/block/purification_foundry.geo.json`，按方块朝向旋转，按原有 `LIT` 状态选择待机或工作图集。物品栏、掉落物与手持沿用 Java 方块物品的显示变换，使用相同尺寸与 UV 的方块模型。修改几何时应同时更新两份导出，`FoundryModelResourcesTest` 核对两个显示入口的方体位置与尺寸。
 
 - [当前交接、架构复核与验证](HANDOFF.md)
 - [第一部分实现与边界](PART_1.md)

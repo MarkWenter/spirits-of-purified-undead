@@ -13,10 +13,26 @@ import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import software.bernie.geckolib.animatable.GeoBlockEntity;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
 /** Four visible slots; legacy/template remainder storage is retained for save compatibility. */
 public final class PurificationFoundryEntity extends BaseContainerBlockEntity
-        implements WorldlyContainer {
+        implements WorldlyContainer, GeoBlockEntity {
+    private final AnimatableInstanceCache animationCache = GeckoLibUtil.createInstanceCache(this);
+
+    @Override
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
+        return animationCache;
+    }
+
+    @Override
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
+        // The static sculpture changes material with the synchronized LIT block state.
+    }
+
     public static final int INPUT = 0, LEFT_FUEL = 1, RIGHT_FUEL = 2, OUTPUT = 3;
     private NonNullList<ItemStack> items = NonNullList.withSize(5, ItemStack.EMPTY);
     private int progress, duration;
