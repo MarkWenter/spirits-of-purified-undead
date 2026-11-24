@@ -1,5 +1,7 @@
 package dev.purifiedundead.client;
 
+import java.util.SplittableRandom;
+
 /** Cosmetic transforms in the existing wave's rolled frame. Model +Y points toward the head. */
 enum GuardianWaveForm {
     FERIN("ferin_sword", 5.4F, .082F, 1.65F, 2.24F),
@@ -23,13 +25,10 @@ enum GuardianWaveForm {
     static GuardianWaveForm select(int ownerId, int shotId, int entityId) {
         // The predicted copy has a local entity ID, but shares owner and shot with every observer.
         // A server-only swing (shot zero) instead has one ordinary tracked entity ID everywhere.
-        int seed = ownerId * 0x9e3779b9 + (shotId == 0 ? entityId : shotId);
-        seed ^= seed >>> 16;
-        seed *= 0x7feb352d;
-        seed ^= seed >>> 15;
-        seed *= 0x846ca68b;
-        seed ^= seed >>> 16;
-        return FORMS[Math.floorMod(seed, FORMS.length)];
+        int sequence = shotId == 0 ? entityId : shotId;
+        long seed = ((long) ownerId << 32) | Integer.toUnsignedLong(sequence);
+        // A bounded draw rejects the incomplete bucket, giving every form the same weight.
+        return FORMS[new SplittableRandom(seed).nextInt(FORMS.length)];
     }
 
     float angle(float age, int lifetime) {

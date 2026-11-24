@@ -8,8 +8,16 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.HumanoidArm;
+import net.minecraft.world.phys.Vec3;
 
 public final class GuardianWaveRenderer extends EntityRenderer<GuardianWaveEntity> {
+    private static final double HAND_SIDE = .36, HAND_DROP = .16;
+    private static final float INWARD_YAW = (float) Math.toDegrees(Math.atan2(HAND_SIDE, GuardianWaveEntity.RANGE));
+    private static final float UP_PITCH = (float) -Math.toDegrees(
+            Math.atan2(HAND_DROP, Math.hypot(GuardianWaveEntity.RANGE, HAND_SIDE)));
+
     private final EnumMap<GuardianWaveForm, GuardianWaveWeapon> weapons = new EnumMap<>(GuardianWaveForm.class);
     private final GuardianWaveWake wake = new GuardianWaveWake();
 
@@ -18,6 +26,19 @@ public final class GuardianWaveRenderer extends EntityRenderer<GuardianWaveEntit
         shadowRadius = 0;
         for (var form : GuardianWaveForm.values())
             weapons.put(form, new GuardianWaveWeapon(c.getResourceManager(), form));
+    }
+
+    @Override
+    public Vec3 getRenderOffset(GuardianWaveEntity wave, float partialTick) {
+        return handOffset(wave.launchArm(), wave.getYRot(), wave.getXRot(), wave.visualTravel(partialTick));
+    }
+
+    static Vec3 handOffset(HumanoidArm arm, float yaw, float pitch, double travel) {
+        double remaining = 1 - Mth.clamp(travel / GuardianWaveEntity.RANGE, 0, 1);
+        double side = arm == HumanoidArm.RIGHT ? -HAND_SIDE : HAND_SIDE;
+        // At yaw zero the player faces +Z, so their right hand is on the -X side.
+        return new Vec3(side * remaining, -HAND_DROP * remaining, 0)
+                .xRot(-pitch * Mth.DEG_TO_RAD).yRot(-yaw * Mth.DEG_TO_RAD);
     }
 
     @Override
@@ -35,6 +56,8 @@ public final class GuardianWaveRenderer extends EntityRenderer<GuardianWaveEntit
             poses.scale(scale, scale, scale);
             poses.mulPose(Axis.YP.rotationDegrees(-e.getYRot()));
             poses.mulPose(Axis.XP.rotationDegrees(e.getXRot()));
+            poses.mulPose(Axis.YP.rotationDegrees(e.launchArm() == HumanoidArm.RIGHT ? INWARD_YAW : -INWARD_YAW));
+            poses.mulPose(Axis.XP.rotationDegrees(UP_PITCH));
             poses.mulPose(Axis.ZP.rotationDegrees(e.roll()));
             drawWeapon(e, partial, poses, buffers);
         } finally {

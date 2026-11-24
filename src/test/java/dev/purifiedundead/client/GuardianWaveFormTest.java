@@ -28,4 +28,23 @@ class GuardianWaveFormTest {
                 assertEquals(0F, turn);
         }
     }
+
+    @Test void allFiveFormsHaveEqualFrequencyAndAllowConsecutiveRepeats() {
+        var forms = GuardianWaveForm.values();
+        assertEquals(5, forms.length);
+        int[] counts = new int[forms.length];
+        int repeats = 0;
+        for (int owner : new int[]{1, 31, 319, 1001}) {
+            GuardianWaveForm previous = null;
+            for (int shot = 1; shot <= 250_000; shot++) {
+                var form = GuardianWaveForm.select(owner, shot, -shot);
+                assertSame(form, GuardianWaveForm.select(owner, 0, shot));
+                if (form == previous) repeats++;
+                previous = form;
+                counts[form.ordinal()]++;
+            }
+        }
+        for (int n : counts) assertTrue(Math.abs(n - 200_000) < 2_000);
+        assertTrue(Math.abs(repeats - 200_000) < 2_000);
+    }
 }

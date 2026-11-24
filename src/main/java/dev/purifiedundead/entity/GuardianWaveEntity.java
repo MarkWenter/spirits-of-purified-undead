@@ -25,6 +25,7 @@ public final class GuardianWaveEntity extends Entity {
     private GuardianWaveCombat.State attack;
     private ItemStack weapon = ItemStack.EMPTY;
     private Vec3 origin = Vec3.ZERO, direction = Vec3.ZERO;
+    private HumanoidArm launchArm;
 
     public GuardianWaveEntity(EntityType<? extends GuardianWaveEntity> type, Level level) {
         super(type, level);
@@ -54,6 +55,23 @@ public final class GuardianWaveEntity extends Entity {
         return entityData.get(SHOT);
     }
 
+    @Override
+    public void onAddedToWorld() {
+        super.onAddedToWorld();
+        // On observers the tracking packet places the wave before adding it to the level.
+        if (level().isClientSide && !predicted) origin = position();
+    }
+
+    public double visualTravel(float partialTick) {
+        return getPosition(partialTick).distanceTo(origin);
+    }
+
+    public HumanoidArm launchArm() {
+        if (launchArm == null && level().getEntity(ownerId()) instanceof LivingEntity owner)
+            launchArm = owner.getMainArm();
+        return launchArm == null ? HumanoidArm.RIGHT : launchArm;
+    }
+
     public void launch(GuardianWaveCombat.State state, ItemStack sword) {
         launch(state, sword, 0);
     }
@@ -73,6 +91,7 @@ public final class GuardianWaveEntity extends Entity {
     }
 
     private void initialize(net.minecraft.world.entity.player.Player player, int shot) {
+        launchArm = player.getMainArm();
         origin = player.getEyePosition().add(0, -0.35, 0);
         direction = player.getLookAngle();
         setPos(origin);
