@@ -38,7 +38,7 @@
     }
   },
   "textures": {
-    "particle": "purified_undead:item/blighted_guardian_hand"
+    "particle": "purified_undead:item/blighted_guardian"
   },
   "gui_light": "front"
 }

@@ -1,0 +1,44 @@
+{
+  "loader": "forge:separate_transforms",
+  "base": {
+    "parent": "purified_undead:item/blighted_guardian_hand"
+  },
+  "perspectives": {
+    "gui": {
+      "gui_light": "front",
+      "textures": {
+        "icon": "purified_undead:item/blighted_guardian"
+      },
+      "elements": [
+        {
+          "from": [
+            0,
+            0,
+            8
+          ],
+          "to": [
+            16,
+            16,
+            8
+          ],
+          "faces": {
+            "south": {
+              "texture": "#icon",
+              "uv": [
+                0,
+                0,
+                16,
+                16
+              ]
+            }
+          },
+          "shade": false
+        }
+      ]
+    }
+  },
+  "textures": {
+    "particle": "purified_undead:item/blighted_guardian_hand"
+  },
+  "gui_light": "front"
+}

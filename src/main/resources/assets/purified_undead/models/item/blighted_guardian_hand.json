@@ -1,79 +1,75 @@
 {
-  "loader": "forge:obj",
-  "model": "purified_undead:models/item/blighted_guardian.obj",
-  "flip_v": true,
-  "automatic_culling": false,
-  "shade_quads": true,
+  "parent": "minecraft:builtin/entity",
   "textures": {
-    "particle": "purified_undead:item/blighted_guardian_hand"
+    "particle": "purified_undead:item/blighted_guardian"
   },
   "display": {
     "firstperson_righthand": {
       "rotation": [
-        -12,
-        -20,
-        17
+        0,
+        -90,
+        -20
       ],
       "translation": [
-        -0.1,
-        2.9,
-        -1.0
+        1.13,
+        -0.8665,
+        -0.3501
       ],
       "scale": [
-        0.62,
-        0.62,
-        0.62
+        0.50981,
+        0.50981,
+        0.50981
       ]
     },
     "firstperson_lefthand": {
       "rotation": [
-        -12,
-        -20,
-        17
+        0,
+        90,
+        20
       ],
       "translation": [
-        -0.1,
-        2.9,
-        -1.0
+        1.13,
+        -0.8665,
+        -0.3501
       ],
       "scale": [
-        0.62,
-        0.62,
-        0.62
+        0.50981,
+        0.50981,
+        0.50981
       ]
     },
     "thirdperson_righthand": {
       "rotation": [
-        30,
-        -22,
-        7
+        0,
+        -90,
+        10
       ],
       "translation": [
         0,
-        0.65,
-        -0.4
+        -1.3272,
+        1.4393
       ],
       "scale": [
-        0.94,
-        0.94,
-        0.94
+        0.765,
+        0.765,
+        0.765
       ]
     },
     "thirdperson_lefthand": {
       "rotation": [
-        30,
-        -22,
-        7
+        0,
+        90,
+        -10
       ],
       "translation": [
         0,
-        0.65,
-        -0.4
+        -1.3272,
+        1.4393
       ],
       "scale": [
-        0.94,
-        0.94,
-        0.94
+        0.765,
+        0.765,
+        0.765
       ]
     },
     "ground": {
@@ -83,14 +79,14 @@
         -33
       ],
       "translation": [
-        -1.7,
+        -1.8,
         0.5,
         0
       ],
       "scale": [
-        0.47,
-        0.47,
-        0.47
+        0.43,
+        0.43,
+        0.43
       ]
     },
     "fixed": {
@@ -100,14 +96,14 @@
         -36
       ],
       "translation": [
-        3.9,
+        3.75,
         -5.3,
         0
       ],
       "scale": [
-        0.86,
-        0.86,
-        0.86
+        0.76,
+        0.76,
+        0.76
       ]
     },
     "head": {
@@ -122,9 +118,9 @@
         0
       ],
       "scale": [
-        0.65,
-        0.65,
-        0.65
+        0.6,
+        0.6,
+        0.6
       ]
     }
   }
