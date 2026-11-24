@@ -65,10 +65,7 @@ public final class BlightedMobSmoke {
                 check(
                         BlightedMobConversions.candidate(original) != lethal,
                         "candidate timing " + type);
-                check(
-                        BlightedMobConversions.clickable(original)
-                                == (!lethal && original instanceof Enemy),
-                        "item restriction " + type);
+                check(BlightedMobConversions.clickable(original), "spirit conversion source " + type);
                 float max = original.getMaxHealth();
                 original.setHealth(max / 2);
                 if (original instanceof Zombie z) z.setBaby(true);
@@ -517,6 +514,7 @@ public final class BlightedMobSmoke {
                 level.setWeatherParameters(0, 12000, raining, false);
                 level.setRainLevel(rain);
             }
+            spiritInteractions(level, nativeTypes, fixtures);
             System.out.println(
                     "BLIGHTED_MOBS_SERVER_OK: "
                             + nativeTypes.length
@@ -526,5 +524,67 @@ public final class BlightedMobSmoke {
         } finally {
             fixtures.forEach(Entity::discard);
         }
+    }
+
+    private static boolean useSpirit(ServerPlayer player, Mob target) {
+        var event = new net.minecraftforge.event.entity.player.PlayerInteractEvent.EntityInteract(
+                player, net.minecraft.world.InteractionHand.MAIN_HAND, target);
+        net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(event);
+        return event.isCanceled() && event.getCancellationResult() == net.minecraft.world.InteractionResult.SUCCESS;
+    }
+
+    private static void spiritInteractions(ServerLevel level, EntityType<?>[] rainTypes, java.util.List<Entity> fixtures) {
+        var player = new net.minecraftforge.common.util.FakePlayer(level,
+                new com.mojang.authlib.GameProfile(java.util.UUID.randomUUID(), "BlightTouch"));
+        var hand = net.minecraft.world.InteractionHand.MAIN_HAND;
+        var spirit = dev.purifiedundead.content.ModItems.BLIGHTED_SPIRIT.get();
+        var visitor = new net.minecraftforge.common.util.FakePlayer(level,
+                new com.mojang.authlib.GameProfile(java.util.UUID.randomUUID(), "NoContract"));
+        var contract = top.theillusivec4.curios.api.CuriosApi.getCuriosInventory(player)
+                .orElseThrow(() -> new IllegalStateException("Curios inventory missing"))
+                .getCurios().get("ancient_contract").getStacks();
+        player.setPos(92, 150, 81);
+        var ordinary = spawn(EntityType.COW, level, 92);
+        fixtures.add(ordinary);
+        visitor.setItemInHand(hand, new ItemStack(spirit, 2));
+        check(!useSpirit(visitor, ordinary) && !ordinary.isRemoved() && visitor.getMainHandItem().getCount() == 2,
+                "no equipped contract");
+        contract.setStackInSlot(0, new ItemStack(dev.purifiedundead.content.ModItems.ANCIENT_CONTRACT.get()));
+        check(dev.purifiedundead.progress.ContractProgressService.hasContract(player), "equipped contract");
+        player.getAbilities().instabuild = false;
+        var types = new java.util.ArrayList<EntityType<?>>(java.util.Arrays.asList(rainTypes));
+        types.add(EntityType.IRON_GOLEM);
+        types.add(EntityType.EVOKER);
+        for (var type : types) {
+            var mob = spawn((EntityType<? extends Mob>) type, level, 94);
+            fixtures.add(mob);
+            var bounds = mob.getBoundingBox().inflate(.1);
+            player.setItemInHand(hand, new ItemStack(spirit, 2));
+            check(useSpirit(player, mob) && mob.isRemoved() && player.getMainHandItem().getCount() == 1,
+                    "survival conversion and cost " + type);
+            var results = level.getEntitiesOfClass(Mob.class, bounds, entity ->
+                    type == EntityType.IRON_GOLEM ? entity instanceof dev.purifiedundead.entity.BlightedGolemEntity
+                    : type == EntityType.EVOKER ? entity instanceof dev.purifiedundead.entity.BlightedKingEntity
+                    : entity.getType() != type && BlightedMobConversions.nativeType(entity.getType()) == type);
+            check(results.size() == 1, "one matching replacement " + type);
+            var result = results.get(0);
+            fixtures.add(result);
+            check(!useSpirit(player, result) && player.getMainHandItem().getCount() == 1, "repeat " + type);
+            result.discard();
+        }
+        var rabbit = spawn(EntityType.RABBIT, level, 94);
+        fixtures.add(rabbit);
+        check(!useSpirit(player, rabbit) && !rabbit.isRemoved() && player.getMainHandItem().getCount() == 1,
+                "unmapped species");
+        var horse = (net.minecraft.world.entity.animal.horse.Horse) spawn(EntityType.HORSE, level, 94);
+        fixtures.add(horse);
+        horse.tameWithName(player);
+        check(!useSpirit(player, horse) && !horse.isRemoved() && player.getMainHandItem().getCount() == 1,
+                "owned horse protected");
+        player.getAbilities().instabuild = true;
+        check(useSpirit(player, ordinary) && ordinary.isRemoved() && player.getMainHandItem().getCount() == 1,
+                "creative conversion");
+        fixtures.addAll(level.getEntitiesOfClass(BlightedCow.class, ordinary.getBoundingBox().inflate(.1)));
+        System.out.println("SPIRIT_CLICK_OK: " + types.size() + " species, survival, creative, contract and ownership");
     }
 }

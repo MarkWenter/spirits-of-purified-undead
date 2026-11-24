@@ -1,4 +1,5 @@
 {
+  "icon": "purified_undead:slot/empty_undead_warrior_slot",
   "size": 0,
   "order": 20,
   "drop_rule": "ALWAYS_KEEP",

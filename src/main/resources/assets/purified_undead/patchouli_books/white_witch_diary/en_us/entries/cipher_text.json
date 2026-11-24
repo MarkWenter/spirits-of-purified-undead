@@ -10,6 +10,10 @@
       "item": "purified_undead:cipher_text",
       "title": "解语密文文本",
       "link_recipe": false
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "purified_undead:cipher_text"
     }
   ]
 }

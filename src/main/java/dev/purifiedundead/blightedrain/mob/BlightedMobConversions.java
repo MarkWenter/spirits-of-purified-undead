@@ -33,7 +33,7 @@ public final class BlightedMobConversions {
     }
 
     public static boolean clickable(Mob mob) {
-        return candidate(mob) && mob instanceof net.minecraft.world.entity.monster.Enemy;
+        return target(mob) != null;
     }
 
     private static EntityType<? extends Mob> target(Mob mob) {

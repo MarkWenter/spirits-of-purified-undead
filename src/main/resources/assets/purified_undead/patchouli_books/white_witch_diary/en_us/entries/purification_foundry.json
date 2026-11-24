@@ -22,6 +22,10 @@
     {
       "type": "patchouli:text",
       "text": "值得一提的是，纯化铸造器会尝试以可能的最大产量进行工作，这也就意味着你可以在物资充足的前提下一次性完成一组的铸造……"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "purified_undead:purification_foundry"
     }
   ]
 }

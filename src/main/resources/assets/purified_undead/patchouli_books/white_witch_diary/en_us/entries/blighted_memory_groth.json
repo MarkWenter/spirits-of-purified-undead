@@ -14,6 +14,11 @@
     {
       "type": "patchouli:text",
       "text": "将追忆放入莉莉手记之中，格洛特的力量便会获得强化。"
+    },
+    {
+      "type": "purified_undead:memory_crafting",
+      "tablet": "purified_undead:forged_slate_groth",
+      "memory": "purified_undead:blighted_memory_groth"
     }
   ]
 }

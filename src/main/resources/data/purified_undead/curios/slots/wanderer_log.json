@@ -1,4 +1,5 @@
 {
+  "icon": "purified_undead:slot/empty_wanderer_log_slot",
   "size": 0,
   "order": 40,
   "drop_rule": "ALWAYS_KEEP",

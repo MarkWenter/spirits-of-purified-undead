@@ -1,4 +1,5 @@
 {
+  "icon": "purified_undead:slot/empty_ancient_contract_slot",
   "size": 1,
   "order": 10,
   "drop_rule": "ALWAYS_KEEP",
