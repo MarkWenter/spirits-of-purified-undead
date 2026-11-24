@@ -1,6 +1,5 @@
 package dev.purifiedundead.progress;
 
-import dev.purifiedundead.content.ModItems;
 import dev.purifiedundead.content.ModEntities;
 import dev.purifiedundead.entity.BlightedKingEntity;
 import dev.purifiedundead.entity.BlightedHealth;
@@ -8,43 +7,15 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import dev.purifiedundead.config.PurifiedUndeadConfig;
-import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.monster.Evoker;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 /** Converts evokers, migrates legacy NBT kings, and preserves the existing Julius reward. */
 public final class JuliusAcquisitionEvents {
-    private static final String BLIGHTED_KING_KEY = "purified_undead:blighted_king";
-
-    @SubscribeEvent
-    public void onEntityInteract(PlayerInteractEvent.EntityInteract event) {
-        if (!PurifiedUndeadConfig.get(PurifiedUndeadConfig.VALUES.juliusAcquisitionEnabled)
-                || !(event.getEntity() instanceof ServerPlayer player)
-                || !(event.getTarget() instanceof Evoker evoker)
-                || evoker instanceof BlightedKingEntity
-                || evoker.getPersistentData().getBoolean(BLIGHTED_KING_KEY)
-                || !event.getItemStack().is(ModItems.BLIGHTED_SPIRIT.get())
-                || !(event.getLevel() instanceof ServerLevel level)
-                || !ContractProgressService.hasContract(player)) {
-            return;
-        }
-
-        var king = BlightedConversions.convert(evoker, level);
-        if (king == null) return;
-        if (!player.getAbilities().instabuild) {
-            event.getItemStack().shrink(1);
-        }
-        player.displayClientMessage(
-                Component.translatable("message.purified_undead.julius.transformed"), false);
-        event.setCancellationResult(InteractionResult.SUCCESS);
-        event.setCanceled(true);
-    }
+    static final String BLIGHTED_KING_KEY = "purified_undead:blighted_king";
 
     @SubscribeEvent
     public void migrateLegacyKing(LivingEvent.LivingTickEvent event) {

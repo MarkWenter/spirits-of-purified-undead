@@ -67,7 +67,7 @@ public final class GuardianWaveRenderer extends EntityRenderer<GuardianWaveEntit
 
     private void drawWeapon(GuardianWaveEntity wave, float partial, PoseStack poses, MultiBufferSource buffers) {
         var form = GuardianWaveForm.select(wave.ownerId(), wave.shotId(), wave.getId());
-        float age = Math.min(GuardianWaveEntity.LIFETIME, wave.tickCount + partial);
+        float age = wave.visualAge(partial);
         poses.pushPose();
         try {
             if (form.turns != 0) {

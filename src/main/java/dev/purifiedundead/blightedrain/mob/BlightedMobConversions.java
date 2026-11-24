@@ -84,6 +84,16 @@ public final class BlightedMobConversions {
         data.remove("Passengers");
         data.remove("RootVehicle");
         var detachedGear = new java.util.ArrayList<net.minecraft.world.item.ItemStack>();
+        if (!lethalRainConversion && original instanceof net.minecraft.world.entity.npc.Villager villager) {
+            // Zombie villagers have no villager inventory. Publish its contents with the replacement;
+            // keeping the source intact until discard also preserves it when a drop is rejected.
+            data.remove("Inventory");
+            var inventory = villager.getInventory();
+            for (int i = 0; i < inventory.getContainerSize(); i++) {
+                var stack = inventory.getItem(i);
+                if (!stack.isEmpty()) detachedGear.add(stack.copy());
+            }
+        }
         if (original instanceof net.minecraft.world.entity.animal.horse.AbstractHorse) {
             for (String key : new String[] {"SaddleItem"})
                 if (data.contains(key, 10)) {

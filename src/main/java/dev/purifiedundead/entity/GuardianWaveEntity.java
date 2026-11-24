@@ -5,12 +5,14 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.level.*;
 import net.minecraft.world.phys.*;
 import net.minecraft.network.syncher.*;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.entity.IEntityAdditionalSpawnData;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.*;
 import java.util.*;
 
 /** A short-lived, bounded melee wave. Not saved, not a projectile, and never loads chunks. */
-public final class GuardianWaveEntity extends Entity {
+public final class GuardianWaveEntity extends Entity implements IEntityAdditionalSpawnData {
     public static final double RANGE = 15D, SPEED = 1D;
     public static final int LIFETIME = 15;
     private static final EntityDataAccessor<Integer> OWNER =
@@ -26,6 +28,7 @@ public final class GuardianWaveEntity extends Entity {
     private ItemStack weapon = ItemStack.EMPTY;
     private Vec3 origin = Vec3.ZERO, direction = Vec3.ZERO;
     private HumanoidArm launchArm;
+    private float ageAtTrackingStart;
 
     public GuardianWaveEntity(EntityType<? extends GuardianWaveEntity> type, Level level) {
         super(type, level);
@@ -58,8 +61,34 @@ public final class GuardianWaveEntity extends Entity {
     @Override
     public void onAddedToWorld() {
         super.onAddedToWorld();
-        // On observers the tracking packet places the wave before adding it to the level.
+        // Older servers supply only the tracking position and the owner's synced entity ID.
         if (level().isClientSide && !predicted) origin = position();
+    }
+
+    @Override
+    public void writeSpawnData(FriendlyByteBuf buffer) {
+        if (launchArm != null) {
+            buffer.writeDouble(origin.x);
+            buffer.writeDouble(origin.y);
+            buffer.writeDouble(origin.z);
+            buffer.writeByte(launchArm == HumanoidArm.LEFT ? 1 : 0);
+        }
+    }
+
+    @Override
+    public void readSpawnData(FriendlyByteBuf buffer) {
+        if (!level().isClientSide || predicted || buffer.readableBytes() != 3 * Double.BYTES + 1) return;
+        Vec3 launch = new Vec3(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
+        int side = buffer.readUnsignedByte();
+        double distance = position().distanceTo(launch);
+        if (side > 1 || !Double.isFinite(distance) || distance > RANGE + .01) return;
+        origin = launch;
+        launchArm = side == 1 ? HumanoidArm.LEFT : HumanoidArm.RIGHT;
+        ageAtTrackingStart = (float) (distance / SPEED);
+    }
+
+    public float visualAge(float partialTick) {
+        return Math.min(LIFETIME, ageAtTrackingStart + tickCount + partialTick);
     }
 
     public double visualTravel(float partialTick) {

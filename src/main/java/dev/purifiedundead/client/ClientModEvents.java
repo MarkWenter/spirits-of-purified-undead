@@ -65,9 +65,6 @@ public final class ClientModEvents {
 
     @SubscribeEvent
     public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
-        event.registerBlockEntityRenderer(
-                dev.purifiedundead.foundry.FoundryContent.ENTITY.get(),
-                context -> new software.bernie.geckolib.renderer.GeoBlockRenderer<>(new PurificationFoundryModel()));
         event.registerEntityRenderer(
                 dev.purifiedundead.blightedrain.content.RainItems.YOUTH_PROJECTILE.get(),
                 CliffYouthRenderer::new);

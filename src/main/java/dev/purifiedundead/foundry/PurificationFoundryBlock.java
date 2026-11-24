@@ -49,7 +49,7 @@ public final class PurificationFoundryBlock extends BaseEntityBlock {
 
     @Override
     public RenderShape getRenderShape(BlockState s) {
-        return RenderShape.ENTITYBLOCK_ANIMATED;
+        return RenderShape.MODEL;
     }
 
     @Override

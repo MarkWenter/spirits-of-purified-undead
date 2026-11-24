@@ -1,16 +1,69 @@
 package dev.purifiedundead.progress;
 
+import dev.purifiedundead.blightedrain.RainEffects;
+import dev.purifiedundead.blightedrain.mob.BlightedMobConversions;
+import dev.purifiedundead.config.PurifiedUndeadConfig;
 import dev.purifiedundead.content.ModEntities;
+import dev.purifiedundead.content.ModItems;
 import dev.purifiedundead.entity.*;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.animal.IronGolem;
-import net.minecraft.world.entity.monster.Evoker;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.animal.IronGolem;
+import net.minecraft.world.entity.animal.horse.AbstractHorse;
+import net.minecraft.world.entity.monster.Evoker;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import top.theillusivec4.curios.api.CuriosApi;
 
 /** Shared conversion transaction. Discard only after replacement insertion succeeds. */
 public final class BlightedConversions {
     private BlightedConversions() {}
+
+    /** A positive client result consumes the entity interaction before the held spirit starts purification. */
+    public static boolean useSpirit(Player player, Mob target, ItemStack stack) {
+        if (!stack.is(ModItems.BLIGHTED_SPIRIT.get()) || player.isSpectator() || !player.isAlive()
+                || !target.isAlive() || player.level() != target.level()) return false;
+
+        // Curios' predicate lookup reads current active slots even after a same-tick equipment change.
+        boolean equipped = CuriosApi.getCuriosInventory(player)
+                .map(handler -> handler.isEquipped(item -> item.is(ModItems.ANCIENT_CONTRACT.get())))
+                .orElse(false);
+        if (!equipped || !acceptsSpirit(target)) return false;
+        if (target.level().isClientSide()) return true;
+        if (!(player instanceof ServerPlayer serverPlayer)) return false;
+
+        LivingEntity converted = convert(target, serverPlayer.serverLevel());
+        if (converted == null) return false;
+        if (!player.getAbilities().instabuild) stack.shrink(1);
+        if (converted instanceof BlightedGolemEntity) {
+            player.displayClientMessage(Component.translatable("message.purified_undead.groth.transformed"), false);
+        } else if (converted instanceof BlightedKingEntity) {
+            player.displayClientMessage(Component.translatable("message.purified_undead.julius.transformed"), false);
+        }
+        return true;
+    }
+
+    private static boolean acceptsSpirit(Mob mob) {
+        boolean client = mob.level().isClientSide();
+        if (mob instanceof IronGolem) {
+            return !(mob instanceof BlightedGolemEntity)
+                    && (client || PurifiedUndeadConfig.get(PurifiedUndeadConfig.VALUES.grothAcquisitionEnabled));
+        }
+        if (mob instanceof Evoker evoker) {
+            return !(mob instanceof BlightedKingEntity)
+                    && (client || (PurifiedUndeadConfig.get(PurifiedUndeadConfig.VALUES.juliusAcquisitionEnabled)
+                            && !evoker.getPersistentData().getBoolean(JuliusAcquisitionEvents.BLIGHTED_KING_KEY)));
+        }
+        if (!BlightedMobConversions.clickable(mob)) return false;
+        if (client) {
+            // Entity type tags and tame flags are synchronized. Server config and owner adapters are not.
+            return !mob.getType().is(RainEffects.IMMUNE) && !(mob instanceof AbstractHorse horse && horse.isTamed());
+        }
+        return !RainEffects.protectedMob(mob);
+    }
 
     public static LivingEntity convert(LivingEntity original, ServerLevel level) {
         try {
