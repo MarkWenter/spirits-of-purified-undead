@@ -18,6 +18,11 @@
     {
       "type": "patchouli:text",
       "text": "将追忆放入莉莉手记之中，尤里乌斯的力量便会得到强化。"
+    },
+    {
+      "type": "purified_undead:memory_crafting",
+      "tablet": "purified_undead:forged_slate_julius",
+      "memory": "purified_undead:blighted_memory_julius"
     }
   ]
 }

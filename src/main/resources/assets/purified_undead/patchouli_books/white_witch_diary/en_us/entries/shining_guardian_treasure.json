@@ -10,6 +10,10 @@
       "item": "purified_undead:shining_guardian_treasure",
       "title": "闪耀的守护宝具",
       "link_recipe": false
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "purified_undead:shining_guardian_treasure"
     }
   ]
 }

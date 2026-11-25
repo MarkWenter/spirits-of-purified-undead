@@ -1,0 +1,12 @@
+{
+  "name": "白巫女手记",
+  "icon": "purified_undead:textures/item/white_witch_diary.png",
+  "category": "purified_undead:contract_path",
+  "sortnum": -1,
+  "pages": [
+    {
+      "type": "patchouli:crafting",
+      "recipe": "purified_undead:white_witch_diary"
+    }
+  ]
+}

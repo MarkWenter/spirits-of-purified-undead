@@ -1,0 +1,31 @@
+{
+  "key": "purified_undead_pure_touch",
+  "category": "socket",
+  "primary": 0,
+  "secondary": 0,
+  "tertiary": 0,
+  "durability": 512,
+  "integrityCost": 1,
+  "integrityGain": 0,
+  "magicCapacity": 0,
+  "toolLevel": 0,
+  "toolEfficiency": 0,
+  "attributes": {
+    "generic.attack_damage": 2
+  },
+  "effects": {
+    "purified_undead:blighted_guardian": 1
+  },
+  "textures": [
+    "default"
+  ],
+  "tints": {
+    "glyph": "e2dfeb",
+    "texture": "d3cadf"
+  },
+  "material": {
+    "items": [
+      "purified_undead:pure_touch"
+    ]
+  }
+}

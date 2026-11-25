@@ -34,7 +34,8 @@ public final class ContractWispEntity extends Entity {
         owner = player;
         phase = (player.getUUID().getLeastSignificantBits() & 65535) * .001;
         previousOwner = anchor();
-        Vec3 p = WispMotion.idleAnchor(previousOwner, owner.getYRot(), tickCount, phase);
+        Vec3 p =
+                WispMotion.idleAnchor(previousOwner, owner.getYRot(), level().getGameTime(), phase);
         setPos(p);
         xo = xOld = p.x;
         yo = yOld = p.y;
@@ -104,7 +105,10 @@ public final class ContractWispEntity extends Entity {
         Vec3 rawMotion = now.subtract(previousOwner);
         filteredMotion =
                 rawMotion.lengthSqr() > 144 ? rawMotion : filteredMotion.lerp(rawMotion, .5);
-        Vec3 next = WispMotion.step(old, now, filteredMotion, owner.getYRot(), ++visualAge, phase);
+        visualAge++;
+        Vec3 next =
+                WispMotion.step(
+                        old, now, filteredMotion, owner.getYRot(), level().getGameTime(), phase);
         setPos(next);
         previousOwner = now;
         // Do not interpolate an entire teleport path across the screen.

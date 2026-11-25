@@ -18,6 +18,11 @@
     {
       "type": "patchouli:text",
       "text": "$(7)决不允许任何人的践踏。$(br2)$(reset)将追忆放入莉莉手记之中，海尼尔的力量便会得到强化。"
+    },
+    {
+      "type": "purified_undead:memory_crafting",
+      "tablet": "purified_undead:forged_slate_hoenir",
+      "memory": "purified_undead:blighted_memory_hoenir"
     }
   ]
 }

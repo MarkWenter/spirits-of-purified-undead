@@ -22,7 +22,7 @@ public final class PurificationFoundryBlock extends BaseEntityBlock {
     public static final BooleanProperty LIT = BlockStateProperties.LIT;
 
     public PurificationFoundryBlock() {
-        super(Properties.of().strength(3.5F).requiresCorrectToolForDrops().sound(SoundType.STONE));
+        super(Properties.of().strength(3.5F).requiresCorrectToolForDrops().sound(SoundType.STONE).noOcclusion());
         registerDefaultState(
                 stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(LIT, false));
     }

@@ -18,6 +18,11 @@
     {
       "type": "patchouli:text",
       "text": "$(7)要是以后她来的时候花田还在，她一定会开心吧。$(br2)$(reset)将追忆放入莉莉手记之中，狼的力量便会得到强化。"
+    },
+    {
+      "type": "purified_undead:memory_crafting",
+      "tablet": "purified_undead:forged_slate_ulv",
+      "memory": "purified_undead:blighted_memory_ulv"
     }
   ]
 }

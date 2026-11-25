@@ -65,6 +65,10 @@ def attributeMods = [
     "dev.shadowsoffire:Placebo:${placebo_version}"
 ]
 dependencies {
+    // Only the stable modular-item and client stat APIs are linked; Tetra is supplied by the pack.
+    compileOnly(providers.gradleProperty("tetra_api_jar").isPresent() ? files(providers.gradleProperty("tetra_api_jar").get()) : "maven.modrinth:tetra:v6cyAXIJ")
+    compileOnly(providers.gradleProperty("better_combat_api_jar").isPresent() ? files(providers.gradleProperty("better_combat_api_jar").get()) : "maven.modrinth:better-combat:rnhiaw3t")
+    compileOnly(providers.gradleProperty("maid_api_jar").isPresent() ? files(providers.gradleProperty("maid_api_jar").get()) : "maven.modrinth:touhou-little-maid:g1SKoGQJ")
     compileOnly 'io.github.llamalad7:mixinextras-common:0.5.3'
     implementation(jarJar('io.github.llamalad7:mixinextras-forge:0.5.3')) {
         jarJar.ranged(it, '[0.5.3,)')

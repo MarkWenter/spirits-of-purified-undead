@@ -159,6 +159,9 @@ public final class ModItems {
                     () ->
                             new dev.purifiedundead.purification.ImmaculateArmor(
                                     net.minecraft.world.item.ArmorItem.Type.BOOTS));
+    public static final RegistryObject<Item> KNIGHT_NOCTURNE =
+            net.minecraftforge.fml.ModList.get().isLoaded("touhou_little_maid")
+                    ? ITEMS.register("knight_nocturne", dev.purifiedundead.nocturne.NocturneItem::new) : null;
     public static final RegistryObject<Item> PURE_TOUCH =
             ITEMS.register("pure_touch", dev.purifiedundead.purification.PureTouchItem::new);
     public static final RegistryObject<Item> BLIGHTED_GUARDIAN =

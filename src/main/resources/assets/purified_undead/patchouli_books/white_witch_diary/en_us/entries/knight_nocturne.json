@@ -1,0 +1,23 @@
+{
+  "name": "骑士寂夜",
+  "icon": "purified_undead:textures/item/knight_nocturne.png",
+  "category": "purified_undead:relics",
+  "sortnum": 24,
+  "pages": [
+    {
+      "type": "purified_undead:nocturne_intro",
+      "flag": "!mod:touhou_little_maid",
+      "description": "此物是用以承载不死战士力量的特殊物品，你似乎还没有这样一位伴侣可以承载这份力量……"
+    },
+    {
+      "type": "purified_undead:nocturne_intro",
+      "flag": "mod:touhou_little_maid",
+      "description": "此物是用以承载不死战士力量的特殊物品，你可以让你最贴心的女仆佩戴此物，使其成为你契约的骑士。"
+    },
+    {
+      "type": "patchouli:text",
+      "flag": "mod:touhou_little_maid",
+      "text": "蹲下并使用可绑定，之后将其放入女仆饰品中，即可在呼唤费林时召唤出女仆的虚影进行协同攻击，并使协同攻击的剑气享受到女仆的伤害加成。$(br2)可以使用神龛、纯净触碰、下界合金锭、钻石、金锭、铁锭在女仆祭坛处合成。"
+    }
+  ]
+}

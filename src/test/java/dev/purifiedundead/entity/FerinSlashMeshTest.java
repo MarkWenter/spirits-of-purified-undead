@@ -6,6 +6,41 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class FerinSlashMeshTest {
     @Test
+    void overheadLaunchLiftsBeforeCuttingAndFinishesForward() {
+        assertTrue(FerinSlashMesh.overheadLaunch(FerinSlashMesh.OVERHEAD_LIFT_TICKS).isEmpty());
+        assertFalse(FerinSlashMesh.overheadLaunch(2).isEmpty());
+        double age = FerinSlashMesh.overheadArcAge(3);
+        var end = FerinBladeTrajectory.blade(3, FerinBladeTrajectory.progress(3, 1 + age), 0);
+        assertEquals(-35, Math.toDegrees(Math.atan2(end.tip().up() - end.root().up(), end.tip().forward())), 1e-6);
+        assertEquals(age, FerinSlashMesh.overheadArcAge(5));
+        assertTrue(FerinSlashMesh.overheadLaunch(6).isEmpty());
+    }
+
+    @Test
+    void fourthCutCompletesOneLeftTurnAfterTheHandoff() {
+        assertTrue(FerinSlashMesh.spinLaunch(FerinSlashMesh.SPIN_START).isEmpty());
+        double mid = (FerinSlashMesh.SPIN_START + FerinSlashMesh.SPIN_END) / 2;
+        assertEquals(.5, FerinSlashMesh.spinProgress(mid), 1e-9);
+        assertTrue(FerinBladeTrajectory.blade(4, FerinSlashMesh.spinProgress(mid - .5), 0).tip().right() < 0);
+        assertTrue(FerinBladeTrajectory.blade(4, .5, 0).tip().forward() < 0);
+        assertEquals(1, FerinSlashMesh.spinProgress(FerinSlashMesh.SPIN_END));
+        assertFalse(FerinSlashMesh.spinLaunch(FerinSlashMesh.SPIN_END).isEmpty());
+        assertTrue(FerinSlashMesh.spinLaunch(7).isEmpty());
+    }
+
+    @Test
+    void finisherPassesOverheadAtTheApexAndClosesBelowAtLanding() {
+        assertTrue(FerinSlashMesh.flipLaunch(FerinSlashMesh.FLIP_TAKEOFF).isEmpty());
+        double apex = FerinSlashMesh.flipProgress(3.822);
+        var high = FerinBladeTrajectory.blade(5, apex, 0);
+        assertEquals(6, high.tip().up() - high.root().up(), .01);
+        var end = FerinBladeTrajectory.blade(5, FerinSlashMesh.flipProgress(FerinSlashMesh.FLIP_LANDING), 0);
+        assertEquals(-6, end.tip().up() - end.root().up(), .001);
+        assertFalse(FerinSlashMesh.flipLaunch(FerinSlashMesh.FLIP_LANDING).isEmpty());
+        assertTrue(FerinSlashMesh.flipLaunch(7).isEmpty());
+    }
+
+    @Test
     void idleAndExpiredSlashesAreInvisible() {
         assertTrue(FerinSlashMesh.sample(0, 4).isEmpty());
         assertTrue(FerinSlashMesh.sample(6, 4).isEmpty());

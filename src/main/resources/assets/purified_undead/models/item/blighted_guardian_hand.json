@@ -1,0 +1,127 @@
+{
+  "parent": "minecraft:builtin/entity",
+  "textures": {
+    "particle": "purified_undead:item/blighted_guardian"
+  },
+  "display": {
+    "firstperson_righthand": {
+      "rotation": [
+        0,
+        -90,
+        -20
+      ],
+      "translation": [
+        1.13,
+        -0.8665,
+        -0.3501
+      ],
+      "scale": [
+        0.50981,
+        0.50981,
+        0.50981
+      ]
+    },
+    "firstperson_lefthand": {
+      "rotation": [
+        0,
+        90,
+        20
+      ],
+      "translation": [
+        1.13,
+        -0.8665,
+        -0.3501
+      ],
+      "scale": [
+        0.50981,
+        0.50981,
+        0.50981
+      ]
+    },
+    "thirdperson_righthand": {
+      "rotation": [
+        0,
+        -90,
+        10
+      ],
+      "translation": [
+        0,
+        -1.3272,
+        1.4393
+      ],
+      "scale": [
+        0.765,
+        0.765,
+        0.765
+      ]
+    },
+    "thirdperson_lefthand": {
+      "rotation": [
+        0,
+        90,
+        -10
+      ],
+      "translation": [
+        0,
+        -1.3272,
+        1.4393
+      ],
+      "scale": [
+        0.765,
+        0.765,
+        0.765
+      ]
+    },
+    "ground": {
+      "rotation": [
+        0,
+        0,
+        -33
+      ],
+      "translation": [
+        -1.8,
+        0.5,
+        0
+      ],
+      "scale": [
+        0.43,
+        0.43,
+        0.43
+      ]
+    },
+    "fixed": {
+      "rotation": [
+        0,
+        180,
+        -36
+      ],
+      "translation": [
+        3.75,
+        -5.3,
+        0
+      ],
+      "scale": [
+        0.76,
+        0.76,
+        0.76
+      ]
+    },
+    "head": {
+      "rotation": [
+        0,
+        0,
+        45
+      ],
+      "translation": [
+        0,
+        7,
+        0
+      ],
+      "scale": [
+        0.6,
+        0.6,
+        0.6
+      ]
+    }
+  }
+}

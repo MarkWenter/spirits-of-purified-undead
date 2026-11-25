@@ -41,6 +41,14 @@ public final class PurifiedUndeadCommands {
                                                                 c.getSource(),
                                                                 EntityArgument.getPlayer(
                                                                         c, "player")))));
+        if (dev.purifiedundead.content.ModItems.KNIGHT_NOCTURNE != null)
+            root.then(literal("knight_nocturne").then(literal("unbind").executes(c -> {
+                var player = c.getSource().getPlayerOrException();
+                boolean removed = dev.purifiedundead.nocturne.NocturneItem.unbind(player);
+                player.sendSystemMessage(Component.translatable("item.purified_undead.knight_nocturne."
+                        + (removed ? "unbound" : "none")));
+                return removed ? 1 : 0;
+            })));
         var warrior = literal("warrior").requires(s -> s.hasPermission(2));
         for (String action : new String[] {"grant", "reset", "collect"}) {
             var target = argument("players", EntityArgument.players());

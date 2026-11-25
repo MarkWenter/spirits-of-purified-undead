@@ -65,6 +65,8 @@ public final class PurifiedUndead {
         dev.purifiedundead.config.AccessoryConfigMigration.prepare(
                 net.minecraftforge.fml.loading.FMLPaths.CONFIGDIR.get());
         ModLoadingContext.get()
+                .registerConfig(ModConfig.Type.CLIENT, PurifiedUndeadConfig.CLIENT_SPEC, "purified_undead-client.toml");
+        ModLoadingContext.get()
                 .registerConfig(
                         ModConfig.Type.COMMON,
                         PurifiedUndeadConfig.ACCESSORIES_SPEC,
@@ -88,6 +90,7 @@ public final class PurifiedUndead {
         dev.purifiedundead.slate.SlateContent.register(modBus);
         dev.purifiedundead.foundry.FoundryContent.register(modBus);
         dev.purifiedundead.blightedrain.BlightedRainContent.register(modBus);
+        dev.purifiedundead.ferinupdate.FerinUpdateContent.register(modBus);
         ModItems.register(modBus);
         dev.purifiedundead.content.ModCreativeTabs.register(modBus);
         ModEntities.register(modBus);
@@ -161,6 +164,7 @@ public final class PurifiedUndead {
             event.accept(ModItems.IMMACULATE_LEGGINGS.get());
             event.accept(ModItems.IMMACULATE_BOOTS.get());
             event.accept(ModItems.PURE_TOUCH.get());
+            if (ModItems.KNIGHT_NOCTURNE != null) event.accept(ModItems.KNIGHT_NOCTURNE.get());
             event.accept(ModItems.BLIGHTED_GUARDIAN.get());
             event.accept(ModItems.LILY_DIARY.get());
 

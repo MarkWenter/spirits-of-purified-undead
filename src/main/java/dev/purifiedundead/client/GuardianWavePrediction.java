@@ -37,7 +37,7 @@ public final class GuardianWavePrediction {
                 || p.isSpectator()
                 || p.isUsingItem()
                 || p.hasEffect(ModEffects.STUNNED.get())
-                || !p.getMainHandItem().is(ModItems.BLIGHTED_GUARDIAN.get())) return 0;
+                || !dev.purifiedundead.combat.GuardianWaveCombat.canEmit(p.getMainHandItem())) return 0;
         long now = p.level().getGameTime();
         if (lastTick == now) return 0;
         lastTick = now;

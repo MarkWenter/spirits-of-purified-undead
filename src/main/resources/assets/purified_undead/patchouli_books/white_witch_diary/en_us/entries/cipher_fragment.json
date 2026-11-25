@@ -10,6 +10,10 @@
       "item": "purified_undead:cipher_fragment",
       "title": "解语密文残片",
       "link_recipe": false
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "purified_undead:cipher_to_paper"
     }
   ]
 }

@@ -22,6 +22,11 @@
     {
       "type": "patchouli:text",
       "text": "$(c)我亲爱的妹妹……用这……双……手……$(br2)$(reset)将追忆放入莉莉手记之中，西丽亚与西丽德的力量便会得到强化。"
+    },
+    {
+      "type": "purified_undead:memory_crafting",
+      "tablet": "purified_undead:forged_slate_guardians",
+      "memory": "purified_undead:blighted_memory_guardians"
     }
   ]
 }

@@ -11,6 +11,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.NetworkHooks;
+
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager;
@@ -21,7 +22,9 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 import java.util.Optional;
 import java.util.UUID;
 
-/** Network-synchronized visual carrier for Ferin. Combat remains server-owned by FerinCombatEvents. */
+/**
+ * Network-synchronized visual carrier for Ferin. Combat remains server-owned by FerinCombatEvents.
+ */
 public final class FerinEntity extends Entity implements GeoEntity {
     private static final EntityDataAccessor<Optional<UUID>> OWNER =
             SynchedEntityData.defineId(FerinEntity.class, EntityDataSerializers.OPTIONAL_UUID);
@@ -29,6 +32,110 @@ public final class FerinEntity extends Entity implements GeoEntity {
             SynchedEntityData.defineId(FerinEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Long> STAGE_STARTED_AT =
             SynchedEntityData.defineId(FerinEntity.class, EntityDataSerializers.LONG);
+
+    private static final EntityDataAccessor<org.joml.Vector3f> FLIGHT_DIRECTION =
+            SynchedEntityData.defineId(FerinEntity.class, EntityDataSerializers.VECTOR3);
+    private static final EntityDataAccessor<Integer> FLIGHT_LIFETIME =
+            SynchedEntityData.defineId(FerinEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> FLIGHT_AGE =
+            SynchedEntityData.defineId(FerinEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<net.minecraft.core.BlockPos> FLIGHT_CELL =
+            SynchedEntityData.defineId(FerinEntity.class, EntityDataSerializers.BLOCK_POS);
+    private static final EntityDataAccessor<org.joml.Vector3f> FLIGHT_OFFSET =
+            SynchedEntityData.defineId(FerinEntity.class, EntityDataSerializers.VECTOR3);
+    private static final EntityDataAccessor<Float> FLIGHT_SPEED =
+            SynchedEntityData.defineId(FerinEntity.class, EntityDataSerializers.FLOAT);
+    // Immutable release pose, retained while flight updates move the visual carrier.
+    private static final EntityDataAccessor<net.minecraft.core.BlockPos> RELEASE_CELL =
+            SynchedEntityData.defineId(FerinEntity.class, EntityDataSerializers.BLOCK_POS);
+    private static final EntityDataAccessor<org.joml.Vector3f> RELEASE_OFFSET =
+            SynchedEntityData.defineId(FerinEntity.class, EntityDataSerializers.VECTOR3);
+    private static final EntityDataAccessor<org.joml.Vector3f> RELEASE_DIRECTION =
+            SynchedEntityData.defineId(FerinEntity.class, EntityDataSerializers.VECTOR3);
+
+    private static final EntityDataAccessor<CompoundTag> ECHO =
+            SynchedEntityData.defineId(FerinEntity.class, EntityDataSerializers.COMPOUND_TAG);
+
+    public CompoundTag echoAppearance() { return entityData.get(ECHO); }
+
+    public void setEchoAppearance(CompoundTag appearance) { entityData.set(ECHO, appearance); }
+
+    public net.minecraft.world.phys.Vec3 releasePosition() {
+        return net.minecraft.world.phys.Vec3.atLowerCornerOf(entityData.get(RELEASE_CELL))
+                .add(new net.minecraft.world.phys.Vec3(entityData.get(RELEASE_OFFSET)));
+    }
+
+    public net.minecraft.world.phys.Vec3 releaseDirection() {
+        return new net.minecraft.world.phys.Vec3(entityData.get(RELEASE_DIRECTION));
+    }
+
+    private double lerpX, lerpY, lerpZ;
+    private int lerpSteps;
+
+    public net.minecraft.world.phys.Vec3 flightDirection() {
+        return new net.minecraft.world.phys.Vec3(entityData.get(FLIGHT_DIRECTION));
+    }
+
+    public int flightLifetime() {
+        return entityData.get(FLIGHT_LIFETIME);
+    }
+
+    public int flightAge() {
+        return entityData.get(FLIGHT_AGE);
+    }
+
+    public void syncFlight(
+            net.minecraft.world.phys.Vec3 position,
+            net.minecraft.world.phys.Vec3 direction,
+            int lifetime,
+            int age,
+            double speed) {
+        setPos(position);
+        var cell = net.minecraft.core.BlockPos.containing(position);
+        if (age == 0) {
+            entityData.set(RELEASE_CELL, cell);
+            entityData.set(
+                    RELEASE_OFFSET,
+                    position.subtract(net.minecraft.world.phys.Vec3.atLowerCornerOf(cell))
+                            .toVector3f());
+            entityData.set(RELEASE_DIRECTION, direction.toVector3f());
+        }
+        entityData.set(FLIGHT_CELL, cell);
+        entityData.set(
+                FLIGHT_OFFSET,
+                position.subtract(net.minecraft.world.phys.Vec3.atLowerCornerOf(cell))
+                        .toVector3f());
+        entityData.set(FLIGHT_SPEED, (float) speed);
+        entityData.set(FLIGHT_DIRECTION, direction.toVector3f());
+        entityData.set(FLIGHT_LIFETIME, lifetime);
+        entityData.set(FLIGHT_AGE, age);
+    }
+
+    /** Bounded presentation prediction only. Server state corrects it; it cannot create hits. */
+    public net.minecraft.world.phys.Vec3 predictedFlightPosition(float partialTick) {
+        var position =
+                net.minecraft.world.phys.Vec3.atLowerCornerOf(entityData.get(FLIGHT_CELL))
+                        .add(new net.minecraft.world.phys.Vec3(entityData.get(FLIGHT_OFFSET)));
+        double elapsed = level().getGameTime() - getStageStartedAt() + partialTick - flightAge();
+        double extrapolation =
+                Math.max(0, Math.min(2, Math.min(flightLifetime() - flightAge(), elapsed)));
+        return position.add(flightDirection().scale(entityData.get(FLIGHT_SPEED) * extrapolation));
+    }
+
+    @Override
+    public void lerpTo(
+            double x, double y, double z, float yaw, float pitch, int steps, boolean teleport) {
+        if (teleport
+                || position().distanceToSqr(new net.minecraft.world.phys.Vec3(x, y, z)) > 4096) {
+            setPos(x, y, z);
+            lerpSteps = 0;
+        } else {
+            lerpX = x;
+            lerpY = y;
+            lerpZ = z;
+            lerpSteps = 2;
+        }
+    }
 
     private final AnimatableInstanceCache animationCache = GeckoLibUtil.createInstanceCache(this);
     private long lastAnimatedStageStartedAt = Long.MIN_VALUE;
@@ -49,8 +156,18 @@ public final class FerinEntity extends Entity implements GeoEntity {
     @Override
     protected void defineSynchedData() {
         entityData.define(OWNER, Optional.empty());
+        entityData.define(ECHO, new CompoundTag());
         entityData.define(STAGE, 0);
         entityData.define(STAGE_STARTED_AT, 0L);
+        entityData.define(FLIGHT_DIRECTION, new org.joml.Vector3f(0, 0, 1));
+        entityData.define(FLIGHT_LIFETIME, 0);
+        entityData.define(FLIGHT_AGE, 0);
+        entityData.define(FLIGHT_CELL, net.minecraft.core.BlockPos.ZERO);
+        entityData.define(FLIGHT_OFFSET, new org.joml.Vector3f());
+        entityData.define(FLIGHT_SPEED, 0F);
+        entityData.define(RELEASE_CELL, net.minecraft.core.BlockPos.ZERO);
+        entityData.define(RELEASE_OFFSET, new org.joml.Vector3f());
+        entityData.define(RELEASE_DIRECTION, new org.joml.Vector3f(0, 0, 1));
     }
 
     public Optional<UUID> getOwnerUuid() {
@@ -81,9 +198,25 @@ public final class FerinEntity extends Entity implements GeoEntity {
         entityData.set(STAGE_STARTED_AT, startedAt);
     }
 
+    private net.minecraft.world.phys.Vec3 visualHeading;
+
+    public net.minecraft.world.phys.Vec3 visualHeading(float partialTick) {
+        var heading = flightDirection();
+        if (visualHeading == null || visualHeading.dot(heading) <= 0) return heading;
+        return visualHeading.lerp(heading, partialTick).normalize();
+    }
+
     @Override
     public void tick() {
         super.tick();
+        if (level().isClientSide() && flightLifetime() > 0) visualHeading = visualHeading(.65F);
+        if (level().isClientSide() && lerpSteps > 0) {
+            setPos(
+                    getX() + (lerpX - getX()) / lerpSteps,
+                    getY() + (lerpY - getY()) / lerpSteps,
+                    getZ() + (lerpZ - getZ()) / lerpSteps);
+            lerpSteps--;
+        }
         if (!level().isClientSide()
                 && (tickCount - lastOwnerRefreshTick > 100
                         || getOwnerUuid()

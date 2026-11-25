@@ -1,0 +1,50 @@
+{
+  "components": [
+    {
+      "type": "patchouli:header",
+      "x": -1,
+      "y": -1,
+      "text": "无序合成"
+    },
+    {
+      "type": "patchouli:separator",
+      "x": -1,
+      "y": -1
+    },
+    {
+      "type": "patchouli:image",
+      "image": "patchouli:textures/gui/crafting.png",
+      "x": 5,
+      "y": 24,
+      "width": 104,
+      "height": 64,
+      "texture_width": 128,
+      "texture_height": 256
+    },
+    {
+      "type": "patchouli:item",
+      "x": 9,
+      "y": 28,
+      "item": "#tablet"
+    },
+    {
+      "type": "patchouli:item",
+      "x": 29,
+      "y": 28,
+      "item": "purified_undead:cipher_text"
+    },
+    {
+      "type": "patchouli:item",
+      "x": 86,
+      "y": 48,
+      "item": "#memory",
+      "link_recipe": true
+    },
+    {
+      "type": "patchouli:text",
+      "x": 0,
+      "y": 91,
+      "text": "将两件材料放入工作台的任意两格。合成后，铸造的石板残片会留在工作台中。"
+    }
+  ]
+}

@@ -18,6 +18,11 @@
     {
       "type": "patchouli:text",
       "text": "$(7)一切为了这一刻，这瞬间。$(br2)$(reset)将追忆放入莉莉手记之中，伊莱恩的力量便会得到强化。"
+    },
+    {
+      "type": "purified_undead:memory_crafting",
+      "tablet": "purified_undead:forged_slate_eleine",
+      "memory": "purified_undead:blighted_memory_eleine"
     }
   ]
 }

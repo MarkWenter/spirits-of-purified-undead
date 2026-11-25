@@ -106,26 +106,19 @@ public final class PartTwoClientSmoke {
                                         mc.level,
                                         mc.player,
                                         0);
-                float min = 99, max = -99;
-                for (var q :
-                        model.getQuads(null, null, net.minecraft.util.RandomSource.create(1))) {
-                    int[] v = q.getVertices();
-                    for (int k = 2; k < v.length; k += v.length / 4) {
-                        float z = Float.intBitsToFloat(v[k]);
-                        min = Math.min(min, z);
-                        max = Math.max(max, z);
-                    }
+                var swordStack = mc.player.getInventory().getItem(0);
+                var perspective = model.applyTransform(net.minecraft.world.item.ItemDisplayContext.FIRST_PERSON_RIGHT_HAND,
+                        new com.mojang.blaze3d.vertex.PoseStack(), false);
+                var customRenderer = net.minecraftforge.client.extensions.common.IClientItemExtensions.of(swordStack).getCustomRenderer();
+                if (!perspective.isCustomRenderer()
+                        || !(customRenderer instanceof dev.purifiedundead.client.BlightedGuardianRenderer guardian)) {
+                    throw new IllegalStateException("Missing handheld sword renderer");
                 }
-                if (max - min < .01) throw new IllegalStateException("sword lacks thickness");
-                System.out.println(
-                        "PART2_MODELS_OK sword depth="
-                                + (max - min)
-                                + " quads="
-                                + model.getQuads(
-                                                null,
-                                                null,
-                                                net.minecraft.util.RandomSource.create(1))
-                                        .size());
+                var swordModel = guardian.getGeoModel();
+                var sword = (dev.purifiedundead.purification.BlightedGuardianItem) swordStack.getItem();
+                var vortex = swordModel.getBakedModel(swordModel.getModelResource(sword)).getBone("vortex").orElseThrow();
+                if (vortex.getCubes().isEmpty()) throw new IllegalStateException("Missing solid vortex");
+                System.out.println("PART2_MODELS_OK sword vortex cubes=" + vortex.getCubes().size());
                 mc.setScreen(new InventoryScreen(mc.player));
             }
             if (ticks == 460)

@@ -4,6 +4,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.TitleScreen;
 import dev.purifiedundead.content.ModItems;
 import dev.purifiedundead.entity.GuardianWaveEntity;
+import dev.purifiedundead.combat.GuardianWaveCombat;
+import dev.purifiedundead.content.ModEntities;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.HumanoidArm;
+import net.minecraft.world.item.ItemStack;
 
 @net.minecraftforge.fml.common.Mod.EventBusSubscriber(
         modid = "purified_undead",
@@ -12,6 +17,8 @@ public final class GuardianWaveClientSmoke {
     private static net.minecraft.world.item.ItemStack tooltipBook;
     private static boolean loading, seen, confirmed, lateConfirmed;
     private static int delayedShot;
+    private static final int OBSERVER_SHOT = Integer.MAX_VALUE;
+    private static boolean sawLateObserver;
     private static int ticks, frames;
 
     @net.minecraftforge.eventbus.api.SubscribeEvent
@@ -53,6 +60,9 @@ public final class GuardianWaveClientSmoke {
                                                             ModItems.BLIGHTED_GUARDIAN.get()));
                                 });
             if (ticks == 65) {
+                verifyLegacyPairing(mc);
+                var server = mc.getSingleplayerServer();
+                server.execute(() -> spawnLateTrackedWave(server.overworld()));
                 mc.options.setCameraType(net.minecraft.client.CameraType.THIRD_PERSON_FRONT);
                 mc.options.hideGui = true;
             }
@@ -90,6 +100,15 @@ public final class GuardianWaveClientSmoke {
             for (var w :
                     mc.level.getEntitiesOfClass(
                             GuardianWaveEntity.class, mc.player.getBoundingBox().inflate(20))) {
+                if (w.ownerId() < 0) continue;
+                if (w.shotId() == OBSERVER_SHOT) {
+                    double travelled = w.getZ() - 1;
+                    if (w.launchArm() != HumanoidArm.LEFT || travelled < 7.98
+                            || Math.abs(w.visualTravel(1) - travelled) > .03 || w.visualAge(0) < 7.98F)
+                        throw new IllegalStateException("late tracking lost launch position, hand or animation phase");
+                    sawLateObserver = true;
+                    continue;
+                }
                 if (w.roll() < 0 || w.roll() > 180) throw new IllegalStateException("invalid roll");
                 seen = true;
                 if (!w.predicted()) {
@@ -106,6 +125,8 @@ public final class GuardianWaveClientSmoke {
                             m -> {});
             }
             if (ticks == 180) {
+                if (!sawLateObserver) throw new IllegalStateException("missing late-tracked left-hand wave");
+                System.out.println("GUARDIAN_WAVE_PAIRING_OK: late left-hand launch, legacy payload and animation phase");
                 if (!confirmed || !lateConfirmed)
                     throw new IllegalStateException("missing actual/late server confirmation");
                 if (!seen) throw new IllegalStateException("no network wave rendered");
@@ -276,6 +297,40 @@ public final class GuardianWaveClientSmoke {
             mc.options.hideGui = false;
             mc.options.setCameraType(net.minecraft.client.CameraType.FIRST_PERSON);
             mc.stop();
+        }
+    }
+
+    private static void spawnLateTrackedWave(net.minecraft.server.level.ServerLevel level) {
+        var shooter = new net.minecraftforge.common.util.FakePlayer(level,
+                new com.mojang.authlib.GameProfile(java.util.UUID.randomUUID(), "WaveObserver"));
+        shooter.setPos(5, 108, 1);
+        shooter.setYRot(0);
+        shooter.setXRot(0);
+        shooter.setMainArm(HumanoidArm.LEFT);
+        var wave = ModEntities.GUARDIAN_WAVE.get().create(level);
+        wave.launch(new GuardianWaveCombat.State(shooter, false, false, 1, 1, 1),
+                new ItemStack(ModItems.BLIGHTED_GUARDIAN.get()), OBSERVER_SHOT);
+        // The client starts tracking an in-flight wave and never sees the shooter.
+        wave.tickCount = 8;
+        wave.setPos(wave.position().add(wave.getDeltaMovement().scale(8)));
+        shooter.setMainArm(HumanoidArm.RIGHT);
+        level.addFreshEntity(wave);
+    }
+
+    private static void verifyLegacyPairing(Minecraft mc) {
+        var wave = ModEntities.GUARDIAN_WAVE.get().create(mc.level);
+        wave.moveTo(5, 108, 9, 0, 0);
+        wave.onAddedToWorld();
+        var data = new FriendlyByteBuf(io.netty.buffer.Unpooled.buffer());
+        try {
+            wave.readSpawnData(data); // A ferin.25 server sends no extra data.
+            data.writeDouble(Double.NaN).writeDouble(108).writeDouble(1).writeByte(1);
+            wave.readSpawnData(data);
+            if (wave.visualTravel(1) != 0 || wave.visualAge(.5F) != .5F || wave.launchArm() != HumanoidArm.RIGHT)
+                throw new IllegalStateException("invalid or absent pairing data changed the legacy fallback");
+        } finally {
+            data.release();
+            wave.onRemovedFromWorld();
         }
     }
 

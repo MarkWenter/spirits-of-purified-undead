@@ -56,7 +56,7 @@ public final class DiaryClientSmoke {
                                             .invoke(contents));
                 Map<?, ?> entries =
                         (Map<?, ?>) contents.getClass().getField("entries").get(contents);
-                if (entries.size() != 62)
+                if (entries.size() != 64)
                     throw new IllegalStateException("entry count=" + entries.size());
                 Map<?, ?> categories =
                         (Map<?, ?>) contents.getClass().getField("categories").get(contents);

@@ -7,7 +7,42 @@ import dev.purifiedundead.content.ModItems;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 
-public final class BlightedGuardianItem extends SwordItem {
+import java.util.function.Consumer;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
+import software.bernie.geckolib.animatable.GeoItem;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.util.GeckoLibUtil;
+
+public final class BlightedGuardianItem extends SwordItem implements GeoItem {
+    private static final RawAnimation ORBIT = RawAnimation.begin().thenLoop("animation.blighted_guardian.orbit");
+    private final AnimatableInstanceCache animationCache = GeckoLibUtil.createInstanceCache(this);
+
+    @Override
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
+        return animationCache;
+    }
+
+    @Override
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
+        controllers.add(new AnimationController<>(this, "vortex", 0, state -> state.setAndContinue(ORBIT)));
+    }
+
+    @Override
+    public void initializeClient(Consumer<IClientItemExtensions> consumer) {
+        consumer.accept(new IClientItemExtensions() {
+            private dev.purifiedundead.client.BlightedGuardianRenderer renderer;
+
+            @Override
+            public net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer getCustomRenderer() {
+                if (renderer == null) renderer = new dev.purifiedundead.client.BlightedGuardianRenderer();
+                return renderer;
+            }
+        });
+    }
+
     private final com.google.common.collect.Multimap<
                     net.minecraft.world.entity.ai.attributes.Attribute,
                     net.minecraft.world.entity.ai.attributes.AttributeModifier>

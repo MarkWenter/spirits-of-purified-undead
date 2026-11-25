@@ -20,6 +20,8 @@ public final class FerinPlayerState {
     final FerinContinuationBuffer continuation = new FerinContinuationBuffer();
     float continuationDamage;
     Vec3 continuationTarget;
+    UUID continuationTargetId;
+    UUID lastTargetId;
     long lastContinuationTick = Long.MIN_VALUE;
     FerinComboState combo = new FerinComboState();
     FerinMeleeTrigger.AttackTickGate attackTickGate = new FerinMeleeTrigger.AttackTickGate();
@@ -100,6 +102,8 @@ public final class FerinPlayerState {
         combo.cancelActive();
         continuation.clear();
         continuationTarget = null;
+        continuationTargetId = null;
+        lastTargetId = null;
         continuationDamage = 0;
         hitTargets.clear();
         previousBlade = null;

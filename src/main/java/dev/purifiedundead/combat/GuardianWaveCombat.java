@@ -46,12 +46,21 @@ public final class GuardianWaveCombat {
         swing(p, 0);
     }
 
+    public static boolean canEmit(net.minecraft.world.item.ItemStack weapon) {
+        return weapon.is(ModItems.BLIGHTED_GUARDIAN.get()) || socketedMelee(weapon);
+    }
+
+    public static boolean socketedMelee(net.minecraft.world.item.ItemStack weapon) {
+        return net.minecraftforge.fml.ModList.get().isLoaded("tetra")
+                && dev.purifiedundead.compat.TetraGuardianSocket.active(weapon);
+    }
+
     public static void swing(ServerPlayer p, int shot) {
         if (shot < 0) return;
         if (!p.isAlive()
                 || p.isSpectator()
                 || p.isUsingItem()
-                || !p.getMainHandItem().is(ModItems.BLIGHTED_GUARDIAN.get())
+                || !canEmit(p.getMainHandItem())
                 || p.hasEffect(ModEffects.STUNNED.get())) return;
         long now = p.serverLevel().getGameTime();
         var data = p.getPersistentData();

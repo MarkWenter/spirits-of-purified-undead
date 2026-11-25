@@ -6,12 +6,32 @@ import net.minecraftforge.common.ForgeConfigSpec;
 public final class PurifiedUndeadConfig {
     public static final ForgeConfigSpec SPEC;
     public static final ForgeConfigSpec ACCESSORIES_SPEC;
+    public static final ForgeConfigSpec.IntValue NOCTURNE_INTERVAL;
+    public static final ForgeConfigSpec.BooleanValue NOCTURNE_MAID_DAMAGE;
+    public static final ForgeConfigSpec CLIENT_SPEC;
+    public static final ForgeConfigSpec.BooleanValue SHOW_ECHO, ECHO_SPECIAL_ANIMATIONS;
+    public static final ForgeConfigSpec.DoubleValue ECHO_SCALE;
     public static final Values VALUES;
 
     static {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
         ForgeConfigSpec.Builder accessories = new ForgeConfigSpec.Builder();
         VALUES = new Values(builder, accessories);
+        accessories.push("knightNocturne");
+        NOCTURNE_INTERVAL = accessories.comment("Ticks between maid attribute snapshots.")
+                .defineInRange("sampleTicks", 40, 10, 1200);
+        NOCTURNE_MAID_DAMAGE = accessories.comment("Experimental: adds the live maid as direct damage source. Maid mods may duplicate callbacks, damage or kill credit.")
+                .define("maidDamage", false);
+        accessories.pop();
+        ForgeConfigSpec.Builder client = new ForgeConfigSpec.Builder();
+        client.push("knightNocturne");
+        SHOW_ECHO = client.comment("Show bound maid apparitions during Ferin assists. The key binding changes this setting.")
+                .define("showEcho", true);
+        ECHO_SPECIAL_ANIMATIONS = client.comment("Allow registered skeleton-specific poses for the apparition.")
+                .define("specialAnimations", true);
+        ECHO_SCALE = client.defineInRange("echoScale", 0.85D, 0.25D, 2.0D);
+        client.pop();
+        CLIENT_SPEC = client.build();
         ACCESSORIES_SPEC = accessories.build();
         SPEC = builder.build();
     }
@@ -96,6 +116,9 @@ public final class PurifiedUndeadConfig {
         public final ForgeConfigSpec.ConfigValue<java.util.List<? extends Double>>
                 ferinStageDamageMultipliers;
         public final ForgeConfigSpec.IntValue ferinSummonCooldownTicks;
+        public final ForgeConfigSpec.DoubleValue ferinFlightMinimumSpeed;
+        public final ForgeConfigSpec.DoubleValue ferinFlightTurnDegrees;
+        public final ForgeConfigSpec.IntValue ferinFlightArrivalTicks;
         public final ForgeConfigSpec.IntValue ferinComboLockTicks;
         public final ForgeConfigSpec.IntValue ferinComboWindowTicks;
         public final ForgeConfigSpec.IntValue ferinFinalActionDurationTicks;
@@ -235,6 +258,16 @@ public final class PurifiedUndeadConfig {
                                                     && number >= 0.0D
                                                     && number <= 20.0D);
             ferinSummonCooldownTicks = builder.defineInRange("summonCooldownTicks", 40, 0, 12000);
+            ferinFlightMinimumSpeed =
+                    builder.comment("Cooperative slash minimum blocks per tick.")
+                            .defineInRange("flightMinimumSpeed", 1.0D, .25D, 64.0D);
+            ferinFlightArrivalTicks =
+                    builder.comment(
+                                    "Maximum nominal arrival ticks (0 means next tick); same for all five stages. Moving targets are not guaranteed hits.")
+                            .defineInRange("flightArrivalTicks", 60, 0, 60);
+            ferinFlightTurnDegrees =
+                    builder.comment("Maximum homing turn per tick; 0 disables homing.")
+                            .defineInRange("flightTurnDegrees", 6.0D, 0.0D, 30.0D);
             ferinComboLockTicks = builder.defineInRange("comboLockTicks", 10, 0, 12000);
             ferinComboWindowTicks = builder.defineInRange("comboWindowTicks", 24, 1, 12000);
             ferinFinalActionDurationTicks =

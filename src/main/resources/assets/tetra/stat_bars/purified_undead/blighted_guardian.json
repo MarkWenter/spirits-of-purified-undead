@@ -1,0 +1,20 @@
+{
+  "type": "tetra:default",
+  "key": "purified_undead.effect.blighted_guardian.name",
+  "contexts": [
+    "tetra:workbench",
+    "tetra:holosphere"
+  ],
+  "min": 0,
+  "max": 1,
+  "stat": {
+    "type": "purified_undead:blighted_guardian"
+  },
+  "label": {
+    "type": "tetra:none"
+  },
+  "tooltip": {
+    "type": "tetra:default",
+    "key": "purified_undead.effect.blighted_guardian.tooltip"
+  }
+}

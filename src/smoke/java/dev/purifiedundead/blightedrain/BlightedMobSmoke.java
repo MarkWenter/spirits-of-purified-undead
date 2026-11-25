@@ -65,10 +65,7 @@ public final class BlightedMobSmoke {
                 check(
                         BlightedMobConversions.candidate(original) != lethal,
                         "candidate timing " + type);
-                check(
-                        BlightedMobConversions.clickable(original)
-                                == (!lethal && original instanceof Enemy),
-                        "item restriction " + type);
+                check(BlightedMobConversions.clickable(original), "spirit conversion source " + type);
                 float max = original.getMaxHealth();
                 original.setHealth(max / 2);
                 if (original instanceof Zombie z) z.setBaby(true);
@@ -517,6 +514,7 @@ public final class BlightedMobSmoke {
                 level.setWeatherParameters(0, 12000, raining, false);
                 level.setRainLevel(rain);
             }
+            spiritInteractions(level, nativeTypes, fixtures);
             System.out.println(
                     "BLIGHTED_MOBS_SERVER_OK: "
                             + nativeTypes.length
@@ -526,5 +524,173 @@ public final class BlightedMobSmoke {
         } finally {
             fixtures.forEach(Entity::discard);
         }
+    }
+
+    private static boolean useSpirit(ServerPlayer player, Mob target) {
+        var event = new net.minecraftforge.event.entity.player.PlayerInteractEvent.EntityInteract(
+                player, net.minecraft.world.InteractionHand.MAIN_HAND, target);
+        net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(event);
+        return event.isCanceled() && event.getCancellationResult() == net.minecraft.world.InteractionResult.SUCCESS;
+    }
+
+    private static void spiritInteractions(ServerLevel level, EntityType<?>[] rainTypes, java.util.List<Entity> fixtures) {
+        var player = new net.minecraftforge.common.util.FakePlayer(level,
+                new com.mojang.authlib.GameProfile(java.util.UUID.randomUUID(), "BlightTouch"));
+        var hand = net.minecraft.world.InteractionHand.MAIN_HAND;
+        var spirit = dev.purifiedundead.content.ModItems.BLIGHTED_SPIRIT.get();
+        var visitor = new net.minecraftforge.common.util.FakePlayer(level,
+                new com.mojang.authlib.GameProfile(java.util.UUID.randomUUID(), "NoContract"));
+        var curios = top.theillusivec4.curios.api.CuriosApi.getCuriosInventory(player)
+                .orElseThrow(() -> new IllegalStateException("Curios inventory missing"));
+        var contract = curios.getCurios().get("ancient_contract").getStacks();
+        var visitorContract = top.theillusivec4.curios.api.CuriosApi.getCuriosInventory(visitor)
+                .orElseThrow(() -> new IllegalStateException("Curios inventory missing"))
+                .getCurios().get("ancient_contract").getStacks();
+        var contractItem = dev.purifiedundead.content.ModItems.ANCIENT_CONTRACT.get();
+        player.setPos(92, 150, 81);
+        var ordinary = spawn(EntityType.COW, level, 92);
+        fixtures.add(ordinary);
+        visitor.setItemInHand(hand, new ItemStack(spirit, 2));
+        visitorContract.setStackInSlot(0, new ItemStack(contractItem));
+        check(dev.purifiedundead.progress.ContractProgressService.hasContract(visitor), "warm occupied item lookup");
+        visitorContract.setStackInSlot(0, ItemStack.EMPTY);
+        check(!useSpirit(visitor, ordinary) && !ordinary.isRemoved() && visitor.getMainHandItem().getCount() == 2,
+                "same-tick unequipped contract");
+        check(!dev.purifiedundead.progress.ContractProgressService.hasContract(player), "warm empty item lookup");
+        contract.setStackInSlot(0, new ItemStack(contractItem));
+        player.setItemInHand(hand, new ItemStack(spirit, 2));
+        player.setGameMode(net.minecraft.world.level.GameType.SPECTATOR);
+        check(!useSpirit(player, ordinary) && !ordinary.isRemoved() && player.getMainHandItem().getCount() == 2,
+                "spectator cannot convert");
+        player.setGameMode(net.minecraft.world.level.GameType.SURVIVAL);
+        player.setHealth(0);
+        check(!useSpirit(player, ordinary) && !ordinary.isRemoved() && player.getMainHandItem().getCount() == 2,
+                "dead player cannot convert");
+        player.setHealth(player.getMaxHealth());
+        var types = new java.util.ArrayList<EntityType<?>>(java.util.Arrays.asList(rainTypes));
+        types.add(EntityType.IRON_GOLEM);
+        types.add(EntityType.EVOKER);
+        for (var type : types) {
+            var mob = spawn((EntityType<? extends Mob>) type, level, 94);
+            fixtures.add(mob);
+            var bounds = mob.getBoundingBox().inflate(.1);
+            player.setItemInHand(hand, new ItemStack(spirit, 2));
+            check(player.interactOn(mob, hand) == net.minecraft.world.InteractionResult.SUCCESS
+                            && mob.isRemoved() && player.getMainHandItem().getCount() == 1,
+                    "survival conversion and cost " + type);
+            var results = level.getEntitiesOfClass(Mob.class, bounds, entity ->
+                    type == EntityType.IRON_GOLEM ? entity instanceof dev.purifiedundead.entity.BlightedGolemEntity
+                    : type == EntityType.EVOKER ? entity instanceof dev.purifiedundead.entity.BlightedKingEntity
+                    : entity.getType() != type && BlightedMobConversions.nativeType(entity.getType()) == type);
+            check(results.size() == 1, "one matching replacement " + type);
+            var result = results.get(0);
+            fixtures.add(result);
+            check(!useSpirit(player, result) && player.getMainHandItem().getCount() == 1, "repeat " + type);
+            result.discard();
+        }
+        var rabbit = spawn(EntityType.RABBIT, level, 94);
+        fixtures.add(rabbit);
+        check(!useSpirit(player, rabbit) && !rabbit.isRemoved() && player.getMainHandItem().getCount() == 1,
+                "unmapped species");
+        var horse = (net.minecraft.world.entity.animal.horse.Horse) spawn(EntityType.HORSE, level, 94);
+        fixtures.add(horse);
+        horse.tameWithName(player);
+        check(!useSpirit(player, horse) && !horse.isRemoved() && player.getMainHandItem().getCount() == 1,
+                "owned horse protected");
+        legacyTargets(level, player, fixtures);
+        villagerInventory(level, player, fixtures);
+        player.getAbilities().instabuild = true;
+        check(useSpirit(player, ordinary) && ordinary.isRemoved() && player.getMainHandItem().getCount() == 1,
+                "creative conversion");
+        fixtures.addAll(level.getEntitiesOfClass(BlightedCow.class, ordinary.getBoundingBox().inflate(.1)));
+        System.out.println("SPIRIT_CLICK_OK: " + types.size() + " species, live contract, spectator, rollback, food, legacy, creative and ownership");
+    }
+
+    private static void legacyTargets(ServerLevel level, ServerPlayer player, java.util.List<Entity> fixtures) {
+        var golem = spawn(EntityType.IRON_GOLEM, level, 96);
+        var evoker = spawn(EntityType.EVOKER, level, 96);
+        fixtures.add(golem);
+        fixtures.add(evoker);
+        var rules = dev.purifiedundead.config.PurifiedUndeadConfig.VALUES;
+        boolean grothEnabled = rules.grothAcquisitionEnabled.get(), juliusEnabled = rules.juliusAcquisitionEnabled.get();
+        try {
+            rules.grothAcquisitionEnabled.set(false);
+            rules.juliusAcquisitionEnabled.set(false);
+            check(!useSpirit(player, golem) && !golem.isRemoved(), "disabled golem conversion");
+            check(!useSpirit(player, evoker) && !evoker.isRemoved(), "disabled evoker conversion");
+        } finally {
+            rules.grothAcquisitionEnabled.set(grothEnabled);
+            rules.juliusAcquisitionEnabled.set(juliusEnabled);
+        }
+        evoker.getPersistentData().putBoolean("purified_undead:blighted_king", true);
+        check(!useSpirit(player, evoker) && !evoker.isRemoved() && player.getMainHandItem().getCount() == 1,
+                "legacy evoker remains available for migration, no charge for rejected conversions");
+    }
+
+    public static final class RejectVillagerOutput {
+        private final net.minecraft.world.phys.AABB bounds;
+        private final boolean rejectReplacement;
+
+        RejectVillagerOutput(net.minecraft.world.phys.AABB bounds, boolean rejectReplacement) {
+            this.bounds = bounds;
+            this.rejectReplacement = rejectReplacement;
+        }
+
+        @net.minecraftforge.eventbus.api.SubscribeEvent
+        public void onJoin(net.minecraftforge.event.entity.EntityJoinLevelEvent event) {
+            var entity = event.getEntity();
+            if (!bounds.contains(entity.position())) return;
+            if (rejectReplacement ? entity instanceof BlightedVillager
+                    : entity instanceof net.minecraft.world.entity.item.ItemEntity item && item.getItem().is(Items.CARROT)) {
+                event.setCanceled(true);
+            }
+        }
+    }
+
+    private static void villagerInventory(ServerLevel level, ServerPlayer player, java.util.List<Entity> fixtures) {
+        // Use the same loaded entity section as the individual species interactions above.
+        var villager = (net.minecraft.world.entity.npc.Villager) spawn(EntityType.VILLAGER, level, 94);
+        fixtures.add(villager);
+        var inventory = villager.getInventory();
+        var bread = new ItemStack(Items.BREAD, 7);
+        bread.setHoverName(net.minecraft.network.chat.Component.literal("Pantry"));
+        var carrots = new ItemStack(Items.CARROT, 12);
+        inventory.setItem(0, bread.copy());
+        inventory.setItem(6, carrots.copy());
+        var bounds = villager.getBoundingBox().inflate(.5);
+        var hand = net.minecraft.world.InteractionHand.MAIN_HAND;
+        player.setItemInHand(hand, new ItemStack(dev.purifiedundead.content.ModItems.BLIGHTED_SPIRIT.get(), 2));
+        for (boolean rejectReplacement : new boolean[]{true, false}) {
+            var reject = new RejectVillagerOutput(bounds, rejectReplacement);
+            net.minecraftforge.common.MinecraftForge.EVENT_BUS.register(reject);
+            try {
+                check(!useSpirit(player, villager) && !villager.isRemoved() && player.getMainHandItem().getCount() == 2,
+                        "failed villager conversion keeps source and cost " + rejectReplacement);
+                check(ItemStack.matches(bread, inventory.getItem(0)) && ItemStack.matches(carrots, inventory.getItem(6)),
+                        "failed villager conversion keeps original food");
+                check(level.getEntitiesOfClass(BlightedVillager.class, bounds).isEmpty()
+                                && level.getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class, bounds).isEmpty(),
+                        "failed villager conversion leaves no replacement or food drops");
+            } finally {
+                net.minecraftforge.common.MinecraftForge.EVENT_BUS.unregister(reject);
+            }
+        }
+        check(player.interactOn(villager, hand) == net.minecraft.world.InteractionResult.SUCCESS
+                        && villager.isRemoved() && player.getMainHandItem().getCount() == 1,
+                "villager retry commits once from normal interaction");
+        var results = level.getEntitiesOfClass(BlightedVillager.class, bounds);
+        var drops = level.getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class, bounds);
+        fixtures.addAll(results);
+        fixtures.addAll(drops);
+        check(results.size() == 1, "one replacement villager on retry, got " + results.size());
+        Mob replacement = results.get(0);
+        var stored = replacement.saveWithoutId(new net.minecraft.nbt.CompoundTag()).get("Inventory");
+        check(stored == null || stored instanceof net.minecraft.nbt.ListTag list && list.isEmpty(),
+                "replacement has no serialized duplicate food stacks: " + stored);
+        if (replacement instanceof net.minecraft.world.entity.npc.InventoryCarrier carrier)
+            check(carrier.getInventory().isEmpty(), "replacement has no live duplicate food stacks");
+        check(drops.size() == 2 && drops.stream().anyMatch(e -> ItemStack.matches(bread, e.getItem()))
+                        && drops.stream().anyMatch(e -> ItemStack.matches(carrots, e.getItem())),
+                "villager food drops include both original stacks, counts and metadata exactly once");
     }
 }

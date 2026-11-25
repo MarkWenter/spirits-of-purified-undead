@@ -1,9 +1,13 @@
 package dev.purifiedundead.blightedrain;
 
+import dev.purifiedundead.progress.BlightedConversions;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Mob;
 import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.server.ServerStartedEvent;
 import net.minecraftforge.event.server.ServerStoppedEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -116,21 +120,12 @@ public final class BlightedRainEvents {
                                                     .get())));
     }
 
-    @SubscribeEvent
-    public void blightClick(
-            net.minecraftforge.event.entity.player.PlayerInteractEvent.EntityInteract e) {
-        if (e.getEntity() instanceof net.minecraft.server.level.ServerPlayer player
-                && e.getTarget() instanceof net.minecraft.world.entity.Mob mob
-                && mob.level() instanceof net.minecraft.server.level.ServerLevel level
-                && e.getItemStack().is(dev.purifiedundead.content.ModItems.BLIGHTED_SPIRIT.get())
-                && dev.purifiedundead.progress.ContractProgressService.hasContract(player)
-                && dev.purifiedundead.blightedrain.mob.BlightedMobConversions.clickable(mob)
-                && !RainEffects.protectedMob(mob)) {
-            if (dev.purifiedundead.progress.BlightedConversions.convert(mob, level) != null) {
-                if (!player.getAbilities().instabuild) e.getItemStack().shrink(1);
-                e.setCancellationResult(net.minecraft.world.InteractionResult.SUCCESS);
-                e.setCanceled(true);
-            }
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void blightClick(PlayerInteractEvent.EntityInteract event) {
+        if (event.getTarget() instanceof Mob target
+                && BlightedConversions.useSpirit(event.getEntity(), target, event.getItemStack())) {
+            event.setCancellationResult(InteractionResult.SUCCESS);
+            event.setCanceled(true);
         }
     }
 }
