@@ -19,6 +19,10 @@ public final class ClientModEvents {
     public static void clientSetup(
             net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent event) {
         event.enqueueWork(WispDynamicLights::install);
+        if (net.minecraftforge.fml.ModList.get().isLoaded("tetra"))
+            event.enqueueWork(() -> TetraGuardianStats.register());
+        if (net.minecraftforge.fml.ModList.get().isLoaded("bettercombat"))
+            event.enqueueWork(() -> BetterCombatGuardianInput.register());
         event.enqueueWork(
                 () ->
                         net.minecraft.client.renderer.item.ItemProperties.register(

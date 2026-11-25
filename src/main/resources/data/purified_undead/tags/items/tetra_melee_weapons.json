@@ -1,0 +1,21 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "#minecraft:swords",
+      "required": false
+    },
+    {
+      "id": "tetra:modular_sword",
+      "required": false
+    },
+    {
+      "id": "tetra_spell_book:modular_enchanters_sword",
+      "required": false
+    },
+    {
+      "id": "tetra:modular_greatsword",
+      "required": false
+    }
+  ]
+}

@@ -1,4 +1,9 @@
 {
+  "purified_undead.tetra.pure_touch_socket": "Tetra 宝石镶嵌：消耗 1 完整度，耐久 +512，攻击伤害 +2。近战武器获得「秽鬼守护」。",
+  "tetra.material.purified_undead_pure_touch": "纯净触碰",
+  "tetra.material.purified_undead_pure_touch.prefix": "纯净",
+  "purified_undead.effect.blighted_guardian.name": "秽鬼守护",
+  "purified_undead.effect.blighted_guardian.tooltip": "主手挥动镶嵌此宝石的近战武器时释放剑气。剑气伤害取决于这把武器的实际攻击伤害和攻击蓄力。",
   "item.purified_undead.knight_nocturne": "骑士寂夜",
   "tooltip.purified_undead.knight_nocturne": "可以调用骑士的力量为你所用……",
   "item.purified_undead.knight_nocturne.bound": "已绑定骑士寂夜",

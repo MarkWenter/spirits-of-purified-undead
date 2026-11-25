@@ -4,6 +4,7 @@
   "compatibilityLevel": "JAVA_17",
   "refmap": "purified_undead.refmap.json",
   "mixins": [
+    "BetterCombatSocketMovesetMixin",
     "MemoryDropChanceMixin",
     "MemoryDamageCriteriaMixin",
     "MemoryTagPredicateAccessor",

@@ -1,4 +1,9 @@
 {
+  "purified_undead.tetra.pure_touch_socket": "Tetra socket gem: costs 1 integrity, +512 durability, +2 attack damage. Grants Blighted Guardian to melee weapons.",
+  "tetra.material.purified_undead_pure_touch": "Pure Touch",
+  "tetra.material.purified_undead_pure_touch.prefix": "Purified",
+  "purified_undead.effect.blighted_guardian.name": "Blighted Guardian",
+  "purified_undead.effect.blighted_guardian.tooltip": "Swing a socketed melee weapon in your main hand to release a Guardian wave. Its damage scales with the wielded weapon’s attack damage and attack charge.",
   "item.purified_undead.knight_nocturne": "Knight Nocturne",
   "tooltip.purified_undead.knight_nocturne": "Call upon the knight’s power…",
   "item.purified_undead.knight_nocturne.bound": "Bound Knight Nocturne",

@@ -23,6 +23,10 @@ public final class FerinFlightSmoke {
         var events = new FerinCombatEvents();
         var mobs = new ArrayList<Zombie>();
         try {
+            // This fixture asserts one noncritical contact. External critical rolls have their own tests.
+            var chance = net.minecraftforge.registries.ForgeRegistries.ATTRIBUTES.getValue(
+                    net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("attributeslib", "crit_chance"));
+            if (chance != null && player.getAttribute(chance) != null) player.getAttribute(chance).setBaseValue(0);
             var launch =
                     FerinCombatEvents.class.getDeclaredMethod(
                             "launchFlight",

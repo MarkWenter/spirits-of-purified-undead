@@ -8,12 +8,10 @@ public final class GuardianWaveInput {
             priority = net.minecraftforge.eventbus.api.EventPriority.LOWEST)
     public static void input(
             net.minecraftforge.client.event.InputEvent.InteractionKeyMappingTriggered e) {
-        var p = net.minecraft.client.Minecraft.getInstance().player;
-        if (e.isCanceled()
-                || !e.isAttack()
-                || p == null
-                || !p.getMainHandItem()
-                        .is(dev.purifiedundead.content.ModItems.BLIGHTED_GUARDIAN.get())) return;
+        if (!e.isCanceled() && e.isAttack()) requestSwing();
+    }
+
+    static void requestSwing() {
         int shot = GuardianWavePrediction.start();
         if (shot == 0) return;
         dev.purifiedundead.network.ModNetwork.CHANNEL.sendToServer(
