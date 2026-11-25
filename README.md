@@ -8,11 +8,17 @@
 
 与古老民族缔结契约，净化不死战士的污秽，继承他们的加护。在探索、战斗与成长中收集白巫女的遗物，并迎接污秽之雨带来的变化。
 
-**当前正式版本：1.1.1hotfix（1.1「污秽之雨」兼容性与稳定性修复）**
-
-[本次修复说明](docs/RELEASE_V111_HOTFIX.md)
+**当前正式版本为 1.2「费林更新」。** [中英对照更新日志](docs/RELEASE_V120.md)
 
 支持 **Minecraft 1.20.1 / Forge** 与 **Minecraft 1.21.1 / NeoForge**。
+
+### 1.2 · 费林更新
+
+- **费林的协同斩击**从身旁的光点飞向敌人。五段剑术各有自己的剑路、暖白刃光与紫焰拖尾，最后以翻身斩收势。
+- **骑士寂夜**可在车万女仆的祭坛制作。手持饰品蹲下使用以绑定，再让自己的女仆佩戴。她的虚影会在费林出剑时助战，攻击属性也会增强协同斩击。
+- **秽鬼之守护**换上像素手持模型和绕刃旋转的半透明气旋。挥剑时，五种战士武器幻影从握剑侧飞出，各有独立光迹。安装 Tetra 可用纯净触碰为近战武器镶嵌同款剑气，Better Combat 支持按住连续挥剑。
+- **美术与装备栏**更新了材料、饰品、八枚秽鬼追忆、无垢盔甲和秽鬼刷怪蛋，纯化铸造器也有了立体炉腔。Curios 为古老民族之契、不死战士、白巫女遗物和流浪日志分别显示专属空槽剪影。
+- **白巫女手记**补齐了铸造器等配方，并收录骑士寂夜。佩戴古老民族之契时，手持怨念污秽可将符合条件的生物转化为对应秽鬼。
 
 ### 1.0 · 契约与净化
 
@@ -75,11 +81,17 @@
 
 Form a pact with the Ancients, purify the blight of fallen warriors, and inherit their blessings. Collect the White Witch's relics as you explore and grow stronger, then face a world changed by Blighted Rain.
 
-**Current release: 1.1.1hotfix — Blighted Rain stability and compatibility fixes**
-
-Includes weather shader isolation, safer item recovery and entity conversion, bounded failure retries, and finite damage checks. AMD + Oculus still requires testing on AMD hardware.
+**The current release is 1.2, The Ferin Update.** [Bilingual changelog](docs/RELEASE_V120.md)
 
 Available for **Minecraft 1.20.1 / Forge** and **Minecraft 1.21.1 / NeoForge**.
+
+### 1.2 · The Ferin Update
+
+- **Ferin’s assist slashes** now fly from the wisp beside you. Each of the five cuts has its own path, with a warm white edge and a violet wake. The combo ends in a somersault strike.
+- **Knight Nocturne** can be crafted at the Touhou Little Maid altar. Sneak and use the charm to bind it, then equip it on your maid. Her apparition joins Ferin’s attacks, and her attack attributes strengthen his slashes.
+- **Blighted Guardian** has a new pixel-art held model with a translucent vortex around its blade. Each swing sends one of five spectral weapons from your sword hand, trailing violet light. Tetra lets you socket Pure Touch into a melee weapon to gain these waves. Better Combat supports continuous swings while the attack button is held.
+- **New pixel art** covers materials, accessories, all eight Blighted Memories, Immaculate Armor, and Blighted spawn eggs. The Purification Foundry has a recessed chamber. Four Curios silhouettes distinguish empty Ancient Contract, Undead Warriors, White Witch Relics, and Wanderer Log slots.
+- **The White Witch’s Diary** now includes missing recipes and a Knight Nocturne entry. While wearing the Ancient Contract, use a Blighted Spirit on an eligible mob to turn it into its Blighted counterpart.
 
 ### 1.0 — Contracts and Purification
 
