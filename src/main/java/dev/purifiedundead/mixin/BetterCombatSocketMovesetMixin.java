@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-/** Some Tetra ports supply no moveset. Keep pack-defined moves and let a socketed melee weapon borrow the Guardian's. */
+/** Some Tetra ports supply no moveset. Keep pack-defined moves and let a socketed item borrow the Guardian's. */
 @Pseudo
 @Mixin(targets = "net.bettercombat.logic.WeaponRegistry", remap = false, priority = 900)
 abstract class BetterCombatSocketMovesetMixin {

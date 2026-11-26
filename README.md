@@ -8,7 +8,7 @@
 
 与古老民族缔结契约，净化不死战士的污秽，继承他们的加护。在探索、战斗与成长中收集白巫女的遗物，并迎接污秽之雨带来的变化。
 
-**当前正式版本为 1.2「费林更新」。** [中英对照更新日志](docs/RELEASE_V120.md)
+**1.2.1 修复了纯净触碰在 Tetra 扩展物品上无法释放剑气的问题。** 用主手挥动镶嵌后的剑、镐、铲或其他 Tetra 改造物品即可触发。已有镶嵌直接生效。[1.2.1 修复说明](docs/RELEASE_V121.md) · [1.2 费林更新](docs/RELEASE_V120.md)
 
 支持 **Minecraft 1.20.1 / Forge** 与 **Minecraft 1.21.1 / NeoForge**。
 
@@ -81,7 +81,7 @@
 
 Form a pact with the Ancients, purify the blight of fallen warriors, and inherit their blessings. Collect the White Witch's relics as you explore and grow stronger, then face a world changed by Blighted Rain.
 
-**The current release is 1.2, The Ferin Update.** [Bilingual changelog](docs/RELEASE_V120.md)
+**1.2.1 fixes Pure Touch waves on items from Tetra add-ons.** Swing a socketed sword, pickaxe, shovel or other Tetra modular item in your main hand to release a wave. Existing sockets work after updating. [1.2.1 patch notes](docs/RELEASE_V121.md) · [1.2 Ferin Update](docs/RELEASE_V120.md)
 
 Available for **Minecraft 1.20.1 / Forge** and **Minecraft 1.21.1 / NeoForge**.
 
