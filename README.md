@@ -8,9 +8,18 @@
 
 与古老民族缔结契约，净化不死战士的污秽，继承他们的加护。在探索、战斗与成长中收集白巫女的遗物，并迎接污秽之雨带来的变化。
 
-**当前正式版本为 1.2「费林更新」。** [中英对照更新日志](docs/RELEASE_V120.md)
-
 支持 **Minecraft 1.20.1 / Forge** 与 **Minecraft 1.21.1 / NeoForge**。
+
+### 1.2.1 纯净触碰镶嵌修复报告
+
+在《锻造之旅 1.4.4》中，一把已镶嵌纯净触碰的 Tetra 剑没有显示「秽鬼守护」，挥剑也没有剑气。1.2 按物品标签和头部类型判断哪些物品能触发词条，漏掉了整合包的剑 `tetra:sword_renew`。
+
+1.2.1 直接读取 Tetra 已安装部件上的词条。现在主手挥动镶嵌了纯净触碰的 Tetra 改造物品即可发出剑气，剑、镐、铲和切石刃都适用。**升级模组后，已有镶嵌直接生效。**
+
+- **Forge 1.20.1** 在整合包副本中，用存档里已镶嵌的剑对空气和生物各挥击一次，两次都出现了一道剑气。Tetra 工作台和 Tetra View 也能显示词条。
+- **NeoForge 1.21.1** 在 Tetra 社区移植版中，分别装上和移除 Better Combat，用镶嵌铁铲对空气挥击，两次都看到了剑气。启用 Better Combat 后，按住攻击键连挥三次，服务端记录到三道剑气。
+
+Forge 的 168 项及 NeoForge 的 169 项自动化测试全部通过。[完整修复说明](docs/RELEASE_V121.md) · [Tetra 联动与实测记录](docs/ferin-update/TETRA.md)
 
 ### 1.2 · 费林更新
 
@@ -19,6 +28,8 @@
 - **秽鬼之守护**换上像素手持模型和绕刃旋转的半透明气旋。挥剑时，五种战士武器幻影从握剑侧飞出，各有独立光迹。安装 Tetra 可用纯净触碰为近战武器镶嵌同款剑气，Better Combat 支持按住连续挥剑。
 - **美术与装备栏**更新了材料、饰品、八枚秽鬼追忆、无垢盔甲和秽鬼刷怪蛋，纯化铸造器也有了立体炉腔。Curios 为古老民族之契、不死战士、白巫女遗物和流浪日志分别显示专属空槽剪影。
 - **白巫女手记**补齐了铸造器等配方，并收录骑士寂夜。佩戴古老民族之契时，手持怨念污秽可将符合条件的生物转化为对应秽鬼。
+
+完整变更见 [1.2 费林更新说明](docs/RELEASE_V120.md)。
 
 ### 1.0 · 契约与净化
 
@@ -81,9 +92,18 @@
 
 Form a pact with the Ancients, purify the blight of fallen warriors, and inherit their blessings. Collect the White Witch's relics as you explore and grow stronger, then face a world changed by Blighted Rain.
 
-**The current release is 1.2, The Ferin Update.** [Bilingual changelog](docs/RELEASE_V120.md)
-
 Available for **Minecraft 1.20.1 / Forge** and **Minecraft 1.21.1 / NeoForge**.
+
+### 1.2.1 Pure Touch socket fix
+
+In Journey of Forging 1.4.4, Tetra saved the Pure Touch gem in the sword, but Blighted Guardian was missing from the tooltip and swinging the sword produced no wave. Version 1.2 checked item tags and head types to decide which items could trigger the effect. Those checks missed the pack’s `tetra:sword_renew`.
+
+Version 1.2.1 reads the effect directly from the installed Tetra modules. Any Tetra modular item socketed with Pure Touch can now release a wave when swung in the main hand. This includes swords, pickaxes, shovels and stonecutter blades. **Existing gems work as soon as you update.**
+
+- **Forge 1.20.1** was tested in a copy of the modpack with an already-socketed sword from a save. One swing into the air and one at a mob each produced one visible wave. The Tetra workbench and Tetra View both showed the effect.
+- **NeoForge 1.21.1** was tested with the community port of Tetra. A socketed iron shovel produced a visible wave when swung into the air both with and without Better Combat. With Better Combat enabled, holding attack for three swings produced three server-recorded waves.
+
+All 168 Forge and 169 NeoForge automated tests passed. [Full patch notes](docs/RELEASE_V121.md) · [Tetra compatibility and test results (Chinese)](docs/ferin-update/TETRA.md)
 
 ### 1.2 · The Ferin Update
 
@@ -92,6 +112,8 @@ Available for **Minecraft 1.20.1 / Forge** and **Minecraft 1.21.1 / NeoForge**.
 - **Blighted Guardian** has a new pixel-art held model with a translucent vortex around its blade. Each swing sends one of five spectral weapons from your sword hand, trailing violet light. Tetra lets you socket Pure Touch into a melee weapon to gain these waves. Better Combat supports continuous swings while the attack button is held.
 - **New pixel art** covers materials, accessories, all eight Blighted Memories, Immaculate Armor, and Blighted spawn eggs. The Purification Foundry has a recessed chamber. Four Curios silhouettes distinguish empty Ancient Contract, Undead Warriors, White Witch Relics, and Wanderer Log slots.
 - **The White Witch’s Diary** now includes missing recipes and a Knight Nocturne entry. While wearing the Ancient Contract, use a Blighted Spirit on an eligible mob to turn it into its Blighted counterpart.
+
+See the [full 1.2 Ferin Update notes](docs/RELEASE_V120.md).
 
 ### 1.0 — Contracts and Purification
 

@@ -19,7 +19,7 @@ public final class TetraGuardianSmoke {
         if (!condition) throw new IllegalStateException("TETRA_GUARDIAN_FAILED: " + message);
     }
 
-    public static ItemStack socket(ServerPlayer player, ItemStack base, String scheme, String slot, boolean melee) {
+    public static ItemStack socket(ServerPlayer player, ItemStack base, String scheme, String slot, boolean expectedActive) {
         var schematic = SchematicRegistry.getSchematic(scheme);
         var material = new ItemStack(ModItems.PURE_TOUCH.get(), 2);
         ItemStack[] inputs = {material};
@@ -39,8 +39,8 @@ public final class TetraGuardianSmoke {
                 .mapToDouble(m -> m.getAmount()).sum();
         check(damage == 2 && modular.getEffectLevel(made, TetraGuardianSocket.EFFECT) > 0, "native socket attributes " + damage);
         check(!GuardianWaveCombat.canEmit(base), "unsocketed weapon " + scheme);
-        check(GuardianWaveCombat.canEmit(made) == melee, "crafted eligibility " + scheme + " " + made.getTags().toList());
-        check(GuardianWaveCombat.canEmit(preview) == melee, "preview eligibility " + scheme + " " + preview.getTags().toList());
+        check(GuardianWaveCombat.canEmit(made) == expectedActive, "crafted eligibility " + scheme + " " + made.getTags().toList());
+        check(GuardianWaveCombat.canEmit(preview) == expectedActive, "preview eligibility " + scheme + " " + preview.getTags().toList());
         return made;
     }
 
@@ -62,17 +62,25 @@ public final class TetraGuardianSmoke {
         ((IModularItem) diamond.getItem()).assemble(diamond, player.level(), 0);
         check(!GuardianWaveCombat.canEmit(diamond), "old effect after replacing the socket");
 
-        var single = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("tetra", "modular_single"));
-        var shovel = new ItemStack(single);
-        IModularItem.putModuleInSlot(shovel, "single/head", "single/basic_shovel", "single/basic_shovel_material", "basic_shovel/iron");
-        IModularItem.putModuleInSlot(shovel, "single/handle", "single/basic_handle", "single/basic_handle_material", "basic_handle/stick");
-        IModularItem.updateIdentifier(shovel);
-        socket(player, shovel, "single/socket", "single/binding", false);
+        var shovel = shovel();
+        socket(player, shovel, "single/socket", "single/binding", true);
 
         var spear = shovel.copy();
         IModularItem.putModuleInSlot(spear, "single/head", "single/spearhead", "single/spearhead_material", "spearhead/iron");
         IModularItem.updateIdentifier(spear);
         socket(player, spear, "single/socket", "single/binding", true);
+        var cutter = sword.copy();
+        part(cutter, "sword/blade", "sword/stonecutter", "stonecutter/stonecutter");
+        socket(player, cutter, "sword/socket", "sword/guard", true);
+
+        var twoHeads = new ItemStack(BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("tetra", "modular_double")));
+        part(twoHeads, "double/handle", "double/basic_handle", "basic_handle/stick");
+        part(twoHeads, "double/head_left", "double/basic_pickaxe_left", "basic_pickaxe/iron");
+        part(twoHeads, "double/head_right", "double/basic_pickaxe_right", "basic_pickaxe/iron");
+        socket(player, twoHeads, "double/socket", "double/binding", true);
+        part(twoHeads, "double/head_right", "double/basic_hammer_right", "basic_hammer/iron");
+        socket(player, twoHeads, "double/socket", "double/binding", true);
+        System.out.println("TETRA121_MODULAR_TOOLS_OK: shovel, stonecutter, double pickaxe, pickaxe and hammer");
         if (moreMaterials) {
             var rapier = sword.copy();
             var module = "sword/more_mod_tetra/mmt_rapier";
@@ -82,8 +90,51 @@ public final class TetraGuardianSmoke {
             check(head != null && head.getUnlocalizedName().equals(module), "missing More Mod Tetra rapier");
             armed = socket(player, rapier, "sword/socket", "sword/guard", true);
         }
+        if (BuiltInRegistries.ITEM.containsKey(ResourceLocation.fromNamespaceAndPath("tetra", "sword_renew"))) {
+            var saved = journeySword();
+            armed = socket(player, saved, "sword/socket", "sword/guard", true);
+            part(saved, "sword/guard", "sword/socket", "sword_socket/purified_undead_pure_touch");
+            saved.setDamageValue(1);
+            check(GuardianWaveCombat.canEmit(saved), "previously socketed Journey sword without reassembly");
+            System.out.println("TETRA121_EXISTING_SOCKET_OK");
+        }
+        if (BuiltInRegistries.ITEM.containsKey(ResourceLocation.fromNamespaceAndPath("tetra", "single_gai"))) {
+            journeyHeads(player);
+        }
         System.out.println("TETRA_GUARDIAN_SOCKET_OK: actual schematic, 1 integrity, 512 durability, 2 attack, spear, shovel, broken, replacement, MMT=" + moreMaterials);
         return armed;
+    }
+
+    public static ItemStack shovel() {
+        var shovel = new ItemStack(BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("tetra", "modular_single")));
+        part(shovel, "single/head", "single/basic_shovel", "basic_shovel/iron");
+        part(shovel, "single/handle", "single/basic_handle", "basic_handle/stick");
+        return shovel;
+    }
+
+    /** Reconstruct the registered layout of the Journey of Forging sword without using a player's save. */
+    public static ItemStack journeySword() {
+        var sword = new ItemStack(BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("tetra", "sword_renew")));
+        part(sword, "sword/blade", "sword/bastard_blade", "bastard_blade/diamond");
+        part(sword, "sword/hilt", "sword/basic_hilt", "basic_hilt/bone_handle");
+        part(sword, "sword/pommel", "sword/decorative_pommel", "decorative_pommel/diamond");
+        part(sword, "sword/fuller", "sword/howling", "howling/iron");
+        return sword;
+    }
+
+    private static void journeyHeads(ServerPlayer player) {
+        var single = new ItemStack(BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("tetra", "single_gai")));
+        part(single, "single/handle", "single/basic_handle", "basic_handle/iron");
+        part(single, "single/head", "single/basic_shovel", "basic_shovel/iron");
+        socket(player, single, "single/socket_1", "single/binding_1", true);
+        part(single, "single/head", "single/halberd_head", "halberd_head/iron");
+        socket(player, single, "single/socket_2", "single/binding_2", true);
+        System.out.println("TETRA121_JOURNEY_HEADS_OK: shovel active in first socket, halberd active in second socket");
+    }
+
+    private static void part(ItemStack item, String slot, String module, String variant) {
+        IModularItem.putModuleInSlot(item, slot, module, module + "_material", variant);
+        IModularItem.updateIdentifier(item);
     }
 
     private TetraGuardianSmoke() {}
