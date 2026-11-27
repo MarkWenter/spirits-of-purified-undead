@@ -262,6 +262,7 @@ public final class PurificationServerSmoke {
                 player.getInventory().clearContent();
             }
             try {
+                if (Boolean.getBoolean("purified_undead.breathgoldSmoke")) BreathgoldChecks.verify(level);
                 dev.purifiedundead.blightedrain.BlightedRainSmoke.run(server);
                 dev.purifiedundead.blightedrain.BlightedMobSmoke.run(server);
             } catch (Exception rainFailure) {

@@ -369,5 +369,13 @@
   "message.purified_undead.ferin.disabled": "Ferin assist disabled",
   "message.purified_undead.guardian_movement.enabled": "Double jump and air dash enabled",
   "message.purified_undead.guardian_movement.disabled": "Double jump and air dash disabled",
-  "command.purified_undead.reload_sync_pending": "Recipes committed; %s player(s) await synchronization. Retrying automatically."
+  "command.purified_undead.reload_sync_pending": "Recipes committed; %s player(s) await synchronization. Retrying automatically.",
+  "block.purified_undead.breathgold_ore": "Breathgold Ore",
+  "item.purified_undead.breathgold": "Breathgold",
+  "item.purified_undead.breathgold_sword": "Breathgold Sword",
+  "item.purified_undead.breathgold_axe": "Breathgold Axe",
+  "item.purified_undead.breathgold_hoe": "Breathgold Hoe",
+  "item.purified_undead.breathgold_pickaxe": "Breathgold Pickaxe",
+  "item.purified_undead.breathgold_shovel": "Breathgold Shovel",
+  "tooltip.purified_undead.breathgold": "The blight is breathing."
 }

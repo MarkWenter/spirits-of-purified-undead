@@ -369,5 +369,13 @@
   "message.purified_undead.ferin.disabled": "费林协同攻击已关闭",
   "message.purified_undead.guardian_movement.enabled": "二段跳与空中冲刺已开启",
   "message.purified_undead.guardian_movement.disabled": "二段跳与空中冲刺已关闭",
-  "command.purified_undead.reload_sync_pending": "配方已生效；仍有 %s 位玩家等待同步，将自动重试。"
+  "command.purified_undead.reload_sync_pending": "配方已生效；仍有 %s 位玩家等待同步，将自动重试。",
+  "block.purified_undead.breathgold_ore": "息金矿",
+  "item.purified_undead.breathgold": "息金",
+  "item.purified_undead.breathgold_sword": "息金剑",
+  "item.purified_undead.breathgold_axe": "息金斧",
+  "item.purified_undead.breathgold_hoe": "息金锄",
+  "item.purified_undead.breathgold_pickaxe": "息金镐",
+  "item.purified_undead.breathgold_shovel": "息金锹",
+  "tooltip.purified_undead.breathgold": "污秽正在呼吸。"
 }

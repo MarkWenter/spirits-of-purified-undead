@@ -37,6 +37,10 @@ public final class BlightedRainData extends SavedData {
     private int loadedPause = -1;
     private final java.util.Set<Long> activeBeacons = new java.util.HashSet<>();
 
+    public boolean isActive() {
+        return model.phase() == BlightedRainModel.Phase.ACTIVE;
+    }
+
     public boolean suppressed() {
         return !activeBeacons.isEmpty();
     }

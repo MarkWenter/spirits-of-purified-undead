@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "purified_undead:blighted_guardian"
+    "purified_undead:blighted_guardian",
+    "purified_undead:breathgold_sword"
   ]
 }
