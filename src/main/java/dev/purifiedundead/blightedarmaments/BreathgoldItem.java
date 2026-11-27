@@ -8,7 +8,7 @@ import java.util.List;
 
 public final class BreathgoldItem extends Item {
     public BreathgoldItem() {
-        super(new Properties());
+        super(new Properties().stacksTo(BreathgoldSettings.MATERIAL_STACK));
     }
 
     @Override

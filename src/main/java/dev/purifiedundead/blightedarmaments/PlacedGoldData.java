@@ -14,7 +14,8 @@ import java.util.Map;
 
 /** Only player-placed normal gold ore is tracked. Exposure is continuous loaded time. */
 public final class PlacedGoldData extends SavedData {
-    public static final int REQUIRED_TICKS = 200;
+    /** Historical default retained for source compatibility. */
+    @Deprecated public static final int REQUIRED_TICKS = 200;
     private final Map<Long, Integer> positions = new HashMap<>();
 
     public static PlacedGoldData get(ServerLevel level) {
@@ -63,7 +64,7 @@ public final class PlacedGoldData extends SavedData {
             }
             int progress =
                     active && RainExposure.exposedAt(level, pos.above()) ? entry.getValue() + 1 : 0;
-            if (progress >= REQUIRED_TICKS) {
+            if (progress >= BreathgoldSettings.CONVERSION_TICKS) {
                 level.setBlockAndUpdate(pos, BreathgoldContent.ORE.get().defaultBlockState());
                 it.remove();
                 setDirty();

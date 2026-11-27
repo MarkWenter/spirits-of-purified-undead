@@ -1,6 +1,8 @@
 package dev.purifiedundead.blightedarmaments;
 
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.*;
@@ -18,29 +20,37 @@ public final class BreathgoldContent {
                     "breathgold_ore",
                     () -> new Block(BlockBehaviour.Properties.copy(Blocks.GOLD_ORE)));
     public static final RegistryObject<Item> ORE_ITEM =
-            ITEMS.register("breathgold_ore", () -> new BlockItem(ORE.get(), new Item.Properties()));
+            ITEMS.register(
+                    "breathgold_ore",
+                    () ->
+                            new BlockItem(
+                                    ORE.get(),
+                                    new Item.Properties().stacksTo(BreathgoldSettings.ORE_STACK)));
     public static final RegistryObject<Item> MATERIAL =
             ITEMS.register("breathgold", BreathgoldItem::new);
+    private static final TagKey<Item> REPAIR_MATERIALS =
+            TagKey.create(Registries.ITEM, ResourceLocation.parse("purified_undead:breathgold_repair_materials"));
+
     public static final Tier TIER =
             new Tier() {
                 public int getUses() {
-                    return 375;
+                    return BreathgoldSettings.DURABILITY;
                 }
 
                 public float getSpeed() {
-                    return 6F;
+                    return BreathgoldSettings.MINING_SPEED;
                 }
 
                 public float getAttackDamageBonus() {
-                    return 2F;
+                    return BreathgoldSettings.TIER_DAMAGE;
                 }
 
                 public int getEnchantmentValue() {
-                    return 14;
+                    return BreathgoldSettings.ENCHANTABILITY;
                 }
 
                 public Ingredient getRepairIngredient() {
-                    return Ingredient.of(MATERIAL.get());
+                    return Ingredient.of(REPAIR_MATERIALS);
                 }
 
                 public int getLevel() {
@@ -49,21 +59,49 @@ public final class BreathgoldContent {
             };
     public static final RegistryObject<Item> SWORD =
             ITEMS.register(
-                    "breathgold_sword", () -> new SwordItem(TIER, 4, -2.4F, new Item.Properties()));
+                    "breathgold_sword",
+                    () ->
+                            new SwordItem(
+                                    TIER,
+                                    BreathgoldSettings.damage("sword", 4),
+                                    BreathgoldSettings.attackSpeed("sword", -2.4F),
+                                    new Item.Properties()));
     public static final RegistryObject<Item> AXE =
             ITEMS.register(
-                    "breathgold_axe", () -> new AxeItem(TIER, 6, -3.1F, new Item.Properties()));
+                    "breathgold_axe",
+                    () ->
+                            new AxeItem(
+                                    TIER,
+                                    BreathgoldSettings.damage("axe", 6),
+                                    BreathgoldSettings.attackSpeed("axe", -3.1F),
+                                    new Item.Properties()));
     public static final RegistryObject<Item> HOE =
             ITEMS.register(
-                    "breathgold_hoe", () -> new HoeItem(TIER, -2, -1.0F, new Item.Properties()));
+                    "breathgold_hoe",
+                    () ->
+                            new HoeItem(
+                                    TIER,
+                                    BreathgoldSettings.damage("hoe", -2),
+                                    BreathgoldSettings.attackSpeed("hoe", -1.0F),
+                                    new Item.Properties()));
     public static final RegistryObject<Item> PICKAXE =
             ITEMS.register(
                     "breathgold_pickaxe",
-                    () -> new PickaxeItem(TIER, 1, -2.8F, new Item.Properties()));
+                    () ->
+                            new PickaxeItem(
+                                    TIER,
+                                    BreathgoldSettings.damage("pickaxe", 1),
+                                    BreathgoldSettings.attackSpeed("pickaxe", -2.8F),
+                                    new Item.Properties()));
     public static final RegistryObject<Item> SHOVEL =
             ITEMS.register(
                     "breathgold_shovel",
-                    () -> new ShovelItem(TIER, 1.5F, -3.0F, new Item.Properties()));
+                    () ->
+                            new ShovelItem(
+                                    TIER,
+                                    BreathgoldSettings.shovelDamage(),
+                                    BreathgoldSettings.attackSpeed("shovel", -3.0F),
+                                    new Item.Properties()));
 
     public static void creative(java.util.function.Consumer<Item> output) {
         ITEMS.getEntries().forEach(entry -> output.accept(entry.get()));

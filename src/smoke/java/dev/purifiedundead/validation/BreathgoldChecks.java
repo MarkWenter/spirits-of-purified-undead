@@ -26,8 +26,23 @@ public final class BreathgoldChecks {
         checks++;
     }
 
+    private static BlockPos exposedTestSite(ServerLevel level) {
+        int y = level.getMaxBuildHeight() - 8;
+        for (int i = 0; i < 32; i++) {
+            var candidate = new BlockPos(8 + i * 128, y, 8);
+            if (RainExposure.precipitation(level, candidate.above())) return candidate;
+        }
+        throw new IllegalStateException("No precipitating test biome");
+    }
+
     public static void verify(ServerLevel level) throws Exception {
-        var pos = new BlockPos(8, 100, 8);
+        int required = Integer.getInteger("purified_undead.expectedBreathgoldTicks", 200);
+        int durability = Integer.getInteger("purified_undead.expectedBreathgoldDurability", 375);
+        check(
+                dev.purifiedundead.api.PurifiedUndeadScripts.breathgoldConversionTicks()
+                        == required,
+                "script threshold");
+        var pos = exposedTestSite(level);
         var natural = pos.east(2);
         level.getChunkAt(pos);
         level.setBlockAndUpdate(pos, Blocks.GOLD_ORE.defaultBlockState());
@@ -54,14 +69,14 @@ public final class BreathgoldChecks {
         model.advance(level.getGameTime() + 300);
         check(BlightedRainData.get(level).isActive(), "real base ACTIVE bridge");
         check(RainExposure.exposedAt(level, pos.above()), "test ore is exposed");
-        for (int i = 0; i < 199; i++)
+        for (int i = 0; i < required - 1; i++)
             net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(
                     new net.minecraftforge.event.TickEvent.LevelTickEvent(
                             net.minecraftforge.fml.LogicalSide.SERVER,
                             net.minecraftforge.event.TickEvent.Phase.END,
                             level,
                             () -> true));
-        check(level.getBlockState(pos).is(Blocks.GOLD_ORE), "199 ticks must not convert");
+        check(level.getBlockState(pos).is(Blocks.GOLD_ORE), "before threshold must not convert");
         net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(
                 new net.minecraftforge.event.TickEvent.LevelTickEvent(
                         net.minecraftforge.fml.LogicalSide.SERVER,
@@ -70,32 +85,32 @@ public final class BreathgoldChecks {
                         () -> true));
         check(
                 level.getBlockState(pos).is(BreathgoldContent.ORE.get()),
-                "200 ticks converts via real place/tick subscribers");
+                "threshold converts via real place/tick subscribers");
         check(
                 level.getBlockState(natural).is(Blocks.GOLD_ORE),
                 "unplaced natural gold is untouched");
         level.setBlockAndUpdate(pos, Blocks.GOLD_ORE.defaultBlockState());
         data.placed(pos);
-        for (int i = 0; i < 100; i++) data.tick(level);
+        for (int i = 0; i < required / 2; i++) data.tick(level);
         level.setBlockAndUpdate(pos.above(), Blocks.STONE.defaultBlockState());
         data.tick(level);
         for (int i = 0; i < 210; i++) data.tick(level);
         check(level.getBlockState(pos).is(Blocks.GOLD_ORE), "roof blocks conversion");
         level.removeBlock(pos.above(), false);
-        for (int i = 0; i < 100; i++) data.tick(level);
+        for (int i = 0; i < required / 2; i++) data.tick(level);
         check(level.getBlockState(pos).is(Blocks.GOLD_ORE), "shelter resets exposure");
         model.stop(level.getGameTime());
         data.tick(level);
         model.reset();
         model.start(level.getGameTime(), 6000);
         model.advance(level.getGameTime() + 300);
-        for (int i = 0; i < 100; i++) data.tick(level);
+        for (int i = 0; i < required / 2; i++) data.tick(level);
         check(
                 level.getBlockState(pos).is(Blocks.GOLD_ORE),
                 "rain phase interruption resets exposure");
         CompoundTag saved = data.save(new CompoundTag());
         var reloaded = PlacedGoldData.load(saved);
-        for (int i = 0; i < 199; i++) reloaded.tick(level);
+        for (int i = 0; i < required - 1; i++) reloaded.tick(level);
         check(
                 level.getBlockState(pos).is(Blocks.GOLD_ORE),
                 "saved placement retained but partial progress reset");
@@ -163,16 +178,21 @@ public final class BreathgoldChecks {
                     BreathgoldContent.PICKAXE.get(),
                     BreathgoldContent.SHOVEL.get()
                 }) {
-            check(new ItemStack(item).getMaxDamage() == 375, "durability 375: " + item);
+            check(
+                    new ItemStack(item).getMaxDamage() == durability,
+                    "configured durability: " + item);
             check(
                     item.isValidRepairItem(
                             new ItemStack(item), new ItemStack(BreathgoldContent.MATERIAL.get())),
                     "material repairs tool");
         }
+        check(BreathgoldContent.TIER.getRepairIngredient().test(new ItemStack(Items.COPPER_INGOT))
+                        == Boolean.getBoolean("purified_undead.expectedCopperRepair"), "pack repair tag");
+        int swordDamage = Integer.getInteger("purified_undead.expectedSwordDamage", 6);
         check(BreathgoldContent.TIER.getSpeed() == 6F, "iron mining speed");
         check(
-                ((SwordItem) BreathgoldContent.SWORD.get()).getDamage() == 6F,
-                "sword damage is iron + 1");
+                ((SwordItem) BreathgoldContent.SWORD.get()).getDamage() == swordDamage,
+                "configured sword damage");
         String[] kinds = {"sword", "axe", "hoe", "pickaxe", "shovel"};
         String[][] patterns = {
             {"M  ", "M  ", "S  "},
@@ -261,8 +281,10 @@ public final class BreathgoldChecks {
         level.removeBlock(natural, false);
         LogUtils.getLogger()
                 .info(
-                        "BREATHGOLD_SERVER_OK checks={} conversion=200 fatigue=true fortune=true"
-                            + " silk=true recipes=5 durability=375",
-                        checks);
+                        "BREATHGOLD_SERVER_OK checks={} conversion={} fatigue=true fortune=true"
+                                + " silk=true recipes=5 durability={}",
+                        checks,
+                        required,
+                        durability);
     }
 }

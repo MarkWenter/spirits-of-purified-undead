@@ -50,3 +50,7 @@ public static void onProgressChanged(ProgressChangedEvent event) {
 - 原版合成／锻造配方和标签仍可以数据包添加；Forge 1.20.1 使用复数 `recipes`／`tags/entity_types` 等目录，NeoForge 1.21.1 使用对应单数目录。
 
 此 v1 提供任务奖励、进度观察和既有数据兼容入口；没有开放动态扩充八重污秽、契约槽位定义或费林连段注册器。新增战士角色及全新战斗行为仍应由附属模组注册自己的物品和事件，并在后续接口版本中单独设计；不要修改现有战士枚举或覆盖存档格式。升级本体前建议用独立开发实例验证附属模组。
+
+## KubeJS
+
+秽鬼武装第二部分将进度 API v1 接入两版 KubeJS，并提供 `PurifiedUndeadScripts` 的契约装备、战士、追忆、雨状态、息金阈值与铸造匹配查询。脚本目录、两版原生事件订阅示例和配置范围见[息金配置与 KubeJS](blighted-armaments-update/PART_2.md)。
