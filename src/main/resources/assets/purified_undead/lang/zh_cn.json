@@ -1,4 +1,12 @@
 {
+  "tetra.material.purified_undead_breathgold": "息金",
+  "tetra.material.purified_undead_breathgold.prefix": "息金",
+  "tetra.material.purified_undead_purified_arcsteel": "净化弧钢",
+  "tetra.material.purified_undead_purified_arcsteel.prefix": "净化弧钢",
+  "purified_undead.effect.blighted_breath.name": "秽息",
+  "purified_undead.effect.blighted_breath.tooltip": "置身污秽之雨时，每 5 秒修复手持或穿戴物品最大耐久的 1%（至少 1 点）。",
+  "purified_undead.effect.immaculate.name": "无垢",
+  "purified_undead.effect.immaculate.tooltip": "直接近战命中会抹除目标的一项增益，并永久阻止该目标再次获得它。",
   "purified_undead.tetra.pure_touch_socket": "Tetra 宝石镶嵌：消耗 1 完整度，耐久 +512，攻击伤害 +2。主手挥动镶嵌后的物品可释放「秽鬼守护」剑气。",
   "tetra.material.purified_undead_pure_touch": "纯净触碰",
   "tetra.material.purified_undead_pure_touch.prefix": "纯净",

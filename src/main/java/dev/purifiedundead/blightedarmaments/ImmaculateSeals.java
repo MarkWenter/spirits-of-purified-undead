@@ -28,7 +28,9 @@ public final class ImmaculateSeals {
                 || !(event.getAmount() > 0)
                 || !(source.getDirectEntity() instanceof LivingEntity attacker)
                 || attacker != source.getEntity()
-                || !attacker.getMainHandItem().is(ImmaculateTools.SWORD.get())) return;
+                || !(attacker.getMainHandItem().is(ImmaculateTools.SWORD.get())
+                        || (net.minecraftforge.fml.ModList.get().isLoaded("tetra")
+                                && dev.purifiedundead.compat.TetraMaterialTraits.immaculate(attacker.getMainHandItem())))) return;
         if (source.is(DamageTypes.PLAYER_ATTACK)
                 || source.is(DamageTypes.MOB_ATTACK)
                 || source.is(DamageTypes.MOB_ATTACK_NO_AGGRO)) strike(target);

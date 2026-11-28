@@ -1,0 +1,34 @@
+{
+  "key": "purified_undead_breathgold",
+  "category": "metal",
+  "primary": 3,
+  "secondary": 4.6,
+  "tertiary": 1,
+  "durability": 32,
+  "integrityCost": 2,
+  "integrityGain": 3,
+  "magicCapacity": 132,
+  "toolLevel": "minecraft:gold",
+  "toolEfficiency": 12,
+  "tints": {
+    "glyph": "gold_glyph",
+    "texture": "gold"
+  },
+  "textures": [
+    "shiny",
+    "metal",
+    "default"
+  ],
+  "material": {
+    "items": [
+      "purified_undead:breathgold_ingot"
+    ]
+  },
+  "effects": {
+    "stabilizing": 15,
+    "purified_undead:blighted_breath": 1
+  },
+  "requiredTools": {
+    "hammer_dig": "minecraft:wood"
+  }
+}

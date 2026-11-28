@@ -1,4 +1,12 @@
 {
+  "tetra.material.purified_undead_breathgold": "Breathgold",
+  "tetra.material.purified_undead_breathgold.prefix": "Breathgold",
+  "tetra.material.purified_undead_purified_arcsteel": "Purified Arcsteel",
+  "tetra.material.purified_undead_purified_arcsteel.prefix": "Purified Arcsteel",
+  "purified_undead.effect.blighted_breath.name": "Blighted Breath",
+  "purified_undead.effect.blighted_breath.tooltip": "While exposed to Blighted Rain, restores 1% of maximum durability (at least 1) every 5 seconds when held or worn.",
+  "purified_undead.effect.immaculate.name": "Immaculate",
+  "purified_undead.effect.immaculate.tooltip": "A direct melee hit removes one beneficial effect and permanently seals it on that target.",
   "purified_undead.tetra.pure_touch_socket": "Tetra socket gem: costs 1 integrity, +512 durability, +2 attack damage. Swing the socketed item in your main hand to release a Blighted Guardian wave.",
   "tetra.material.purified_undead_pure_touch": "Pure Touch",
   "tetra.material.purified_undead_pure_touch.prefix": "Purified",

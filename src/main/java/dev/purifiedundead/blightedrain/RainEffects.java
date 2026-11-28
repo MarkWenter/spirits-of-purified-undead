@@ -77,6 +77,8 @@ public final class RainEffects {
                     && !player.isSpectator()
                     && player.tickCount % 20 == 0
                     && RainExposure.exposed(player)) {
+                if (player.tickCount % 100 == 0 && net.minecraftforge.fml.ModList.get().isLoaded("tetra"))
+                    dev.purifiedundead.compat.TetraMaterialTraits.repairEquipment(player);
                 player.addEffect(new MobEffectInstance(MobEffects.DIG_SPEED, 200, 0));
                 player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 200, 0));
                 player.addEffect(
