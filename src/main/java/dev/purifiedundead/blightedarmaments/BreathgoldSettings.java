@@ -20,8 +20,28 @@ public final class BreathgoldSettings {
     static final int ORE_STACK = integer("oreStackSize", 64, 1, 64);
     static final int DURABILITY = integer("toolDurability", 375, 1, 1000000);
     static final float MINING_SPEED = decimal("miningSpeed", 6, 0, 1024);
-    static final int ENCHANTABILITY = integer("enchantability", 14, 0, 255);
+    static final int ENCHANTABILITY = integer("toolEnchantability", legacyToolEnchantability(), 0, 255);
     static final float TIER_DAMAGE = decimal("tierDamageBonus", 2, 0, 1024);
+
+    private static int legacyToolEnchantability() {
+        int old = integer("enchantability", 14, 0, 255);
+        return old == 14 ? 22 : old;
+    }
+
+    static final int ARMOR_ENCHANTABILITY = integer("armorEnchantability", 25, 0, 255);
+    static final int INGOT_STACK = integer("ingotStackSize", 64, 1, 64);
+
+    static final int HELMET_DURABILITY = integer("helmet.durability", 248, 1, 1000000);
+    static final int HELMET_DEFENSE = integer("helmet.defense", 2, 0, 30);
+
+    static final int CHESTPLATE_DURABILITY = integer("chestplate.durability", 360, 1, 1000000);
+    static final int CHESTPLATE_DEFENSE = integer("chestplate.defense", 6, 0, 30);
+
+    static final int LEGGINGS_DURABILITY = integer("leggings.durability", 338, 1, 1000000);
+    static final int LEGGINGS_DEFENSE = integer("leggings.defense", 5, 0, 30);
+
+    static final int BOOTS_DURABILITY = integer("boots.durability", 293, 1, 1000000);
+    static final int BOOTS_DEFENSE = integer("boots.defense", 2, 0, 30);
 
     private BreathgoldSettings() {}
 

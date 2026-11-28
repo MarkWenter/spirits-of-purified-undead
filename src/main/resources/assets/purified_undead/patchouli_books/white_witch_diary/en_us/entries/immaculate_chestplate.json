@@ -6,7 +6,7 @@
   "pages": [
     {
       "type": "patchouli:spotlight",
-      "text": "将下界合金胸甲、净化弧钢锻造模板、净化弧钢锻造获得。",
+      "text": "将息金胸甲、净化弧钢锻造模板、净化弧钢锻造获得。",
       "item": "purified_undead:immaculate_chestplate",
       "title": "无垢胸甲",
       "link_recipe": false

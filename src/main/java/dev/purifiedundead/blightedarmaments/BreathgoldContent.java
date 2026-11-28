@@ -28,8 +28,15 @@ public final class BreathgoldContent {
                                     new Item.Properties().stacksTo(BreathgoldSettings.ORE_STACK)));
     public static final RegistryObject<Item> MATERIAL =
             ITEMS.register("breathgold", BreathgoldItem::new);
+    public static final RegistryObject<Item> INGOT = ITEMS.register("breathgold_ingot", () -> new Item(new Item.Properties().stacksTo(BreathgoldSettings.INGOT_STACK)));
+    public static final RegistryObject<Item> HELMET = ITEMS.register("breathgold_helmet", () -> new BreathgoldArmor(ArmorItem.Type.HELMET));
+    public static final RegistryObject<Item> CHESTPLATE = ITEMS.register("breathgold_chestplate", () -> new BreathgoldArmor(ArmorItem.Type.CHESTPLATE));
+    public static final RegistryObject<Item> LEGGINGS = ITEMS.register("breathgold_leggings", () -> new BreathgoldArmor(ArmorItem.Type.LEGGINGS));
+    public static final RegistryObject<Item> BOOTS = ITEMS.register("breathgold_boots", () -> new BreathgoldArmor(ArmorItem.Type.BOOTS));
     private static final TagKey<Item> REPAIR_MATERIALS =
             TagKey.create(Registries.ITEM, ResourceLocation.parse("purified_undead:breathgold_repair_materials"));
+
+    static Ingredient repairMaterial() { return Ingredient.of(REPAIR_MATERIALS); }
 
     public static final Tier TIER =
             new Tier() {
@@ -50,7 +57,7 @@ public final class BreathgoldContent {
                 }
 
                 public Ingredient getRepairIngredient() {
-                    return Ingredient.of(REPAIR_MATERIALS);
+                    return repairMaterial();
                 }
 
                 public int getLevel() {

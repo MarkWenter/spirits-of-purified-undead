@@ -6,7 +6,7 @@
   "pages": [
     {
       "type": "patchouli:spotlight",
-      "text": "将下界合金头盔、净化弧钢锻造模板、净化弧钢锻造获得。",
+      "text": "将息金头盔、净化弧钢锻造模板、净化弧钢锻造获得。",
       "item": "purified_undead:immaculate_helmet",
       "title": "无垢头甲",
       "link_recipe": false

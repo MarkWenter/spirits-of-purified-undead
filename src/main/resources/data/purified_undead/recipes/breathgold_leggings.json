@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "MMM",
+    "M M",
+    "M M"
+  ],
+  "key": {
+    "M": {
+      "item": "purified_undead:breathgold_ingot"
+    }
+  },
+  "result": {
+    "item": "purified_undead:breathgold_leggings",
+    "count": 1
+  }
+}

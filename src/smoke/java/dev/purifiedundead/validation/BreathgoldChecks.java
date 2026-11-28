@@ -193,13 +193,15 @@ public final class BreathgoldChecks {
         check(
                 ((SwordItem) BreathgoldContent.SWORD.get()).getDamage() == swordDamage,
                 "configured sword damage");
-        String[] kinds = {"sword", "axe", "hoe", "pickaxe", "shovel"};
+        String[] kinds = {"sword", "axe", "hoe", "pickaxe", "shovel", "helmet", "chestplate", "leggings", "boots", "ingot"};
         String[][] patterns = {
             {"M  ", "M  ", "S  "},
             {"MM ", "MS ", " S "},
             {"MM ", " S ", " S "},
             {"MMM", " S ", " S "},
-            {"M  ", "S  ", "S  "}
+            {"M  ", "S  ", "S  "},
+            {"MMM", "M M", "   "}, {"M M", "MMM", "MMM"}, {"MMM", "M M", "M M"},
+            {"M M", "M M", "   "}, {"GGG", "GBG", "GGG"}
         };
         for (int k = 0; k < kinds.length; k++) {
             String kind = kinds[k];
@@ -225,8 +227,11 @@ public final class BreathgoldChecks {
                     input.setItem(
                             slot++,
                             c == 'M'
-                                    ? new ItemStack(BreathgoldContent.MATERIAL.get())
+                                    ? new ItemStack(BreathgoldContent.INGOT.get())
+                                    : c == 'G' ? new ItemStack(Items.GOLD_INGOT)
+                                    : c == 'B' ? new ItemStack(dev.purifiedundead.content.ModItems.BLIGHTED_SPIRIT.get())
                                     : c == 'S' ? new ItemStack(Items.STICK) : ItemStack.EMPTY);
+            check(craft.getResultItem(level.registryAccess()).getCount() == (kind.equals("ingot") ? 8 : 1), "recipe count " + kind);
             check(craft.matches(input, level), "recipe matches vanilla layout: " + kind);
             check(
                     craft.getResultItem(level.registryAccess())
@@ -235,6 +240,28 @@ public final class BreathgoldChecks {
                                             new ResourceLocation(
                                                     "purified_undead:breathgold_" + kind))),
                     "recipe output: " + kind);
+        }
+
+
+        for (var piece : new Item[]{BreathgoldContent.HELMET.get(), BreathgoldContent.CHESTPLATE.get(),
+                BreathgoldContent.LEGGINGS.get(), BreathgoldContent.BOOTS.get()}) {
+            var armor = (ArmorItem) piece;
+            check(armor.getEnchantmentValue() == 25, "gold armor enchantability");
+            check(armor.isValidRepairItem(new ItemStack(piece), new ItemStack(BreathgoldContent.INGOT.get())),
+                    "ingot repairs armor");
+            String slot = armor.getType().getName();
+            var smith = (SmithingRecipe) level.getRecipeManager()
+                    .byKey(new ResourceLocation("purified_undead:immaculate_" + slot)).orElseThrow();
+            check(smith.isBaseIngredient(new ItemStack(piece)), "smithing base " + slot);
+        }
+        check(BreathgoldContent.TIER.getEnchantmentValue() == 22, "gold tool enchantability");
+        for (String method : new String[]{"smelting", "blasting"}) {
+            var cook = (AbstractCookingRecipe) level.getRecipeManager()
+                    .byKey(new ResourceLocation("purified_undead:breathgold_ingot_from_" + method)).orElseThrow();
+            check(cook.getIngredients().get(0).test(new ItemStack(BreathgoldContent.MATERIAL.get()))
+                    && cook.getResultItem(level.registryAccess()).is(BreathgoldContent.INGOT.get())
+                    && cook.getCookingTime() == (method.equals("smelting") ? 200 : 100)
+                    && cook.getExperience() == 1F, "gold cooking recipe " + method);
         }
 
         // Cancellation and breaking must not leave a new conversion candidate.
@@ -282,7 +309,7 @@ public final class BreathgoldChecks {
         LogUtils.getLogger()
                 .info(
                         "BREATHGOLD_SERVER_OK checks={} conversion={} fatigue=true fortune=true"
-                                + " silk=true recipes=5 durability={}",
+                                + " silk=true crafting=10 cooking=2 smithing=4 durability={}",
                         checks,
                         required,
                         durability);

@@ -377,5 +377,10 @@
   "item.purified_undead.breathgold_hoe": "Breathgold Hoe",
   "item.purified_undead.breathgold_pickaxe": "Breathgold Pickaxe",
   "item.purified_undead.breathgold_shovel": "Breathgold Shovel",
-  "tooltip.purified_undead.breathgold": "The blight is breathing."
+  "tooltip.purified_undead.breathgold": "The blight is breathing.",
+  "item.purified_undead.breathgold_ingot": "Breathgold Ingot",
+  "item.purified_undead.breathgold_helmet": "Breathgold Helmet",
+  "item.purified_undead.breathgold_chestplate": "Breathgold Chestplate",
+  "item.purified_undead.breathgold_leggings": "Breathgold Leggings",
+  "item.purified_undead.breathgold_boots": "Breathgold Boots"
 }

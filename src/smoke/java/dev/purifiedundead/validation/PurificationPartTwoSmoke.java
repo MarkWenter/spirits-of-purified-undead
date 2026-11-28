@@ -81,7 +81,11 @@ public final class PurificationPartTwoSmoke {
                     new ItemStack(
                             net.minecraft.core.registries.BuiltInRegistries.ITEM.get(
                                     net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(
-                                            "minecraft", "netherite_" + types[i])));
+                                            "purified_undead", "breathgold_" + types[i])));
+            int[] breathgoldDurability = {248, 360, 338, 293};
+            int[] breathgoldDefense = {2, 6, 5, 2};
+            check(base.getMaxDamage() == breathgoldDurability[i], "breathgold durability " + types[i]);
+            check(((ArmorItem) base.getItem()).getDefense() == breathgoldDefense[i], "breathgold defense " + types[i]);
             base.setDamageValue(10);
             base.setHoverName(Component.literal("Preserved"));
             var recipe =

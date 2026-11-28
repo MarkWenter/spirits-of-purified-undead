@@ -377,5 +377,10 @@
   "item.purified_undead.breathgold_hoe": "息金锄",
   "item.purified_undead.breathgold_pickaxe": "息金镐",
   "item.purified_undead.breathgold_shovel": "息金锹",
-  "tooltip.purified_undead.breathgold": "污秽正在呼吸。"
+  "tooltip.purified_undead.breathgold": "污秽正在呼吸。",
+  "item.purified_undead.breathgold_ingot": "息金锭",
+  "item.purified_undead.breathgold_helmet": "息金头盔",
+  "item.purified_undead.breathgold_chestplate": "息金胸甲",
+  "item.purified_undead.breathgold_leggings": "息金腿甲",
+  "item.purified_undead.breathgold_boots": "息金靴子"
 }

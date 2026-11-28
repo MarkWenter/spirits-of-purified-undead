@@ -30,23 +30,29 @@ public final class BreathgoldPreviewScreen extends Screen {
                 java.util.List.of(
                         BreathgoldContent.ORE_ITEM.get(),
                         BreathgoldContent.MATERIAL.get(),
+                        BreathgoldContent.INGOT.get(),
                         BreathgoldContent.SWORD.get(),
                         BreathgoldContent.AXE.get(),
                         BreathgoldContent.HOE.get(),
                         BreathgoldContent.PICKAXE.get(),
-                        BreathgoldContent.SHOVEL.get());
-        int start = (width - 7 * 42) / 2;
+                        BreathgoldContent.SHOVEL.get(),
+                        BreathgoldContent.HELMET.get(),
+                        BreathgoldContent.CHESTPLATE.get(),
+                        BreathgoldContent.LEGGINGS.get(),
+                        BreathgoldContent.BOOTS.get());
+        int start = (width - 6 * 42) / 2;
         for (int i = 0; i < items.size(); i++) {
-            int x = start + i * 42;
-            g.fill(x - 2, 65, x + 36, 103, 0xff504a50);
+            int x = start + (i % 6) * 42;
+            int y = 42 + 43 * (i / 6);
+            g.fill(x - 2, y - 3, x + 36, y + 35, 0xff504a50);
             g.pose().pushPose();
-            g.pose().translate(x, 68, 0);
+            g.pose().translate(x, y, 0);
             g.pose().scale(2, 2, 1);
             g.renderItem(new ItemStack(items.get(i)), 0, 0);
             g.pose().popPose();
         }
         g.drawCenteredString(
-                font, "32 x 32 textures | iron tier | 375 durability", width / 2, 125, 0xffddd5ce);
+                font, "Breathgold ingot, tools and armor", width / 2, 125, 0xffddd5ce);
         g.drawCenteredString(
                 font,
                 Component.translatable("tooltip.purified_undead.breathgold"),
@@ -57,13 +63,13 @@ public final class BreathgoldPreviewScreen extends Screen {
             g.flush();
             Screenshot.grab(
                     minecraft.gameDirectory,
-                    "breathgold-0.2.0.png",
+                    "breathgold-armaments-3.png",
                     minecraft.getMainRenderTarget(),
                     message -> {
                         captured = true;
                         LogUtils.getLogger()
                                 .info(
-                                        "BREATHGOLD_CLIENT_OK models=7 screenshot={}",
+                                        "BREATHGOLD_CLIENT_OK models=12 screenshot={}",
                                         message.getString());
                     });
         }

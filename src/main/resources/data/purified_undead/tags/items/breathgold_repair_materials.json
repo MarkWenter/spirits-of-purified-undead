@@ -1,4 +1,7 @@
 {
   "replace": false,
-  "values": ["purified_undead:breathgold"]
+  "values": [
+    "purified_undead:breathgold",
+    "purified_undead:breathgold_ingot"
+  ]
 }

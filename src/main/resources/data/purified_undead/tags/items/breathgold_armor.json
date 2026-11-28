@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "purified_undead:breathgold_helmet",
+    "purified_undead:breathgold_chestplate",
+    "purified_undead:breathgold_leggings",
+    "purified_undead:breathgold_boots"
+  ]
+}

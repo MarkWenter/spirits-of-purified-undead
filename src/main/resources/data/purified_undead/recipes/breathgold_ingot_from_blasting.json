@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:blasting",
+  "category": "misc",
+  "ingredient": {
+    "item": "purified_undead:breathgold"
+  },
+  "result": "purified_undead:breathgold_ingot",
+  "experience": 1.0,
+  "cookingtime": 100
+}
