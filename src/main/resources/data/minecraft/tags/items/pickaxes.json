@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "purified_undead:breathgold_pickaxe"
+    "purified_undead:breathgold_pickaxe",
+    "purified_undead:immaculate_pickaxe"
   ]
 }

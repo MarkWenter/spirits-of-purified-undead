@@ -25,6 +25,13 @@ public final class PurifiedUndeadScripts {
         return BreathgoldSettings.CONVERSION_TICKS;
     }
 
+    public static boolean immaculateEffectSealed(net.minecraft.world.entity.LivingEntity entity, String effectId) {
+        if (!(entity.level() instanceof ServerLevel level)) return false;
+        requireServerThread(level);
+        var id = net.minecraft.resources.ResourceLocation.tryParse(effectId == null ? "" : effectId);
+        return id != null && dev.purifiedundead.blightedarmaments.ImmaculateSeals.isSealed(entity, id);
+    }
+
     private static void requireServerThread(ServerLevel level) {
         if (!level.getServer().isSameThread())
             throw new IllegalStateException("Expected server thread");

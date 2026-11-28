@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "purified_undead:item/immaculate_pickaxe"
+  }
+}

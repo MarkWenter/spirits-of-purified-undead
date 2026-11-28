@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "purified_undead:immaculate_sword",
+    "purified_undead:immaculate_shovel",
+    "purified_undead:immaculate_axe",
+    "purified_undead:immaculate_hoe",
+    "purified_undead:immaculate_pickaxe"
+  ]
+}

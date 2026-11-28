@@ -119,6 +119,7 @@ public final class BreathgoldChecks {
                 level.getBlockState(pos).is(BreathgoldContent.ORE.get()),
                 "saved placement converts after full exposure");
         var player = net.minecraftforge.common.util.FakePlayerFactory.getMinecraft(level);
+        ImmaculateToolChecks.verify(level, player);
         var ore = BreathgoldContent.ORE.get().defaultBlockState();
         for (Item tool :
                 new Item[] {

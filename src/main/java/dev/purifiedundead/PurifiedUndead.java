@@ -149,6 +149,7 @@ public final class PurifiedUndead {
     private void addCreativeTabItems(final BuildCreativeModeTabContentsEvent event) {
         if (event.getTab() == dev.purifiedundead.content.ModCreativeTabs.MAIN.get()) {
             dev.purifiedundead.blightedarmaments.BreathgoldContent.creative(event::accept);
+            dev.purifiedundead.blightedarmaments.ImmaculateTools.creative(event::accept);
             dev.purifiedundead.content.BlightedSpawnEggs.creative(event::accept);
             dev.purifiedundead.slate.SlateContent.creative(event::accept);
             event.accept(dev.purifiedundead.foundry.FoundryContent.ITEM.get());

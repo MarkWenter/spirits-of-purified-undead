@@ -382,5 +382,10 @@
   "item.purified_undead.breathgold_helmet": "息金头盔",
   "item.purified_undead.breathgold_chestplate": "息金胸甲",
   "item.purified_undead.breathgold_leggings": "息金腿甲",
-  "item.purified_undead.breathgold_boots": "息金靴子"
+  "item.purified_undead.breathgold_boots": "息金靴子",
+  "item.purified_undead.immaculate_sword": "无垢剑",
+  "item.purified_undead.immaculate_shovel": "无垢锹",
+  "item.purified_undead.immaculate_axe": "无垢斧",
+  "item.purified_undead.immaculate_hoe": "无垢锄",
+  "item.purified_undead.immaculate_pickaxe": "无垢镐"
 }

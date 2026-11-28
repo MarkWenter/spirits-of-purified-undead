@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "purified_undead:breathgold_hoe"
+    "purified_undead:breathgold_hoe",
+    "purified_undead:immaculate_hoe"
   ]
 }

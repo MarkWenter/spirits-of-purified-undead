@@ -8,5 +8,6 @@ public final class BlightedArmamentsContent {
 
     public static void register(IEventBus modBus) {
         BreathgoldContent.register(modBus);
+        ImmaculateTools.register(modBus);
     }
 }

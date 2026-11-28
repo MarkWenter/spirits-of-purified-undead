@@ -382,5 +382,10 @@
   "item.purified_undead.breathgold_helmet": "Breathgold Helmet",
   "item.purified_undead.breathgold_chestplate": "Breathgold Chestplate",
   "item.purified_undead.breathgold_leggings": "Breathgold Leggings",
-  "item.purified_undead.breathgold_boots": "Breathgold Boots"
+  "item.purified_undead.breathgold_boots": "Breathgold Boots",
+  "item.purified_undead.immaculate_sword": "Immaculate Sword",
+  "item.purified_undead.immaculate_shovel": "Immaculate Shovel",
+  "item.purified_undead.immaculate_axe": "Immaculate Axe",
+  "item.purified_undead.immaculate_hoe": "Immaculate Hoe",
+  "item.purified_undead.immaculate_pickaxe": "Immaculate Pickaxe"
 }

@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "purified_undead:breathgold_shovel"
+    "purified_undead:breathgold_shovel",
+    "purified_undead:immaculate_shovel"
   ]
 }

@@ -19,6 +19,6 @@ public final class BreathgoldClientSmoke {
                 || !(event.getScreen() instanceof TitleScreen)) return;
         checked = true;
         Minecraft.getInstance()
-                .tell(() -> Minecraft.getInstance().setScreen(new BreathgoldPreviewScreen()));
+                .tell(() -> Minecraft.getInstance().setScreen(Boolean.getBoolean("purified_undead.immaculateClient") ? new ImmaculatePreviewScreen() : new BreathgoldPreviewScreen()));
     }
 }

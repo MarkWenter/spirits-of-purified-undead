@@ -26,6 +26,9 @@ public final class ModLootModifiers {
     public static final RegistryObject<Codec<dev.purifiedundead.loot.CipherLootModifier>> CIPHER =
             SERIALIZERS.register("cipher", () -> dev.purifiedundead.loot.CipherLootModifier.CODEC);
 
+    public static final RegistryObject<Codec<dev.purifiedundead.loot.ImmaculateHarvest>>
+            IMMACULATE_HARVEST = SERIALIZERS.register("immaculate_harvest", () -> dev.purifiedundead.loot.ImmaculateHarvest.CODEC);
+
     private ModLootModifiers() {}
 
     public static void register(IEventBus bus) {
