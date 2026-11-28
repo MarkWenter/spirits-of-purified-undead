@@ -56,6 +56,15 @@ public final class DiaryClientSmoke {
                                             .invoke(contents));
                 Map<?, ?> entries =
                         (Map<?, ?>) contents.getClass().getField("entries").get(contents);
+                if (Boolean.getBoolean("purified_undead.guardianRecipePage")) {
+                    Object guardian = entries.get(ResourceLocation.fromNamespaceAndPath("purified_undead", "blighted_guardian"));
+                    List<?> pages = (List<?>) guardian.getClass().getMethod("getPages").invoke(guardian);
+                    spreads.add(new Object[]{guardian, (pages.size() - 1) / 2});
+                    ready = true;
+                    delay = 0;
+                    show(mc);
+                    return;
+                }
                 if (entries.size() != 64)
                     throw new IllegalStateException("entry count=" + entries.size());
                 Map<?, ?> categories =
@@ -116,8 +125,9 @@ public final class DiaryClientSmoke {
                     mc.getMainRenderTarget(),
                     m -> {});
             if (++step == spreads.size()) {
-                System.out.println(
-                        "PURIFIED_UNDEAD_DIARY_CLIENT_OK: all spreads rendered, text bounds checked");
+                System.out.println(Boolean.getBoolean("purified_undead.guardianRecipePage")
+                        ? "GUARDIAN_RECIPE_PAGE_OK"
+                        : "PURIFIED_UNDEAD_DIARY_CLIENT_OK: all spreads rendered, text bounds checked");
                 mc.stop();
                 return;
             }

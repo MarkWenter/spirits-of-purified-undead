@@ -2,11 +2,13 @@ package dev.purifiedundead.validation;
 
 import dev.purifiedundead.content.ModItems;
 import dev.purifiedundead.purification.*;
-import net.minecraft.world.item.*;
+
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.effect.MobEffects;
-import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.*;
+
 import top.theillusivec4.curios.api.CuriosApi;
 
 public final class PurificationPartTwoSmoke {
@@ -84,8 +86,12 @@ public final class PurificationPartTwoSmoke {
                                             "purified_undead", "breathgold_" + types[i])));
             int[] breathgoldDurability = {248, 360, 338, 293};
             int[] breathgoldDefense = {2, 6, 5, 2};
-            check(base.getMaxDamage() == breathgoldDurability[i], "breathgold durability " + types[i]);
-            check(((ArmorItem) base.getItem()).getDefense() == breathgoldDefense[i], "breathgold defense " + types[i]);
+            check(
+                    base.getMaxDamage() == breathgoldDurability[i],
+                    "breathgold durability " + types[i]);
+            check(
+                    ((ArmorItem) base.getItem()).getDefense() == breathgoldDefense[i],
+                    "breathgold defense " + types[i]);
             base.setDamageValue(10);
             base.setHoverName(Component.literal("Preserved"));
             var recipe =
@@ -206,6 +212,49 @@ public final class PurificationPartTwoSmoke {
                                 net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(
                                         "purified_undead", "blighted_guardian"))
                         .orElseThrow();
+        var buffer = new net.minecraft.network.FriendlyByteBuf(io.netty.buffer.Unpooled.buffer());
+        net.minecraft.world.item.crafting.ShapedRecipe guardianRecipe;
+        try {
+            net.minecraft.network.protocol.game.ClientboundUpdateRecipesPacket.toNetwork(buffer, recipeSword);
+            guardianRecipe = (net.minecraft.world.item.crafting.ShapedRecipe) net.minecraft.network.protocol.game.ClientboundUpdateRecipesPacket.fromNetwork(buffer);
+        } finally {
+            buffer.release();
+        }
+        check(
+                guardianRecipe.getWidth() == 3 && guardianRecipe.getHeight() == 3,
+                "guardian guidebook layout");
+
+        for (int column : new int[] {0, 1, 2, 1}) {
+            var craftSlots = net.minecraft.core.NonNullList.withSize(9, ItemStack.EMPTY);
+            craftSlots.set(column, new ItemStack(ModItems.PURE_TOUCH.get()));
+            craftSlots.set(
+                    column + 3,
+                    new ItemStack(
+                            dev.purifiedundead.blightedarmaments.ImmaculateTools.SWORD.get()));
+            craftSlots.set(column + 6, new ItemStack(Items.NETHERITE_INGOT));
+            var input =
+                    new net.minecraft.world.inventory.TransientCraftingContainer(
+                            p.inventoryMenu, 3, 3, craftSlots);
+            check(
+                    guardianRecipe.matches(input, level) == (column == 1),
+                    "guardian column " + column);
+
+            if (column == 1) {
+                check(
+                        guardianRecipe
+                                .assemble(input, server.registryAccess())
+                                .is(ModItems.BLIGHTED_GUARDIAN.get()),
+                        "guardian output");
+                craftSlots.set(0, new ItemStack(Items.STICK));
+                check(!guardianRecipe.matches(input, level), "guardian rejects extra ingredient");
+                craftSlots.set(0, ItemStack.EMPTY);
+                craftSlots.set(1, new ItemStack(Items.NETHERITE_INGOT));
+                craftSlots.set(4, new ItemStack(Items.NETHERITE_INGOT));
+                craftSlots.set(7, new ItemStack(ModItems.PURE_TOUCH.get()));
+                check(!guardianRecipe.matches(input, level), "old guardian recipe rejected");
+            }
+        }
+        System.out.println("GUARDIAN_CENTER_COLUMN_OK");
         var crafted = recipeSword.getResultItem(server.registryAccess());
         check(
                 crafted.getEnchantmentLevel(
@@ -213,6 +262,8 @@ public final class PurificationPartTwoSmoke {
                         == 1,
                 "craft output mending");
         System.out.println(
-                "PURIFICATION_PART2_OK: lotus effects, one-time fruit, independent slots, clone persistence, armor durability/defense/resistances, four smithing recipes preserve metadata, sword durability/mending, crafting loaded");
+                "PURIFICATION_PART2_OK: lotus effects, one-time fruit, independent slots, clone"
+                    + " persistence, armor durability/defense/resistances, four smithing recipes"
+                    + " preserve metadata, sword durability/mending, crafting loaded");
     }
 }

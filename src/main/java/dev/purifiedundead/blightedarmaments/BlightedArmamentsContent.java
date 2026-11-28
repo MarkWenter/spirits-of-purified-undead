@@ -7,6 +7,7 @@ public final class BlightedArmamentsContent {
     private BlightedArmamentsContent() {}
 
     public static void register(IEventBus modBus) {
+        CenterColumnRecipe.register(modBus);
         BreathgoldContent.register(modBus);
         ImmaculateTools.register(modBus);
     }

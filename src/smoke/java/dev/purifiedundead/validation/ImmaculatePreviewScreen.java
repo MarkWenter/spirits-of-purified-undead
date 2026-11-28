@@ -2,6 +2,7 @@ package dev.purifiedundead.validation;
 
 import com.mojang.logging.LogUtils;
 
+import dev.purifiedundead.blightedarmaments.BreathgoldContent;
 import dev.purifiedundead.blightedarmaments.ImmaculateTools;
 
 import net.minecraft.client.Screenshot;
@@ -11,6 +12,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
 public final class ImmaculatePreviewScreen extends Screen {
+    private final boolean rotationCheck = Boolean.getBoolean("purified_undead.guardianRecipePage");
     private int frames;
     private volatile boolean captured;
 
@@ -25,18 +27,29 @@ public final class ImmaculatePreviewScreen extends Screen {
             return;
         }
         g.fill(0, 0, width, height, 0xff26242a);
-        g.drawCenteredString(font, "PURIFIED UNDEAD / IMMACULATE", width / 2, 20, 0xffe6c58b);
+        g.drawCenteredString(
+                font,
+                rotationCheck ? "BREATHGOLD / IMMACULATE" : "PURIFIED UNDEAD / IMMACULATE",
+                width / 2,
+                20,
+                0xffe6c58b);
         var items =
-                java.util.List.of(
-                        ImmaculateTools.SWORD.get(),
-                        ImmaculateTools.SHOVEL.get(),
-                        ImmaculateTools.AXE.get(),
-                        ImmaculateTools.HOE.get(),
-                        ImmaculateTools.PICKAXE.get());
-        int start = (width - 5 * 42) / 2;
+                rotationCheck
+                        ? java.util.List.of(
+                                BreathgoldContent.AXE.get(),
+                                BreathgoldContent.HOE.get(),
+                                ImmaculateTools.AXE.get(),
+                                ImmaculateTools.HOE.get())
+                        : java.util.List.of(
+                                ImmaculateTools.SWORD.get(),
+                                ImmaculateTools.SHOVEL.get(),
+                                ImmaculateTools.AXE.get(),
+                                ImmaculateTools.HOE.get(),
+                                ImmaculateTools.PICKAXE.get());
+        int start = (width - items.size() * 42) / 2;
         for (int i = 0; i < items.size(); i++) {
-            int x = start + (i % 5) * 42;
-            int y = 42 + 43 * (i / 5);
+            int x = start + i * 42;
+            int y = 42;
             g.fill(x - 2, y - 3, x + 36, y + 35, 0xff504a50);
             g.pose().pushPose();
             g.pose().translate(x, y, 0);
@@ -67,16 +80,23 @@ public final class ImmaculatePreviewScreen extends Screen {
             g.flush();
             Screenshot.grab(
                     minecraft.gameDirectory,
-                    "immaculate-tools.png",
+                    rotationCheck ? "armaments-tools-rotation.png" : "immaculate-tools.png",
                     minecraft.getMainRenderTarget(),
                     message -> {
                         captured = true;
                         LogUtils.getLogger()
                                 .info(
-                                        "IMMACULATE_CLIENT_OK models=5 screenshot={}",
+                                        rotationCheck
+                                                ? "ARMAMENT_ROTATION_CLIENT_OK models=4"
+                                                      + " screenshot={}"
+                                                : "IMMACULATE_CLIENT_OK models=5 screenshot={}",
                                         message.getString());
                     });
         }
-        if (captured && frames > 55) minecraft.stop();
+        if (captured && frames > 55) {
+            if (rotationCheck)
+                minecraft.setScreen(new net.minecraft.client.gui.screens.TitleScreen());
+            else minecraft.stop();
+        }
     }
 }

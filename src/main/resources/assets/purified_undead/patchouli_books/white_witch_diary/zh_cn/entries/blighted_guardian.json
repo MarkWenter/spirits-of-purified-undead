@@ -6,7 +6,7 @@
   "pages": [
     {
       "type": "patchouli:spotlight",
-      "text": "将纯净触碰中蕴藏的意志灌注到下界合金中铸成的利剑，持有时能感觉到温暖的搏动。",
+      "text": "以无垢剑为剑身，用下界合金锭将纯净触碰中蕴藏的意志铸入其中，持有时能感觉到温暖的搏动。",
       "item": "purified_undead:blighted_guardian",
       "title": "秽鬼之守护",
       "link_recipe": false
